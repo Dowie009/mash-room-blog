@@ -1,0 +1,49 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+}
+
+const { title = 'SAPPORO MASH ROOM STUDIO (Blog Archive)' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="物語（Story）とテック（Tech）の融合。夕暮れのトーンで紡ぐブログアーカイブ。" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  html {
+    font-family: system-ui, sans-serif;
+    background: #1a0f0a;
+  }
+  
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* View Transitions の設定 */
+  @view-transition {
+    navigation: auto;
+  }
+
+  /* 音楽プレイヤーの永続化 */
+  [data-astro-transition-persist] {
+    view-transition-name: audio-player;
+  }
+</style>
