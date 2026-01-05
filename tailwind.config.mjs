@@ -4,8 +4,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        'mincho': ['Shippori Mincho', 'serif'],
-        'gothic': ['Zen Kaku Gothic New', 'sans-serif'],
+        'mincho': ['Noto Serif JP', 'Hiragino Mincho Pro', 'Yu Mincho', 'serif'],
+        'gothic': ['Noto Sans JP', 'Hiragino Kaku Gothic Pro', 'Yu Gothic', 'sans-serif'],
       },
     },
   },

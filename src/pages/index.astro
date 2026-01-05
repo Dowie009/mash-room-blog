@@ -1,8 +1,22 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import App from '../components/App';
+import Hero from '../components/Hero.astro';
+import HorizontalScroll from '../components/HorizontalScroll.astro';
+import NewPost from '../components/NewPost.astro';
+import Footer from '../components/Footer.astro';
 ---
 
-<Layout title="SAPPORO MASH ROOM STUDIO (Blog Archive)">
-  <App client:load />
+<Layout title="MASHROOM | ULTIMATE_V7">
+  <!-- ENERGY BAR (For New Post Section) -->
+  <div class="energy-bar-container" id="energy-bar">
+    <div class="energy-bar-fill" id="energy-fill"></div>
+    <div class="energy-label">ENERGY CHARGE</div>
+  </div>
+
+  <div id="main-scroll-wrapper" class="relative z-50">
+    <Hero />
+    <HorizontalScroll />
+    <NewPost />
+    <Footer />
+  </div>
 </Layout>

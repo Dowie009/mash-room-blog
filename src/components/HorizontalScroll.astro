@@ -1,0 +1,288 @@
+---
+// Horizontal Scroll Section: Story, Gear, Tech panels
+---
+
+<!-- 3. HORIZONTAL READING -->
+<section class="horizontal-wrapper" id="horizontal-wrapper">
+    <div class="horizontal-container">
+        
+        <!-- Spacer Panel -->
+        <div class="h-panel bg-transparent pointer-events-none">
+            <div class="skeleton-text-box p-16 max-w-2xl text-center pointer-events-auto">
+                <span class="text-[var(--accent-color)] font-mono text-lg mb-6 block">FLOOR 1</span>
+                <h3 class="font-mincho text-7xl md:text-8xl mb-8 leading-none">重力と<br>遊ぶ</h3>
+                <p class="text-xl text-gray-400 leading-loose mb-12 font-bold">
+                    扉が開くと、<br>
+                    ガラスの向こうでアイデアが降り注ぐ。<br>
+                    (今、裏でブロックが落ちてます！)
+                </p>
+                <div class="font-mono text-sm text-gray-500 animate-pulse">
+                    SCROLL DOWN TO DIVE &rarr;
+                </div>
+            </div>
+        </div>
+
+        <!-- Story Panel (Optimized Layout) -->
+        <div class="h-panel" id="panel-story">
+            <!-- Increased padding and gap for better spacing -->
+            <div class="container mx-auto px-8 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center h-full max-w-6xl">
+                <!-- Image: Restricted height, maintained aspect ratio -->
+                <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl" style="--img-height: 60vh;">
+                    <img src="/images/Blog_00.png" 
+                        class="w-full h-full object-cover grayscale group-hover:grayscale-0 rounded-sm transition-all duration-700" alt="Story">
+                    <a href="#" class="absolute -bottom-6 -right-6 bg-white text-black font-mono text-xs font-bold px-6 py-3 hover:bg-[var(--accent-color)] hover:text-white transition-colors pointer-events-auto shadow-lg">
+                        READ STORIES
+                    </a>
+                </div>
+                <!-- Text: Adjusted padding and font sizes -->
+                <div class="merge-text-wrapper h-[60vh] md:h-[70vh] flex items-start justify-start pl-8 md:pl-16">
+                    <div class="tategaki-box flex flex-col justify-start chapter1-text-group" style="--text-scale: 2.0; --text-offset-x: 50px; --text-offset-y: 30px;">
+                        <span class="text-[var(--accent-color)] font-mono text-xs font-bold tracking-widest mb-8 block tategaki-char" style="writing-mode: horizontal-tb;">CHAPTER 01</span>
+                        <!-- Reduced Title size from 5xl to 3xl/4xl -->
+                        <h3 class="font-mincho text-3xl md:text-4xl font-black mb-12 leading-relaxed">
+                            <span class="tategaki-char">物</span><span class="tategaki-char">語</span><span class="tategaki-char">の</span><br>
+                            <span class="tategaki-char">積</span><span class="tategaki-char">み</span><span class="tategaki-char">重</span><span class="tategaki-char">ね</span>
+                        </h3>
+                        <!-- Adjusted Description size and line-height -->
+                        <p class="text-gray-400 font-medium text-sm md:text-base leading-loose">
+                            <span class="tategaki-char">ブ</span><span class="tategaki-char">ロ</span><span class="tategaki-char">グ</span><span class="tategaki-char">は</span><span class="tategaki-char">地</span><span class="tategaki-char">層</span><span class="tategaki-char">の</span><span class="tategaki-char">よ</span><span class="tategaki-char">う</span><span class="tategaki-char">に</span><span class="tategaki-char">。</span><br>
+                            <span class="tategaki-char">玄</span><span class="tategaki-char">関</span><span class="tategaki-char">の</span><span class="tategaki-char">壁</span><span class="tategaki-char">を</span><span class="tategaki-char">撤</span><span class="tategaki-char">去</span><span class="tategaki-char">し</span><span class="tategaki-char">、</span><br>
+                            <span class="tategaki-char">新</span><span class="tategaki-char">し</span><span class="tategaki-char">い</span><span class="tategaki-char">風</span><span class="tategaki-char">を</span><span class="tategaki-char">通</span><span class="tategaki-char">す</span><span class="tategaki-char">。</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gear Panel (Optimized Layout) -->
+        <div class="h-panel" id="panel-gear">
+            <div class="container mx-auto px-8 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center h-full max-w-6xl">
+                <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl" style="--img-height: 60vh;">
+                    <img src="/images/カテゴリサムネ　ノケ物語.png"  
+                        class="w-full h-full object-cover grayscale group-hover:grayscale-0 rounded-sm transition-all duration-700" alt="Gear">
+                    <a href="#" class="absolute -bottom-6 -right-6 bg-white text-black font-mono text-xs font-bold px-6 py-3 hover:bg-[var(--accent-color)] hover:text-white transition-colors pointer-events-auto shadow-lg">
+                        CHECK GEARS
+                    </a>
+                </div>
+                <div class="merge-text-wrapper h-[60vh] md:h-[70vh] flex items-start justify-start pl-8 md:pl-16">
+                    <div class="tategaki-box flex flex-col justify-start chapter1-text-group" style="--text-scale: 2.0; --text-offset-x: 50px; --text-offset-y: 30px;">
+                        <span class="text-[var(--accent-color)] font-mono text-xs font-bold tracking-widest mb-8 block tategaki-char" style="writing-mode: horizontal-tb;">CHAPTER 02</span>
+                        <h3 class="font-mincho text-3xl md:text-4xl font-black mb-12 leading-relaxed">
+                            <span class="tategaki-char">没</span><span class="tategaki-char">入</span><span class="tategaki-char">す</span><span class="tategaki-char">る</span><br>
+                            <span class="tategaki-char">機</span><span class="tategaki-char">材</span><span class="tategaki-char">た</span><span class="tategaki-char">ち</span>
+                        </h3>
+                        <p class="text-gray-400 font-medium text-sm md:text-base leading-loose">
+                            <span class="tategaki-char">3</span><span class="tategaki-char">7</span><span class="tategaki-char">.</span><span class="tategaki-char">5</span><span class="tategaki-char">イ</span><span class="tategaki-char">ン</span><span class="tategaki-char">チ</span><span class="tategaki-char">の</span><span class="tategaki-char">湾</span><span class="tategaki-char">曲</span><span class="tategaki-char">。</span><br>
+                            <span class="tategaki-char">視</span><span class="tategaki-char">界</span><span class="tategaki-char">を</span><span class="tategaki-char">覆</span><span class="tategaki-char">う</span><span class="tategaki-char">情</span><span class="tategaki-char">報</span><span class="tategaki-char">の</span><span class="tategaki-char">海</span><span class="tategaki-char">。</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tech Panel (Optimized Layout) -->
+        <div class="h-panel" id="panel-tech">
+            <div class="container mx-auto px-8 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center h-full max-w-6xl">
+                <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl" style="--img-height: 60vh;">
+                    <img src="/images/ノケ物語イラスト.png" 
+                        class="w-full h-full object-cover grayscale group-hover:grayscale-0 rounded-sm transition-all duration-700" alt="Tech">
+                    <a href="#" class="absolute -bottom-6 -right-6 bg-white text-black font-mono text-xs font-bold px-6 py-3 hover:bg-[var(--accent-color)] hover:text-white transition-colors pointer-events-auto shadow-lg">
+                        EXPLORE LAB
+                    </a>
+                </div>
+                <div class="merge-text-wrapper h-[60vh] md:h-[70vh] flex items-start justify-start pl-8 md:pl-16">
+                    <div class="tategaki-box flex flex-col justify-start chapter1-text-group" style="--text-scale: 2.0; --text-offset-x: 50px; --text-offset-y: 30px;">
+                        <span class="text-[var(--accent-color)] font-mono text-xs font-bold tracking-widest mb-8 block tategaki-char" style="writing-mode: horizontal-tb;">CHAPTER 03</span>
+                        <h3 class="font-mincho text-3xl md:text-4xl font-black mb-12 leading-relaxed">
+                            <span class="tategaki-char">技</span><span class="tategaki-char">術</span><span class="tategaki-char">と</span><br>
+                            <span class="tategaki-char">そ</span><span class="tategaki-char">の</span><span class="tategaki-char">先</span><span class="tategaki-char">へ</span>
+                        </h3>
+                        <p class="text-gray-400 font-medium text-sm md:text-base leading-loose">
+                            <span class="tategaki-char">人</span><span class="tategaki-char">工</span><span class="tategaki-char">知</span><span class="tategaki-char">能</span><span class="tategaki-char">と</span><span class="tategaki-char">共</span><span class="tategaki-char">創</span><span class="tategaki-char">す</span><span class="tategaki-char">る</span><span class="tategaki-char">。</span><br>
+                            <span class="tategaki-char">コ</span><span class="tategaki-char">ー</span><span class="tategaki-char">ド</span><span class="tategaki-char">は</span><span class="tategaki-char">詩</span><span class="tategaki-char">に</span><span class="tategaki-char">な</span><span class="tategaki-char">る</span><span class="tategaki-char">。</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<style>
+    /* --- 3. HORIZONTAL SCROLL (STOP & MERGE) --- */
+    .horizontal-wrapper {
+        position: relative; z-index: 60; 
+        background: transparent; 
+        overflow: hidden;
+    }
+    .horizontal-container { 
+        display: flex; 
+        flex-wrap: nowrap; 
+        height: 100vh; 
+        will-change: transform;
+    }
+    
+    .h-panel {
+        width: 100vw; 
+        height: 100vh; 
+        flex-shrink: 0;
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+        position: relative; 
+        box-sizing: border-box; 
+        background: rgba(5, 5, 5, 0.85); 
+        backdrop-filter: blur(10px);
+        perspective: 1000px;
+        border: none !important; /* すべての境界線を削除 */
+    }
+    
+    /* パネル間の線を完全に消す：パネルを完全に重ねる */
+    .h-panel:not(:last-child) {
+        margin-right: -1px; /* 1px重ねて線を完全に消す */
+    }
+    
+    /* パネルの右端を拡張して線を完全に覆う */
+    .h-panel::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: -2px;
+        width: 2px;
+        height: 100%;
+        background: inherit;
+        backdrop-filter: inherit;
+        z-index: 10;
+    }
+    
+    /* チャプター1,2,3の下1/3の背景を薄くする */
+    .h-panel#panel-story,
+    .h-panel#panel-gear,
+    .h-panel#panel-tech {
+        background: linear-gradient(to bottom, 
+            rgba(5, 5, 5, 0.85) 0%, 
+            rgba(5, 5, 5, 0.85) 66.67%, 
+            rgba(5, 5, 5, 0.2) 100%);
+    }
+    
+    /* Spacer Panel（重力と遊ぶ）だけ背景を透明に */
+    .h-panel.bg-transparent {
+        background: transparent !important;
+        backdrop-filter: none;
+    }
+
+    /* Merge Animation Classes */
+    .merge-img-wrapper {
+        transform: translateX(-50px);
+        opacity: 0.5;
+        transition: transform 0.1s, opacity 0.1s;
+        height: var(--img-height, 60vh) !important;
+        aspect-ratio: 3/4 !important;
+    }
+    .merge-img-wrapper img {
+        height: 100% !important;
+        width: 100% !important;
+        object-fit: cover;
+    }
+    .merge-text-wrapper {
+        transform: translateX(50px);
+        opacity: 0;
+        transition: transform 0.1s, opacity 0.1s;
+    }
+    
+    .tategaki-box {
+        writing-mode: vertical-rl; 
+        text-orientation: upright; 
+        height: 100%; /* 親要素(merge-text-wrapper)の高さに依存させる */
+        letter-spacing: 0.15em; 
+        line-height: 2.2; /* 読みやすい行間 */
+    }
+    
+    /* チャプター1のテキストグループ：サイズと位置を一括調整 */
+    .chapter1-text-group {
+        transform: scale(var(--text-scale, 1)) translate(var(--text-offset-x, 0px), var(--text-offset-y, 0px));
+        transform-origin: top left;
+    }
+    .tategaki-char {
+        display: inline-block;
+        opacity: 0;
+        transform: translateY(20px) scale(1.5);
+    }
+
+    .holo-content {
+        position: relative;
+        z-index: 2;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 4px;
+        overflow: hidden;
+        transition: border-color 0.3s;
+    }
+    .holo-content:hover { 
+        border-color: var(--accent-color); 
+    }
+
+    /* Skeleton Text Box - 黒い枠だけ、背景は透明 */
+    .skeleton-text-box {
+        background: rgba(0, 0, 0, 1.5);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+</style>
+
+<script>
+    if (typeof window !== 'undefined' && typeof gsap !== 'undefined') {
+        /* ------------------------------------------------
+           4. HORIZONTAL SCROLL (SHORTENED DISTANCE)
+           ------------------------------------------------ */
+        const wrapper = document.querySelector('.horizontal-wrapper');
+    const container = document.querySelector('.horizontal-container');
+    const panels = gsap.utils.toArray('.h-panel');
+    
+    const tl = gsap.timeline({
+        scrollTrigger: {
+            trigger: wrapper,
+            pin: true,
+            scrub: 1,
+            // REDUCED DISTANCE (was 2.0 -> 1.3) for faster transition
+            end: () => "+=" + (panels.length * window.innerWidth * 1.3),
+        }
+    });
+
+    panels.forEach((panel, i) => {
+        if (i === 0) return; 
+
+        // 1. Transition
+        tl.to(container, {
+            x: - (i * 100) + "vw", 
+            ease: "none",
+            duration: 1
+        });
+
+        // 2. Lock
+        tl.to({}, { duration: 0.5 }); 
+
+        // 3. Animation
+        const img = panel.querySelector('.merge-img-wrapper');
+        const txt = panel.querySelector('.merge-text-wrapper');
+        const chars = panel.querySelectorAll('.tategaki-char');
+
+        if(img && txt) {
+            tl.fromTo(img, { x: -50, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power2.out" }, "<");
+            tl.fromTo(txt, { x: 50, opacity: 0 }, { x: 0, opacity: 1, duration: 0.5, ease: "power2.out" }, "<");
+            tl.fromTo(chars, 
+                { y: 20, opacity: 0, scale: 1.5 },
+                { y: 0, opacity: 1, scale: 1, stagger: 0.05, duration: 0.5, ease: "back.out(1.7)" }, 
+                "<+=0.1"
+            );
+        }
+
+        // 4. Wait
+        tl.to({}, { duration: 0.2 });
+    });
+    }
+</script>

@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import { Monitor } from 'lucide-react';
 import type { Post } from '../data/posts';
+import { initScrollFade } from '../utils/scrollObserver';
 
 interface TechLayoutProps {
   posts: Post[];
@@ -14,6 +16,12 @@ export const TechLayout = ({ posts, onSelect, activeId, filter = 'All' }: TechLa
     if (filter === 'AI') return p.category === 'AI';
     return p.category !== 'Story';
   });
+
+  // フェードイン初期化
+  useEffect(() => {
+    const cleanup = initScrollFade();
+    return cleanup;
+  }, [displayPosts]); // displayPostsが変わったら再初期化
 
   return (
     <div className="min-h-screen bg-[#1c120e] text-[#fed7aa] font-gothic relative overflow-hidden transition-colors duration-1000 ease-in-out">
@@ -32,11 +40,12 @@ export const TechLayout = ({ posts, onSelect, activeId, filter = 'All' }: TechLa
           {displayPosts.map((post) => (
             <div 
               key={post.id}
+              data-scroll-fade
               onClick={() => onSelect(post)}
               className="group relative aspect-[16/10] rounded-xl overflow-hidden cursor-pointer border border-orange-900/30 hover:border-orange-500 transition-all duration-300 hover:shadow-[0_0_30px_rgba(234,88,12,0.3)] hover:-translate-y-1 bg-[#2a1b15]"
             >
               {post.image ? (
-                <img src={post.image} alt="" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-80 sepia-[0.2]" />
+                <img src={post.image} alt="" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-80 sepia-[0.2]" loading="lazy" />
               ) : (
                 <div className="absolute inset-0 bg-[#2a1b15] flex items-center justify-center"><Monitor size={48} className="text-orange-900" /></div>
               )}

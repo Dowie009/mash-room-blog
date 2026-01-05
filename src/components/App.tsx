@@ -2,20 +2,54 @@ import { useState, useEffect } from 'react';
 import { Book, Cpu, Music, Home } from 'lucide-react';
 import { POSTS, type Post } from '../data/posts';
 import { LandingPage } from './LandingPage';
+import { DebugSticky } from './DebugSticky';
+import { IntroAnimation } from './IntroAnimation';
 import { StoryLayout } from './StoryLayout';
 import { TechLayout } from './TechLayout';
 import { Reader } from './Reader';
 
 export default function App() {
-  const [view, setView] = useState<'Landing' | 'Story' | 'Tech'>('Landing'); 
-  const [techFilter, setTechFilter] = useState<'Gear' | 'AI' | 'All'>('All'); 
+  const [showIntro, setShowIntro] = useState(() => {
+    // デバッグモードではイントロをスキップ
+    if (typeof window !== 'undefined' && window.location.hash === '#debug-sticky') {
+      console.log('🔧 Debug mode - skipping intro');
+      return false;
+    }
+    // テスト中は常にイントロを表示
+    console.log('🎬 Showing intro for testing');
+    return true;
+
+    // 本番用（後で戻す）
+    // if (typeof window !== 'undefined') {
+    //   const played = sessionStorage.getItem('intro-played');
+    //   console.log('🎭 Intro played?', played, '-> showIntro:', !played);
+    //   return !played;
+    // }
+    // return true;
+  });
+
+  const [view, setView] = useState<'Landing' | 'Story' | 'Tech' | 'DebugSticky'>(() => {
+    // URL検査でデバッグモードを有効化
+    if (typeof window !== 'undefined' && window.location.hash === '#debug-sticky') {
+      return 'DebugSticky';
+    }
+    return 'Landing';
+  });
+  const [techFilter, setTechFilter] = useState<'Gear' | 'AI' | 'All'>('All');
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [lastReadPost, setLastReadPost] = useState<Post | null>(null);
+
+  const handleIntroComplete = () => {
+    setShowIntro(false);
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('intro-played', 'true');
+    }
+  };
 
   // --- FIREBASE SIMULATION FOR DEMO ---
   useEffect(() => {
     // Simulating loading a "last read" post for demo purposes
-    const demoLastRead = POSTS.find(p => p.id === 36); 
+    const demoLastRead = POSTS.find(p => p.id === 36);
     if (demoLastRead) setLastReadPost(demoLastRead);
   }, []);
 
@@ -42,9 +76,15 @@ export default function App() {
 
   return (
     <>
-      {view === 'Landing' && <LandingPage onEnter={handleEnter} lastReadPost={lastReadPost} />}
+      {/* イントロアニメーション */}
+      {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
 
-      {view !== 'Landing' && (
+      {/* メインコンテンツ（イントロ中はフェードイン待ち） */}
+      <div className={showIntro ? 'intro-content-fade' : ''}>
+        {view === 'Landing' && <LandingPage onEnter={handleEnter} lastReadPost={lastReadPost} />}
+        {view === 'DebugSticky' && <DebugSticky />}
+
+      {view !== 'Landing' && view !== 'DebugSticky' && (
         <>
           <nav className={`fixed top-0 left-0 right-0 z-40 px-4 py-3 flex justify-between items-center transition-colors duration-500 ${view === 'Tech' ? 'bg-[#1c120e]/90 border-b border-orange-900/50' : 'bg-[#fff7ed]/90 border-b border-orange-200/50'} backdrop-blur-md h-16`}>
             <div className="flex items-center gap-3 cursor-pointer" onClick={goHome}>
@@ -94,6 +134,7 @@ export default function App() {
           )}
         </>
       )}
+      </div>
     </>
   );
 }

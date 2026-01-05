@@ -17,24 +17,103 @@ const { title = 'SAPPORO MASH ROOM STUDIO (Blog Archive)' } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@700;900&family=Space+Grotesk:wght@300;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet" />
   </head>
   <body>
     <slot />
+    
+    <!-- Scripts: Load at end of body to ensure DOM is ready -->
+    <script is:inline src="https://unpkg.com/lucide@latest"></script>
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+    <script is:inline src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
   </body>
 </html>
 
 <style is:global>
+  :root {
+    --bg-color: #050505;
+    --text-color: #e0e0e0;
+    --accent-color: #ff4d00;
+  }
+
   html {
-    font-family: system-ui, sans-serif;
-    background: #1a0f0a;
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg-color);
   }
   
   body {
     margin: 0;
     padding: 0;
+    overflow-x: hidden;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+  }
+
+  .font-mincho { 
+    font-family: 'Zen Old Mincho', serif; 
+  }
+  
+  .font-tech { 
+    font-family: 'Space Grotesk', sans-serif; 
+  }
+
+  /* --- UI: FLOOR GUIDE --- */
+  .floor-link {
+    cursor: pointer;
+    transition: color 0.3s, opacity 0.3s;
+    opacity: 0.5;
+    display: block;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  .floor-link:hover { opacity: 1; }
+  .floor-link.active {
+    opacity: 1;
+    color: var(--accent-color);
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(255, 77, 0, 0.5);
+    font-size: 16px;
+  }
+
+  /* --- UI: ENERGY BAR --- */
+  .energy-bar-container {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 90;
+    display: none; /* Shown via JS in specific section */
+  }
+  .energy-bar-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: var(--accent-color);
+    box-shadow: 0 0 15px var(--accent-color);
+    transition: height 0.1s linear;
+  }
+  .energy-label {
+    position: absolute;
+    bottom: 20px;
+    right: 15px;
+    transform-origin: right bottom;
+    transform: rotate(-90deg);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 12px;
+    color: var(--accent-color);
+    letter-spacing: 0.2em;
+    white-space: nowrap;
   }
 
   /* View Transitions の設定 */

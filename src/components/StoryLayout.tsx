@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { 
   ChevronLeft, 
   AlignVerticalJustifyCenter, 
@@ -24,6 +24,8 @@ export const StoryLayout = ({ posts, onSelect, activeId, lastReadId }: StoryLayo
   const [viewMode, setViewMode] = useState<'list' | 'reader'>('list');
   const [showPlayer, setShowPlayer] = useState(false);
   const [bgmEnabled, setBgmEnabled] = useState(false);
+  const readerRef = useRef<HTMLDivElement>(null);
+  const shouldScrollRef = useRef(false);
 
   useEffect(() => {
     if (activeId) {
@@ -42,20 +44,44 @@ export const StoryLayout = ({ posts, onSelect, activeId, lastReadId }: StoryLayo
     setViewMode('reader'); 
     onSelect(post);
     // Auto show player when opening a story
-    setShowPlayer(true); 
+    setShowPlayer(true);
     
-    setTimeout(() => {
-      const reader = document.getElementById('story-reader-content');
-      if (reader) {
-        reader.scrollTop = 0;
-        if (isVertical) reader.scrollLeft = reader.scrollWidth;
-      }
-    }, 100);
+    // スクロール位置リセットのフラグを立てる
+    shouldScrollRef.current = true;
   };
 
   const handleBackToList = () => {
     setViewMode('list');
   };
+
+  // レイアウト完了後にスクロール位置を調整
+  useLayoutEffect(() => {
+    if (!shouldScrollRef.current || !readerRef.current) return;
+
+    // requestAnimationFrameでブラウザの描画タイミングに合わせる
+    const rafId = requestAnimationFrame(() => {
+      // さらに次のフレームで実行（レイアウト計算が確実に完了している）
+      requestAnimationFrame(() => {
+        const reader = readerRef.current;
+        if (!reader) return;
+
+        // 横書きモード: 上にスクロール
+        reader.scrollTop = 0;
+        
+        // 縦書きモード: 右端にスクロール
+        if (isVertical) {
+          reader.scrollLeft = reader.scrollWidth;
+        }
+
+        // フラグをリセット
+        shouldScrollRef.current = false;
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+    };
+  }, [activePost, isVertical, viewMode]); // activePostが変わったら実行
 
   const storyPosts = posts.filter(p => p.category === 'Story');
 
@@ -132,7 +158,11 @@ export const StoryLayout = ({ posts, onSelect, activeId, lastReadId }: StoryLayo
           </div>
         </div>
         
-        <div id="story-reader-content" className={`flex-1 overflow-auto scroll-smooth ${isVertical ? 'vertical-writing p-4' : 'p-6 md:p-16'} ${showPlayer ? 'pb-32' : ''}`}>
+        <div 
+          id="story-reader-content"
+          ref={readerRef}
+          className={`flex-1 overflow-auto scroll-smooth ${isVertical ? 'vertical-writing p-4' : 'p-6 md:p-16'} ${showPlayer ? 'pb-32' : ''}`}
+        >
           {activePost ? (
             <div className={`max-w-2xl mx-auto w-full blog-content ${isVertical ? 'h-full py-8 px-6' : 'pb-32'}`}>
               <article className={`animate-in fade-in duration-700 ${isVertical ? 'h-full flex flex-col gap-10' : ''}`}>

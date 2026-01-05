@@ -1,0 +1,332 @@
+---
+// Hero Section: Intro + Gate Animation
+---
+
+<!-- 0. INTRO -->
+<div id="intro-overlay">
+    <video id="intro-video" autoplay muted playsinline>
+        <source src="/images/into3.mp4" type="video/mp4">
+    </video>
+    <img id="intro-logo" src="/images/MASHROOM_Logo.png" alt="MASHROOM LOGO">
+</div>
+
+<!-- 1. BG PHYSICS (Fixed) -->
+<div id="physics-wrapper">
+    <video autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover">
+        <source src="/images/sunset-bg.mp4" type="video/mp4">
+    </video>
+    <div class="noise-overlay"></div>
+    <div id="physics-container"></div>
+</div>
+
+<!-- SCROLL METER (左上) -->
+<div id="scroll-meter" class="fixed top-4 left-4 z-[101] font-mono text-xs bg-black/80 backdrop-blur px-3 py-2 rounded border border-white/20 text-white">
+    <div>Scroll: <span id="scroll-value">0</span>px</div>
+</div>
+
+<!-- HEADER & GUIDE -->
+<header class="fixed top-0 w-full p-8 flex justify-between items-start z-[100] mix-blend-difference text-white pointer-events-none">
+    <div class="pointer-events-auto">
+        <img src="/images/MASHROOM_Logo.png" alt="MASHROOM STUDIO" class="h-12 w-auto">
+    </div>
+    <div class="pointer-events-auto text-right font-mono tracking-widest">
+        <div class="border border-white/50 rounded-full px-5 py-2 mb-3 bg-black/20 backdrop-blur text-sm">
+            FLOOR GUIDE
+        </div>
+        <nav class="flex flex-col gap-2 opacity-90">
+            <a data-target="#hero-section" class="floor-link">GATE: HERO</a>
+            <a data-target="#horizontal-wrapper" class="floor-link">1F: READING</a>
+            <a data-target="#new-post-section" class="floor-link">2F: NEW POST</a>
+            <a data-target="#footer-physics-wrapper" class="floor-link">3F: DEPART</a>
+        </nav>
+    </div>
+</header>
+
+<!-- 2. HERO GATE -->
+<section class="hero-gate-container" id="hero-section">
+    <div class="gate-panel gate-left">
+        <div class="absolute inset-0 w-[200vw] h-full bg-black">
+            <video autoplay loop muted playsinline class="w-full h-full object-cover opacity-40">
+                <source src="/images/sunset-bg.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+    <div class="gate-panel gate-right">
+        <div class="absolute inset-0 w-[200vw] h-full bg-black -left-[100%]">
+            <video autoplay loop muted playsinline class="w-full h-full object-cover opacity-40">
+                <source src="/images/sunset-bg.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+    <div class="gate-content">
+        <p class="font-mono text-sm tracking-[1em] mb-8 text-white/70">SAPPORO STUDIO</p>
+        <h2 class="font-mincho text-[10vw] leading-[0.9] font-black text-white mix-blend-overlay">
+            物語と<br>技術の<br>交差点
+        </h2>
+        <div class="mt-12 animate-bounce">
+            <span class="font-mono text-xs tracking-widest text-gray-400">SCROLL TO OPEN GATE</span>
+        </div>
+    </div>
+</section>
+
+<style>
+
+    /* --- 1. INTRO & GATE --- */
+    #intro-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+        z-index: 9999; background: #000; display: flex;
+        justify-content: center; align-items: center; overflow: hidden;
+    }
+    #intro-video {
+        position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        object-fit: cover; opacity: 1;
+    }
+    #intro-logo {
+        position: relative; z-index: 10; width: 60%; max-width: 600px; opacity: 0;
+    }
+
+    .hero-gate-container {
+        position: relative; height: 100vh; width: 100%; overflow: hidden; z-index: 50; /* ゲートを確実に表示 */
+    }
+    .gate-panel {
+        position: absolute; top: 0; width: 50%; height: 100%; background: #000; z-index: 10;
+        display: flex; align-items: center; overflow: hidden;
+    }
+    .gate-left { left: 0; justify-content: flex-end; }
+    .gate-right { right: 0; justify-content: flex-start; }
+    .gate-content {
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        z-index: 20; text-align: center; width: 100%; pointer-events: none;
+    }
+
+    /* --- 2. PHYSICS LAYERS --- */
+    #physics-wrapper {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 1; /* 背景レイヤー */
+    }
+    #physics-container { 
+        width: 100%; 
+        height: 100%; 
+        position: relative;
+        z-index: 1;
+        pointer-events: none; /* クリックイベントを無効化 */
+    }
+
+    /* --- UTILS --- */
+    .noise-overlay {
+        position: absolute; inset: 0; 
+        background: url('https://grainy-gradients.vercel.app/noise.svg'); 
+        opacity: 0.15; mix-blend-mode: overlay; pointer-events: none;
+    }
+</style>
+
+<script>
+    if (typeof window !== 'undefined') {
+        // Initialize immediately when scripts are available
+        const initAll = () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+            if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && typeof ScrollToPlugin !== 'undefined') {
+                gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+                /* ------------------------------------------------
+                   0. SMOOTH SCROLL (LENIS)
+                   ------------------------------------------------ */
+                if (typeof Lenis !== 'undefined') {
+                    const lenis = new Lenis({
+                        duration: 1.2,
+                        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                        smooth: true,
+                    });
+                    
+                    // スクロールメーターを更新
+                    const updateScrollMeter = () => {
+                        const scrollValue = document.getElementById('scroll-value');
+                        if (scrollValue) {
+                            scrollValue.textContent = Math.round(window.scrollY || window.pageYOffset || 0);
+                        }
+                    };
+                    
+                    function raf(time) {
+                        lenis.raf(time);
+                        updateScrollMeter();
+                        requestAnimationFrame(raf);
+                    }
+                    requestAnimationFrame(raf);
+
+                    /* ------------------------------------------------
+                       1. FLOOR GUIDE (Fixed Logic)
+                       ------------------------------------------------ */
+                    // Use ScrollTrigger to update active class accurately even with pinning
+                    const navLinks = document.querySelectorAll('.floor-link');
+                    
+                    navLinks.forEach(link => {
+                        const targetId = link.getAttribute('data-target');
+                        if(targetId) {
+                            ScrollTrigger.create({
+                                trigger: targetId,
+                                start: "top center",
+                                end: "bottom center",
+                                onToggle: self => {
+                                    if(self.isActive) {
+                                        navLinks.forEach(l => l.classList.remove('active'));
+                                        link.classList.add('active');
+                                    }
+                                }
+                            });
+                        }
+                        
+                        // Click scroll
+                        link.addEventListener('click', (e) => {
+                            const target = document.querySelector(targetId);
+                            lenis.scrollTo(target);
+                        });
+                    });
+                }
+
+                /* ------------------------------------------------
+                   2. INTRO & GATE ANIMATION
+                   ------------------------------------------------ */
+                const startIntro = () => {
+                    const tl = gsap.timeline();
+                    tl.to("#intro-logo", { opacity: 1, scale: 1, duration: 1, ease: "power2.out", delay: 0.5 })
+                      .to("#intro-logo", { scale: 1.05, duration: 1.5 })
+                      .to("#intro-logo", { opacity: 0, scale: 1.2, duration: 0.5 }, "-=0.2")
+                      .to("#intro-overlay", { opacity: 0, duration: 1, pointerEvents: 'none' });
+                };
+                window.addEventListener('load', startIntro);
+
+                const gateTl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: ".hero-gate-container",
+                        start: "top top",
+                        end: "+=100%",
+                        scrub: 1,
+                        pin: true,
+                        onStart: () => {
+                            // ゲートアニメーション開始時に物理演算を開始
+                            if (!window.physicsStarted) {
+                                window.physicsStarted = true;
+                                console.log('Gate animation started, initializing physics...');
+                                initPhysics();
+                            }
+                        },
+                        onUpdate: (self) => {
+                            // デバッグ用：進捗を確認
+                            if (self.progress > 0 && self.progress < 0.2 && !window.physicsStarted) {
+                                window.physicsStarted = true;
+                                console.log('Fallback: initializing physics on update');
+                                initPhysics();
+                            }
+                            // ゲートが開いたらブロックをゲートより上に表示
+                            if (self.progress > 0.1) {
+                                const physicsContainer = document.getElementById('physics-container');
+                                if (physicsContainer) {
+                                    physicsContainer.style.zIndex = '55';
+                                }
+                            }
+                        },
+                        onLeaveBack: () => {
+                            // ゲートが閉じたらブロックをゲートより下に戻す（ただし表示は維持）
+                            const physicsContainer = document.getElementById('physics-container');
+                            if (physicsContainer) {
+                                physicsContainer.style.zIndex = '1';
+                            }
+                        }
+                    }
+                });
+                gateTl.to(".gate-left", { xPercent: -100, ease: "none" }, "open")
+                      .to(".gate-right", { xPercent: 100, ease: "none" }, "open")
+                      .to(".gate-content", { y: -200, opacity: 0, ease: "none" }, "open");
+
+                /* ------------------------------------------------
+                   3. BACKGROUND PHYSICS (Floor 1)
+                   ------------------------------------------------ */
+                const initPhysics = () => {
+                    if (typeof Matter === 'undefined') {
+                        console.log('Matter.js is not loaded');
+                        return;
+                    }
+                    
+                    const container = document.getElementById('physics-container');
+                    if(!container) {
+                        console.log('physics-container not found');
+                        return;
+                    }
+                    
+                    // 既に初期化済みの場合は再初期化しない（ブロックを常に表示）
+                    if(window.physicsEngine) {
+                        console.log('Physics already initialized');
+                        return;
+                    }
+                    
+                    console.log('Initializing physics...');
+
+                    const Engine = Matter.Engine,
+                          Render = Matter.Render,
+                          World = Matter.World,
+                          Bodies = Matter.Bodies,
+                          Runner = Matter.Runner;
+
+                    const engine = Engine.create();
+                    window.physicsEngine = engine; // グローバルに保存
+                    
+                    const render = Render.create({
+                        element: container,
+                        engine: engine,
+                        options: {
+                            width: window.innerWidth,
+                            height: window.innerHeight,
+                            background: 'transparent',
+                            wireframes: false
+                        }
+                    });
+
+                    // 画面の下に地面を設定（画面内に表示されるように）
+                    // Matter.jsの座標系では、Y=0が画面上部、Y=window.innerHeightが画面下部
+                    const groundY = window.innerHeight + 100; // 画面の下から100px下に地面を設定
+                    const ground = Bodies.rectangle(window.innerWidth/2, groundY, window.innerWidth, 200, { isStatic: true, render: { visible: false } });
+                    const leftWall = Bodies.rectangle(-50, window.innerHeight/2, 100, window.innerHeight*2, { isStatic: true, render: { visible: false } });
+                    const rightWall = Bodies.rectangle(window.innerWidth + 50, window.innerHeight/2, 100, window.innerHeight*2, { isStatic: true, render: { visible: false } });
+
+                    // 扉が開いたら上からブロックが落ちてくるように設定（30個に戻す）
+                    const blocks = Array.from({ length: 30 }).map((_, i) => {
+                        const x = Math.random() * (window.innerWidth - 200) + 100;
+                        const y = -Math.random() * 1000 - 100; // 画面上部から落ちてくる（範囲を狭める） 
+                        return Bodies.rectangle(x, y, 160 + Math.random()*40, 100 + Math.random()*20, {
+                            chamfer: { radius: 12 },
+                            restitution: 0.6,
+                            render: {
+                                fillStyle: 'transparent', // 中は抜く
+                                strokeStyle: i % 2 === 0 ? '#ff4d00' : '#ffffff',
+                                lineWidth: 4
+                            }
+                        });
+                    });
+
+                    World.add(engine.world, [ground, leftWall, rightWall, ...blocks]);
+                    
+                    // Runnerを作成して実行
+                    const runner = Runner.create();
+                    Runner.run(runner, engine);
+                    Render.run(render);
+                    
+                    // デバッグ用：ブロックが作成されたことを確認
+                    console.log('Physics initialized:', {
+                        blocks: blocks.length,
+                        groundY: groundY,
+                        container: container.id
+                    });
+                };
+            }
+        };
+
+        // Initialize when DOM is ready (not waiting for all resources)
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAll);
+        } else {
+            // DOM is already ready, initialize immediately
+            initAll();
+        }
+    }
+</script>
