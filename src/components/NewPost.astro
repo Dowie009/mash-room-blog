@@ -157,8 +157,10 @@
                         trigger: newPostSection,
                         pin: true,
                         start: "top top",
-                        end: "+=150%", // Extend scroll distance for dealing cards
-                        scrub: 1, // Directly linked to scroll position
+                        end: "+=60%", // さらに20%短縮（80% → 60%）
+                        scrub: 0.8, // さらに早く反応（1.2 → 0.8）
+                        anticipatePin: 1, // ピン留めを予測
+                        invalidateOnRefresh: true, // リフレッシュ時に再計算
                         onUpdate: self => {
                             // Update Energy Fill
                             if (energyFill) {
@@ -174,7 +176,7 @@
                     console.log('No cards found');
                     return;
                 }
-                
+
                 cards.forEach(card => {
                     // Start from bottom off-screen with rotation
                     gsap.set(card, { y: window.innerHeight, rotation: Math.random() * 30 - 15, opacity: 0 });

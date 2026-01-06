@@ -1,104 +1,113 @@
-# SAPPORO MASH ROOM STUDIO (Blog Archive)
+# MASHROOM BLOG
 
-物語（Story）とテック（Tech）の融合。夕暮れ（Magic Hour）のトーンで紡ぐブログアーカイブ。
+札幌のクリエイティブスタジオ「MASHROOM」のブログサイト
 
-## 🚀 技術スタック
+---
 
-- **Astro v5**: 静的サイトジェネレーター
-- **React 18**: UIコンポーネント（Islands Architecture）
-- **TypeScript**: 型安全性
-- **Tailwind CSS**: スタイリング
-- **View Transitions**: スムーズなページ遷移
-
-## 📁 プロジェクト構造
-
-```
-/
-├── public/
-│   └── images/          # 画像アセット
-├── src/
-│   ├── components/      # Reactコンポーネント
-│   │   ├── App.tsx      # メインアプリケーション
-│   │   ├── LandingPage.tsx
-│   │   ├── StoryLayout.tsx
-│   │   ├── TechLayout.tsx
-│   │   ├── Reader.tsx
-│   │   └── AudioPlayer.tsx
-│   ├── data/
-│   │   └── posts.ts     # 記事データ（画像パス修正済み）
-│   ├── layouts/
-│   │   └── Layout.astro  # サイト全体のレイアウト
-│   ├── pages/
-│   │   └── index.astro  # エントリーポイント
-│   └── styles/
-│       └── global.css   # グローバルスタイル
-├── astro.config.mjs
-├── tailwind.config.mjs
-└── package.json
-```
-
-## 🛠️ セットアップ
-
-### 1. 依存関係のインストール
+## 🚀 クイックスタート
 
 ```bash
-npm install
+# 開発サーバー起動
+npm run dev
+
+# http://localhost:4321 でアクセス
 ```
 
-### 2. 開発サーバーの起動
+---
+
+## ✏️ コンテンツを編集する（簡単3ステップ）
+
+### 1. テキストを変更する
 
 ```bash
+# CONTENT.md を開いて編集
+# ↓
+# 保存したら以下を実行
+npm run update-content
+
+# ↓
+# 開発サーバーで確認
 npm run dev
 ```
 
-ブラウザで `http://localhost:4321` を開いてください。
+### 2. 画像を差し替える
 
-### 3. ビルド
+1. 新しい画像を `/public/images/` フォルダに配置
+2. `CONTENT.md` でファイル名を指定
+3. `npm run update-content` を実行
 
-```bash
-npm run build
+**詳細は → `docs/IMAGE_GUIDE.md`**
+
+---
+
+## 📁 プロジェクト構成
+
+```
+mash-room-blog/
+├── CONTENT.md               ⭐️ ここでテキストを編集！
+├── public/images/           🖼️ 画像はここに配置
+├── src/
+│   ├── components/          Astroコンポーネント
+│   ├── data/content.json    自動生成（手動編集不要）
+│   └── pages/               ページファイル
+├── docs/                    📚 マニュアル
+│   └── IMAGE_GUIDE.md       画像管理ガイド
+├── scripts/                 自動化スクリプト
+│   └── update-content.js    CONTENT.md → JSON変換
+└── History/                 過去のドキュメント
 ```
 
-## ✨ 主な機能
+---
 
-### Story Mode（物語モード）
-- 縦書き/横書きの切り替え
-- 読書体験の最適化
-- 音楽プレイヤー統合
+## 🎮 コマンド一覧
 
-### Tech Mode（テックモード）
-- カード型UI
-- AI活用術とDTM機材の記事
-- モーダルリーダー
+| コマンド | 説明 |
+|---------|------|
+| `npm run dev` | 開発サーバー起動 (http://localhost:4321) |
+| `npm run build` | 本番ビルド |
+| `npm run preview` | ビルドのプレビュー |
+| `npm run update-content` | CONTENT.mdの変更を反映 |
 
-### View Transitions
-- ページ遷移時のスムーズなアニメーション
-- 音楽プレイヤーの永続化（`transition:persist`）
+---
 
-## 🔥 Firebase 統合（準備中）
+## 🔧 技術スタック
 
-しおり機能のためにFirebase SDKを組み込む準備が整っています。
+- **Framework**: Astro 5.0
+- **UI**: React 18 + Tailwind CSS
+- **Animation**: GSAP (ScrollTrigger) + Lenis
+- **Physics**: Matter.js
+- **Icons**: Lucide React
 
-1. `.env.example` を `.env` にコピー
-2. Firebase設定値を入力
-3. `src/lib/firebase.ts` を作成してFirebaseを初期化
+---
 
-## 📝 画像パスについて
+## 📚 ドキュメント
 
-記事データ内の画像パスは以下のように変換されています：
+| ファイル | 内容 |
+|---------|------|
+| `CONTENT.md` | ⭐️ メインの編集ファイル |
+| `docs/IMAGE_GUIDE.md` | 画像管理マニュアル |
+| `History/` | 過去のメモ・開発ガイド |
 
-- **変更前**: `http://xn--3-sj5c.jp/blog/wp-content/uploads/2025/12/ファイル名.png`
-- **変更後**: `/images/ファイル名.png`
+---
 
-画像は `public/images/` フォルダに配置してください。
+## ❓ トラブルシューティング
 
-## 🎨 デザインコンセプト
+### 変更が反映されない
 
-- **カラーパレット**: 夕暮れ（Magic Hour）のトーン
-- **フォント**: 
-  - 物語: Shippori Mincho（明朝体）
-  - テック: Zen Kaku Gothic New（ゴシック体）
+```bash
+# 1. コンテンツを更新
+npm run update-content
 
-## 📄 ライセンス
+# 2. 開発サーバーを再起動
+# Ctrl+C で停止 → npm run dev で再起動
+```
 
-© 2025 SAPPORO MASH ROOM STUDIO
+### 画像が表示されない
+
+- パスは `/images/ファイル名.png` の形式で指定
+- `public/images/` フォルダに画像があるか確認
+
+---
+
+**最終更新**: 2026-01-06
+**バージョン**: 1.0.0

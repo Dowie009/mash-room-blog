@@ -1,0 +1,78 @@
+{
+  "hero": {
+    "subtitle": "SAPPORO MASHROOM STUDIO",
+    "title": ["物語と", "技術の", "交差点"],
+    "scrollText": "SCROLL TO OPEN GATE"
+  },
+  "floor1": {
+    "floorNumber": "FLOOR 1",
+    "title": ["重力と", "遊ぶ"],
+    "description": [
+      "扉が開くと、",
+      "ガラスの向こうでアイデアが降り注ぐ。",
+      "(今、裏でブロックが落ちてます！)"
+    ],
+    "scrollText": "SCROLL DOWN TO DIVE →"
+  },
+  "chapters": [
+    {
+      "id": "story",
+      "number": "CHAPTER 01",
+      "title": ["物語の", "積み重ね"],
+      "description": [
+        "ブログは地層のように。",
+        "玄関の壁を撤去し、",
+        "新しい風を通す。"
+      ],
+      "image": "/images/Blog_00.png",
+      "buttonText": "READ STORIES"
+    },
+    {
+      "id": "gear",
+      "number": "CHAPTER 02",
+      "title": ["没入する", "機材たち"],
+      "description": [
+        "37.5インチの湾曲。",
+        "視界を覆う情報の海。"
+      ],
+      "image": "/images/カテゴリサムネ　ノケ物語.png",
+      "buttonText": "CHECK GEARS"
+    },
+    {
+      "id": "tech",
+      "number": "CHAPTER 03",
+      "title": ["技術と", "その先へ"],
+      "description": [
+        "人工知能と共創する。",
+        "コードは詩になる。"
+      ],
+      "image": "/images/ノケ物語イラスト.png",
+      "buttonText": "EXPLORE LAB"
+    }
+  ],
+  "newPost": {
+    "title": "NEW_POST",
+    "titleJa": "新着記事",
+    "subtitle": "LATEST UPDATES",
+    "posts": [
+      {
+        "category": "DIY",
+        "image": "/images/Blog_00.png",
+        "date": "2025.12.01",
+        "title": "玄関の壁を撤去してZONE Aと繋げた話"
+      },
+      {
+        "category": "GEAR",
+        "image": "/images/カテゴリサムネ　ノケ物語.png",
+        "date": "2025.11.28",
+        "title": "37.5型湾曲モニター導入で見えた世界"
+      },
+      {
+        "category": "BIZ",
+        "image": "/images/ノケ物語イラスト.png",
+        "date": "2025.11.15",
+        "title": "補助金と新人発掘とスタジオ経営"
+      }
+    ]
+  }
+}

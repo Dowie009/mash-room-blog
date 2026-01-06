@@ -27,7 +27,7 @@
 <!-- HEADER & GUIDE -->
 <header class="fixed top-0 w-full p-8 flex justify-between items-start z-[100] mix-blend-difference text-white pointer-events-none">
     <div class="pointer-events-auto">
-        <img src="/images/MASHROOM_Logo.png" alt="MASHROOM STUDIO" class="h-12 w-auto">
+        <img src="/images/MASHROOM_Logo.png" alt="MASHROOM STUDIO" class="h-12 w-auto" style="transform: scale(2.5); transform-origin: top left;">
     </div>
     <div class="pointer-events-auto text-right font-mono tracking-widest">
         <div class="border border-white/50 rounded-full px-5 py-2 mb-3 bg-black/20 backdrop-blur text-sm">
@@ -35,7 +35,14 @@
         </div>
         <nav class="flex flex-col gap-2 opacity-90">
             <a data-target="#hero-section" class="floor-link">GATE: HERO</a>
-            <a data-target="#horizontal-wrapper" class="floor-link">1F: READING</a>
+            <div class="floor-group">
+                <a data-target="#horizontal-wrapper" class="floor-link">1F: READING</a>
+                <div class="floor-submenu">
+                    <a data-scroll="3565" class="chapter-link">├─ Chapter01.</a>
+                    <a data-scroll="7000" class="chapter-link">├─ Chapter02.</a>
+                    <a data-scroll="9962" class="chapter-link">└─ Chapter03.</a>
+                </div>
+            </div>
             <a data-target="#new-post-section" class="floor-link">2F: NEW POST</a>
             <a data-target="#footer-physics-wrapper" class="floor-link">3F: DEPART</a>
         </nav>
@@ -59,7 +66,7 @@
         </div>
     </div>
     <div class="gate-content">
-        <p class="font-mono text-sm tracking-[1em] mb-8 text-white/70">SAPPORO STUDIO</p>
+        <p class="font-mono text-sm tracking-[1em] mb-8 text-white/70">SAPPORO MASHROOM STUDIO</p>
         <h2 class="font-mincho text-[10vw] leading-[0.9] font-black text-white mix-blend-overlay">
             物語と<br>技術の<br>交差点
         </h2>
@@ -91,24 +98,32 @@
     .gate-panel {
         position: absolute; top: 0; width: 50%; height: 100%; background: #000; z-index: 10;
         display: flex; align-items: center; overflow: hidden;
+        will-change: transform; /* ハードウェアアクセラレーション */
+        transform: translateZ(0); /* GPU最適化 */
     }
     .gate-left { left: 0; justify-content: flex-end; }
     .gate-right { right: 0; justify-content: flex-start; }
     .gate-content {
         position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
         z-index: 20; text-align: center; width: 100%; pointer-events: none;
+        will-change: transform, opacity; /* ハードウェアアクセラレーション */
+        transform: translate(-50%, -50%) translateZ(0); /* GPU最適化 */
     }
 
     /* --- 2. PHYSICS LAYERS --- */
     #physics-wrapper {
-        position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 1; /* 背景レイヤー */
+        position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 45; /* ゲートより下、背景より上 */
+        will-change: transform; /* ハードウェアアクセラレーション */
+        transform: translateZ(0); /* GPU最適化 */
     }
-    #physics-container { 
-        width: 100%; 
-        height: 100%; 
+    #physics-container {
+        width: 100%;
+        height: 100%;
         position: relative;
-        z-index: 1;
+        z-index: 55; /* ゲート（z-index: 50）より上にブロックを表示 */
         pointer-events: none; /* クリックイベントを無効化 */
+        will-change: transform; /* ハードウェアアクセラレーション */
+        transform: translateZ(0); /* GPU最適化 */
     }
 
     /* --- UTILS --- */
@@ -134,9 +149,14 @@
                    ------------------------------------------------ */
                 if (typeof Lenis !== 'undefined') {
                     const lenis = new Lenis({
-                        duration: 1.2,
-                        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                        duration: 1.5, // 1.2 → 1.5 より滑らかに
+                        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // バターのようなイージング
                         smooth: true,
+                        lerp: 0.08, // 0.1がデフォルト、0.08でより吸い付く感じ（低いほど滑らか）
+                        smoothTouch: true, // タッチデバイスでもスムーズ
+                        touchMultiplier: 1.5, // タッチ感度（デフォルト2.0、少し抑える）
+                        wheelMultiplier: 0.8, // ホイール感度（デフォルト1.0、少し抑えて滑らかに）
+                        infinite: false, // 無限スクロールOFF（ページの端で止まる）
                     });
                     
                     // スクロールメーターを更新
@@ -147,40 +167,175 @@
                         }
                     };
                     
+                    // スクロール時のブロック揺れ用の変数
+                    let lastScrollY = 0;
+                    
+                    // スクロール位置に応じて地面の位置を調整
+                    const updateGroundPosition = () => {
+                        if (!window.physicsGround || !window.physicsBlocks) return;
+                        if (typeof Matter === 'undefined' || !Matter.Body) return;
+                        
+                        const scrollY = window.scrollY || window.pageYOffset || 0;
+                        const heroSection = document.querySelector('.hero-gate-container');
+                        const horizontalWrapper = document.querySelector('.horizontal-wrapper');
+                        
+                        if (!heroSection || !horizontalWrapper) return;
+                        
+                        const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
+                        const horizontalTop = horizontalWrapper.offsetTop;
+                        
+                        // 保存されたオフセットを使用（-700など、ユーザーが設定した値）
+                        const groundYOffset = window.physicsGroundYOffset !== undefined ? window.physicsGroundYOffset : 100;
+                        
+                        // 地面の位置は常に画面の一番下を基準に、groundYOffsetを適用（固定位置）
+                        // スクロール位置に関係なく、画面の一番下からの距離で地面を配置
+                        const fixedGroundY = window.innerHeight + groundYOffset;
+                        
+                        Matter.Body.setPosition(window.physicsGround, {
+                            x: window.innerWidth / 2,
+                            y: fixedGroundY
+                        });
+                        window.physicsGroundY = fixedGroundY;
+                    };
+                    
+                    const applyScrollShake = () => {
+                        if (!window.physicsBlocks || window.physicsBlocks.length === 0) return;
+                        if (typeof Matter === 'undefined' || !Matter.Body) return;
+                        
+                        const currentScrollY = window.scrollY || window.pageYOffset || 0;
+                        const scrollDelta = Math.abs(currentScrollY - lastScrollY);
+                        
+                        if (scrollDelta > 0.5) {
+                            // スクロール時にブロックに小さな力を加えて揺らす
+                            window.physicsBlocks.forEach((block) => {
+                                if (!block || !block.position) return;
+                                
+                                const blockY = block.position.y;
+                                // ブロックが地面付近にいる場合のみ揺らす
+                                if (blockY >= (window.physicsGroundY || 0) - 150) {
+                                    const shakeForce = scrollDelta * 0.008; // スクロール量に応じた力
+                                    const randomX = (Math.random() - 0.5) * shakeForce;
+                                    const randomY = (Math.random() - 0.5) * shakeForce * 0.3; // 縦方向は弱め
+                                    
+                                    Matter.Body.applyForce(block, block.position, {
+                                        x: randomX,
+                                        y: randomY
+                                    });
+                                }
+                            });
+                        }
+                        
+                        lastScrollY = currentScrollY;
+                    };
+                    
+                    // LenisとScrollTriggerを連携させる（チカつき防止）
+                    lenis.on('scroll', ScrollTrigger.update);
+
+                    // GSAPのtickerを使用してスムーズに同期
+                    gsap.ticker.add((time) => {
+                        lenis.raf(time * 1000); // GSAPのtickerはsecond単位なのでms変換
+                    });
+
+                    // GSAPのtickerのラグを無効化（よりスムーズに）
+                    gsap.ticker.lagSmoothing(0);
+
                     function raf(time) {
-                        lenis.raf(time);
                         updateScrollMeter();
+                        updateGroundPosition(); // スクロール位置に応じて地面の位置を更新
+                        applyScrollShake(); // スクロール時のブロック揺れ
                         requestAnimationFrame(raf);
                     }
                     requestAnimationFrame(raf);
 
                     /* ------------------------------------------------
-                       1. FLOOR GUIDE (Fixed Logic)
+                       1. FLOOR GUIDE (Fixed Logic - スクロール位置ベース)
                        ------------------------------------------------ */
-                    // Use ScrollTrigger to update active class accurately even with pinning
                     const navLinks = document.querySelectorAll('.floor-link');
+                    const chapterLinks = document.querySelectorAll('.chapter-link');
+                    const gateLink = document.querySelector('[data-target="#hero-section"]');
+                    const floor1Link = document.querySelector('[data-target="#horizontal-wrapper"]');
+                    const floor2Link = document.querySelector('[data-target="#new-post-section"]');
+                    const floor3Link = document.querySelector('[data-target="#footer-physics-wrapper"]');
                     
+                    // スクロール位置に応じてアクティブなフロアを更新
+                    const updateActiveFloor = () => {
+                        const scrollY = window.scrollY || window.pageYOffset || 0;
+                        
+                        // すべてのリンクからactiveクラスを削除
+                        navLinks.forEach(l => l.classList.remove('active'));
+                        chapterLinks.forEach(l => l.classList.remove('active'));
+                        
+                        // スクロール位置に応じてアクティブなフロアを設定
+                        if (scrollY >= 15000) {
+                            // 3F: DEPART
+                            if (floor3Link) floor3Link.classList.add('active');
+                        } else if (scrollY >= 12700) {
+                            // 2F: NEW POST
+                            if (floor2Link) floor2Link.classList.add('active');
+                        } else if (scrollY >= 2076) {
+                            // 1F: READING
+                            if (floor1Link) floor1Link.classList.add('active');
+                            
+                            // Chapter判定（1F内での詳細位置）
+                            if (scrollY >= 9962) {
+                                // Chapter03
+                                const chapter3 = document.querySelector('[data-scroll="9962"]');
+                                if (chapter3) chapter3.classList.add('active');
+                            } else if (scrollY >= 7000) {
+                                // Chapter02
+                                const chapter2 = document.querySelector('[data-scroll="7000"]');
+                                if (chapter2) chapter2.classList.add('active');
+                            } else if (scrollY >= 3565) {
+                                // Chapter01
+                                const chapter1 = document.querySelector('[data-scroll="3565"]');
+                                if (chapter1) chapter1.classList.add('active');
+                            }
+                        } else {
+                            // GATE: HERO
+                            if (gateLink) gateLink.classList.add('active');
+                        }
+                    };
+                    
+                    // スクロール時にアクティブなフロアを更新
+                    if (typeof Lenis !== 'undefined') {
+                        // Lenisのraf内で実行
+                        const originalRaf = window.requestAnimationFrame;
+                        let rafId;
+                        const floorUpdateRaf = () => {
+                            updateActiveFloor();
+                            rafId = originalRaf(floorUpdateRaf);
+                        };
+                        rafId = originalRaf(floorUpdateRaf);
+                    } else {
+                        window.addEventListener('scroll', updateActiveFloor, { passive: true });
+                    }
+                    
+                    // 初期状態を設定
+                    updateActiveFloor();
+                    
+                    // Click scroll (フロアリンク)
                     navLinks.forEach(link => {
                         const targetId = link.getAttribute('data-target');
                         if(targetId) {
-                            ScrollTrigger.create({
-                                trigger: targetId,
-                                start: "top center",
-                                end: "bottom center",
-                                onToggle: self => {
-                                    if(self.isActive) {
-                                        navLinks.forEach(l => l.classList.remove('active'));
-                                        link.classList.add('active');
-                                    }
+                            link.addEventListener('click', (e) => {
+                                const target = document.querySelector(targetId);
+                                if (target && lenis) {
+                                    lenis.scrollTo(target);
                                 }
                             });
                         }
-                        
-                        // Click scroll
-                        link.addEventListener('click', (e) => {
-                            const target = document.querySelector(targetId);
-                            lenis.scrollTo(target);
-                        });
+                    });
+                    
+                    // Click scroll (Chapterリンク)
+                    chapterLinks.forEach(link => {
+                        const scrollValue = link.getAttribute('data-scroll');
+                        if(scrollValue) {
+                            link.addEventListener('click', (e) => {
+                                if (lenis) {
+                                    lenis.scrollTo(parseInt(scrollValue), { duration: 1.5 });
+                                }
+                            });
+                        }
                     });
                 }
 
@@ -188,7 +343,12 @@
                    2. INTRO & GATE ANIMATION
                    ------------------------------------------------ */
                 const startIntro = () => {
-                    const tl = gsap.timeline();
+                    const tl = gsap.timeline({
+                        onComplete: () => {
+                            // 元のgemini-html.htmlと同じ：イントロ完了後に物理演算を開始
+                            initPhysics();
+                        }
+                    });
                     tl.to("#intro-logo", { opacity: 1, scale: 1, duration: 1, ease: "power2.out", delay: 0.5 })
                       .to("#intro-logo", { scale: 1.05, duration: 1.5 })
                       .to("#intro-logo", { opacity: 0, scale: 1.2, duration: 0.5 }, "-=0.2")
@@ -201,37 +361,13 @@
                         trigger: ".hero-gate-container",
                         start: "top top",
                         end: "+=100%",
-                        scrub: 1,
+                        scrub: 1.5, // 1 → 1.5 よりスムーズに（数値が大きいほど遅延が増えて滑らか）
                         pin: true,
+                        anticipatePin: 1, // ピン留めを予測して滑らかに
+                        invalidateOnRefresh: true, // リフレッシュ時に再計算
                         onStart: () => {
-                            // ゲートアニメーション開始時に物理演算を開始
-                            if (!window.physicsStarted) {
-                                window.physicsStarted = true;
-                                console.log('Gate animation started, initializing physics...');
-                                initPhysics();
-                            }
-                        },
-                        onUpdate: (self) => {
-                            // デバッグ用：進捗を確認
-                            if (self.progress > 0 && self.progress < 0.2 && !window.physicsStarted) {
-                                window.physicsStarted = true;
-                                console.log('Fallback: initializing physics on update');
-                                initPhysics();
-                            }
-                            // ゲートが開いたらブロックをゲートより上に表示
-                            if (self.progress > 0.1) {
-                                const physicsContainer = document.getElementById('physics-container');
-                                if (physicsContainer) {
-                                    physicsContainer.style.zIndex = '55';
-                                }
-                            }
-                        },
-                        onLeaveBack: () => {
-                            // ゲートが閉じたらブロックをゲートより下に戻す（ただし表示は維持）
-                            const physicsContainer = document.getElementById('physics-container');
-                            if (physicsContainer) {
-                                physicsContainer.style.zIndex = '1';
-                            }
+                            // ゲートが開き始めたときに物理演算を開始
+                            initPhysics();
                         }
                     }
                 });
@@ -243,24 +379,9 @@
                    3. BACKGROUND PHYSICS (Floor 1)
                    ------------------------------------------------ */
                 const initPhysics = () => {
-                    if (typeof Matter === 'undefined') {
-                        console.log('Matter.js is not loaded');
-                        return;
-                    }
-                    
                     const container = document.getElementById('physics-container');
-                    if(!container) {
-                        console.log('physics-container not found');
-                        return;
-                    }
-                    
-                    // 既に初期化済みの場合は再初期化しない（ブロックを常に表示）
-                    if(window.physicsEngine) {
-                        console.log('Physics already initialized');
-                        return;
-                    }
-                    
-                    console.log('Initializing physics...');
+                    // 元のgemini-html.htmlと同じ：コンテナに既に子要素がある場合は再初期化しない
+                    if(container.childNodes.length > 0) return;
 
                     const Engine = Matter.Engine,
                           Render = Matter.Render,
@@ -269,6 +390,9 @@
                           Runner = Matter.Runner;
 
                     const engine = Engine.create();
+                    // 地球バージョン：重力を強くして、ブロックがジャラーンと落ちる
+                    engine.world.gravity.y = 1.0; // デフォルトの重力（地球の重力）
+                    engine.world.gravity.scale = 0.001; // 通常スケール
                     window.physicsEngine = engine; // グローバルに保存
                     
                     const render = Render.create({
@@ -282,41 +406,106 @@
                         }
                     });
 
-                    // 画面の下に地面を設定（画面内に表示されるように）
-                    // Matter.jsの座標系では、Y=0が画面上部、Y=window.innerHeightが画面下部
-                    const groundY = window.innerHeight + 100; // 画面の下から100px下に地面を設定
-                    const ground = Bodies.rectangle(window.innerWidth/2, groundY, window.innerWidth, 200, { isStatic: true, render: { visible: false } });
+                    // 地面の位置を設定可能にする（画面の一番下を指定）
+                    // ここで地面のY位置を指定できます（画面の高さに対する相対位置）
+                    // 例：window.innerHeight + 100 = 画面の下から100px下
+                    // 例：window.innerHeight - 50 = 画面の下から50px上
+                    const groundYOffset = 80 // この値を変更して地面の位置を調整（画面の下からの距離）
+                    const groundY = window.innerHeight + groundYOffset;
+                    
+                    // 最初の地面（Heroセクションの地面）
+                    const ground = Bodies.rectangle(window.innerWidth/2, groundY, window.innerWidth, 200, { 
+                        isStatic: true, 
+                        render: { visible: false },
+                        friction: 0.8, // 摩擦を追加してブロックが滑らないように
+                        frictionAir: 0.01 // 空気抵抗を追加
+                    });
                     const leftWall = Bodies.rectangle(-50, window.innerHeight/2, 100, window.innerHeight*2, { isStatic: true, render: { visible: false } });
                     const rightWall = Bodies.rectangle(window.innerWidth + 50, window.innerHeight/2, 100, window.innerHeight*2, { isStatic: true, render: { visible: false } });
 
-                    // 扉が開いたら上からブロックが落ちてくるように設定（30個に戻す）
                     const blocks = Array.from({ length: 30 }).map((_, i) => {
                         const x = Math.random() * (window.innerWidth - 200) + 100;
-                        const y = -Math.random() * 1000 - 100; // 画面上部から落ちてくる（範囲を狭める） 
+                        const y = -Math.random() * 2000 - 200;
                         return Bodies.rectangle(x, y, 160 + Math.random()*40, 100 + Math.random()*20, {
                             chamfer: { radius: 12 },
-                            restitution: 0.6,
+                            restitution: 0.4, // 適度な反発（バウンドしすぎない）
+                            density: 0.002, // 重いブロック（デフォルト0.001の2倍）
+                            friction: 0.3, // 適度な摩擦
+                            frictionAir: 0.01, // 空気抵抗少なめ（サクサク動く）
                             render: {
-                                fillStyle: 'transparent', // 中は抜く
+                                fillStyle: 'transparent',
                                 strokeStyle: i % 2 === 0 ? '#ff4d00' : '#ffffff',
-                                lineWidth: 4
+                                lineWidth: 3 // 少し細めの線
                             }
                         });
                     });
 
-                    World.add(engine.world, [ground, leftWall, rightWall, ...blocks]);
-                    
-                    // Runnerを作成して実行
+                    // 「重力と遊ぶ」カード用の物理ボディを作成
+                    const gravityCard = Bodies.rectangle(
+                        window.innerWidth / 2,  // 画面中央
+                        window.innerHeight + 500, // 画面外下から開始
+                        600,  // カードの幅
+                        400,  // カードの高さ
+                        {
+                            isStatic: true,
+                            render: {
+                                visible: false  // デバッグ時はtrueにすると物理ボディの位置が見える
+                            }
+                        }
+                    );
+
+                    World.add(engine.world, [ground, leftWall, rightWall, ...blocks, gravityCard]);
+
+                    // グローバル変数に保存
+                    if (typeof window !== 'undefined') {
+                        window.physicsBlocks = blocks;
+                        window.physicsGround = ground;
+                        window.physicsGroundY = groundY;
+                        window.physicsGroundYOffset = groundYOffset; // 地面のオフセットを保存（重要！）
+                        window.physicsGravityCard = gravityCard; // カードのボディを保存
+                        console.log('Ground position set:', {
+                            groundY: groundY,
+                            groundYOffset: groundYOffset,
+                            windowHeight: window.innerHeight,
+                            calculated: window.innerHeight + groundYOffset
+                        });
+                    }
+
                     const runner = Runner.create();
                     Runner.run(runner, engine);
                     Render.run(render);
-                    
-                    // デバッグ用：ブロックが作成されたことを確認
-                    console.log('Physics initialized:', {
-                        blocks: blocks.length,
-                        groundY: groundY,
-                        container: container.id
-                    });
+
+                    // カードの位置を追跡してMatter.jsボディを更新
+                    const updateCardPosition = () => {
+                        const cardElement = document.querySelector('.skeleton-text-box');
+                        if (cardElement && window.physicsGravityCard) {
+                            const rect = cardElement.getBoundingClientRect();
+                            // カードの画面上の位置（screen座標）
+                            const screenY = rect.top + rect.height / 2;
+                            const screenX = rect.left + rect.width / 2;
+
+                            // Matter.jsのボディの位置を更新
+                            Matter.Body.setPosition(window.physicsGravityCard, {
+                                x: screenX,
+                                y: screenY
+                            });
+                        }
+                    };
+
+                    // スクロールイベントでカードの位置を更新
+                    if (typeof Lenis !== 'undefined') {
+                        // Lenisを使用している場合はraf内で実行
+                        const originalRaf = window.requestAnimationFrame;
+                        let cardRafId;
+                        const cardUpdateRaf = () => {
+                            updateCardPosition();
+                            cardRafId = originalRaf(cardUpdateRaf);
+                        };
+                        cardRafId = originalRaf(cardUpdateRaf);
+                    } else {
+                        // Lenisがない場合は通常のscrollイベント
+                        window.addEventListener('scroll', updateCardPosition, { passive: true });
+                    }
                 };
             }
         };
