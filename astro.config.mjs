@@ -14,4 +14,14 @@ export default defineConfig({
   build: {
     assets: 'assets',
   },
+  vite: {
+    server: {
+      headers: {
+        // 開発環境でのキャッシュ無効化
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
+    },
+  },
 });

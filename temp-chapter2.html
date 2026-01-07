@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 2 - 一時ファイル（コピペ用）</title>
+</head>
+<body>
+    <!-- 
+        ============================================
+        チャプター2のHTMLをここにコピペしてください
+        ============================================
+        
+        ジェミニーで作成したHTML全体を、このコメントと
+        次のコメントの間にコピペしてください。
+        
+        コピペが完了したら、次のステップに進みます：
+        1. HTMLをAstro形式に変換
+        2. Layout.astroと統合
+        3. トップページからリンクを追加
+    -->
+    
+    <!-- ここにチャプター2のHTMLをコピペ -->
+    <!DOCTYPE html>
+    <html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>MASHROOM | GEAR LAB (BLUE)</title>
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://unpkg.com/lucide@latest"></script>
+        
+        <!-- LIBRARIES -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+        <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=Zen+Old+Mincho:wght@700;900&family=Space+Grotesk:wght@300;500;700;900&family=Noto+Sans+JP:wght@300;400;500;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    
+        <style>
+            :root {
+                /* AIページのクールな配色を継承 */
+                --bg-color: #f4f6f8; /* Cool Grey */
+                --card-bg: #ffffff;
+                --text-main: #0f172a;
+                --text-sub: #64748b;
+                --accent-color: #007aff; /* Electric Blue */
+                --line-color: #cbd5e1;
+            }
+    
+            body {
+                background-color: var(--bg-color);
+                color: var(--text-main);
+                font-family: 'Noto Sans JP', sans-serif;
+                overflow-x: hidden;
+                margin: 0;
+                padding: 0;
+                cursor: default;
+            }
+    
+            .font-mincho { font-family: 'Zen Old Mincho', serif; }
+            .font-tech { font-family: 'Space Grotesk', sans-serif; }
+            .font-code { font-family: 'Fira Code', monospace; }
+    
+            /* --- 1. VISUAL UTILS --- */
+            .noise {
+                position: fixed; inset: 0; z-index: 90; pointer-events: none;
+                background: url('https://grainy-gradients.vercel.app/noise.svg');
+                opacity: 0.03;
+            }
+            /* Digital Grid */
+            .bg-grid {
+                position: fixed; inset: 0; z-index: -1;
+                background-image: 
+                    linear-gradient(rgba(0,122,255,0.03) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(0,122,255,0.03) 1px, transparent 1px);
+                background-size: 30px 30px;
+            }
+    
+            /* --- 2. LOADER (TECH SCANNING) --- */
+            .loader-wrap {
+                position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+                z-index: 9999; background: #0f172a;
+                display: flex; justify-content: center; align-items: center;
+                color: white; pointer-events: none;
+            }
+            .loader-text { overflow: hidden; display: flex; gap: 0.5rem; }
+            .loader-char { display: inline-block; transform: translateY(100%); color: var(--accent-color); }
+    
+            /* --- 3. MORPHING NAV --- */
+            .nav-placeholder { min-height: 35vh; margin-bottom: 3rem; position: relative; z-index: 50; }
+            
+            .filter-nav {
+                z-index: 50; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+    
+            /* Top State */
+            .filter-nav.pos-top { width: 100%; padding: 2rem 0; background: transparent; }
+            
+            .nav-grid-layout {
+                display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem;
+                max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;
+            }
+            @media (min-width: 1024px) { .nav-grid-layout { grid-template-columns: repeat(5, 1fr); } }
+    
+            .nav-category-item {
+                display: flex; flex-direction: column; gap: 0.8rem;
+                border-left: 1px solid var(--line-color); padding-left: 1.5rem;
+            }
+            .nav-desc { font-size: 0.7rem; color: var(--text-sub); line-height: 1.6; }
+            
+            .sort-guide-area {
+                grid-column: 1 / -1; margin-top: 3rem; padding-top: 2rem;
+                border-top: 1px solid var(--line-color);
+                display: flex; justify-content: space-between; align-items: center;
+            }
+    
+            /* Side State */
+            .filter-nav.pos-side {
+                position: fixed; top: 0; left: 0; width: 70px; height: 100vh;
+                flex-direction: column; justify-content: center; padding: 2rem 0;
+                border-right: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.95);
+                gap: 1.5rem; align-items: center; box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+            }
+            .filter-nav.pos-side .nav-grid-layout { display: flex; flex-direction: column; gap: 1.5rem; width: 100%; align-items: center; }
+            .filter-nav.pos-side .nav-category-item { border: none; padding: 0; width: 100%; align-items: center; }
+            .filter-nav.pos-side .nav-desc, .filter-nav.pos-side .sort-guide-area { display: none; }
+    
+            /* Tech Button */
+            .tech-btn {
+                position: relative; background: transparent; color: var(--text-main);
+                font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1rem;
+                letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer;
+                transition: color 0.2s; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0;
+            }
+            .tech-btn:hover, .tech-btn.active { color: var(--accent-color); }
+            
+            /* Side Mode Button */
+            .filter-nav.pos-side .tech-btn {
+                flex-direction: column; gap: 0; padding: 0; width: 100%; height: 50px; justify-content: center;
+                font-size: 0.6rem; color: var(--text-sub);
+            }
+            .filter-nav.pos-side .tech-btn:hover, .filter-nav.pos-side .tech-btn.active {
+                color: var(--text-main); transform: translateX(5px);
+            }
+            .filter-nav.pos-side .tech-btn.active::before {
+                 content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+                 width: 3px; height: 20px; background: var(--accent-color);
+            }
+            
+            .btn-icon { display: none; }
+            .filter-nav.pos-side .btn-icon { display: block; width: 20px; height: 20px; margin-bottom: 4px; }
+            .btn-text { display: block; }
+            .filter-nav.pos-side .btn-text { display: none; }
+            
+            .filter-nav.pos-side .tech-btn:hover .btn-text {
+                display: block; position: absolute; left: 60px; background: #0f172a; color: #fff;
+                padding: 4px 8px; border-radius: 4px; opacity: 1; pointer-events: none; font-size: 0.7rem; z-index: 100;
+            }
+    
+            /* Controls */
+            .control-group {
+                display: flex; align-items: center; gap: 0.5rem;
+                background: #fff; border: 1px solid #ccc; padding: 0.4rem 0.8rem;
+                border-radius: 999px; transition: all 0.3s;
+            }
+            .control-select {
+                background: transparent; border: none; outline: none;
+                font-family: 'Space Grotesk', sans-serif; font-size: 0.75rem;
+                font-weight: bold; color: var(--text-main); cursor: pointer; text-transform: uppercase;
+            }
+    
+            /* --- 4. GRID & CARDS --- */
+            .grid-container {
+                display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem;
+                grid-auto-flow: dense; padding-bottom: 4rem;
+            }
+            .grid-container.list-mode { display: flex; flex-direction: column; gap: 0.5rem; }
+    
+            .lab-card {
+                position: relative; display: flex; flex-direction: column;
+                grid-column: span 12; cursor: pointer; opacity: 1;
+                background: var(--card-bg); border-radius: 6px; overflow: hidden;
+                transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+                border: 1px solid transparent;
+            }
+            .grid-container:not(.list-mode) .lab-card:hover {
+                transform: translateY(-5px); z-index: 10;
+                box-shadow: 0 10px 30px -10px rgba(0,122,255,0.15);
+                border-color: var(--accent-color);
+            }
+    
+            /* List Mode */
+            .grid-container.list-mode .lab-card {
+                flex-direction: row; align-items: center; padding: 0.5rem 1rem;
+                border-bottom: 1px solid #eee; background: transparent; height: auto !important;
+            }
+            .grid-container.list-mode .lab-card:hover { background: #fff; }
+            .grid-container.list-mode .card-img-wrap { display: none; }
+            .grid-container.list-mode .card-content { padding: 0; flex-direction: row; width: 100%; justify-content: space-between; align-items: center;}
+            .grid-container.list-mode .card-meta { margin: 0; width: 140px; border: none; flex-shrink: 0; }
+            .grid-container.list-mode .card-title { font-size: 0.9rem; margin: 0; }
+            .grid-container.list-mode .card-desc { display: none; }
+    
+            /* Sizes */
+            @media (min-width: 768px) {
+                .col-span-3 { grid-column: span 3; } .col-span-4 { grid-column: span 4; }
+                .col-span-6 { grid-column: span 6; } .col-span-8 { grid-column: span 8; }
+                .col-span-12 { grid-column: span 12; } .row-span-2 { grid-row: span 2; }
+            }
+    
+            .card-img-wrap { width: 100%; overflow: hidden; position: relative; background: #e2e8f0; }
+            .card-img {
+                width: 100%; height: 100%; object-fit: cover;
+                transition: transform 0.5s, filter 0.5s;
+                filter: grayscale(100%); transform: scale(1.0);
+            }
+            .lab-card:hover .card-img { filter: grayscale(0%); transform: scale(1.05); }
+    
+            .card-content { padding: 1.2rem; flex-grow: 1; display: flex; flex-direction: column; }
+            .card-meta {
+                font-family: 'Space Grotesk', sans-serif; font-size: 0.6rem; color: var(--text-sub);
+                margin-bottom: 0.5rem; display: flex; justify-content: space-between;
+                border-bottom: 1px solid #f1f5f9; padding-bottom: 0.3rem;
+            }
+            .card-title {
+                font-family: 'Zen Old Mincho', serif; font-size: 1.1rem; font-weight: 700; line-height: 1.4;
+                margin-bottom: 0.2rem; color: var(--text-main);
+            }
+            /* Code snippets for Tech vibe */
+            .code-snippet {
+                font-family: 'Fira Code', monospace; font-size: 0.6rem; color: var(--accent-color);
+                background: rgba(0,122,255,0.05); padding: 0.2rem 0.5rem; border-radius: 4px;
+                margin-top: auto; display: inline-block;
+            }
+    
+            /* --- 5. KINETIC TEXT LIST (KEYWORDS) --- */
+            .kinetic-list-wrap {
+                position: relative; border-top: 1px solid var(--line-color); border-bottom: 1px solid var(--line-color);
+                padding: 4rem 0; margin: 4rem 0; background: rgba(255,255,255,0.5);
+            }
+            .kinetic-item {
+                font-family: 'Space Grotesk', sans-serif; font-size: 2rem; line-height: 1.2; font-weight: 900;
+                color: transparent; -webkit-text-stroke: 1px var(--text-sub); cursor: pointer;
+                transition: all 0.3s ease-out; display: block; padding: 0.3rem 0; position: relative;
+            }
+            @media (min-width: 1024px) { .kinetic-item { font-size: 3rem; } }
+            .kinetic-item:hover { color: var(--text-main); -webkit-text-stroke: 0; transform: translateX(20px); z-index: 10; text-shadow: 2px 2px 0 var(--accent-color); }
+            
+            .kinetic-sub {
+                font-family: 'Noto Sans JP', sans-serif; font-size: 0.7rem; font-weight: normal; color: var(--text-sub);
+                margin-left: 1rem; opacity: 0; transition: all 0.3s; display: inline-block; vertical-align: middle;
+            }
+            .kinetic-item:hover .kinetic-sub { opacity: 1; }
+    
+            .kinetic-img-container {
+                width: 100%; height: 500px; display: flex; justify-content: center; align-items: center;
+                position: relative; overflow: hidden; border-radius: 4px; background: #e2e8f0; border: 1px solid var(--line-color);
+            }
+            #kinetic-target-img {
+                width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.2s, transform 0.4s;
+                transform: scale(1.1); filter: grayscale(100%);
+            }
+            #kinetic-target-img.active { opacity: 1; transform: scale(1); filter: grayscale(0%); }
+    
+            /* --- 6. PARTICLES CANVAS --- */
+            .network-canvas { width: 100%; height: 100%; position: absolute; inset: 0; z-index: -1; opacity: 0.5; }
+    
+            /* --- 7. AUTHOR PROFILE --- */
+            .profile-section {
+                background: #fff; padding: 4rem 2rem; margin-top: 4rem;
+                border-top: 1px solid #e2e8f0;
+            }
+        </style>
+    </head>
+    <body>
+    
+        <div class="noise"></div>
+        <div class="bg-grid"></div>
+    
+        <!-- LOADER -->
+        <div class="loader-wrap">
+            <div class="loader-text-container font-tech text-5xl font-bold gap-2">
+                <span class="loader-char">M</span><span class="loader-char">A</span><span class="loader-char">S</span><span class="loader-char">H</span>
+                <span class="loader-char" style="color: var(--accent-color)">.</span>
+                <span class="loader-char">R</span>
+                <span class="loader-char">O</span>
+                <span class="loader-char">O</span>
+                <span class="loader-char">M</span>
+            </div>
+        </div>
+    
+        <!-- HEADER -->
+        <header class="fixed top-0 w-full p-6 flex justify-between items-center z-[100] bg-white/90 backdrop-blur-md border-b border-gray-200 header-item opacity-0">
+            <div class="flex items-end gap-3">
+                <a href="#" class="flex items-center gap-2 group text-black">
+                    <div class="w-2 h-2 bg-[var(--accent-color)] rounded-full animate-pulse"></div>
+                    <span class="font-tech text-lg font-bold tracking-tight">MASHROOM.LAB</span>
+                </a>
+                <span class="font-mono text-[10px] text-gray-400 mb-0.5">v8.2-BLUE-GEAR</span>
+            </div>
+            
+            <div class="flex gap-4">
+                <button class="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white transition-colors">
+                    <i data-lucide="search" class="w-4 h-4"></i>
+                </button>
+                <nav class="hidden md:flex items-center gap-6 font-mono text-xs tracking-widest text-gray-500 border-l border-gray-200 pl-6 ml-2">
+                    <a href="#" class="hover:text-black transition-colors">HOME</a>
+                    <a href="#" class="text-black font-bold">GEAR</a>
+                    <a href="#" class="hover:text-black transition-colors">CONTACT</a>
+                </nav>
+            </div>
+        </header>
+    
+        <!-- HERO -->
+        <section class="pt-40 pb-4 container mx-auto px-6 md:px-12 relative z-10 hero-item opacity-0" id="hero-section">
+            <div class="flex flex-col md:flex-row items-end justify-between mb-4">
+                <div>
+                    <span class="font-mono text-[var(--accent-color)] text-xs tracking-widest block mb-4">CHAPTER 02</span>
+                    <h1 class="font-mincho text-5xl md:text-7xl font-black leading-[1] text-black">
+                        <span class="block overflow-hidden"><span class="hero-title-char">機</span><span class="hero-title-char">材</span><span class="hero-title-char">と</span></span>
+                        <span class="block overflow-hidden"><span class="hero-title-char">実</span><span class="hero-title-char">験</span><span class="hero-title-char">記</span><span class="hero-title-char">録</span></span>
+                    </h1>
+                </div>
+                <div class="text-right max-w-sm mt-8 md:mt-0 font-mono text-xs text-gray-500">
+                    ARCHIVE OF SOUND & LOGIC / UPDATED: 2026.01.07
+                </div>
+            </div>
+            <div class="w-full relative h-[200px] border-t border-b border-[var(--line-color)]">
+                <!-- Signal/Network Canvas -->
+                <canvas id="network-canvas" class="network-canvas"></canvas>
+                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <span class="font-tech text-6xl text-gray-200/50 font-bold">SIGNAL_FLOW</span>
+                </div>
+            </div>
+        </section>
+    
+        <!-- MORPHING NAV (ABOUT & NAV) -->
+        <div class="container mx-auto px-6 relative z-20">
+            <div class="nav-placeholder" id="nav-trigger">
+                <!-- Top State: Rich About Nav -->
+                <nav class="filter-nav pos-top opacity-0 hero-item" id="morph-nav">
+                    
+                    <div class="nav-grid-layout">
+                        <!-- ALL -->
+                        <div class="nav-category-item border-l-0 pl-0">
+                            <button class="tech-btn active" data-filter="all">
+                                <i data-lucide="grid" class="btn-icon"></i><span class="btn-text">ALL</span>
+                            </button>
+                            <span class="nav-desc">全カテゴリーの新着記事。<br>まずはここから。</span>
+                        </div>
+    
+                        <!-- DAW -->
+                        <div class="nav-category-item">
+                            <button class="tech-btn" data-filter="daw">
+                                <i data-lucide="monitor" class="btn-icon"></i><span class="btn-text">DAW</span>
+                            </button>
+                            <span class="nav-desc">Studio Oneを中心とした<br>制作フローのハック。</span>
+                        </div>
+    
+                        <!-- GEAR -->
+                        <div class="nav-category-item">
+                            <button class="tech-btn" data-filter="gear">
+                                <i data-lucide="speaker" class="btn-icon"></i><span class="btn-text">GEAR</span>
+                            </button>
+                            <span class="nav-desc">アナログ機材の温もりと<br>物理的なノブの魔力。</span>
+                        </div>
+    
+                        <!-- PLUGIN -->
+                        <div class="nav-category-item">
+                            <button class="tech-btn" data-filter="plugin">
+                                <i data-lucide="zap" class="btn-icon"></i><span class="btn-text">PLUGIN</span>
+                            </button>
+                            <span class="nav-desc">最新プラグインの検証と<br>独自のプリセット。</span>
+                        </div>
+    
+                        <!-- BIZ -->
+                        <div class="nav-category-item">
+                            <button class="tech-btn" data-filter="biz">
+                                <i data-lucide="briefcase" class="btn-icon"></i><span class="btn-text">BIZ</span>
+                            </button>
+                            <span class="nav-desc">スタジオ経営、補助金、<br>お金のリアルな話。</span>
+                        </div>
+    
+                        <!-- SORT & CONTROLS -->
+                        <div class="sort-guide-area">
+                            <div class="flex items-center gap-4">
+                                <p class="font-mono text-xs text-gray-500">
+                                    <span class="text-[var(--accent-color)]">:: CONTROL ROOM ::</span><br>
+                                    ミキシングコンソールのように、必要な情報をフィルタリングしてください。
+                                </p>
+                            </div>
+                            <div class="flex gap-4 items-center">
+                                <div class="control-group">
+                                    <i data-lucide="arrow-up-down" class="w-3 h-3 text-gray-400"></i>
+                                    <select class="control-select" id="sort-select">
+                                        <option value="newest">NEWEST</option>
+                                        <option value="oldest">OLDEST</option>
+                                    </select>
+                                </div>
+                                <div class="flex items-center gap-1 border-l border-gray-300 pl-4 ml-2">
+                                    <button class="p-1.5 hover:bg-black hover:text-white rounded active transition-colors" id="view-grid">
+                                        <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                                    </button>
+                                    <button class="p-1.5 hover:bg-black hover:text-white rounded transition-colors" id="view-list">
+                                        <i data-lucide="list" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                </nav>
+            </div>
+        </div>
+    
+        <!-- MAIN CONTENT -->
+        <div class="container mx-auto px-6 md:px-12 md:pl-[120px] min-h-screen relative z-10 transition-all duration-500" id="main-content-area">
+            
+            <!-- GRID (15 ITEMS - GEAR TOPICS) -->
+            <div class="grid-container" id="article-grid">
+                
+                <!-- 1. Hero (Large) -->
+                <article class="lab-card group item col-span-12 md:col-span-6" data-category="daw" data-date="2026-01-05">
+                    <div class="card-img-wrap" style="height: 240px;">
+                        <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=800&auto=format&fit=crop" class="card-img">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-meta"><span>S1 / TIPS</span><span>2026.01.05</span></div>
+                        <h3 class="card-title">Studio One 6.5 時短術：マクロで世界を変える</h3>
+                        <p class="text-gray-500 text-xs mt-auto line-clamp-2 leading-loose">レコーディング準備時間を半減させる技術。</p>
+                        <span class="code-snippet">Macro Command</span>
+                    </div>
+                </article>
+    
+                <!-- 2. Small -->
+                <article class="lab-card group item col-span-6 md:col-span-3" data-category="gear" data-date="2025-12-20">
+                    <div class="card-img-wrap" style="height: 180px;">
+                        <img src="https://images.unsplash.com/photo-1593693397690-362e5ebf8840?q=80&w=400&auto=format&fit=crop" class="card-img">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-meta"><span>HARDWARE</span><span>2025.12.20</span></div>
+                        <h3 class="card-title">実機コンプの魔力</h3>
+                        <p class="text-gray-500 text-xs mt-auto">1176LN倍音分析。</p>
+                    </div>
+                </article>
+    
+                <!-- 3. Small -->
+                <article class="lab-card group item col-span-6 md:col-span-3" data-category="plugin" data-date="2025-12-15">
+                    <div class="card-img-wrap" style="height: 180px;">
+                        <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=400&auto=format&fit=crop" class="card-img">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-meta"><span>PLUGIN</span><span>2025.12.15</span></div>
+                        <h3 class="card-title">Pro-Q3 最強説</h3>
+                        <p class="text-gray-500 text-xs mt-auto">ミックスの8割はこれ。</p>
+                    </div>
+                </article>
+    
+                <!-- 4. Tall (Medium) -->
+                <article class="lab-card group item col-span-6 md:col-span-3 row-span-2" data-category="biz" data-date="2025-12-10">
+                    <div class="card-img-wrap" style="height: 380px;">
+                        <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=400&auto=format&fit=crop" class="card-img">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-meta"><span>BIZ</span><span>2025.12.10</span></div>
+                        <h3 class="card-title">補助金と経営</h3>
+                        <p class="text-gray-500 text-xs mt-auto leading-loose">事業再構築補助金の実録ドキュメント。</p>
+                    </div>
+                </article>
+    
+                <!-- 5. Medium -->
+                <article class="lab-card group item col-span-12 md:col-span-6" data-category="tips" data-date="2025-11-30">
+                    <div class="card-img-wrap" style="height: 220px;">
+                        <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=800&auto=format&fit=crop" class="card-img">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-meta"><span>ESSAY</span><span>2025.11.30</span></div>
+                        <h3 class="card-title">曲が完成しない病の処方箋</h3>
+                        <p class="text-gray-500 text-xs mt-auto">8小節ループからの脱却法。</p>
+                        <span class="code-snippet">Workflow</span>
+                    </div>
+                </article>
+    
+                <!-- 6. Small -->
+                <article class="lab-card group item col-span-6 md:col-span-3" data-category="daw" data-date="2025-11-25">
+                    <div class="card-img-wrap" style="height: 180px;">
+                        <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?q=80&w=400&auto=format&fit=crop" class="card-img">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-meta"><span>DAW</span><span>2025.11.25</span></div>
+                        <h3 class="card-title">オートメーションの美学</h3>
+                        <p class="text-gray-500 text-xs mt-auto">サビ前で「引く」技術。</p>
+                    </div>
+                </article>
+                
+                <!-- 7-15. More Items (Hardcoded for density) -->
+                 <article class="lab-card group item col-span-12 md:col-span-4" data-category="gear" data-date="2025-11-10">
+                    <div class="card-img-wrap" style="height: 200px;">
+                        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=600&auto=format&fit=crop" class="card-img">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-meta"><span>GEAR</span><span>2025.11.10</span></div>
+                        <h3 class="card-title">マイクプリアンプ比較：NEVE vs API</h3>
+                    </div>
+                </article>
+                 <article class="lab-card group item col-span-12 md:col-span-4" data-category="plugin" data-date="2025-11-01">
+                    <div class="card-img-wrap" style="height: 200px;">
+                        <img src="https://images.unsplash.com/photo-1501386761106-e84b72d23203?q=80&w=600&auto=format&fit=crop" class="card-img">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-meta"><span>PLUGIN</span><span>2025.11.01</span></div>
+                        <h3 class="card-title">WAVES更新料の話：WUPとの付き合い方</h3>
+                    </div>
+                </article>
+                 <article class="lab-card group item col-span-12 md:col-span-4" data-category="tips" data-date="2025-10-20">
+                    <div class="card-img-wrap" style="height: 200px;">
+                        <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=600&auto=format&fit=crop" class="card-img">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-meta"><span>TIPS</span><span>2025.10.20</span></div>
+                        <h3 class="card-title">スタジオのケーブル配線術</h3>
+                    </div>
+                </article>
+    
+            </div>
+    
+            <!-- KINETIC TEXT SECTION (GEAR KEYWORDS) -->
+            <div class="kinetic-list-wrap">
+                <div class="font-mono text-xs text-[var(--accent-color)] mb-12 tracking-widest pl-6 md:pl-0">GEAR WORDS // PICKUP</div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div class="pl-6 md:pl-0">
+                        <a class="kinetic-item kinetic-trigger" data-img="https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=2070&auto=format&fit=crop">MIXING THEORY<span class="kinetic-sub">ミキシングの基礎理論と応用</span></a>
+                        <a class="kinetic-item kinetic-trigger" data-img="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=2070&auto=format&fit=crop">SOUND DESIGN<span class="kinetic-sub">シンセサイザー音作り講座</span></a>
+                        <a class="kinetic-item kinetic-trigger" data-img="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?q=80&w=2070&auto=format&fit=crop">ACOUSTICS<span class="kinetic-sub">吸音材とルームチューニング</span></a>
+                        <a class="kinetic-item kinetic-trigger" data-img="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=2070&auto=format&fit=crop">CABLE MGMT<span class="kinetic-sub">美しい配線とノイズ対策</span></a>
+                        <a class="kinetic-item kinetic-trigger" data-img="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=2070&auto=format&fit=crop">BUDGETING<span class="kinetic-sub">機材購入計画の立て方</span></a>
+                        <a class="kinetic-item kinetic-trigger" data-img="https://images.unsplash.com/photo-1501386761106-e84b72d23203?q=80&w=2070&auto=format&fit=crop">VOCAL REC<span class="kinetic-sub">自宅でプロ級のボーカル録り</span></a>
+                        <a class="kinetic-item kinetic-trigger" data-img="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop">MASTERING<span class="kinetic-sub">配信時代のラウドネス管理</span></a>
+                        <a class="kinetic-item kinetic-trigger" data-img="https://images.unsplash.com/photo-1593693397690-362e5ebf8840?q=80&w=2070&auto=format&fit=crop">MONITORING<span class="kinetic-sub">スピーカー配置の正解</span></a>
+                    </div>
+                    <div class="hidden lg:flex justify-center items-center h-[500px] relative pr-12">
+                        <div class="kinetic-img-container shadow-2xl">
+                            <img id="kinetic-target-img" src="" alt="">
+                        </div>
+                    </div>
+                </div>
+                <div class="absolute bottom-0 left-0 w-full opacity-20 pointer-events-none"><canvas id="string-canvas-2" class="string-canvas"></canvas></div>
+            </div>
+    
+            <!-- PROFILE -->
+            <div class="profile-section" id="author-section">
+                <div class="max-w-4xl mx-auto flex flex-col md:flex-row gap-8 items-center">
+                    <div class="w-24 h-24 flex-shrink-0 bg-gray-200 overflow-hidden rounded-full border-2 border-black">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop" 
+                             class="w-full h-full object-cover grayscale">
+                    </div>
+                    <div class="text-center md:text-left flex-grow">
+                        <div class="font-mono text-[var(--accent-color)] text-[10px] mb-2 tracking-widest">OWNER / ENGINEER</div>
+                        <h2 class="font-mincho text-2xl font-bold mb-2">道ゐ (Dowie)</h2>
+                        <p class="text-gray-500 text-xs leading-loose">
+                            札幌を拠点とする音楽スタジオ「MASHROOM」オーナー。<br>
+                            エンジニアリング、機材選定、そして経営の狭間で日々実験中。
+                        </p>
+                    </div>
+                    <a href="#" class="tech-btn text-[10px] border border-gray-300 px-4 py-2 rounded-full hover:bg-black hover:text-white transition-colors">PROFILE &rarr;</a>
+                </div>
+            </div>
+    
+        </div>
+    
+        <!-- FOOTER -->
+        <footer class="bg-white border-t border-gray-100 py-20 relative z-10">
+            <div class="container mx-auto px-6 md:pl-[120px] flex justify-between items-end">
+                <span class="font-tech text-4xl font-bold text-[#111]">MASHROOM.GEAR</span>
+                <p class="text-[10px] text-gray-400 font-mono text-right">
+                    SAPPORO MUSIC STUDIO<br>GEAR LAB v8.2<br>EST. 2025
+                </p>
+            </div>
+        </footer>
+    
+        <script>
+            lucide.createIcons();
+            gsap.registerPlugin(Flip, ScrollTrigger);
+    
+            /* ------------------------------------------------
+               SMOOTH SCROLL
+               ------------------------------------------------ */
+            const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+            requestAnimationFrame(raf);
+    
+            /* ------------------------------------------------
+               INTRO LOADER
+               ------------------------------------------------ */
+            const introTl = gsap.timeline();
+            introTl.to(".loader-char", { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: "power4.out" })
+                   .to(".loader-char", { y: "-100%", opacity: 0, duration: 0.8, delay: 0.3, ease: "power4.in" })
+                   .to(".loader-wrap", { y: "-100%", duration: 1, ease: "power4.inOut" }, "-=0.3")
+                   .to(".header-item, .hero-item, #morph-nav", { opacity: 1, y: 0, stagger: 0.1, duration: 1, ease: "power2.out" }, "-=0.5")
+                   .to(".hero-title-char", { y: 0, opacity: 1, duration: 1.2, stagger: 0.05, ease: "power3.out" }, "-=1.0");
+    
+            /* ------------------------------------------------
+               GLITCH NAV TRANSITION
+               ------------------------------------------------ */
+            const navTrigger = document.querySelector("#nav-trigger");
+            const nav = document.querySelector("#morph-nav");
+            
+            ScrollTrigger.create({
+                trigger: navTrigger, start: "top top", end: "bottom top",
+                
+                onEnter: () => {
+                    const tl = gsap.timeline();
+                    tl.to(nav, { opacity: 0, duration: 0.05 })
+                      .add(() => { nav.classList.remove("pos-top"); nav.classList.add("pos-side"); lucide.createIcons(); })
+                      .set(nav, { opacity: 1, x: -10 })
+                      .to(nav, { x: 0, duration: 0.2, ease: "power2.out" });
+                },
+                onLeaveBack: () => {
+                    const tl = gsap.timeline();
+                    tl.to(nav, { opacity: 0, duration: 0.05 })
+                      .add(() => { nav.classList.remove("pos-side"); nav.classList.add("pos-top"); })
+                      .set(nav, { opacity: 1, y: -10 })
+                      .to(nav, { y: 0, duration: 0.2, ease: "power2.out" });
+                }
+            });
+    
+            /* ------------------------------------------------
+               FILTER LOGIC
+               ------------------------------------------------ */
+            const buttons = document.querySelectorAll('.tech-btn[data-filter]');
+            const gridItems = document.querySelectorAll('.item');
+            
+            buttons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    buttons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const filterValue = btn.getAttribute('data-filter');
+                    const state = Flip.getState(gridItems);
+                    gridItems.forEach(item => {
+                        const categories = item.getAttribute('data-category').split(' ');
+                        if (filterValue === 'all' || categories.includes(filterValue)) item.style.display = 'flex';
+                        else item.style.display = 'none';
+                    });
+                    Flip.from(state, { duration: 0.6, scale: true, absolute: true, ease: "power2.inOut", onEnter: el => gsap.fromTo(el, {opacity: 0, scale: 0.9}, {opacity: 1, scale: 1, duration: 0.4}), onLeave: el => gsap.to(el, {opacity: 0, scale: 0.9, duration: 0.4}), onComplete: () => ScrollTrigger.refresh() });
+                });
+            });
+    
+            /* ------------------------------------------------
+               KINETIC TEXT
+               ------------------------------------------------ */
+            const kineticItems = document.querySelectorAll('.kinetic-trigger');
+            const targetImg = document.getElementById('kinetic-target-img');
+            if(kineticItems.length > 0) targetImg.src = kineticItems[0].getAttribute('data-img');
+            
+            kineticItems.forEach(item => {
+                item.addEventListener('mouseenter', () => {
+                    const newSrc = item.getAttribute('data-img');
+                    if (targetImg.src !== newSrc) {
+                        targetImg.classList.remove('active');
+                        setTimeout(() => { targetImg.src = newSrc; targetImg.classList.add('active'); }, 200);
+                    } else { targetImg.classList.add('active'); }
+                });
+            });
+    
+            /* ------------------------------------------------
+               NETWORK CANVAS (PARTICLES)
+               ------------------------------------------------ */
+            const canvas = document.getElementById('network-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height, particles = [];
+            
+            function initNetwork() {
+                width = canvas.width = canvas.offsetWidth;
+                height = canvas.height = canvas.offsetHeight;
+                particles = [];
+                for(let i=0; i<30; i++) {
+                    particles.push({
+                        x: Math.random() * width, y: Math.random() * height,
+                        vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5,
+                        size: Math.random()*2 + 1
+                    });
+                }
+            }
+            function drawNetwork() {
+                ctx.clearRect(0,0,width,height);
+                ctx.fillStyle = '#007aff'; ctx.strokeStyle = 'rgba(0,122,255,0.2)';
+                
+                particles.forEach((p, i) => {
+                    p.x += p.vx; p.y += p.vy;
+                    if(p.x < 0 || p.x > width) p.vx *= -1;
+                    if(p.y < 0 || p.y > height) p.vy *= -1;
+                    
+                    ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+                    
+                    for(let j=i+1; j<particles.length; j++) {
+                        const p2 = particles[j];
+                        const d = Math.hypot(p.x-p2.x, p.y-p2.y);
+                        if(d < 100) {
+                            ctx.lineWidth = 1 - d/100;
+                            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+                        }
+                    }
+                });
+                requestAnimationFrame(drawNetwork);
+            }
+            window.addEventListener('resize', initNetwork);
+            initNetwork(); drawNetwork();
+    
+            /* ------------------------------------------------
+               ELASTIC STRING
+               ------------------------------------------------ */
+            class ElasticString {
+                constructor(canvasId) {
+                    this.canvas = document.getElementById(canvasId);
+                    this.ctx = this.canvas.getContext('2d');
+                    this.mouse = { x: 0, y: 0, isDown: false };
+                    this.resize(); this.tension = 0.4; this.dampening = 0.9;
+                    window.addEventListener('resize', () => this.resize());
+                    this.canvas.addEventListener('mousemove', (e) => this.onMove(e));
+                    this.canvas.addEventListener('mouseleave', () => { this.mouse.isDown = false; });
+                    this.animate();
+                }
+                resize() {
+                    this.width = this.canvas.parentElement.offsetWidth;
+                    this.height = this.canvas.parentElement.offsetHeight;
+                    this.canvas.width = this.width; this.canvas.height = this.height;
+                    this.cp = { x: this.width/2, y: this.height/2, vx: 0, vy: 0, targetX: this.width/2, targetY: this.height/2 };
+                }
+                onMove(e) {
+                    const rect = this.canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left; const y = e.clientY - rect.top;
+                    if (Math.abs(y - this.cp.targetY) < 50) { this.mouse.isDown = true; this.cp.y = y; this.cp.x = x; } 
+                    else { this.mouse.isDown = false; }
+                }
+                update() {
+                    if (!this.mouse.isDown) {
+                        const forceY = (this.cp.targetY - this.cp.y) * this.tension;
+                        this.cp.vy += forceY; this.cp.vy *= this.dampening; this.cp.y += this.cp.vy;
+                        const forceX = (this.width/2 - this.cp.x) * 0.1;
+                        this.cp.vx += forceX; this.cp.vx *= this.dampening; this.cp.x += this.cp.vx;
+                    }
+                }
+                draw() {
+                    this.ctx.clearRect(0, 0, this.width, this.height);
+                    this.ctx.beginPath(); this.ctx.moveTo(0, this.height/2);
+                    this.ctx.quadraticCurveTo(this.cp.x, this.cp.y, this.width, this.height/2);
+                    this.ctx.lineWidth = 1; this.ctx.strokeStyle = '#ccc'; this.ctx.stroke();
+                    this.ctx.fillStyle = '#007aff';
+                    this.ctx.beginPath(); this.ctx.arc(0, this.height/2, 3, 0, Math.PI*2);
+                    this.ctx.arc(this.width, this.height/2, 3, 0, Math.PI*2);
+                    this.ctx.fill();
+                }
+                animate() { this.update(); this.draw(); requestAnimationFrame(() => this.animate()); }
+            }
+            new ElasticString('string-canvas-1');
+            new ElasticString('string-canvas-2');
+    
+        </script>
+    </body>
+    </html>
+
+    <!-- 
+        ============================================
+        コピペ終了
+        ============================================
+    -->
+</body>
+</html>

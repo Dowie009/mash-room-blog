@@ -1,0 +1,1343 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import SignalFlowLazy from '../components/SignalFlowLazy.astro';
+import EstimateWidget from '../components/EstimateWidget.tsx';
+import BookingWidget from '../components/BookingWidget.tsx';
+import { getCollection } from 'astro:content';
+
+// Content Collectionsから記事データを取得
+const allPosts = await getCollection('blog');
+// 日付でソート（新しい順）
+const sortedPosts = allPosts.sort((a, b) => 
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+// 日付フォーマット関数
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('ja-JP', { 
+    year: 'numeric', 
+    month: '2-digit', 
+    day: '2-digit' 
+  }).replace(/\//g, '.');
+};
+
+// カテゴリラベル
+const categoryLabels: Record<string, string> = {
+  'daw': 'DAW',
+  'gear': 'GEAR',
+  'plugin': 'PLUGIN',
+  'biz': 'BIZ',
+  'tips': 'TIPS',
+  'essay': 'ESSAY',
+};
+
+/**
+ * Bento Grid風のリズムのあるレイアウトパターンを生成
+ * 雑誌風の視覚的なリズムを作るため、インデックスに基づいてサイズを決定
+ */
+function getBentoGridSize(index: number, total: number): { colSpan: number; rowSpan: number; height?: number } {
+  // モバイルでは常にフル幅（後でCSSで制御）
+  // デスクトップでのみリズムを適用
+  
+  // パターン1: 最初の記事は大きく（ヒーローカード）
+  if (index === 0) {
+    return { colSpan: 12, rowSpan: 2, height: 400 };
+  }
+  
+  // パターン2: 5番目ごとに大きく（注目記事）
+  if (index % 5 === 0) {
+    return { colSpan: 8, rowSpan: 2, height: 350 };
+  }
+  
+  // パターン3: 3番目、7番目などは横長
+  if (index % 7 === 2) {
+    return { colSpan: 8, rowSpan: 1, height: 240 };
+  }
+  
+  // パターン4: 4番目、9番目などは縦長
+  if (index % 9 === 3) {
+    return { colSpan: 4, rowSpan: 2, height: 380 };
+  }
+  
+  // パターン5: 2列の標準サイズ（最も多い）
+  if (index % 3 === 1) {
+    return { colSpan: 6, rowSpan: 1, height: 280 };
+  }
+  
+  // パターン6: 3列の小さめサイズ
+  if (index % 4 === 2) {
+    return { colSpan: 4, rowSpan: 1, height: 220 };
+  }
+  
+  // デフォルト: 標準サイズ（2列）
+  return { colSpan: 6, rowSpan: 1, height: 260 };
+}
+
+// デバッグ: バージョン情報を強制的に設定（1回だけ定義）
+const DEBUG_VERSION = "v8.5.0-CTA-ISLANDS";
+const BUILD_TIME = new Date().toISOString();
+const BUILD_TIMESTAMP = Date.now(); // キャッシュバスティング用
+console.log('[GEAR.ASTRO DEBUG] ==========================================');
+console.log('[GEAR.ASTRO DEBUG] Build Time:', BUILD_TIME);
+console.log('[GEAR.ASTRO DEBUG] Build Timestamp:', BUILD_TIMESTAMP);
+console.log('[GEAR.ASTRO DEBUG] Using Version:', DEBUG_VERSION);
+console.log('[GEAR.ASTRO DEBUG] File Path: src/pages/gear.astro');
+console.log('[GEAR.ASTRO DEBUG] ==========================================');
+---
+
+<Layout 
+  title="MASHROOM | GEAR LAB (BLUE)"
+  version={DEBUG_VERSION}
+  canonicalUrl={`${Astro.url.origin}${Astro.url.pathname}?v=8.4.1&t=${BUILD_TIMESTAMP}`}
+>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=Zen+Old+Mincho:wght@700;900&family=Space+Grotesk:wght@300;500;700;900&family=Noto+Sans+JP:wght@300;400;500;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+
+  <div class="noise"></div>
+  <div class="bg-grid"></div>
+
+  <!-- LOADER -->
+  <div class="loader-wrap">
+    <div class="loader-text-container font-tech text-5xl font-bold gap-2">
+      <span class="loader-char">M</span><span class="loader-char">A</span><span class="loader-char">S</span><span class="loader-char">H</span>
+      <span class="loader-char" style="color: var(--accent-color)">.</span>
+      <span class="loader-char">R</span>
+      <span class="loader-char">O</span>
+      <span class="loader-char">O</span>
+      <span class="loader-char">M</span>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="fixed top-0 w-full p-6 flex justify-between items-center z-[100] bg-white/90 backdrop-blur-md border-b border-gray-200 header-item opacity-0">
+    <div class="flex items-end gap-3">
+      <a href="/" class="flex items-center gap-2 group text-black">
+        <div class="w-2 h-2 bg-[var(--accent-color)] rounded-full animate-pulse"></div>
+        <span class="font-tech text-lg font-bold tracking-tight">MASHROOM.LAB</span>
+      </a>
+      <span class="font-mono text-[10px] text-gray-400 mb-0.5" id="version-display" data-version-debug={BUILD_TIME} data-timestamp={BUILD_TIMESTAMP}>{DEBUG_VERSION}</span>
+    </div>
+    
+    <div class="flex gap-4">
+      <button class="w-9 h-9 rounded-full border border-gray-200 flex items-center justify-center hover:bg-black hover:text-white transition-colors">
+        <i data-lucide="search" class="w-4 h-4"></i>
+      </button>
+      <nav class="hidden md:flex items-center gap-6 font-mono text-xs tracking-widest text-gray-500 border-l border-gray-200 pl-6 ml-2">
+        <a href="/" class="hover:text-black transition-colors">HOME</a>
+        <a href="/gear" class="text-black font-bold">GEAR</a>
+        <a href="#" class="hover:text-black transition-colors">CONTACT</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="pt-40 pb-4 container mx-auto px-6 md:px-12 relative z-10 hero-item opacity-0" id="hero-section">
+    <div class="flex flex-col md:flex-row items-end justify-between mb-4">
+      <div>
+        <span class="font-mono text-[var(--accent-color)] text-xs tracking-widest block mb-4">CHAPTER 02</span>
+        <h1 class="font-mincho text-5xl md:text-7xl font-black leading-[1] text-black">
+          <span class="block overflow-hidden"><span class="hero-title-char">機</span><span class="hero-title-char">材</span><span class="hero-title-char">と</span></span>
+          <span class="block overflow-hidden"><span class="hero-title-char">実</span><span class="hero-title-char">験</span><span class="hero-title-char">記</span><span class="hero-title-char">録</span></span>
+        </h1>
+      </div>
+      <div class="text-right max-w-sm mt-8 md:mt-0 font-mono text-xs text-gray-500">
+        ARCHIVE OF SOUND & LOGIC / UPDATED: 2026.01.07
+      </div>
+    </div>
+    <div class="w-full relative border-t border-b border-[var(--line-color)]">
+      <SignalFlowLazy />
+    </div>
+  </section>
+
+  <!-- MORPHING NAV -->
+  <div class="container mx-auto px-6 relative z-20">
+    <div class="nav-placeholder" id="nav-trigger">
+      <nav class="filter-nav pos-top opacity-0 hero-item" id="morph-nav">
+        <div class="nav-grid-layout">
+          <div class="nav-category-item border-l-0 pl-0">
+            <button class="tech-btn active" data-filter="all">
+              <i data-lucide="grid" class="btn-icon"></i><span class="btn-text">ALL</span>
+            </button>
+            <span class="nav-desc">全カテゴリーの新着記事。<br>まずはここから。</span>
+          </div>
+          <div class="nav-category-item">
+            <button class="tech-btn" data-filter="daw">
+              <i data-lucide="monitor" class="btn-icon"></i><span class="btn-text">DAW</span>
+            </button>
+            <span class="nav-desc">Studio Oneを中心とした<br>制作フローのハック。</span>
+          </div>
+          <div class="nav-category-item">
+            <button class="tech-btn" data-filter="gear">
+              <i data-lucide="speaker" class="btn-icon"></i><span class="btn-text">GEAR</span>
+            </button>
+            <span class="nav-desc">アナログ機材の温もりと<br>物理的なノブの魔力。</span>
+          </div>
+          <div class="nav-category-item">
+            <button class="tech-btn" data-filter="plugin">
+              <i data-lucide="zap" class="btn-icon"></i><span class="btn-text">PLUGIN</span>
+            </button>
+            <span class="nav-desc">最新プラグインの検証と<br>独自のプリセット。</span>
+          </div>
+          <div class="nav-category-item">
+            <button class="tech-btn" data-filter="biz">
+              <i data-lucide="briefcase" class="btn-icon"></i><span class="btn-text">BIZ</span>
+            </button>
+            <span class="nav-desc">スタジオ経営、補助金、<br>お金のリアルな話。</span>
+          </div>
+          <div class="sort-guide-area">
+            <div class="flex items-center gap-4">
+              <p class="font-mono text-xs text-gray-500">
+                <span class="text-[var(--accent-color)]">:: CONTROL ROOM ::</span><br>
+                ミキシングコンソールのように、必要な情報をフィルタリングしてください。
+              </p>
+            </div>
+            <div class="flex gap-4 items-center">
+              <div class="flex items-center gap-1 border-l border-gray-300 pl-4 ml-2">
+                <button class="p-1.5 hover:bg-black hover:text-white rounded active transition-colors" id="view-grid">
+                  <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                </button>
+                <button class="p-1.5 hover:bg-black hover:text-white rounded transition-colors" id="view-list">
+                  <i data-lucide="list" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          {/* サイドメニュー用のビュー切り替えボタン（pos-sideの時のみ表示） */}
+          <div class="side-view-toggle">
+            <div class="flex flex-col items-center gap-2">
+              <button class="side-view-btn active" id="side-view-grid" title="グリッド表示">
+                <i data-lucide="layout-grid" class="w-5 h-5"></i>
+              </button>
+              <button class="side-view-btn" id="side-view-list" title="リスト表示">
+                <i data-lucide="list" class="w-5 h-5"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="container mx-auto px-6 md:px-12 md:pl-[120px] min-h-screen relative z-10 transition-all duration-500" id="main-content-area">
+    {/* GRID MODE: Bento Grid風の雑誌レイアウト */}
+    <div class="grid-container" id="article-grid">
+      {sortedPosts.map((post, index) => {
+        // CMSのgridSizeが優先、なければ動的に計算
+        const gridSize = post.data.gridSize || getBentoGridSize(index, sortedPosts.length);
+        return (
+          <ArticleCard
+            title={post.data.title}
+            date={post.data.date}
+            category={post.data.category}
+            thumbnail={post.data.thumbnail}
+            description={post.data.description}
+            tags={post.data.tags}
+            slug={post.slug}
+            gridSize={gridSize}
+            index={index}
+          />
+        );
+      })}
+    </div>
+    
+    {/* LIST MODE: 完全に分離されたリスト表示（System Log & Data Table） */}
+    <div class="list-container" id="article-list" style="display: none;">
+      {sortedPosts.map((post, index) => (
+        <article 
+          class="list-row-item" 
+          data-category={post.data.category} 
+          data-date={post.data.date.toISOString().split('T')[0]}
+          data-thumbnail={post.data.thumbnail}
+        >
+          <div class="list-date font-mono">
+            {String(index + 1).padStart(2, '0')}. / {formatDate(post.data.date)}
+          </div>
+          <div class="list-category">
+            {categoryLabels[post.data.category] || post.data.category.toUpperCase()}
+          </div>
+          <h3 class="list-title">{post.data.title}</h3>
+          <div class="list-meta">
+            {post.data.tags && post.data.tags.length > 0 && (
+              <span class="meta-tag">{post.data.tags[0]}</span>
+            )}
+          </div>
+          {/* ホバー時のサムネイル */}
+          <div class="list-thumbnail">
+            <img src={post.data.thumbnail} alt={post.data.title} loading="lazy" />
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <!-- CTA SECTION: CONTROL ROOM -->
+    <div class="cta-section-wrap">
+      <div class="font-mono text-xs text-[var(--accent-color)] mb-8 tracking-widest pl-6 md:pl-0">:: CONTROL ROOM ::</div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        <!-- 左側: 予約カレンダー（client:visible で遅延読み込み） -->
+        <div class="cta-widget-container">
+          <BookingWidget client:visible />
+        </div>
+        <!-- 右側: 見積りシミュレーター（client:visible で遅延読み込み） -->
+        <div class="cta-widget-container">
+          <EstimateWidget client:visible />
+        </div>
+      </div>
+      <div class="absolute bottom-0 left-0 w-full opacity-20"><canvas id="string-canvas-2" class="string-canvas"></canvas></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="profile-section" id="author-section">
+      <div class="max-w-4xl mx-auto flex flex-col md:flex-row gap-8 items-center">
+        <div class="w-24 h-24 flex-shrink-0 bg-gray-200 overflow-hidden rounded-full border-2 border-black">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop" 
+               class="w-full h-full object-cover grayscale" alt="道ゐ">
+        </div>
+        <div class="text-center md:text-left flex-grow">
+          <div class="font-mono text-[var(--accent-color)] text-[10px] mb-2 tracking-widest">OWNER / ENGINEER</div>
+          <h2 class="font-mincho text-2xl font-bold mb-2">道ゐ (Dowie)</h2>
+          <p class="text-gray-500 text-xs leading-loose">
+            札幌を拠点とする音楽スタジオ「MASHROOM」オーナー。<br>
+            エンジニアリング、機材選定、そして経営の狭間で日々実験中。
+          </p>
+        </div>
+        <a href="#" class="tech-btn text-[10px] border border-gray-300 px-4 py-2 rounded-full hover:bg-black hover:text-white transition-colors">PROFILE &rarr;</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-gray-100 py-20 relative z-10">
+    <div class="container mx-auto px-6 md:pl-[120px] flex justify-between items-end">
+      <span class="font-tech text-4xl font-bold text-[#111]">MASHROOM.GEAR</span>
+      <p class="text-[10px] text-gray-400 font-mono text-right">
+        SAPPORO MUSIC STUDIO<br>GEAR LAB <span id="footer-version">{DEBUG_VERSION}</span><br>EST. 2025
+      </p>
+    </div>
+  </footer>
+
+  <script is:inline>
+    // デバッグ: クライアント側でバージョン情報を確認
+    console.log('[CLIENT DEBUG] ==========================================');
+    console.log('[CLIENT DEBUG] Page loaded at:', new Date().toISOString());
+    const versionDisplay = document.getElementById('version-display');
+    const footerVersion = document.getElementById('footer-version');
+    if (versionDisplay) {
+      console.log('[CLIENT DEBUG] Header version element:', versionDisplay.textContent);
+      console.log('[CLIENT DEBUG] Header version data-attr:', versionDisplay.getAttribute('data-version-debug'));
+    } else {
+      console.error('[CLIENT DEBUG] Header version element NOT FOUND!');
+    }
+    if (footerVersion) {
+      console.log('[CLIENT DEBUG] Footer version element:', footerVersion.textContent);
+    } else {
+      console.error('[CLIENT DEBUG] Footer version element NOT FOUND!');
+    }
+    console.log('[CLIENT DEBUG] ==========================================');
+    
+    // Wait for Layout.astro scripts to load first, then run
+    const initGearScripts = () => {
+      // Check if all required scripts are loaded
+      if (typeof lucide === 'undefined' || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined' || typeof Flip === 'undefined' || typeof Lenis === 'undefined') {
+        setTimeout(initGearScripts, 50);
+        return;
+      }
+      
+      lucide.createIcons();
+      gsap.registerPlugin(Flip, ScrollTrigger);
+
+    /* ------------------------------------------------
+       SMOOTH SCROLL
+       ------------------------------------------------ */
+    const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+    function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+    requestAnimationFrame(raf);
+
+    /* ------------------------------------------------
+       INTRO LOADER
+       ------------------------------------------------ */
+    const introTl = gsap.timeline();
+    introTl.to(".loader-char", { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: "power4.out" })
+           .to(".loader-char", { y: "-100%", opacity: 0, duration: 0.8, delay: 0.3, ease: "power4.in" })
+           .to(".loader-wrap", { y: "-100%", duration: 1, ease: "power4.inOut" }, "-=0.3")
+           .to(".header-item, .hero-item, #morph-nav", { opacity: 1, y: 0, stagger: 0.1, duration: 1, ease: "power2.out" }, "-=0.5")
+           .to(".hero-title-char", { y: 0, opacity: 1, duration: 1.2, stagger: 0.05, ease: "power3.out" }, "-=1.0");
+
+    /* ------------------------------------------------
+       GLITCH NAV TRANSITION
+       ------------------------------------------------ */
+    const navTrigger = document.querySelector("#nav-trigger");
+    const nav = document.querySelector("#morph-nav");
+    
+    // グリッチエフェクト関数（左側でのみ使用）
+    const glitchInEffect = (element) => {
+      if (!element) {
+        console.error('[DEBUG] glitchInEffect: element not found');
+        return;
+      }
+      console.log('[DEBUG] glitchInEffect: starting animation');
+      const tl = gsap.timeline();
+      // グリッチで左側から登場
+      tl.set(element, { 
+        opacity: 0, 
+        x: -100,
+        force3D: true
+      })
+        .to(element, { 
+          opacity: 1, 
+          x: gsap.utils.random(-15, -5), 
+          duration: 0.04,
+          ease: "none"
+        })
+        .to(element, { 
+          x: gsap.utils.random(-10, 0), 
+          duration: 0.04,
+          ease: "none"
+        })
+        .to(element, { 
+          x: gsap.utils.random(-5, 0), 
+          duration: 0.04,
+          ease: "none"
+        })
+        .to(element, { 
+          x: 0, 
+          duration: 0.1,
+          ease: "power2.out",
+          onComplete: () => console.log('[DEBUG] glitchInEffect: animation complete')
+        });
+    };
+    
+    if (navTrigger && nav) {
+      console.log('[DEBUG] navTrigger and nav found, setting up ScrollTrigger');
+      
+      // CSS transitionを一時的に無効化する関数
+      const disableTransition = () => {
+        nav.style.transition = 'none';
+      };
+      const enableTransition = () => {
+        nav.style.transition = '';
+      };
+      
+      ScrollTrigger.create({
+        trigger: navTrigger, 
+        start: "top top", 
+        end: "bottom top",
+        onEnter: () => {
+          console.log('[DEBUG] ScrollTrigger onEnter triggered');
+          // 上のメニューを静かに消す（アニメーションなし）
+          disableTransition();
+          gsap.set(nav, { opacity: 0, x: 0, y: 0 });
+          nav.style.pointerEvents = 'none';
+          
+          // 左側のメニューに切り替え
+          requestAnimationFrame(() => {
+            console.log('[DEBUG] Switching to pos-side');
+            nav.classList.remove("pos-top"); 
+            nav.classList.add("pos-side"); 
+            lucide.createIcons();
+            // 左側でグリッチアニメーションで登場
+            enableTransition();
+            glitchInEffect(nav);
+            nav.style.pointerEvents = 'auto';
+          });
+        },
+        onLeaveBack: () => {
+          console.log('[DEBUG] ScrollTrigger onLeaveBack triggered');
+          // 左側のメニューを静かに消す
+          disableTransition();
+          gsap.set(nav, { opacity: 0, x: 0, y: 0 });
+          nav.style.pointerEvents = 'none';
+          
+          // 上のメニューに戻す
+          requestAnimationFrame(() => {
+            console.log('[DEBUG] Switching to pos-top');
+            nav.classList.remove("pos-side"); 
+            nav.classList.add("pos-top");
+            enableTransition();
+            gsap.set(nav, { opacity: 1, x: 0, y: 0 });
+            nav.style.pointerEvents = 'auto';
+          });
+        }
+      });
+    } else {
+      console.error('[DEBUG] navTrigger or nav not found:', { navTrigger, nav });
+    }
+
+    /* ------------------------------------------------
+       VIEW MODE STATE MANAGEMENT
+       ------------------------------------------------ */
+    let viewMode = 'grid'; // 'grid' or 'list'
+    
+    /* ------------------------------------------------
+       FILTER LOGIC (Grid Mode & List Mode)
+       ------------------------------------------------ */
+    const buttons = document.querySelectorAll('.tech-btn[data-filter]');
+    const gridContainer = document.getElementById('article-grid');
+    const listContainer = document.getElementById('article-list');
+    
+    function applyFilter(filterValue) {
+      if (viewMode === 'grid') {
+        // グリッドモードのフィルタリング（Flipアニメーション付き）
+        const gridItems = Array.from(gridContainer.querySelectorAll('.item'));
+        
+        // 表示されるアイテム
+        const visibleItems = gridItems.filter(item => {
+          const category = item.getAttribute('data-category');
+          return filterValue === 'all' || category === filterValue;
+        });
+        
+        // 非表示になるアイテム
+        const hiddenItems = gridItems.filter(item => {
+          const category = item.getAttribute('data-category');
+          return filterValue !== 'all' && category !== filterValue;
+        });
+        
+        // 非表示アイテムをフェードアウト
+        if (hiddenItems.length > 0) {
+          gsap.to(hiddenItems, {
+            opacity: 0,
+            scale: 0.9,
+            duration: 0.25,
+            ease: "power2.in",
+            onComplete: () => {
+              hiddenItems.forEach(item => {
+                item.style.display = 'none';
+              });
+            }
+          });
+        }
+        
+        // 表示アイテムの状態を取得（Flipアニメーション用）
+        if (visibleItems.length > 0) {
+          const state = Flip.getState(visibleItems);
+          
+          // 表示アイテムを表示
+          visibleItems.forEach(item => {
+            item.style.display = '';
+          });
+          
+          // Flipアニメーションを実行
+          Flip.from(state, {
+            duration: 0.4,
+            scale: false,
+            absolute: false,
+            ease: "power2.out",
+            stagger: 0.02,
+            onEnter: (elements) => {
+              gsap.fromTo(elements, 
+                { opacity: 0, y: 20 },
+                { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", stagger: 0.02 }
+              );
+            },
+            onComplete: () => {
+              requestAnimationFrame(() => ScrollTrigger.refresh());
+            }
+          });
+        }
+      } else {
+        // リストモードのフィルタリング
+        const listItems = Array.from(listContainer.querySelectorAll('.list-row-item'));
+        listItems.forEach(item => {
+          const category = item.getAttribute('data-category');
+          if (filterValue === 'all' || category === filterValue) {
+            gsap.to(item, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" });
+            item.style.display = '';
+          } else {
+            gsap.to(item, { opacity: 0, y: -10, duration: 0.25, ease: "power2.in", onComplete: () => {
+              item.style.display = 'none';
+            }});
+          }
+        });
+      }
+    }
+    
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filterValue = btn.getAttribute('data-filter');
+        applyFilter(filterValue);
+      });
+    });
+
+    /* ------------------------------------------------
+       VIEW MODE TOGGLE - 完全分離実装
+       ------------------------------------------------ */
+    const btnGrid = document.getElementById('view-grid');
+    const btnList = document.getElementById('view-list');
+    
+    function switchViewMode(mode) {
+      if (mode === 'grid') {
+        // グリッドモードに切り替え
+        viewMode = 'grid';
+        gsap.to(listContainer, { 
+          opacity: 0, 
+          duration: 0.3, 
+          ease: "power2.in",
+          onComplete: () => {
+            listContainer.style.display = 'none';
+            gridContainer.style.display = '';
+            gsap.fromTo(gridContainer, 
+              { opacity: 0 },
+              { opacity: 1, duration: 0.3, ease: "power2.out", onComplete: () => {
+                requestAnimationFrame(() => ScrollTrigger.refresh());
+              }}
+            );
+          }
+        });
+      } else {
+        // リストモードに切り替え
+        viewMode = 'list';
+        gsap.to(gridContainer, { 
+          opacity: 0, 
+          duration: 0.3, 
+          ease: "power2.in",
+          onComplete: () => {
+            gridContainer.style.display = 'none';
+            listContainer.style.display = '';
+            gsap.fromTo(listContainer, 
+              { opacity: 0 },
+              { opacity: 1, duration: 0.3, ease: "power2.out" }
+            );
+          }
+        });
+      }
+      
+      // ボタンの状態を更新
+      updateViewButtons(mode);
+      
+      // 現在のフィルターを再適用
+      const activeFilter = document.querySelector('.tech-btn.active')?.getAttribute('data-filter') || 'all';
+      applyFilter(activeFilter);
+      
+      // グリッドモードに切り替えた場合はパララックスを再セットアップ
+      if (mode === 'grid') {
+        requestAnimationFrame(() => {
+          ScrollTrigger.refresh();
+          setupParallax();
+        });
+      }
+    }
+    
+    function updateViewButtons(activeMode) {
+      // 上部メニューのボタン
+      if (btnGrid && btnList) {
+        if (activeMode === 'grid') {
+          btnGrid.classList.add('active');
+          btnList.classList.remove('active');
+        } else {
+          btnGrid.classList.remove('active');
+          btnList.classList.add('active');
+        }
+      }
+      // サイドメニューのボタン
+      const sideBtnGrid = document.getElementById('side-view-grid');
+      const sideBtnList = document.getElementById('side-view-list');
+      if (sideBtnGrid && sideBtnList) {
+        if (activeMode === 'grid') {
+          sideBtnGrid.classList.add('active');
+          sideBtnList.classList.remove('active');
+        } else {
+          sideBtnGrid.classList.remove('active');
+          sideBtnList.classList.add('active');
+        }
+      }
+    }
+    
+    if (btnGrid && btnList && gridContainer && listContainer) {
+      btnGrid.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (viewMode !== 'grid') {
+          switchViewMode('grid');
+        }
+      });
+      
+      btnList.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (viewMode !== 'list') {
+          switchViewMode('list');
+        }
+      });
+    }
+    
+    // サイドメニューのボタン
+    const sideBtnGrid = document.getElementById('side-view-grid');
+    const sideBtnList = document.getElementById('side-view-list');
+    if (sideBtnGrid && sideBtnList && gridContainer && listContainer) {
+      sideBtnGrid.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (viewMode !== 'grid') {
+          switchViewMode('grid');
+        }
+      });
+      
+      sideBtnList.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (viewMode !== 'list') {
+          switchViewMode('list');
+        }
+      });
+    }
+
+    /* ------------------------------------------------
+       SCROLL FOCUS & PARALLAX (グリッドモード専用)
+       ------------------------------------------------ */
+    function setupParallax() {
+      if (viewMode !== 'grid') return;
+      
+      const cards = gsap.utils.toArray('.grid-container .lab-card');
+      cards.forEach(card => {
+        const img = card.querySelector('.card-img');
+        if (img) {
+          gsap.fromTo(img, 
+            { y: "-10%" }, 
+            { 
+              y: "10%", 
+              ease: "none", 
+              scrollTrigger: { 
+                trigger: card, 
+                start: "top bottom", 
+                end: "bottom top", 
+                scrub: true 
+              } 
+            }
+          );
+        }
+      });
+    }
+    
+    // 初回セットアップ
+    setupParallax();
+
+    /* ------------------------------------------------
+       NETWORK CANVAS (Signal Flow)
+       ------------------------------------------------ */
+    // Signal FlowはSignalFlowLazyコンポーネントで実装されています
+    // 遅延読み込みとThree.js実装が含まれています
+
+    /* ------------------------------------------------
+       ELASTIC STRING
+       ------------------------------------------------ */
+    class ElasticString {
+      constructor(canvasId) {
+        this.canvas = document.getElementById(canvasId);
+        if (!this.canvas) return;
+        this.ctx = this.canvas.getContext('2d');
+        this.mouse = { x: 0, y: 0, isDown: false };
+        this.resize(); 
+        this.tension = 0.4; 
+        this.dampening = 0.9;
+        window.addEventListener('resize', () => this.resize());
+        this.canvas.addEventListener('mousemove', (e) => this.onMove(e));
+        this.canvas.addEventListener('mouseleave', () => { this.mouse.isDown = false; });
+        this.animate();
+      }
+      resize() {
+        this.width = this.canvas.parentElement.offsetWidth;
+        this.height = this.canvas.parentElement.offsetHeight || 100;
+        this.canvas.width = this.width; 
+        this.canvas.height = this.height;
+        this.cp = { 
+          x: this.width/2, 
+          y: this.height/2, 
+          vx: 0, 
+          vy: 0, 
+          targetX: this.width/2, 
+          targetY: this.height/2 
+        };
+      }
+      onMove(e) {
+        const rect = this.canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left; 
+        const y = e.clientY - rect.top;
+        this.mouse.x = x;
+        this.mouse.y = y;
+        
+        // マウスが線の近く（50px以内）にあるかチェック
+        const distanceToLine = Math.abs(y - this.cp.y);
+        if (distanceToLine < 80) { 
+          this.mouse.isDown = true; 
+          // より強く反応させる
+          const pullStrength = (80 - distanceToLine) / 80; // 0-1の値
+          this.cp.y += (y - this.cp.y) * pullStrength * 0.3;
+          this.cp.x += (x - this.cp.x) * pullStrength * 0.2;
+        } else { 
+          this.mouse.isDown = false; 
+        }
+      }
+      update() {
+        if (this.mouse.isDown) {
+          // マウスに引っ張られている時は少しだけバウンス
+          const dx = this.mouse.x - this.cp.x;
+          const dy = this.mouse.y - this.cp.y;
+          this.cp.vx += dx * 0.15;
+          this.cp.vy += dy * 0.15;
+        } else {
+          // 元の位置に戻ろうとする力
+          const forceY = (this.cp.targetY - this.cp.y) * this.tension;
+          this.cp.vy += forceY; 
+          const forceX = (this.width/2 - this.cp.x) * 0.1;
+          this.cp.vx += forceX;
+        }
+        // 減衰を適用
+        this.cp.vy *= this.dampening; 
+        this.cp.y += this.cp.vy;
+        this.cp.vx *= this.dampening; 
+        this.cp.x += this.cp.vx;
+      }
+      draw() {
+        this.ctx.clearRect(0, 0, this.width, this.height);
+        this.ctx.beginPath(); 
+        this.ctx.moveTo(0, this.height/2);
+        this.ctx.quadraticCurveTo(this.cp.x, this.cp.y, this.width, this.height/2);
+        this.ctx.lineWidth = 1; 
+        this.ctx.strokeStyle = '#ccc'; 
+        this.ctx.stroke();
+        this.ctx.fillStyle = '#007aff';
+        this.ctx.beginPath(); 
+        this.ctx.arc(0, this.height/2, 3, 0, Math.PI*2);
+        this.ctx.arc(this.width, this.height/2, 3, 0, Math.PI*2);
+        this.ctx.fill();
+      }
+      animate() { 
+        this.update(); 
+        this.draw(); 
+        requestAnimationFrame(() => this.animate()); 
+      }
+    }
+    new ElasticString('string-canvas-1');
+    new ElasticString('string-canvas-2');
+    };
+    
+    // Start after window load event
+    window.addEventListener('load', initGearScripts);
+  </script>
+</Layout>
+
+<style>
+  /* チャプター2のスタイル */
+  :root {
+    --bg-color: #f4f6f8;
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-sub: #64748b;
+    --accent-color: #007aff;
+    --line-color: #cbd5e1;
+  }
+
+  body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+
+  .font-mincho { font-family: 'Zen Old Mincho', serif; }
+  .font-tech { font-family: 'Space Grotesk', sans-serif; }
+  .font-code { font-family: 'Fira Code', monospace; }
+
+  .noise {
+    position: fixed; inset: 0; z-index: 90; pointer-events: none;
+    background: url('https://grainy-gradients.vercel.app/noise.svg');
+    opacity: 0.03;
+  }
+
+  .bg-grid {
+    position: fixed; inset: 0; z-index: -1;
+    background-image: 
+      linear-gradient(rgba(0,122,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,122,255,0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+  }
+
+  /* 他のスタイルは元のHTMLから継承 */
+  .loader-wrap {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+    z-index: 9999; background: #0f172a;
+    display: flex; justify-content: center; align-items: center;
+    color: white; pointer-events: none;
+  }
+
+  .loader-text { overflow: hidden; display: flex; gap: 0.5rem; }
+  .loader-char { display: inline-block; transform: translateY(100%); color: var(--accent-color); }
+
+  .nav-placeholder { min-height: 35vh; margin-bottom: 3rem; position: relative; z-index: 50; }
+  
+  .filter-nav {
+    z-index: 50;
+  }
+  
+  /* pos-topの時だけtransitionを有効化 */
+  .filter-nav.pos-top { 
+    width: 100%; 
+    padding: 2rem 0; 
+    background: transparent;
+    transition: opacity 0.3s ease;
+  }
+  
+  /* pos-sideの時はtransitionなし（GSAPで制御） */
+  .filter-nav.pos-side {
+    transition: none !important;
+  }
+  
+  .nav-grid-layout {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem;
+    max-width: 1200px; margin: 0 auto; padding: 0 1.5rem;
+  }
+  @media (min-width: 1024px) { .nav-grid-layout { grid-template-columns: repeat(5, 1fr); } }
+
+  .nav-category-item {
+    display: flex; flex-direction: column; gap: 0.8rem;
+    border-left: 1px solid var(--line-color); padding-left: 1.5rem;
+  }
+  .nav-desc { font-size: 0.7rem; color: var(--text-sub); line-height: 1.6; }
+  
+  .sort-guide-area {
+    grid-column: 1 / -1; margin-top: 3rem; padding-top: 2rem;
+    border-top: 1px solid var(--line-color);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+
+  .filter-nav.pos-side {
+    position: fixed; top: 0; left: 0; width: 70px; height: 100vh;
+    flex-direction: column; justify-content: center; padding: 2rem 0;
+    border-right: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.95);
+    gap: 1.5rem; align-items: center; box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
+  .filter-nav.pos-side .nav-grid-layout { display: flex; flex-direction: column; gap: 1.5rem; width: 100%; align-items: center; }
+  .filter-nav.pos-side .nav-category-item { border: none; padding: 0; width: 100%; align-items: center; }
+  .filter-nav.pos-side .nav-desc, .filter-nav.pos-side .sort-guide-area { display: none; }
+  
+  /* サイドメニュー用ビュー切り替えボタン */
+  .side-view-toggle {
+    display: none;
+  }
+  
+  .filter-nav.pos-side .side-view-toggle {
+    display: flex;
+    position: static;
+    margin-top: auto;
+    width: 100%;
+    padding: 1rem 0;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .side-view-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-sub);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+  }
+  
+  .side-view-btn:hover {
+    background: rgba(0, 122, 255, 0.1);
+    color: var(--accent-color);
+    border-color: rgba(0, 122, 255, 0.2);
+  }
+  
+  .side-view-btn.active {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+  }
+  
+  .filter-nav.pos-side .side-view-btn {
+    width: 100%;
+    border-radius: 4px;
+  }
+
+  .tech-btn {
+    position: relative; background: transparent; color: var(--text-main);
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1rem;
+    letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer;
+    transition: color 0.2s; display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0;
+  }
+  .tech-btn:hover, .tech-btn.active { color: var(--accent-color); }
+  
+  .filter-nav.pos-side .tech-btn {
+    flex-direction: column; gap: 0; padding: 0; width: 100%; height: 50px; justify-content: center;
+    font-size: 0.6rem; color: var(--text-sub);
+  }
+  .filter-nav.pos-side .tech-btn:hover, .filter-nav.pos-side .tech-btn.active {
+    color: var(--text-main); transform: translateX(5px);
+  }
+  .filter-nav.pos-side .tech-btn.active::before {
+     content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+     width: 3px; height: 20px; background: var(--accent-color);
+  }
+  
+  .btn-icon { display: none; }
+  .filter-nav.pos-side .btn-icon { display: block; width: 20px; height: 20px; margin-bottom: 4px; }
+  .btn-text { display: block; }
+  .filter-nav.pos-side .btn-text { display: none; }
+  
+  .filter-nav.pos-side .tech-btn:hover .btn-text {
+    display: block; position: absolute; left: 60px; background: #0f172a; color: #fff;
+    padding: 4px 8px; border-radius: 4px; opacity: 1; pointer-events: none; font-size: 0.7rem; z-index: 100;
+  }
+
+  /* ============================================
+     GRID MODE: Bento Grid風の雑誌レイアウト
+     ============================================ */
+  .grid-container {
+    display: grid; 
+    grid-template-columns: repeat(12, 1fr); 
+    gap: 1rem;
+    grid-auto-flow: dense; /* 空きスペースを埋める */
+    padding-bottom: 4rem;
+    will-change: contents;
+    transform: translateZ(0); /* GPU加速を有効化 */
+  }
+  
+  /* モバイル: すべてのカードをフル幅に統一（積み重ね順序を保持） */
+  @media (max-width: 767px) {
+    .grid-container .lab-card {
+      grid-column: span 12 !important;
+      grid-row: span 1 !important;
+      height: auto !important;
+    }
+    .grid-container .lab-card .card-img-wrap {
+      height: 200px !important;
+    }
+  }
+  
+  /* タブレット: 2列レイアウト */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .grid-container .lab-card[class*="col-span-"] {
+      /* col-span-12はそのまま、それ以外は6列に統一 */
+    }
+    .grid-container .lab-card:not([class*="col-span-12"]) {
+      grid-column: span 6 !important;
+    }
+  }
+  
+  /* デスクトップ: Bento Gridパターンを適用 */
+  @media (min-width: 1024px) {
+    .grid-container {
+      gap: 1.25rem; /* 少し大きめのギャップ */
+    }
+    
+    /* 大きなカード（ヒーロー）のスタイル強化 */
+    .grid-container .lab-card.col-span-12 {
+      min-height: 400px;
+    }
+    
+    /* 横長カード */
+    .grid-container .lab-card[class*="col-span-8"] {
+      min-height: 300px;
+    }
+    
+    /* 縦長カード */
+    .grid-container .lab-card[class*="col-span-4"].row-span-2 {
+      min-height: 380px;
+    }
+    
+    /* 標準カード */
+    .grid-container .lab-card[class*="col-span-6"] {
+      min-height: 260px;
+    }
+  }
+  
+  /* ============================================
+     LIST MODE: System Log & Data Table Design (完全に独立)
+     ============================================ */
+  .list-container { 
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding-bottom: 4rem;
+  }
+
+  .list-container .list-row-item {
+    position: relative;
+    display: grid !important;
+    grid-template-columns: 120px 80px 1fr auto;
+    gap: 2rem; /* 等間隔に統一 */
+    align-items: center;
+    padding: 1.5rem 2rem; /* 等間隔のパディング */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08); /* 境目を少し濃く */
+    background: #ffffff;
+    height: auto !important;
+    min-height: 90px; /* 等間隔の高さ */
+    margin: 0;
+    border-radius: 0;
+    border: none !important;
+    box-shadow: none !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+    overflow: hidden;
+  }
+  
+  /* 最後の項目のborderを消す */
+  .list-container .list-row-item:last-child {
+    border-bottom: none;
+  }
+  
+  /* ホバー時の左端アクセントバー */
+  .list-container .list-row-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background: var(--accent-color, #007aff);
+    transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 1;
+  }
+  
+  .list-container .list-row-item:hover {
+    background: #fafbfc !important;
+    border-bottom-color: rgba(0, 0, 0, 0.12) !important;
+    transform: none !important;
+  }
+  
+  /* ホバー時の左端アクセントバー - カテゴリー色に合わせる */
+  .list-container .list-row-item:hover::before {
+    width: 3px;
+  }
+  .list-container .list-row-item[data-category="daw"]:hover::before {
+    background: #007aff;
+  }
+  .list-container .list-row-item[data-category="gear"]:hover::before {
+    background: #34c759;
+  }
+  .list-container .list-row-item[data-category="plugin"]:hover::before {
+    background: #af52de;
+  }
+  .list-container .list-row-item[data-category="biz"]:hover::before {
+    background: #ff9500;
+  }
+  .list-container .list-row-item[data-category="tips"]:hover::before {
+    background: #ff2d55;
+  }
+  .list-container .list-row-item[data-category="essay"]:hover::before {
+    background: #5ac8fa;
+  }
+  
+  /* ホバー時のサムネイル浮き出し */
+  .list-container .list-row-item .list-thumbnail {
+    position: absolute;
+    right: -220px;
+    top: 50%;
+    transform: translateY(-50%) scale(0.85);
+    width: 200px;
+    height: 120px;
+    border-radius: 8px;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 10;
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    background: #f1f5f9;
+  }
+  
+  .list-container .list-row-item .list-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(30%);
+    transition: filter 0.3s ease;
+  }
+  
+  .list-container .list-row-item:hover .list-thumbnail {
+    right: 2rem;
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+  
+  .list-container .list-row-item:hover .list-thumbnail img {
+    filter: grayscale(0%);
+  }
+  
+  /* Column 1: No/Date */
+  .list-container .list-row-item .list-date {
+    font-family: 'Fira Code', 'Space Grotesk', monospace;
+    font-size: 0.7rem;
+    color: #94a3b8;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    transition: color 0.3s ease;
+    grid-column: 1;
+  }
+  
+  .list-container .list-row-item:hover .list-date {
+    color: var(--accent-color, #007aff);
+  }
+  
+  /* Column 2: Status/Category Badge - カテゴリー色分け */
+  .list-container .list-row-item .list-category {
+    grid-column: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem 0.75rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    border: 1px solid;
+    background: transparent;
+  }
+  
+  /* カテゴリーごとの色分け */
+  .list-container .list-row-item[data-category="daw"] .list-category {
+    color: #007aff;
+    border-color: rgba(0, 122, 255, 0.3);
+    background: rgba(0, 122, 255, 0.05);
+  }
+  .list-container .list-row-item[data-category="gear"] .list-category {
+    color: #34c759;
+    border-color: rgba(52, 199, 89, 0.3);
+    background: rgba(52, 199, 89, 0.05);
+  }
+  .list-container .list-row-item[data-category="plugin"] .list-category {
+    color: #af52de;
+    border-color: rgba(175, 82, 222, 0.3);
+    background: rgba(175, 82, 222, 0.05);
+  }
+  .list-container .list-row-item[data-category="biz"] .list-category {
+    color: #ff9500;
+    border-color: rgba(255, 149, 0, 0.3);
+    background: rgba(255, 149, 0, 0.05);
+  }
+  .list-container .list-row-item[data-category="tips"] .list-category {
+    color: #ff2d55;
+    border-color: rgba(255, 45, 85, 0.3);
+    background: rgba(255, 45, 85, 0.05);
+  }
+  .list-container .list-row-item[data-category="essay"] .list-category {
+    color: #5ac8fa;
+    border-color: rgba(90, 200, 250, 0.3);
+    background: rgba(90, 200, 250, 0.05);
+  }
+  
+  .list-container .list-row-item:hover .list-category {
+    background: currentColor;
+    color: #ffffff;
+    border-color: currentColor;
+  }
+  
+  /* Column 3: Title (with slide effect) */
+  .list-container .list-row-item .list-title {
+    grid-column: 3;
+    font-family: 'Zen Old Mincho', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.6;
+    color: #0f172a;
+    margin: 0;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s ease;
+    transform: translateX(0);
+  }
+  
+  .list-container .list-row-item:hover .list-title {
+    transform: translateX(8px);
+    color: var(--accent-color, #007aff);
+  }
+  
+  /* Column 4: Meta (Tags, etc.) */
+  .list-container .list-row-item .list-meta {
+    grid-column: 4;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.65rem;
+    color: #64748b;
+    justify-self: end;
+  }
+  
+  .list-container .list-row-item .list-meta .meta-tag {
+    padding: 0.2rem 0.5rem;
+    background: rgba(0, 122, 255, 0.08);
+    color: var(--accent-color, #007aff);
+    border-radius: 3px;
+    font-size: 0.6rem;
+  }
+
+  /* Bento Grid用のカラムスパンクラス（全ブレークポイントで有効） */
+  .col-span-3 { grid-column: span 3; }
+  .col-span-4 { grid-column: span 4; }
+  .col-span-6 { grid-column: span 6; }
+  .col-span-8 { grid-column: span 8; }
+  .col-span-12 { grid-column: span 12; }
+  .row-span-2 { grid-row: span 2; }
+  
+  /* モバイルではすべてフル幅に上書き */
+  @media (max-width: 767px) {
+    .col-span-3,
+    .col-span-4,
+    .col-span-6,
+    .col-span-8 {
+      grid-column: span 12 !important;
+    }
+    .row-span-2 {
+      grid-row: span 1 !important;
+    }
+  }
+
+  /* CTA SECTION: CONTROL ROOM */
+  .cta-section-wrap {
+    position: relative;
+    border-top: 1px solid var(--line-color);
+    border-bottom: 1px solid var(--line-color);
+    padding: 4rem 0;
+    margin: 4rem 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%);
+  }
+
+  .cta-widget-container {
+    min-height: 400px;
+  }
+
+  @media (max-width: 1023px) {
+    .cta-section-wrap .grid {
+      gap: 2rem;
+    }
+    .cta-widget-container {
+      min-height: auto;
+    }
+  }
+
+  /* network-canvasスタイルはSignalFlowLazyコンポーネント内で定義されています */
+
+  .profile-section {
+    background: #fff; padding: 4rem 2rem; margin-top: 4rem;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .string-canvas { 
+    width: 100%; 
+    height: 100px; 
+    cursor: grab; 
+    display: block; 
+    opacity: 0.6; 
+    pointer-events: auto;
+  }
+  .string-canvas:active { 
+    cursor: grabbing; 
+  }
+</style>

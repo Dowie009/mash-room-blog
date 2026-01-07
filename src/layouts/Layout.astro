@@ -3,9 +3,15 @@ import '../styles/global.css';
 
 interface Props {
   title?: string;
+  version?: string;
+  canonicalUrl?: string;
 }
 
-const { title = 'SAPPORO MASH ROOM STUDIO (Blog Archive)' } = Astro.props;
+const { 
+  title = 'SAPPORO MASH ROOM STUDIO (Blog Archive)',
+  version,
+  canonicalUrl 
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -14,8 +20,29 @@ const { title = 'SAPPORO MASH ROOM STUDIO (Blog Archive)' } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="description" content="物語（Story）とテック（Tech）の融合。夕暮れのトーンで紡ぐブログアーカイブ。" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {/* favicon.svgが存在しない場合はコメントアウト */}
+    {/* <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> */}
     <meta name="generator" content={Astro.generator} />
+    
+    {/* キャッシュ制御: 検索エンジンに最新版を取得させる */}
+    <meta name="robots" content="noarchive, noimageindex" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    
+    {/* バージョン情報（指定がある場合のみ） */}
+    {version && (
+      <>
+        <meta name="version" content={version} />
+        <meta name="last-modified" content={new Date().toISOString()} />
+      </>
+    )}
+    
+    {/* Canonical URL（指定がある場合のみ） */}
+    {canonicalUrl && (
+      <link rel="canonical" href={canonicalUrl} />
+    )}
+    
     <title>{title}</title>
     
     <!-- Fonts -->
@@ -31,6 +58,7 @@ const { title = 'SAPPORO MASH ROOM STUDIO (Blog Archive)' } = Astro.props;
     <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
     <script is:inline src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
     <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
   </body>

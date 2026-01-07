@@ -1,0 +1,173 @@
+---
+// Signal Flow セクション - 遅延読み込み対応
+---
+
+<div class="signal-flow-container" id="signal-flow-container">
+  <canvas id="network-canvas" class="network-canvas"></canvas>
+  <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+    <span class="font-tech text-6xl text-gray-200/50 font-bold">SIGNAL_FLOW</span>
+  </div>
+</div>
+
+<script>
+  // 遅延読み込み用のIntersection Observer
+  const initSignalFlow = async () => {
+    const container = document.getElementById('signal-flow-container');
+    if (!container) return;
+
+    // Intersection Observerでビューポートに入った時のみ初期化
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(async (entry) => {
+        if (entry.isIntersecting) {
+          observer.disconnect();
+          
+          // Three.jsを動的インポート
+          try {
+            const module = await import('../components/SignalFlowThree.js');
+            const SignalFlowThree = module.SignalFlowThree || module.default?.SignalFlowThree || module.default;
+            const signalFlow = new SignalFlowThree('signal-flow-container');
+            await signalFlow.init();
+            
+            // クリーンアップ用に保存（ページ遷移時に破棄）
+            window.__signalFlowInstance = signalFlow;
+          } catch (error) {
+            console.error('Failed to load Three.js Signal Flow:', error);
+            // フォールバック: Canvas 2D実装を維持
+            initCanvas2DFallback();
+          }
+        }
+      });
+    }, {
+      rootMargin: '100px' // 100px手前から読み込み開始
+    });
+
+    observer.observe(container);
+  };
+
+  // Canvas 2Dフォールバック（既存の実装）
+  const initCanvas2DFallback = () => {
+    const canvas = document.getElementById('network-canvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    let width, height, particles = [];
+    let mouse = { x: 0, y: 0, isActive: false };
+
+    function initNetwork() {
+      width = canvas.width = canvas.offsetWidth;
+      height = canvas.height = canvas.offsetHeight;
+      particles = [];
+      for(let i=0; i<30; i++) {
+        particles.push({
+          x: Math.random() * width, 
+          y: Math.random() * height,
+          vx: (Math.random()-0.5)*0.5, 
+          vy: (Math.random()-0.5)*0.5,
+          size: Math.random()*2 + 1,
+          baseSize: Math.random()*2 + 1
+        });
+      }
+    }
+
+    function setupMouseEvents() {
+      canvas.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+        mouse.isActive = true;
+      }, { passive: true });
+      
+      canvas.addEventListener('mouseleave', () => {
+        mouse.isActive = false;
+      }, { passive: true });
+    }
+
+    setupMouseEvents();
+
+    function drawNetwork() {
+      ctx.clearRect(0,0,width,height);
+      ctx.fillStyle = '#007aff'; 
+      ctx.strokeStyle = 'rgba(0,122,255,0.2)';
+      
+      particles.forEach((p, i) => {
+        if (mouse.isActive && width > 0 && height > 0) {
+          const dx = mouse.x - p.x;
+          const dy = mouse.y - p.y;
+          const distance = Math.hypot(dx, dy);
+          
+          if (distance > 0 && distance < 150) {
+            if (distance < 100) {
+              const force = (100 - distance) / 100;
+              p.vx -= (dx / distance) * force * 0.8;
+              p.vy -= (dy / distance) * force * 0.8;
+            } else if (distance < 150) {
+              const followForce = (150 - distance) / 50 * 0.002;
+              p.vx += dx * followForce;
+              p.vy += dy * followForce;
+            }
+            
+            const sizeMultiplier = 1 + (100 - Math.min(distance, 100)) / 100 * 1.0;
+            p.size = p.baseSize * sizeMultiplier;
+          } else {
+            p.size += (p.baseSize - p.size) * 0.15;
+          }
+        } else {
+          p.size += (p.baseSize - p.size) * 0.15;
+        }
+        
+        p.x += p.vx; 
+        p.y += p.vy;
+        if(p.x < 0 || p.x > width) p.vx *= -1;
+        if(p.y < 0 || p.y > height) p.vy *= -1;
+        
+        ctx.beginPath(); 
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); 
+        ctx.fill();
+        
+        for(let j=i+1; j<particles.length; j++) {
+          const p2 = particles[j];
+          const d = Math.hypot(p.x-p2.x, p.y-p2.y);
+          if(d < 100) {
+            ctx.lineWidth = 1 - d/100;
+            ctx.beginPath(); 
+            ctx.moveTo(p.x, p.y); 
+            ctx.lineTo(p2.x, p2.y); 
+            ctx.stroke();
+          }
+        }
+      });
+      requestAnimationFrame(drawNetwork);
+    }
+
+    window.addEventListener('resize', () => {
+      initNetwork();
+    }, { passive: true });
+
+    initNetwork(); 
+    drawNetwork();
+  };
+
+  // DOM読み込み後に初期化
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSignalFlow);
+  } else {
+    initSignalFlow();
+  }
+</script>
+
+<style>
+  .signal-flow-container {
+    position: relative;
+    width: 100%;
+    height: 200px;
+  }
+  
+  .network-canvas {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0.5;
+  }
+</style>
