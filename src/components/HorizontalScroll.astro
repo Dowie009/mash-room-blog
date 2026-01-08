@@ -54,17 +54,24 @@
             </div>
         </div>
 
-        <!-- Gear Panel (Optimized Layout) -->
+        <!-- Gear Panel (Optimized Layout) - スクロール連動カラー化 -->
         <div class="h-panel" id="panel-gear">
             <div class="container mx-auto px-8 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center h-full max-w-6xl">
-                <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl" style="--img-height: 60vh;">
-                    <img src="/images/カテゴリサムネ　ノケ物語.png"  
-                        class="w-full h-full object-cover grayscale group-hover:grayscale-0 rounded-sm transition-all duration-700" alt="Gear">
-                    <a href="#" class="absolute -bottom-6 -right-6 bg-white text-black font-mono text-xs font-bold px-6 py-3 hover:bg-[var(--accent-color)] hover:text-white transition-colors pointer-events-auto shadow-lg">
-                        CHECK GEARS
+                <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl gear-image-wrapper" style="--img-height: 60vh;">
+                    <img src="/images/カテゴリサムネ　ノケ物語.png" id="gear-panel-image"
+                        class="w-full h-full object-cover rounded-sm transition-all duration-700 gear-colorize-img" alt="Gear">
+                    <!-- GEAR LAB ボタン：ホバーで画像が動く -->
+                    <a href="/gear" class="gear-lab-button absolute -bottom-6 -right-6 bg-white text-black font-mono text-xs font-bold px-6 py-3 hover:bg-[var(--accent-color)] hover:text-white transition-all duration-300 pointer-events-auto shadow-lg group/btn">
+                        <span class="inline-flex items-center gap-2">
+                            <span>GEAR LAB</span>
+                            <svg class="w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                            </svg>
+                        </span>
                     </a>
                 </div>
-                <div class="merge-text-wrapper h-[60vh] md:h-[70vh] flex items-start justify-start pl-8 md:pl-16">
+                <!-- 画像とテキストの間のGEAR LABリンクボタン -->
+                <div class="merge-text-wrapper h-[60vh] md:h-[70vh] flex items-start justify-start pl-8 md:pl-16 relative">
                     <div class="tategaki-box flex flex-col justify-start chapter1-text-group" style="--text-scale: 2.0; --text-offset-x: 50px; --text-offset-y: 30px;">
                         <span class="text-[var(--accent-color)] font-mono text-xs font-bold tracking-widest mb-8 block tategaki-char" style="writing-mode: horizontal-tb;">CHAPTER 02</span>
                         <h3 class="font-mincho text-3xl md:text-4xl font-black mb-12 leading-relaxed">
@@ -215,8 +222,46 @@
         overflow: hidden;
         transition: border-color 0.3s;
     }
-    .holo-content:hover { 
-        border-color: var(--accent-color); 
+    .holo-content:hover {
+        border-color: var(--accent-color);
+    }
+
+    /* GEAR Panel スクロール連動カラー化 */
+    .gear-colorize-img {
+        filter: grayscale(100%);
+        transition: filter 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .gear-colorize-img.colorized {
+        filter: grayscale(0%);
+    }
+
+    /* ホバー時も即座にカラー化 */
+    .gear-image-wrapper:hover .gear-colorize-img {
+        filter: grayscale(0%);
+    }
+
+    /* GEAR LAB ボタン：スタイリッシュなデザイン */
+    .gear-lab-button {
+        position: absolute;
+        bottom: -1.5rem;
+        right: -1.5rem;
+        background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+        backdrop-filter: blur(10px);
+        transform: translateY(0);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .gear-lab-button:hover {
+        transform: translateY(-4px) scale(1.05);
+        box-shadow: 0 8px 30px rgba(0, 122, 255, 0.3), 0 0 0 2px var(--accent-color);
+    }
+
+    /* ボタンホバー時に画像が少し動く */
+    .gear-image-wrapper:has(.gear-lab-button:hover) img {
+        transform: scale(1.02) translateX(-5px);
     }
 
     /* Skeleton Text Box - 黒い枠だけ、背景は透明 */
@@ -237,6 +282,11 @@
         const wrapper = document.querySelector('.horizontal-wrapper');
     const container = document.querySelector('.horizontal-container');
     const panels = gsap.utils.toArray('.h-panel');
+
+    /* ------------------------------------------------
+       GEAR Panel スクロール連動カラー化
+       ------------------------------------------------ */
+    const gearImage = document.getElementById('gear-panel-image');
     
     const tl = gsap.timeline({
         scrollTrigger: {
@@ -276,6 +326,15 @@
                 { y: 0, opacity: 1, scale: 1, stagger: 0.03, duration: 0.4, ease: "back.out(1.7)" },
                 "<+=0.05"
             );
+
+            // GEAR Panel (i=2) の場合、スクロール連動でゆっくりカラー化
+            if (panel.id === 'panel-gear' && gearImage) {
+                tl.to(gearImage, {
+                    filter: 'grayscale(0%)',
+                    duration: 0.8,
+                    ease: "power2.out"
+                }, "<+=0.2");
+            }
         }
 
         // 4. Wait - 待機時間を削除
