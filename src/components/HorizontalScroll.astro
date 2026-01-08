@@ -22,16 +22,24 @@
             </div>
         </div>
 
-        <!-- Story Panel (Optimized Layout) -->
+        <!-- Story Panel (Optimized Layout) - Chapter 01 -->
         <div class="h-panel" id="panel-story">
             <!-- Increased padding and gap for better spacing -->
             <div class="container mx-auto px-8 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center h-full max-w-6xl">
-                <!-- Image: Restricted height, maintained aspect ratio -->
-                <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl" style="--img-height: 60vh;">
-                    <img src="/images/Blog_00.png" 
-                        class="w-full h-full object-cover grayscale group-hover:grayscale-0 rounded-sm transition-all duration-700" alt="Story">
-                    <a href="#" class="absolute -bottom-6 -right-6 bg-white text-black font-mono text-xs font-bold px-6 py-3 hover:bg-[var(--accent-color)] hover:text-white transition-colors pointer-events-auto shadow-lg">
-                        READ STORIES
+                <!-- Image: 統一デザインのラッパー -->
+                <div class="chapter-panel-wrapper relative" style="--img-height: 60vh;">
+                    <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl">
+                        <img src="/images/Blog_00.png"
+                            class="w-full h-full object-cover grayscale group-hover:grayscale-0 rounded-sm transition-all duration-700" alt="Story">
+                    </div>
+                    <!-- STORY ボタン -->
+                    <a href="#" class="chapter-lab-button">
+                        <span class="inline-flex items-center gap-2">
+                            <span>STORY</span>
+                            <svg class="w-4 h-4 transform transition-transform chapter-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                            </svg>
+                        </span>
                     </a>
                 </div>
                 <!-- Text: Adjusted padding and font sizes -->
@@ -57,14 +65,17 @@
         <!-- Gear Panel (Optimized Layout) - スクロール連動カラー化 -->
         <div class="h-panel" id="panel-gear">
             <div class="container mx-auto px-8 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center h-full max-w-6xl">
-                <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl gear-image-wrapper" style="--img-height: 60vh;">
-                    <img src="/images/カテゴリサムネ　ノケ物語.png" id="gear-panel-image"
-                        class="w-full h-full object-cover rounded-sm transition-all duration-700 gear-colorize-img" alt="Gear">
-                    <!-- GEAR LAB ボタン：ホバーで画像が動く -->
-                    <a href="/gear" class="gear-lab-button absolute -bottom-6 -right-6 bg-white text-black font-mono text-xs font-bold px-6 py-3 hover:bg-[var(--accent-color)] hover:text-white transition-all duration-300 pointer-events-auto shadow-lg group/btn">
+                <!-- 画像とボタンを包むラッパー（overflow: visible） -->
+                <div class="gear-panel-wrapper relative" style="--img-height: 60vh;">
+                    <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl gear-image-wrapper">
+                        <img src="/images/カテゴリサムネ　ノケ物語.png" id="gear-panel-image"
+                            class="w-full h-full object-cover rounded-sm transition-all duration-700 gear-colorize-img" alt="Gear">
+                    </div>
+                    <!-- GEAR LAB ボタン：親要素の外に配置 -->
+                    <a href="/gear" class="gear-lab-button">
                         <span class="inline-flex items-center gap-2">
                             <span>GEAR LAB</span>
-                            <svg class="w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4 transform transition-transform gear-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                             </svg>
                         </span>
@@ -87,14 +98,23 @@
             </div>
         </div>
 
-        <!-- Tech Panel (Optimized Layout) -->
+        <!-- Tech Panel (Optimized Layout) - Chapter 03 -->
         <div class="h-panel" id="panel-tech">
             <div class="container mx-auto px-8 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center h-full max-w-6xl">
-                <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl" style="--img-height: 60vh;">
-                    <img src="/images/ノケ物語イラスト.png" 
-                        class="w-full h-full object-cover grayscale group-hover:grayscale-0 rounded-sm transition-all duration-700" alt="Tech">
-                    <a href="#" class="absolute -bottom-6 -right-6 bg-white text-black font-mono text-xs font-bold px-6 py-3 hover:bg-[var(--accent-color)] hover:text-white transition-colors pointer-events-auto shadow-lg">
-                        EXPLORE LAB
+                <!-- Image: 統一デザインのラッパー -->
+                <div class="chapter-panel-wrapper relative" style="--img-height: 60vh;">
+                    <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl">
+                        <img src="/images/ノケ物語イラスト.png"
+                            class="w-full h-full object-cover grayscale group-hover:grayscale-0 rounded-sm transition-all duration-700" alt="Tech">
+                    </div>
+                    <!-- TECH LAB ボタン -->
+                    <a href="#" class="chapter-lab-button">
+                        <span class="inline-flex items-center gap-2">
+                            <span>TECH LAB</span>
+                            <svg class="w-4 h-4 transform transition-transform chapter-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                            </svg>
+                        </span>
                     </a>
                 </div>
                 <div class="merge-text-wrapper h-[60vh] md:h-[70vh] flex items-start justify-start pl-8 md:pl-16">
@@ -226,10 +246,23 @@
         border-color: var(--accent-color);
     }
 
+    /* GEAR Panel ラッパー */
+    .gear-panel-wrapper {
+        position: relative;
+        overflow: visible !important;
+        height: var(--img-height, 60vh);
+        aspect-ratio: 3/4;
+    }
+
+    .gear-panel-wrapper .merge-img-wrapper {
+        height: 100% !important;
+        width: 100% !important;
+    }
+
     /* GEAR Panel スクロール連動カラー化 */
     .gear-colorize-img {
         filter: grayscale(100%);
-        transition: filter 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: filter 1.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s ease;
     }
 
     .gear-colorize-img.colorized {
@@ -237,31 +270,99 @@
     }
 
     /* ホバー時も即座にカラー化 */
-    .gear-image-wrapper:hover .gear-colorize-img {
+    .gear-panel-wrapper:hover .gear-colorize-img {
         filter: grayscale(0%);
     }
 
     /* GEAR LAB ボタン：スタイリッシュなデザイン */
     .gear-lab-button {
         position: absolute;
-        bottom: -1.5rem;
-        right: -1.5rem;
+        bottom: -20px;
+        right: -20px;
+        z-index: 100;
+        display: inline-flex;
+        align-items: center;
+        padding: 12px 24px;
         background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+        color: #000;
+        font-family: 'Space Grotesk', monospace;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
         border: 1px solid rgba(0, 0, 0, 0.1);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
         backdrop-filter: blur(10px);
         transform: translateY(0);
         transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: auto;
     }
 
     .gear-lab-button:hover {
         transform: translateY(-4px) scale(1.05);
-        box-shadow: 0 8px 30px rgba(0, 122, 255, 0.3), 0 0 0 2px var(--accent-color);
+        background: var(--accent-color, #007aff);
+        color: #fff;
+        box-shadow: 0 8px 30px rgba(0, 122, 255, 0.4), 0 0 0 2px var(--accent-color);
+    }
+
+    .gear-lab-button:hover .gear-arrow {
+        transform: translateX(4px);
     }
 
     /* ボタンホバー時に画像が少し動く */
-    .gear-image-wrapper:has(.gear-lab-button:hover) img {
-        transform: scale(1.02) translateX(-5px);
+    .gear-panel-wrapper:hover .gear-colorize-img {
+        transform: scale(1.02);
+    }
+
+    /* Chapter 01 & 03 共通ラッパー */
+    .chapter-panel-wrapper {
+        position: relative;
+        overflow: visible !important;
+        height: var(--img-height, 60vh);
+        aspect-ratio: 3/4;
+    }
+
+    .chapter-panel-wrapper .merge-img-wrapper {
+        height: 100% !important;
+        width: 100% !important;
+    }
+
+    /* Chapter 01 & 03 ボタン */
+    .chapter-lab-button {
+        position: absolute;
+        bottom: -20px;
+        right: -20px;
+        z-index: 100;
+        display: inline-flex;
+        align-items: center;
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+        color: #000;
+        font-family: 'Space Grotesk', monospace;
+        font-size: 12px;
+        font-weight: 700;
+        text-decoration: none;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+        backdrop-filter: blur(10px);
+        transform: translateY(0);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: auto;
+    }
+
+    .chapter-lab-button:hover {
+        transform: translateY(-4px) scale(1.05);
+        background: var(--accent-color, #007aff);
+        color: #fff;
+        box-shadow: 0 8px 30px rgba(0, 122, 255, 0.4), 0 0 0 2px var(--accent-color);
+    }
+
+    .chapter-lab-button:hover .chapter-arrow {
+        transform: translateX(4px);
+    }
+
+    /* ホバー時に画像が少し拡大 */
+    .chapter-panel-wrapper:hover img {
+        transform: scale(1.02);
     }
 
     /* Skeleton Text Box - 黒い枠だけ、背景は透明 */
