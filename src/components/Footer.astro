@@ -79,6 +79,10 @@
               Events = Matter.Events;
 
         footerEngine = Engine.create();
+        // 適度な重力：見やすく、素早く落下
+        footerEngine.world.gravity.y = 1.2; // 適度な重力（速すぎず遅すぎず）
+        footerEngine.world.gravity.scale = 0.001; // 通常スケール
+
         footerRender = Render.create({
             element: footerCanvas,
             engine: footerEngine,
@@ -99,19 +103,23 @@
         const links = ['#', '#', '#']; 
 
         const blocks = [];
-        for (let i = 0; i < 120; i++) { 
-            const x = Math.random() * (window.innerWidth - 100) + 50;
-            const y = -Math.random() * 2500 - 100;
+        // ブロック数を減らして見やすく（120 → 40）
+        for (let i = 0; i < 40; i++) {
+            const x = Math.random() * (window.innerWidth - 150) + 75;
+            const y = -Math.random() * 1500 - 100; // 順番にジャラジャラ落ちてくる
             const typeIdx = Math.floor(Math.random() * 3);
-            
-            const block = Bodies.rectangle(x, y, 120, 60, {
-                chamfer: { radius: 8 },
-                restitution: 0.5,
+
+            const block = Bodies.rectangle(x, y, 140, 70, { // 少し大きめで見やすく
+                chamfer: { radius: 10 },
+                restitution: 0.15, // バウンドを最小限に
+                density: 0.002,
+                friction: 0.8, // 高摩擦で素早く安定
+                frictionAir: 0.02, // 空気抵抗を増やして落下速度を抑制
                 label: labels[typeIdx],
                 render: {
                     fillStyle: colors[typeIdx],
                     strokeStyle: '#ffffff',
-                    lineWidth: 1
+                    lineWidth: 2
                 }
             });
             block.urlLink = links[typeIdx];
@@ -156,7 +164,40 @@
         footerRunner = Runner.create();
         Runner.run(footerRunner, footerEngine);
         Render.run(footerRender);
-        
+
+        // ブロックが安定したら物理演算を停止（ずっと動き続けるのを防ぐ）
+        let stableFrames = 0;
+        const checkStability = () => {
+            if (!footerEngine || !footerRunner) return;
+
+            // 全ブロックの速度をチェック
+            let allSleeping = true;
+            blocks.forEach(block => {
+                const speed = Math.sqrt(block.velocity.x ** 2 + block.velocity.y ** 2);
+                if (speed > 0.1) { // 速度が0.1以上なら動いている
+                    allSleeping = false;
+                }
+            });
+
+            if (allSleeping) {
+                stableFrames++;
+                if (stableFrames > 120) { // 2秒安定したら停止（60fps × 2秒）
+                    Matter.Runner.stop(footerRunner);
+                    console.log('Footer physics stopped - blocks stable');
+                    return; // 監視終了
+                }
+            } else {
+                stableFrames = 0;
+            }
+
+            requestAnimationFrame(checkStability);
+        };
+
+        // 3秒後から安定性チェック開始（落下完了を待つ）
+        setTimeout(() => {
+            requestAnimationFrame(checkStability);
+        }, 3000);
+
         window.addEventListener('resize', () => {
             if(footerRender) {
                 footerRender.canvas.width = window.innerWidth;

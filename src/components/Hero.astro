@@ -150,13 +150,13 @@
                    ------------------------------------------------ */
                 if (typeof Lenis !== 'undefined') {
                     const lenis = new Lenis({
-                        duration: 1.5, // 1.2 → 1.5 より滑らかに
+                        duration: 0.8, // 0.8 で素早くスクロール（低いほど高速）
                         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // バターのようなイージング
                         smooth: true,
-                        lerp: 0.08, // 0.1がデフォルト、0.08でより吸い付く感じ（低いほど滑らか）
+                        lerp: 0.15, // 0.15 で追従を速く（高いほど即座に反応）
                         smoothTouch: true, // タッチデバイスでもスムーズ
-                        touchMultiplier: 1.5, // タッチ感度（デフォルト2.0、少し抑える）
-                        wheelMultiplier: 0.8, // ホイール感度（デフォルト1.0、少し抑えて滑らかに）
+                        touchMultiplier: 2.0, // タッチ感度を上げる
+                        wheelMultiplier: 1.2, // ホイール感度を上げて素早く
                         infinite: false, // 無限スクロールOFF（ページの端で止まる）
                     });
                     
@@ -362,7 +362,7 @@
                         trigger: ".hero-gate-container",
                         start: "top top",
                         end: "+=100%",
-                        scrub: 1.5, // 1 → 1.5 よりスムーズに（数値が大きいほど遅延が増えて滑らか）
+                        scrub: 0.5, // 0.5 で素早く反応！（低いほど即座に追従）
                         pin: true,
                         anticipatePin: 1, // ピン留めを予測して滑らかに
                         invalidateOnRefresh: true, // リフレッシュ時に再計算
@@ -391,9 +391,9 @@
                           Runner = Matter.Runner;
 
                     const engine = Engine.create();
-                    // 地球バージョン：重力を強くして、ブロックがジャラーンと落ちる
-                    engine.world.gravity.y = 1.0; // デフォルトの重力（地球の重力）
-                    engine.world.gravity.scale = 0.001; // 通常スケール
+                    // ジャラジャラ高速落下バージョン：重力を強くして、ブロックがジャラジャラっと素早く落ちる
+                    engine.world.gravity.y = 2.5; // 2.5倍の重力で高速落下
+                    engine.world.gravity.scale = 0.002; // スケールも2倍で加速
                     window.physicsEngine = engine; // グローバルに保存
                     
                     const render = Render.create({
@@ -426,13 +426,13 @@
 
                     const blocks = Array.from({ length: 30 }).map((_, i) => {
                         const x = Math.random() * (window.innerWidth - 200) + 100;
-                        const y = -Math.random() * 2000 - 200;
+                        const y = -Math.random() * 800 - 100; // 落下開始位置を近くして早く画面に登場
                         return Bodies.rectangle(x, y, 160 + Math.random()*40, 100 + Math.random()*20, {
                             chamfer: { radius: 12 },
-                            restitution: 0.4, // 適度な反発（バウンドしすぎない）
-                            density: 0.002, // 重いブロック（デフォルト0.001の2倍）
-                            friction: 0.3, // 適度な摩擦
-                            frictionAir: 0.01, // 空気抵抗少なめ（サクサク動く）
+                            restitution: 0.3, // バウンドを抑えて素早く安定
+                            density: 0.003, // より重く（落下加速）
+                            friction: 0.5, // 摩擦強めで素早く止まる
+                            frictionAir: 0.005, // 空気抵抗を減らして高速落下
                             render: {
                                 fillStyle: 'transparent',
                                 strokeStyle: i % 2 === 0 ? '#ff4d00' : '#ffffff',

@@ -257,6 +257,8 @@
     .gear-panel-wrapper .merge-img-wrapper {
         height: 100% !important;
         width: 100% !important;
+        opacity: 1 !important; /* 初期表示を確実に */
+        transform: none !important; /* 初期位置を正常に */
     }
 
     /* GEAR Panel スクロール連動カラー化 */
@@ -324,6 +326,13 @@
     .chapter-panel-wrapper .merge-img-wrapper {
         height: 100% !important;
         width: 100% !important;
+        opacity: 1 !important; /* 初期表示を確実に */
+        transform: none !important; /* 初期位置を正常に */
+    }
+
+    .chapter-panel-wrapper .merge-img-wrapper img,
+    .gear-panel-wrapper .merge-img-wrapper img {
+        opacity: 1 !important;
     }
 
     /* Chapter 01 & 03 ボタン */
@@ -393,7 +402,7 @@
         scrollTrigger: {
             trigger: wrapper,
             pin: true,
-            scrub: 0.8, // 1.2 → 0.8 さらに反応速く!
+            scrub: 0.6, // 0.6 で適度な追従速度（0.4と0.8の中間）
             anticipatePin: 1, // ピン留めを予測して滑らかに
             invalidateOnRefresh: true, // リフレッシュ時に再計算
             // スクロール距離をさらに短縮（1.0 → 0.5）倍縮める!
