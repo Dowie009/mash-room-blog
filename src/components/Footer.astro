@@ -5,8 +5,22 @@
 <!-- 5. FOOTER PHYSICS (Button Rain Re-Trigger) -->
 <section id="footer-physics-wrapper">
     <div id="footer-physics-canvas"></div>
-    
+
     <div class="footer-overlay relative z-50">
+        <!-- 3Fグリッチメニュー（ブロック落下後に登場） -->
+        <nav id="floor-guide-3f" class="floor-3f-menu mb-10">
+            <div class="flex items-center justify-center gap-4 flex-wrap">
+                <a data-target="#hero-section" class="glitch-menu-link" data-text="GATE">GATE</a>
+                <span class="menu-separator">|</span>
+                <a data-target="#horizontal-wrapper" class="glitch-menu-link" data-text="1F">1F</a>
+                <span class="menu-separator">|</span>
+                <a data-target="#new-post-section" class="glitch-menu-link" data-text="2F">2F</a>
+                <span class="menu-separator">|</span>
+                <a href="#" class="glitch-menu-link inactive" data-text="STORY">STORY</a>
+                <a href="/gear" class="glitch-menu-link" data-text="GEAR">GEAR</a>
+                <a href="#" class="glitch-menu-link inactive" data-text="TECH">TECH</a>
+            </div>
+        </nav>
         <p class="font-mono text-xs tracking-[0.5em] text-white/50 mb-8 animate-pulse">CHOOSE YOUR PATH</p>
         <div class="font-tech text-4xl font-bold text-white mb-4">
             CLICK FALLING BLOCKS
@@ -37,12 +51,171 @@
         width: 100%; 
         height: 100%; 
     }
-    .footer-overlay { 
-        position: relative; 
-        z-index: 10; 
-        pointer-events: none; 
-        text-align: center; 
-        mix-blend-mode: difference; 
+    .footer-overlay {
+        position: relative;
+        z-index: 10;
+        pointer-events: none;
+        text-align: center;
+        mix-blend-mode: difference;
+        /* 全体を3cm（約40px）上に移動 */
+        transform: translateY(-40px);
+    }
+
+    /* --- 3Fグリッチメニュー --- */
+    .floor-3f-menu {
+        opacity: 0;
+        transform: translateY(-20px);
+        pointer-events: none;
+        transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .floor-3f-menu.visible {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    .glitch-menu-link {
+        font-family: 'Space Grotesk', monospace;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        color: #fff;
+        text-decoration: none;
+        cursor: pointer;
+        position: relative;
+        padding: 8px 16px;
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.3);
+        border-radius: 2px;
+        transition: all 0.3s ease;
+        pointer-events: auto;
+    }
+
+    .glitch-menu-link.inactive {
+        color: rgba(255,255,255,0.4);
+        border-color: rgba(255,255,255,0.1);
+    }
+
+    .glitch-menu-link:hover {
+        color: var(--accent-color, #ff4d00);
+        border-color: var(--accent-color, #ff4d00);
+        background: rgba(255, 77, 0, 0.1);
+    }
+
+    .glitch-menu-link.inactive:hover {
+        color: rgba(255,255,255,0.6);
+        border-color: rgba(255,255,255,0.3);
+        background: transparent;
+    }
+
+    .menu-separator {
+        color: rgba(255,255,255,0.2);
+        font-size: 14px;
+    }
+
+    /* グリッチアニメーション - 2秒に1回の周期 */
+    .floor-3f-menu.visible .glitch-menu-link {
+        animation: glitchText 2s ease-in-out infinite;
+    }
+
+    /* 2秒周期のアニメーション（最初の0.3秒でグリッチ、残りは待機） */
+    @keyframes glitchText {
+        0%, 100% {
+            transform: translate(0);
+            text-shadow: none;
+        }
+        3% {
+            transform: translate(-3px, 2px);
+            text-shadow: 3px 0 var(--accent-color, #ff4d00), -3px 0 cyan;
+        }
+        6% {
+            transform: translate(3px, -2px);
+            text-shadow: -3px 0 var(--accent-color, #ff4d00), 3px 0 cyan;
+        }
+        9% {
+            transform: translate(-2px, -1px);
+            text-shadow: 2px 0 cyan, -2px 0 var(--accent-color, #ff4d00);
+        }
+        12% {
+            transform: translate(2px, 1px);
+            text-shadow: -2px 0 cyan, 2px 0 var(--accent-color, #ff4d00);
+        }
+        15% {
+            transform: translate(0);
+            text-shadow: none;
+        }
+    }
+
+    /* 初回登場時のグリッチ（強め） */
+    .floor-3f-menu.glitch-active .glitch-menu-link {
+        animation: glitchTextStrong 0.3s steps(2, end) 3 !important;
+    }
+
+    @keyframes glitchTextStrong {
+        0% {
+            transform: translate(0);
+            text-shadow: none;
+        }
+        20% {
+            transform: translate(-3px, 2px);
+            text-shadow: 3px 0 var(--accent-color, #ff4d00), -3px 0 cyan;
+        }
+        40% {
+            transform: translate(3px, -2px);
+            text-shadow: -3px 0 var(--accent-color, #ff4d00), 3px 0 cyan;
+        }
+        60% {
+            transform: translate(-2px, -1px);
+            text-shadow: 2px 0 cyan, -2px 0 var(--accent-color, #ff4d00);
+        }
+        80% {
+            transform: translate(2px, 1px);
+            text-shadow: -2px 0 cyan, 2px 0 var(--accent-color, #ff4d00);
+        }
+        100% {
+            transform: translate(0);
+            text-shadow: none;
+        }
+    }
+
+    /* グリッチバー（メニュー登場時の演出） */
+    .floor-3f-menu.glitch-active::before,
+    .floor-3f-menu.glitch-active::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--accent-color, #ff4d00);
+        animation: glitchBar 0.3s steps(3, end) 3;
+    }
+
+    .floor-3f-menu.glitch-active::before {
+        top: -5px;
+    }
+
+    .floor-3f-menu.glitch-active::after {
+        bottom: -5px;
+    }
+
+    @keyframes glitchBar {
+        0%, 100% {
+            transform: translateX(0);
+            opacity: 0;
+        }
+        25% {
+            transform: translateX(-10px);
+            opacity: 1;
+        }
+        50% {
+            transform: translateX(10px);
+            opacity: 0.5;
+        }
+        75% {
+            transform: translateX(-5px);
+            opacity: 1;
+        }
     }
 </style>
 
@@ -53,6 +226,72 @@
            ------------------------------------------------ */
         let footerEngine, footerRender, footerRunner;
     const footerCanvas = document.getElementById('footer-physics-canvas');
+    const floor3Menu = document.getElementById('floor-guide-3f');
+
+    // 3Fメニュー表示フラグ
+    let floor3MenuShown = false;
+
+    // 3Fメニューをグリッチエフェクトで表示
+    const showFloor3Menu = () => {
+        if (!floor3Menu || floor3MenuShown) return;
+        floor3MenuShown = true;
+
+        // グリッチエフェクトを開始
+        floor3Menu.classList.add('glitch-active');
+        floor3Menu.classList.add('visible');
+
+        // グリッチエフェクトを0.9秒後に終了（0.3s × 3回）
+        setTimeout(() => {
+            floor3Menu.classList.remove('glitch-active');
+        }, 900);
+
+        console.log('3F Menu appeared with glitch effect');
+    };
+
+    // スクロール9010px到達後5秒でメニュー表示（よりゆっくり）
+    const MENU_3F_SCROLL_TRIGGER = 9010;
+    let scroll3FTriggered = false;
+
+    const checkScroll3FMenu = () => {
+        const scrollY = window.scrollY || window.pageYOffset || 0;
+        if (scrollY >= MENU_3F_SCROLL_TRIGGER && !scroll3FTriggered) {
+            scroll3FTriggered = true;
+            console.log('Scroll reached 9010px, showing 3F menu in 5 seconds...');
+            setTimeout(() => {
+                showFloor3Menu();
+            }, 5000);
+        }
+    };
+
+    // スクロールイベントで監視
+    window.addEventListener('scroll', checkScroll3FMenu, { passive: true });
+
+    // 3Fメニューのクリックイベント
+    const setup3FMenuLinks = () => {
+        const menuLinks = document.querySelectorAll('#floor-guide-3f .glitch-menu-link[data-target]');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('data-target');
+                const target = document.querySelector(targetId);
+                if (target && typeof Lenis !== 'undefined') {
+                    // Lenisが初期化されている場合はLenisでスクロール
+                    // Hero.astroでグローバルに公開されている場合
+                    if (window.lenis) {
+                        window.lenis.scrollTo(target, { duration: 1.5 });
+                    } else {
+                        // フォールバック: 通常のスクロール
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                } else if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    };
+
+    // セットアップを実行
+    setup3FMenuLinks();
 
     const cleanupFooterPhysics = () => {
         if (footerRender) {
@@ -79,9 +318,9 @@
               Events = Matter.Events;
 
         footerEngine = Engine.create();
-        // 適度な重力：見やすく、素早く落下
-        footerEngine.world.gravity.y = 1.2; // 適度な重力（速すぎず遅すぎず）
-        footerEngine.world.gravity.scale = 0.001; // 通常スケール
+        // 地球重力：普通の落下
+        footerEngine.world.gravity.y = 1.0; // 地球重力
+        footerEngine.world.gravity.scale = 0.001; // 標準スケール
 
         footerRender = Render.create({
             element: footerCanvas,
@@ -103,18 +342,18 @@
         const links = ['#', '#', '#']; 
 
         const blocks = [];
-        // ブロック数を減らして見やすく（120 → 40）
-        for (let i = 0; i < 40; i++) {
+        // ブロック数: 48個
+        for (let i = 0; i < 48; i++) {
             const x = Math.random() * (window.innerWidth - 150) + 75;
             const y = -Math.random() * 1500 - 100; // 順番にジャラジャラ落ちてくる
             const typeIdx = Math.floor(Math.random() * 3);
 
-            const block = Bodies.rectangle(x, y, 140, 70, { // 少し大きめで見やすく
+            const block = Bodies.rectangle(x, y, 140, 70, {
                 chamfer: { radius: 10 },
-                restitution: 0.15, // バウンドを最小限に
-                density: 0.002,
-                friction: 0.8, // 高摩擦で素早く安定
-                frictionAir: 0.02, // 空気抵抗を増やして落下速度を抑制
+                restitution: 0.3, // 軽いバウンド
+                density: 0.001, // 密度1.0相当
+                friction: 0.5, // 標準摩擦
+                frictionAir: 0, // 空気抵抗なし
                 label: labels[typeIdx],
                 render: {
                     fillStyle: colors[typeIdx],
@@ -184,6 +423,7 @@
                 if (stableFrames > 120) { // 2秒安定したら停止（60fps × 2秒）
                     Matter.Runner.stop(footerRunner);
                     console.log('Footer physics stopped - blocks stable');
+                    // メニューはスクロールベースのトリガーで表示（9010px到達後3秒）
                     return; // 監視終了
                 }
             } else {

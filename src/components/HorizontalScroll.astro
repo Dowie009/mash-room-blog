@@ -24,34 +24,46 @@
 
         <!-- Story Panel (Optimized Layout) - Chapter 01 -->
         <div class="h-panel" id="panel-story">
-            <!-- Increased padding and gap for better spacing -->
-            <div class="container mx-auto px-8 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center h-full max-w-6xl">
-                <!-- Image: 統一デザインのラッパー -->
-                <div class="chapter-panel-wrapper relative" style="--img-height: 60vh;">
+            <!-- 3カラムレイアウト: サムネイル(左端) | ボタン(下から突出) | 縦書き文字(右側) -->
+            <div class="panel-layout-container">
+                <!-- 左: サムネイル画像（4cm左にずらす） -->
+                <div class="chapter-panel-wrapper thumbnail-left relative" style="--img-height: 60vh;">
                     <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl">
                         <img src="/images/Blog_00.png"
                             class="w-full h-full object-cover grayscale group-hover:grayscale-0 rounded-sm transition-all duration-700" alt="Story">
                     </div>
-                    <!-- STORY ボタン -->
-                    <a href="#" class="chapter-lab-button">
-                        <span class="inline-flex items-center gap-2">
-                            <span>STORY</span>
-                            <svg class="w-4 h-4 transform transition-transform chapter-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                            </svg>
-                        </span>
-                    </a>
                 </div>
-                <!-- Text: Adjusted padding and font sizes -->
-                <div class="merge-text-wrapper h-[60vh] md:h-[70vh] flex items-start justify-start pl-8 md:pl-16">
-                    <div class="tategaki-box flex flex-col justify-start chapter1-text-group" style="--text-scale: 2.0; --text-offset-x: 50px; --text-offset-y: 30px;">
+                <!-- 中央: 巨大縦長ボタン（下から突き出る、横幅2倍） -->
+                <a href="#" class="giant-vertical-button glitch-button bottom-popup-btn">
+                    <div class="button-text-column">
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                    </div>
+                </a>
+                <!-- 右: 縦書き文字（右側に配置、隙間を作る） -->
+                <div class="merge-text-wrapper text-area-right h-[60vh] md:h-[70vh] flex items-start justify-start">
+                    <div class="tategaki-box flex flex-col justify-start chapter1-text-group" style="--text-scale: 1.8; --text-offset-x: 0px; --text-offset-y: 30px;">
                         <span class="text-[var(--accent-color)] font-mono text-xs font-bold tracking-widest mb-8 block tategaki-char" style="writing-mode: horizontal-tb;">CHAPTER 01</span>
-                        <!-- Reduced Title size from 5xl to 3xl/4xl -->
                         <h3 class="font-mincho text-3xl md:text-4xl font-black mb-12 leading-relaxed">
                             <span class="tategaki-char">物</span><span class="tategaki-char">語</span><span class="tategaki-char">の</span><br>
                             <span class="tategaki-char">積</span><span class="tategaki-char">み</span><span class="tategaki-char">重</span><span class="tategaki-char">ね</span>
                         </h3>
-                        <!-- Adjusted Description size and line-height -->
                         <p class="text-gray-400 font-medium text-sm md:text-base leading-loose">
                             <span class="tategaki-char">ブ</span><span class="tategaki-char">ロ</span><span class="tategaki-char">グ</span><span class="tategaki-char">は</span><span class="tategaki-char">地</span><span class="tategaki-char">層</span><span class="tategaki-char">の</span><span class="tategaki-char">よ</span><span class="tategaki-char">う</span><span class="tategaki-char">に</span><span class="tategaki-char">。</span><br>
                             <span class="tategaki-char">玄</span><span class="tategaki-char">関</span><span class="tategaki-char">の</span><span class="tategaki-char">壁</span><span class="tategaki-char">を</span><span class="tategaki-char">撤</span><span class="tategaki-char">去</span><span class="tategaki-char">し</span><span class="tategaki-char">、</span><br>
@@ -62,28 +74,43 @@
             </div>
         </div>
 
-        <!-- Gear Panel (Optimized Layout) - スクロール連動カラー化 -->
+        <!-- Gear Panel (Optimized Layout) - Chapter 02: 3カラムレイアウト -->
         <div class="h-panel" id="panel-gear">
-            <div class="container mx-auto px-8 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center h-full max-w-6xl">
-                <!-- 画像とボタンを包むラッパー（overflow: visible） -->
-                <div class="gear-panel-wrapper relative" style="--img-height: 60vh;">
+            <!-- 3カラムレイアウト: サムネイル(左端) | ボタン(下から突出) | 縦書き文字(右側) -->
+            <div class="panel-layout-container">
+                <!-- 左: サムネイル画像（4cm左にずらす） -->
+                <div class="gear-panel-wrapper thumbnail-left relative" style="--img-height: 60vh;">
                     <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl gear-image-wrapper">
                         <img src="/images/カテゴリサムネ　ノケ物語.png" id="gear-panel-image"
                             class="w-full h-full object-cover rounded-sm transition-all duration-700 gear-colorize-img" alt="Gear">
                     </div>
-                    <!-- GEAR LAB ボタン：親要素の外に配置 -->
-                    <a href="/gear" class="gear-lab-button">
-                        <span class="inline-flex items-center gap-2">
-                            <span>GEAR LAB</span>
-                            <svg class="w-4 h-4 transform transition-transform gear-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                            </svg>
-                        </span>
-                    </a>
                 </div>
-                <!-- 画像とテキストの間のGEAR LABリンクボタン -->
-                <div class="merge-text-wrapper h-[60vh] md:h-[70vh] flex items-start justify-start pl-8 md:pl-16 relative">
-                    <div class="tategaki-box flex flex-col justify-start chapter1-text-group" style="--text-scale: 2.0; --text-offset-x: 50px; --text-offset-y: 30px;">
+                <!-- 中央: 巨大縦長ボタン（下から突き出る、横幅2倍） -->
+                <a href="/gear" class="giant-vertical-button glitch-button bottom-popup-btn gear-lab-btn">
+                    <div class="button-text-column">
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                    </div>
+                </a>
+                <!-- 右: 縦書き文字（右側に配置、隙間を作る） -->
+                <div class="merge-text-wrapper text-area-right h-[60vh] md:h-[70vh] flex items-start justify-start">
+                    <div class="tategaki-box flex flex-col justify-start chapter1-text-group" style="--text-scale: 1.8; --text-offset-x: 0px; --text-offset-y: 30px;">
                         <span class="text-[var(--accent-color)] font-mono text-xs font-bold tracking-widest mb-8 block tategaki-char" style="writing-mode: horizontal-tb;">CHAPTER 02</span>
                         <h3 class="font-mincho text-3xl md:text-4xl font-black mb-12 leading-relaxed">
                             <span class="tategaki-char">没</span><span class="tategaki-char">入</span><span class="tategaki-char">す</span><span class="tategaki-char">る</span><br>
@@ -98,27 +125,43 @@
             </div>
         </div>
 
-        <!-- Tech Panel (Optimized Layout) - Chapter 03 -->
+        <!-- Tech Panel (Optimized Layout) - Chapter 03: 3カラムレイアウト -->
         <div class="h-panel" id="panel-tech">
-            <div class="container mx-auto px-8 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-center h-full max-w-6xl">
-                <!-- Image: 統一デザインのラッパー -->
-                <div class="chapter-panel-wrapper relative" style="--img-height: 60vh;">
+            <!-- 3カラムレイアウト: サムネイル(左端) | ボタン(下から突出) | 縦書き文字(右側) -->
+            <div class="panel-layout-container">
+                <!-- 左: サムネイル画像（4cm左にずらす） -->
+                <div class="chapter-panel-wrapper thumbnail-left relative" style="--img-height: 60vh;">
                     <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl">
                         <img src="/images/ノケ物語イラスト.png"
                             class="w-full h-full object-cover grayscale group-hover:grayscale-0 rounded-sm transition-all duration-700" alt="Tech">
                     </div>
-                    <!-- TECH LAB ボタン -->
-                    <a href="#" class="chapter-lab-button">
-                        <span class="inline-flex items-center gap-2">
-                            <span>TECH LAB</span>
-                            <svg class="w-4 h-4 transform transition-transform chapter-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                            </svg>
-                        </span>
-                    </a>
                 </div>
-                <div class="merge-text-wrapper h-[60vh] md:h-[70vh] flex items-start justify-start pl-8 md:pl-16">
-                    <div class="tategaki-box flex flex-col justify-start chapter1-text-group" style="--text-scale: 2.0; --text-offset-x: 50px; --text-offset-y: 30px;">
+                <!-- 中央: 巨大縦長ボタン（下から突き出る、横幅2倍） -->
+                <a href="#" class="giant-vertical-button glitch-button bottom-popup-btn tech-lab-btn">
+                    <div class="button-text-column">
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                    </div>
+                </a>
+                <!-- 右: 縦書き文字（右側に配置、隙間を作る） -->
+                <div class="merge-text-wrapper text-area-right h-[60vh] md:h-[70vh] flex items-start justify-start">
+                    <div class="tategaki-box flex flex-col justify-start chapter1-text-group" style="--text-scale: 1.8; --text-offset-x: 0px; --text-offset-y: 30px;">
                         <span class="text-[var(--accent-color)] font-mono text-xs font-bold tracking-widest mb-8 block tategaki-char" style="writing-mode: horizontal-tb;">CHAPTER 03</span>
                         <h3 class="font-mincho text-3xl md:text-4xl font-black mb-12 leading-relaxed">
                             <span class="tategaki-char">技</span><span class="tategaki-char">術</span><span class="tategaki-char">と</span><br>
@@ -214,11 +257,23 @@
     }
     
     .tategaki-box {
-        writing-mode: vertical-rl; 
-        text-orientation: upright; 
+        writing-mode: vertical-rl;
+        text-orientation: upright;
         height: 100%; /* 親要素(merge-text-wrapper)の高さに依存させる */
-        letter-spacing: 0.15em; 
-        line-height: 2.2; /* 読みやすい行間 */
+        letter-spacing: 0.3em; /* 字間を広く */
+        line-height: 2.5; /* 行間も広く */
+    }
+
+    /* グレーの説明文を5px小さく */
+    .tategaki-box p.text-gray-400 {
+        font-size: 11px !important; /* base(16px) - 5px = 11px */
+        letter-spacing: 0.35em; /* 説明文の字間をさらに広く */
+    }
+
+    @media (min-width: 768px) {
+        .tategaki-box p.text-gray-400 {
+            font-size: 13px !important; /* md:base(16px) - 3px程度 */
+        }
     }
     
     /* チャプター1のテキストグループ：サイズと位置を一括調整 */
@@ -276,34 +331,36 @@
         filter: grayscale(0%);
     }
 
-    /* GEAR LAB ボタン：スタイリッシュなデザイン */
+    /* GEAR LAB ボタン - オレンジミニマルデザイン（画像下に配置） */
     .gear-lab-button {
         position: absolute;
-        bottom: -20px;
-        right: -20px;
+        bottom: -50px;
+        left: 50%;
+        transform: translateX(-50%);
         z-index: 100;
         display: inline-flex;
         align-items: center;
+        gap: 8px;
         padding: 12px 24px;
-        background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-        color: #000;
+        background: var(--accent-color, #ff4d00);
+        color: #fff;
         font-family: 'Space Grotesk', monospace;
         font-size: 12px;
         font-weight: 700;
+        letter-spacing: 0.1em;
         text-decoration: none;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
-        backdrop-filter: blur(10px);
-        transform: translateY(0);
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        border: none;
+        border-radius: 3px;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         pointer-events: auto;
+        box-shadow: 0 4px 15px rgba(255, 77, 0, 0.4);
     }
 
     .gear-lab-button:hover {
-        transform: translateY(-4px) scale(1.05);
-        background: var(--accent-color, #007aff);
+        background: #ff6a2a;
         color: #fff;
-        box-shadow: 0 8px 30px rgba(0, 122, 255, 0.4), 0 0 0 2px var(--accent-color);
+        transform: translateX(-50%) scale(1.05);
+        box-shadow: 0 6px 25px rgba(255, 77, 0, 0.5);
     }
 
     .gear-lab-button:hover .gear-arrow {
@@ -335,43 +392,124 @@
         opacity: 1 !important;
     }
 
-    /* Chapter 01 & 03 ボタン */
+    /* Chapter 01 & 03 ボタン - オレンジミニマルデザイン（画像下に配置） */
     .chapter-lab-button {
         position: absolute;
-        bottom: -20px;
-        right: -20px;
+        bottom: -50px;
+        left: 50%;
+        transform: translateX(-50%);
         z-index: 100;
         display: inline-flex;
         align-items: center;
+        gap: 8px;
         padding: 12px 24px;
-        background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-        color: #000;
+        background: var(--accent-color, #ff4d00);
+        color: #fff;
         font-family: 'Space Grotesk', monospace;
         font-size: 12px;
         font-weight: 700;
+        letter-spacing: 0.1em;
         text-decoration: none;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
-        backdrop-filter: blur(10px);
-        transform: translateY(0);
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        border: none;
+        border-radius: 3px;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         pointer-events: auto;
+        box-shadow: 0 4px 15px rgba(255, 77, 0, 0.4);
     }
 
     .chapter-lab-button:hover {
-        transform: translateY(-4px) scale(1.05);
-        background: var(--accent-color, #007aff);
+        background: #ff6a2a;
         color: #fff;
-        box-shadow: 0 8px 30px rgba(0, 122, 255, 0.4), 0 0 0 2px var(--accent-color);
+        box-shadow: 0 6px 25px rgba(255, 77, 0, 0.5);
     }
 
     .chapter-lab-button:hover .chapter-arrow {
         transform: translateX(4px);
     }
 
+    /* ボタンを文字の下に配置（縦書きレイアウト対応） */
+    .text-button-below {
+        position: relative !important;
+        bottom: auto !important;
+        left: auto !important;
+        transform: none !important;
+        margin-top: 24px;
+        writing-mode: horizontal-tb;
+        opacity: 0;
+    }
+
+    .text-button-below:hover {
+        transform: scale(1.05) !important;
+    }
+
+    /* GEAR LAB ボタンも文字の下用に調整 */
+    .gear-lab-button.text-button-below {
+        position: relative !important;
+        bottom: auto !important;
+        left: auto !important;
+        transform: none !important;
+        margin-top: 24px;
+        writing-mode: horizontal-tb;
+        opacity: 0;
+    }
+
+    .gear-lab-button.text-button-below:hover {
+        transform: scale(1.05) !important;
+    }
+
     /* ホバー時に画像が少し拡大 */
     .chapter-panel-wrapper:hover img {
         transform: scale(1.02);
+    }
+
+    /* --- オレンジ枠アニメーション（時計回り） --- */
+    .border-line-animator {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        pointer-events: none;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .border-line-animator::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border: 2px solid transparent;
+        border-radius: 4px;
+        background: linear-gradient(90deg, var(--accent-color, #ff4d00), var(--accent-color, #ff4d00)) border-box;
+        -webkit-mask:
+            linear-gradient(#fff 0 0) padding-box,
+            linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        clip-path: polygon(0 0, 0 0, 0 0, 0 0);
+    }
+
+    /* border-animateクラスが追加されたらアニメーション開始 */
+    .merge-img-wrapper.border-animate .border-line-animator::before {
+        opacity: 1;
+        animation: borderClockwise 1.2s ease-out forwards;
+    }
+
+    @keyframes borderClockwise {
+        0% {
+            clip-path: polygon(0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0);
+        }
+        25% {
+            clip-path: polygon(0 0, 100% 0, 100% 0, 100% 0, 100% 0, 0 0, 0 0, 0 0);
+        }
+        50% {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%, 0 0, 0 0, 0 0);
+        }
+        75% {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 100%, 0 0, 0 0, 0 0);
+        }
+        100% {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 0, 0 0, 0 0, 0 0);
+        }
     }
 
     /* Skeleton Text Box - 黒い枠だけ、背景は透明 */
@@ -382,73 +520,493 @@
         border-radius: 8px;
         box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
     }
+
+    /* --- GEAR Panel 専用スタイル --- */
+    /* 文字エリアを2cm（約20px）左にずらす */
+    .gear-text-area {
+        transform: translateX(-20px);
+    }
+
+    /* 縦にびっしり並ぶ文字列 */
+    .glitch-text-column {
+        font-family: 'Noto Serif JP', serif;
+        font-size: 2rem;
+        font-weight: 900;
+        line-height: 1.1;
+        letter-spacing: 0.1em;
+        writing-mode: vertical-rl;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    /* 点滅エフェクト */
+    .glitch-blink {
+        animation: glitchBlink 0.1s step-end infinite;
+        animation-delay: calc(var(--blink-delay, 0) * 0.05s);
+    }
+
+    @keyframes glitchBlink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+
+    /* ボタンが出ている時だけ点滅 */
+    .glitch-text-column .glitch-blink,
+    .glitch-desc .glitch-blink {
+        animation: none;
+        opacity: 0;
+    }
+
+    .glitch-text-column.active .glitch-blink,
+    .glitch-desc.active .glitch-blink {
+        animation: glitchBlink 0.08s step-end infinite;
+        opacity: 1;
+    }
+
+    /* 巨大ボタン（0.8cm = 約8px 細く） */
+    .giant-button {
+        width: calc(100% - 8px) !important;
+        height: 60vh !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.5rem !important;
+        letter-spacing: 0.2em !important;
+        border-radius: 4px !important;
+        margin-top: 0 !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        writing-mode: horizontal-tb !important;
+    }
+
+    /* --- 導火線アニメーション（ボタン出現中だけ時計回りに一周） --- */
+    .fuse-line::before {
+        border: 3px solid #000 !important; /* 最初は黒 */
+        opacity: 0;
+    }
+
+    .merge-img-wrapper.fuse-active .fuse-line::before {
+        opacity: 1;
+        animation: fuseClockwise 3s linear forwards;
+    }
+
+    @keyframes fuseClockwise {
+        0% {
+            clip-path: polygon(0 0, 0 0, 0 0, 0 0);
+            border-color: #000;
+        }
+        10% {
+            clip-path: polygon(0 0, 25% 0, 25% 0, 0 0);
+            border-color: var(--accent-color, #ff4d00);
+        }
+        25% {
+            clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+            border-color: var(--accent-color, #ff4d00);
+        }
+        50% {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 100% 100%);
+            border-color: var(--accent-color, #ff4d00);
+        }
+        75% {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            border-color: var(--accent-color, #ff4d00);
+        }
+        100% {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 0);
+            border-color: var(--accent-color, #ff4d00);
+        }
+    }
+
+    /* --- 「重力と遊ぶ」パネル 物理的減速 --- */
+    .skeleton-text-box.gravity-slow {
+        transition: transform 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+
+    /* =====================================================
+       3カラムレイアウト: 改良版
+       サムネイル(左) | ボタン(下から突出) | 縦書き文字(右)
+       ===================================================== */
+
+    /* パネルレイアウトコンテナ（3カラム） */
+    .panel-layout-container {
+        display: flex;
+        align-items: flex-end; /* ボタンが下から突き出るように下揃え */
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+        padding: 0 8%;
+        gap: 60px; /* サムネイル・ボタン・文字の間に黒い隙間 */
+        position: relative;
+    }
+
+    /* サムネイルを4cm（約40px）左にずらす */
+    .thumbnail-left {
+        margin-left: -40px;
+        align-self: center; /* サムネイルは中央揃え */
+    }
+
+    /* テキストエリアを右側に配置（隙間を作る） */
+    .text-area-right {
+        margin-right: -20px;
+        margin-left: 40px; /* ボタンとの間に隙間 */
+        align-self: center; /* 文字も中央揃え */
+    }
+
+    /* --- 巨大縦長ボタン (下から突き出る、横幅2倍) --- */
+    .giant-vertical-button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        height: 75vh; /* 画面下から突き出る高さ */
+        width: 140px; /* 横幅2倍 (70px → 140px) */
+        background: var(--accent-color, #ff4d00);
+        border-radius: 4px 4px 0 0; /* 下は角丸なし（突き出ている感） */
+        text-decoration: none;
+        overflow: hidden;
+        opacity: 0 !important; /* 初期非表示（CSSで強制） */
+        transform: translateY(100%) !important; /* 初期位置：画面外下（CSSで強制） */
+        position: relative;
+        z-index: 50;
+        box-shadow: 0 -4px 30px rgba(255, 77, 0, 0.5);
+        align-self: flex-end; /* 下揃え */
+        margin-bottom: -10vh; /* 画面下から突き出す */
+    }
+
+    /* GSAPでアニメーション制御される際に!importantを上書き */
+    .giant-vertical-button.glitch-active,
+    .giant-vertical-button.glitch-done {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+
+    /* 下から突き出るボタン専用スタイル - 削除（上で統合） */
+
+    .giant-vertical-button:hover {
+        box-shadow: 0 -6px 40px rgba(255, 77, 0, 0.7);
+    }
+
+    /* ボタン内の縦並び文字列 */
+    .button-text-column {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        height: 100%;
+        padding: 16px 8px;
+        gap: 6px;
+        overflow: hidden;
+    }
+
+    /* 各行のテキスト（STORY → などがびっしり） - 大きめ＋点滅 */
+    .btn-line {
+        font-family: 'Space Grotesk', monospace;
+        font-size: 12px; /* 横幅2倍に合わせて大きく */
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: #fff;
+        white-space: nowrap;
+        writing-mode: horizontal-tb;
+    }
+
+    /* ボタン内テキストの点滅アニメーション（押せますよ感） */
+    .glitch-button.glitch-done .btn-line {
+        animation: btnTextBlink 1.5s ease-in-out infinite;
+    }
+
+    @keyframes btnTextBlink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+    }
+
+    /* --- グリッチアニメーション（ボタン出現時：下から登場） --- */
+    .glitch-button {
+        animation: none;
+    }
+
+    .glitch-button.glitch-active {
+        opacity: 1 !important;
+        animation: glitchButtonPopup 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    }
+
+    @keyframes glitchButtonPopup {
+        0% {
+            opacity: 1;
+            transform: translateY(100%) translateX(0);
+        }
+        10% {
+            opacity: 1;
+            transform: translateY(80%) translateX(5px);
+        }
+        20% {
+            opacity: 1;
+            transform: translateY(60%) translateX(-5px);
+        }
+        30% {
+            opacity: 1;
+            transform: translateY(40%) translateX(3px);
+        }
+        40% {
+            opacity: 1;
+            transform: translateY(20%) translateX(-3px);
+        }
+        50% {
+            opacity: 1;
+            transform: translateY(10%) translateX(2px);
+        }
+        60% {
+            opacity: 1;
+            transform: translateY(5%) translateX(-2px);
+        }
+        70% {
+            opacity: 1;
+            transform: translateY(2%) translateX(1px);
+        }
+        80% {
+            opacity: 1;
+            transform: translateY(0) translateX(-1px);
+        }
+        90%, 100% {
+            opacity: 1;
+            transform: translateY(0) translateX(0);
+        }
+    }
+
+    /* グリッチテキストエフェクト（出現中のみ） */
+    .glitch-button.glitch-active .btn-line {
+        animation: glitchTextFlash 0.08s steps(2, end) infinite;
+    }
+
+    @keyframes glitchTextFlash {
+        0%, 100% {
+            text-shadow: none;
+            color: #fff;
+        }
+        25% {
+            text-shadow: 2px 0 cyan, -2px 0 magenta;
+            color: #fff;
+        }
+        50% {
+            text-shadow: -2px 0 cyan, 2px 0 magenta;
+            color: #ff0;
+        }
+        75% {
+            text-shadow: 1px 0 yellow, -1px 0 cyan;
+            color: #fff;
+        }
+    }
+
+    /* グリッチ終了後は通常状態に + 点滅継続 */
+    .glitch-button.glitch-done {
+        opacity: 1;
+        transform: translateY(0);
+        animation: none;
+    }
 </style>
 
 <script>
     if (typeof window !== 'undefined' && typeof gsap !== 'undefined') {
         /* ------------------------------------------------
-           4. HORIZONTAL SCROLL (SHORTENED DISTANCE)
+           4. HORIZONTAL SCROLL - 3カラムレイアウト対応
+           セクション間で異なるスクロール硬さを適用
            ------------------------------------------------ */
         const wrapper = document.querySelector('.horizontal-wrapper');
-    const container = document.querySelector('.horizontal-container');
-    const panels = gsap.utils.toArray('.h-panel');
+        const container = document.querySelector('.horizontal-container');
+        const panels = gsap.utils.toArray('.h-panel');
+        const spacerPanel = panels[0]; // 「重力と遊ぶ」パネル
+        const skeletonBox = spacerPanel.querySelector('.skeleton-text-box');
 
-    /* ------------------------------------------------
-       GEAR Panel スクロール連動カラー化
-       ------------------------------------------------ */
-    const gearImage = document.getElementById('gear-panel-image');
-    
-    const tl = gsap.timeline({
-        scrollTrigger: {
-            trigger: wrapper,
-            pin: true,
-            scrub: 0.6, // 0.6 で適度な追従速度（0.4と0.8の中間）
-            anticipatePin: 1, // ピン留めを予測して滑らかに
-            invalidateOnRefresh: true, // リフレッシュ時に再計算
-            // スクロール距離をさらに短縮（1.0 → 0.5）倍縮める!
-            end: () => "+=" + (panels.length * window.innerWidth * 0.5),
-        }
-    });
+        /* ------------------------------------------------
+           GEAR Panel スクロール連動カラー化
+           ------------------------------------------------ */
+        const gearImage = document.getElementById('gear-panel-image');
 
-    panels.forEach((panel, i) => {
-        if (i === 0) return;
+        /* ------------------------------------------------
+           スクロール硬さの設定
+           scrub値が小さいほど硬い（反応が鈍い）
+           ------------------------------------------------ */
+        // 基準値 0.2 から計算
+        const scrubGravity = 0.2 * 0.65;    // 重力と遊ぶカード出現: 35%硬く = 0.13
+        const scrubCh1to2 = 0.2 * 0.55;     // Chapter1→2間: 45%硬く = 0.11
+        const scrubCh2to3 = 0.2 * 0.55;     // Chapter2→3間: 45%硬く = 0.11
+        const scrubCh3toF2 = 0.2 * 0.70;    // Chapter3→2階: 30%硬く = 0.14
 
-        // 1. Transition - スクロールにきっちり連動
-        tl.to(container, {
-            x: - (i * 100) + "vw",
-            ease: "none",
-            duration: 1
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: wrapper,
+                pin: true,
+                scrub: scrubGravity, // 初期値（重力と遊ぶカード用）
+                anticipatePin: 1,
+                invalidateOnRefresh: true,
+                // スクロール距離1.5
+                end: () => "+=" + (panels.length * window.innerWidth * 1.5),
+                // スクロール位置に応じてscrub値を動的に変更
+                onUpdate: (self) => {
+                    const progress = self.progress;
+                    const st = self;
+
+                    // 進行度に応じてscrub値を変更
+                    // 0-20%: 重力と遊ぶカード (35%硬く)
+                    // 20-45%: Chapter1→2 (45%硬く)
+                    // 45-70%: Chapter2→3 (45%硬く)
+                    // 70-100%: Chapter3→2階 (30%硬く)
+
+                    if (progress < 0.20) {
+                        st.vars.scrub = scrubGravity;
+                    } else if (progress < 0.45) {
+                        st.vars.scrub = scrubCh1to2;
+                    } else if (progress < 0.70) {
+                        st.vars.scrub = scrubCh2to3;
+                    } else {
+                        st.vars.scrub = scrubCh3toF2;
+                    }
+                }
+            }
         });
 
-        // 2. Lock - 待機時間をほぼゼロに（0.1 → 0.05）
-        tl.to({}, { duration: 0.05 });
+        /* ------------------------------------------------
+           「重力と遊ぶ」パネル - 消失問題修正版
+           スクロール開始から最後まで表示し続ける
+           35%硬くして出現
+           ------------------------------------------------ */
+        if (skeletonBox) {
+            // 初期状態：中央に表示
+            gsap.set(skeletonBox, { y: 0, opacity: 1, scale: 1 });
 
-        // 3. Animation - すぐにコンテンツ表示
-        const img = panel.querySelector('.merge-img-wrapper');
-        const txt = panel.querySelector('.merge-text-wrapper');
-        const chars = panel.querySelectorAll('.tategaki-char');
+            // 1. しばらく表示を維持（消えないように長めに）
+            tl.to(skeletonBox, {
+                y: 0,
+                opacity: 1,
+                duration: 1.5,
+                ease: "none"
+            });
 
-        if(img && txt) {
-            tl.fromTo(img, { x: -50, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, "<");
-            tl.fromTo(txt, { x: 50, opacity: 0 }, { x: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, "<");
-            tl.fromTo(chars,
-                { y: 20, opacity: 0, scale: 1.5 },
-                { y: 0, opacity: 1, scale: 1, stagger: 0.03, duration: 0.4, ease: "back.out(1.7)" },
-                "<+=0.05"
-            );
-
-            // GEAR Panel (i=2) の場合、スクロール連動でゆっくりカラー化
-            if (panel.id === 'panel-gear' && gearImage) {
-                tl.to(gearImage, {
-                    filter: 'grayscale(0%)',
-                    duration: 0.8,
-                    ease: "power2.out"
-                }, "<+=0.2");
-            }
+            // 2. フェードアウト開始（次のパネルへの移行直前）- 60%カット
+            tl.to(skeletonBox, {
+                opacity: 0,
+                scale: 0.95,
+                duration: 0.12, // 0.3 * 0.4 = 0.12 (60%カット)
+                ease: "power2.inOut"
+            });
+        } else {
+            tl.to({}, { duration: 1.0 });
         }
 
-        // 4. Wait - 待機時間を削除
-        // tl.to({}, { duration: 0.2 }); // 削除
-    });
+        // Spacer Panelをフェードアウト（60%カット）
+        tl.to(spacerPanel, {
+            opacity: 0,
+            scale: 0.95,
+            duration: 0.16, // 0.4 * 0.4 = 0.16 (60%カット)
+            ease: "power2.inOut"
+        }, "<");
+
+        panels.forEach((panel, i) => {
+            if (i === 0) return;
+
+            // コンテンツ要素を取得（3カラムレイアウト対応）
+            const img = panel.querySelector('.merge-img-wrapper');
+            const panelImage = panel.querySelector('.merge-img-wrapper img');
+            const txt = panel.querySelector('.merge-text-wrapper');
+            const chars = panel.querySelectorAll('.tategaki-char');
+
+            // 新しい巨大縦長ボタン（3カラム用）
+            const verticalButton = panel.querySelector('.giant-vertical-button');
+
+            // ボタンを初期非表示に（CSSで !important 指定済み、GSAPは後でクラス追加時に制御）
+
+            // Chapter 01（i === 1）の場合、フェードオーバーラップ効果
+            if (i === 1) {
+                // パネル自体を初期状態で少し透明に
+                gsap.set(panel, { opacity: 0.7 });
+
+                // 1. パネル移動 + フェードイン（60%カット後の隙間）
+                tl.to(container, {
+                    x: - (i * 100) + "vw",
+                    ease: "power1.inOut",
+                    duration: 0.32 // 0.8 * 0.4 = 0.32 (60%カット)
+                });
+
+                // パネル自体をフェードイン
+                tl.to(panel, {
+                    opacity: 1,
+                    duration: 0.2, // 0.5 * 0.4
+                    ease: "power2.out"
+                }, "<+=0.04");
+
+                // Spacer Panelを完全に消す
+                tl.to(spacerPanel, {
+                    opacity: 0,
+                    duration: 0.12 // 0.3 * 0.4
+                }, "<");
+            } else {
+                // 通常のパネル移動
+                tl.to(container, {
+                    x: - (i * 100) + "vw",
+                    ease: "none",
+                    duration: 0.8
+                });
+            }
+
+            if(img && txt) {
+                // ★ 新しいアニメーション順序（3カラムレイアウト） ★
+
+                // 1. サムネイルが左にガチャッとはまる
+                tl.fromTo(img,
+                    { x: -80, opacity: 0 },
+                    { x: 0, opacity: 1, duration: 0.8, ease: "power2.out" },
+                    "<+=0.1"
+                );
+
+                // 2. サムネイルがはまったら → 文字が出現開始
+                tl.fromTo(txt,
+                    { x: 50, opacity: 0 },
+                    { x: 0, opacity: 1, duration: 0.6, ease: "power1.out" },
+                    ">" // 画像の後
+                );
+
+                // 3. 文字が一文字ずつ出現（シネマライク）
+                tl.fromTo(chars,
+                    { y: 30, opacity: 0 },
+                    { y: 0, opacity: 1, stagger: 0.02, duration: 0.8, ease: "power1.out" },
+                    "<+=0.1"
+                );
+
+                // 4. 文字出現中にサムネイルをカラー化
+                if (panelImage) {
+                    tl.to(panelImage, {
+                        filter: 'grayscale(0%)',
+                        duration: 0.6,
+                        ease: "power1.out"
+                    }, "<+=0.2");
+                }
+
+                // 5. 文字が完全に終わった後、ボタンをグリッチアニメーションで下から出現
+                if (verticalButton) {
+                    // 文字完了後に間を置く
+                    tl.to({}, { duration: 0.3 }, ">");
+
+                    // グリッチアニメーションでボタンが下から出現（クラス追加のみ）
+                    tl.add(() => {
+                        verticalButton.classList.add('glitch-active');
+                    });
+
+                    // アニメーション時間分待つ
+                    tl.to({}, { duration: 0.8 });
+
+                    // グリッチアニメーション終了後、通常状態に（点滅継続）
+                    tl.add(() => {
+                        verticalButton.classList.remove('glitch-active');
+                        verticalButton.classList.add('glitch-done');
+                    });
+
+                    // 余韻（短め）
+                    tl.to({}, { duration: 0.2 });
+                }
+            }
+        });
     }
 </script>

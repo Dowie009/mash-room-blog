@@ -2,12 +2,15 @@
 // Hero Section: Intro + Gate Animation
 ---
 
-<!-- 0. INTRO -->
-<div id="intro-overlay">
+<!-- 0. INTRO (クリックでスキップ可能) -->
+<div id="intro-overlay" class="cursor-pointer">
     <video id="intro-video" autoplay muted playsinline>
         <source src="/images/into3.mp4" type="video/mp4">
     </video>
     <img id="intro-logo" src="/images/MASHROOM_Logo.png" alt="MASHROOM LOGO">
+    <div id="skip-hint" class="absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-xs text-white/50 tracking-widest animate-pulse">
+        CLICK TO SKIP
+    </div>
 </div>
 
 <!-- 1. BG PHYSICS (Fixed) -->
@@ -24,12 +27,13 @@
     <div>Scroll: <span id="scroll-value">0</span>px</div>
 </div>
 
-<!-- HEADER & GUIDE -->
-<header class="fixed top-0 w-full p-8 flex justify-between items-start z-[100] mix-blend-difference text-white pointer-events-none">
-    <div class="pointer-events-auto">
+<!-- HEADER & GUIDE (通常時：右側縦並び / 1F時：上部横並び) -->
+<header id="main-header" class="fixed top-0 w-full p-8 flex justify-between items-start z-[100] mix-blend-difference text-white pointer-events-none transition-all duration-500">
+    <div class="pointer-events-auto header-logo">
         <img src="/images/MASHROOM_Logo.png" alt="MASHROOM STUDIO" class="h-12 w-auto" style="transform: scale(2.5); transform-origin: top left;">
     </div>
-    <div class="pointer-events-auto text-left font-mono tracking-widest">
+    <!-- 通常のフロアガイド（右側縦並び） -->
+    <div id="floor-guide-vertical" class="pointer-events-auto text-left font-mono tracking-widest transition-all duration-500">
         <div class="border border-white/50 rounded-full px-5 py-2 mb-3 bg-black/20 backdrop-blur text-sm text-center">
             FLOOR GUIDE
         </div>
@@ -45,10 +49,44 @@
             </div>
             <a data-target="#new-post-section" class="floor-link hover:text-[var(--accent-color)] transition-colors cursor-pointer">  2F: NEW POST</a>
             <a data-target="#footer-physics-wrapper" class="floor-link hover:text-[var(--accent-color)] transition-colors cursor-pointer">  3F: DEPART</a>
-            <a href="/gear" class="floor-link hover:text-[var(--accent-color)] transition-colors cursor-pointer border-t border-white/20 pt-2 mt-2">GEAR LAB →</a>
+            <div class="border-t border-white/20 pt-2 mt-2 flex flex-col gap-2">
+                <a href="#" class="floor-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-white/50">STORY LAB →</a>
+                <a href="/gear" class="floor-link hover:text-[var(--accent-color)] transition-colors cursor-pointer">GEAR LAB →</a>
+                <a href="#" class="floor-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-white/50">TECH LAB →</a>
+            </div>
         </nav>
     </div>
 </header>
+
+<!-- 1F用 横並びナビゲーション（上部中央）- サイバーオレンジ -->
+<nav id="floor-guide-horizontal-1f" class="fixed top-6 left-1/2 -translate-x-1/2 z-[100] text-white pointer-events-auto font-mono floor-horizontal-nav cyber-nav">
+    <div class="cyber-nav-inner flex items-center gap-6 px-6 py-3">
+        <a data-target="#hero-section" class="horizontal-nav-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">GATE</a>
+        <span class="cyber-separator">|</span>
+        <a data-target="#new-post-section" class="horizontal-nav-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">2F</a>
+        <span class="cyber-separator">|</span>
+        <a data-target="#footer-physics-wrapper" class="horizontal-nav-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">3F</a>
+        <span class="cyber-separator">|</span>
+        <a href="#" class="horizontal-nav-link text-white/40 hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">STORY</a>
+        <a href="/gear" class="horizontal-nav-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">GEAR</a>
+        <a href="#" class="horizontal-nav-link text-white/40 hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">TECH</a>
+    </div>
+</nav>
+
+<!-- 2F用 横並びナビゲーション（右上、NEW POSTと被らない位置）- サイバーオレンジ -->
+<nav id="floor-guide-horizontal-2f" class="fixed top-6 right-8 z-[100] text-white pointer-events-auto font-mono floor-horizontal-nav cyber-nav">
+    <div class="cyber-nav-inner flex items-center gap-4 px-5 py-2.5">
+        <a data-target="#hero-section" class="horizontal-nav-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">GATE</a>
+        <span class="cyber-separator">|</span>
+        <a data-target="#horizontal-wrapper" class="horizontal-nav-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">1F</a>
+        <span class="cyber-separator">|</span>
+        <a data-target="#footer-physics-wrapper" class="horizontal-nav-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">3F</a>
+        <span class="cyber-separator">|</span>
+        <a href="#" class="horizontal-nav-link text-white/40 hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">STORY</a>
+        <a href="/gear" class="horizontal-nav-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">GEAR</a>
+        <a href="#" class="horizontal-nav-link text-white/40 hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">TECH</a>
+    </div>
+</nav>
 
 <!-- 2. HERO GATE -->
 <section class="hero-gate-container" id="hero-section">
@@ -129,14 +167,94 @@
 
     /* --- UTILS --- */
     .noise-overlay {
-        position: absolute; inset: 0; 
-        background: url('https://grainy-gradients.vercel.app/noise.svg'); 
+        position: absolute; inset: 0;
+        background: url('https://grainy-gradients.vercel.app/noise.svg');
         opacity: 0.15; mix-blend-mode: overlay; pointer-events: none;
+    }
+
+    /* --- 横並びナビゲーション（1F/2F用） --- */
+    .floor-horizontal-nav {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.4s ease, visibility 0.4s ease, transform 0.4s ease;
+    }
+
+    /* 1F用ナビ - 中央配置 */
+    #floor-guide-horizontal-1f {
+        transform: translateX(-50%) translateY(-20px);
+    }
+    #floor-guide-horizontal-1f.visible {
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    /* 2F用ナビ - 右上配置 */
+    #floor-guide-horizontal-2f {
+        transform: translateY(-20px);
+    }
+    #floor-guide-horizontal-2f.visible {
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+        transform: translateY(0);
+    }
+
+    .horizontal-nav-link {
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        transition: all 0.3s ease;
+    }
+    .horizontal-nav-link:hover {
+        transform: translateY(-1px);
+    }
+
+    /* --- サイバーオレンジ ナビゲーション（ブロック風角丸四角） --- */
+    .cyber-nav {
+        /* mix-blend-modeを削除してオレンジを見せる */
+    }
+
+    .cyber-nav-inner {
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(12px);
+        border-radius: 10px; /* ブロック風の角丸 */
+        border: 2px solid var(--accent-color, #ff4d00);
+        box-shadow:
+            0 0 15px rgba(255, 77, 0, 0.2),
+            0 4px 20px rgba(0, 0, 0, 0.5);
+        position: relative;
+    }
+
+    /* セパレーター */
+    .cyber-separator {
+        color: var(--accent-color, #ff4d00);
+        opacity: 0.5;
+        font-size: 12px;
+    }
+
+    /* アクティブリンクのオレンジ強調 */
+    .cyber-nav .horizontal-nav-link.active {
+        color: var(--accent-color, #ff4d00);
+    }
+
+    /* 縦フロアガイドを非表示（1F/2F時） */
+    #floor-guide-vertical.hidden-on-floor {
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transform: translateX(20px);
     }
 </style>
 
 <script>
     if (typeof window !== 'undefined') {
+        // リロード時にページトップに戻る
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        window.scrollTo(0, 0);
+
         // Initialize immediately when scripts are available
         const initAll = () => {
             if (typeof lucide !== 'undefined') {
@@ -150,15 +268,19 @@
                    ------------------------------------------------ */
                 if (typeof Lenis !== 'undefined') {
                     const lenis = new Lenis({
-                        duration: 0.8, // 0.8 で素早くスクロール（低いほど高速）
-                        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // バターのようなイージング
+                        // Apple/Stripe風の気持ちいいスクロール設定
+                        duration: 1.2, // 滑らかだが遅すぎない（Apple風）
+                        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // exponential decay
                         smooth: true,
-                        lerp: 0.15, // 0.15 で追従を速く（高いほど即座に反応）
-                        smoothTouch: true, // タッチデバイスでもスムーズ
-                        touchMultiplier: 2.0, // タッチ感度を上げる
-                        wheelMultiplier: 1.2, // ホイール感度を上げて素早く
-                        infinite: false, // 無限スクロールOFF（ページの端で止まる）
+                        lerp: 0.1, // 自然な追従感（0.08-0.12がApple風）
+                        smoothTouch: true,
+                        touchMultiplier: 1.8, // タッチ感度
+                        wheelMultiplier: 1.0, // ホイール感度（標準）
+                        infinite: false,
                     });
+
+                    // Lenisをグローバルに公開（3Fメニューなど他のコンポーネントで使用）
+                    window.lenis = lenis;
                     
                     // スクロールメーターを更新
                     const updateScrollMeter = () => {
@@ -258,42 +380,110 @@
                     const floor2Link = document.querySelector('[data-target="#new-post-section"]');
                     const floor3Link = document.querySelector('[data-target="#footer-physics-wrapper"]');
                     
+                    // 横並びナビゲーションの要素を取得
+                    const floorGuideVertical = document.getElementById('floor-guide-vertical');
+                    const floorGuideHorizontal1F = document.getElementById('floor-guide-horizontal-1f');
+                    const floorGuideHorizontal2F = document.getElementById('floor-guide-horizontal-2f');
+                    const horizontalNavLinks = document.querySelectorAll('.horizontal-nav-link');
+
+                    // スクロール値ベースのメニュー表示タイミング
+                    // 1F: 2274px開始 → 2471px完成
+                    // 2F: 6816px開始 → 7179px完成
+                    const MENU_1F_START = 2274;
+                    const MENU_1F_END = 2471;
+                    const MENU_2F_START = 6816;
+                    const MENU_2F_END = 7179;
+
                     // スクロール位置に応じてアクティブなフロアを更新
                     const updateActiveFloor = () => {
                         const scrollY = window.scrollY || window.pageYOffset || 0;
-                        
+                        const viewportHeight = window.innerHeight;
+
+                        // 各セクションのDOM要素を取得
+                        const heroSection = document.getElementById('hero-section');
+                        const horizontalWrapper = document.getElementById('horizontal-wrapper');
+                        const newPostSection = document.getElementById('new-post-section');
+                        const footerSection = document.getElementById('footer-physics-wrapper');
+
+                        // 各セクションの位置を動的に取得（画面中央を基準）
+                        const getTop = (el) => el ? el.getBoundingClientRect().top + scrollY : Infinity;
+
+                        const heroTop = getTop(heroSection);
+                        const readingTop = getTop(horizontalWrapper);
+                        const newPostTop = getTop(newPostSection);
+                        const footerTop = getTop(footerSection);
+
                         // すべてのリンクからactiveクラスを削除
                         navLinks.forEach(l => l.classList.remove('active'));
                         chapterLinks.forEach(l => l.classList.remove('active'));
-                        
+
+                        // 現在のスクロール位置（画面中央を基準）
+                        const currentPos = scrollY + viewportHeight * 0.4;
+
+                        // フロア判定フラグ
+                        let currentFloor = 'gate'; // gate, 1f, 2f, 3f
+
                         // スクロール位置に応じてアクティブなフロアを設定
-                        if (scrollY >= 15000) {
+                        if (currentPos >= footerTop) {
                             // 3F: DEPART
+                            currentFloor = '3f';
                             if (floor3Link) floor3Link.classList.add('active');
-                        } else if (scrollY >= 12700) {
+                        } else if (currentPos >= newPostTop) {
                             // 2F: NEW POST
+                            currentFloor = '2f';
                             if (floor2Link) floor2Link.classList.add('active');
-                        } else if (scrollY >= 2076) {
+                        } else if (currentPos >= readingTop) {
                             // 1F: READING
+                            currentFloor = '1f';
                             if (floor1Link) floor1Link.classList.add('active');
-                            
-                            // Chapter判定（1F内での詳細位置）
-                            if (scrollY >= 9962) {
+
+                            // Chapter判定（horizontal-scroll内のパネル位置）
+                            const scrollProgress = (scrollY - readingTop) / (newPostTop - readingTop);
+
+                            if (scrollProgress >= 0.66) {
                                 // Chapter03
-                                const chapter3 = document.querySelector('[data-scroll="9962"]');
+                                const chapter3 = document.querySelector('.chapter-link[data-scroll="9962"]');
                                 if (chapter3) chapter3.classList.add('active');
-                            } else if (scrollY >= 7000) {
+                            } else if (scrollProgress >= 0.33) {
                                 // Chapter02
-                                const chapter2 = document.querySelector('[data-scroll="7000"]');
+                                const chapter2 = document.querySelector('.chapter-link[data-scroll="7000"]');
                                 if (chapter2) chapter2.classList.add('active');
-                            } else if (scrollY >= 3565) {
+                            } else if (scrollProgress >= 0) {
                                 // Chapter01
-                                const chapter1 = document.querySelector('[data-scroll="3565"]');
+                                const chapter1 = document.querySelector('.chapter-link[data-scroll="3565"]');
                                 if (chapter1) chapter1.classList.add('active');
                             }
                         } else {
                             // GATE: HERO
+                            currentFloor = 'gate';
                             if (gateLink) gateLink.classList.add('active');
+                        }
+
+                        // スクロール値ベースのメニュー表示制御
+                        // フロアに応じてメニューを切り替え
+                        if (currentFloor === '1f') {
+                            // 1F: 横並びナビ（中央）を表示
+                            floorGuideHorizontal1F?.classList.add('visible');
+                            floorGuideHorizontal2F?.classList.remove('visible');
+                            floorGuideVertical?.classList.add('hidden-on-floor');
+                        }
+                        else if (currentFloor === '2f') {
+                            // 2F: 横並びナビ（右上）を表示
+                            floorGuideHorizontal1F?.classList.remove('visible');
+                            floorGuideHorizontal2F?.classList.add('visible');
+                            floorGuideVertical?.classList.add('hidden-on-floor');
+                        }
+                        else if (currentFloor === '3f') {
+                            // 3F: 全メニュー非表示（Footer.astroのグリッチメニューが担当）
+                            floorGuideHorizontal1F?.classList.remove('visible');
+                            floorGuideHorizontal2F?.classList.remove('visible');
+                            floorGuideVertical?.classList.add('hidden-on-floor');
+                        }
+                        else {
+                            // ゲート: 通常の縦ナビを表示
+                            floorGuideHorizontal1F?.classList.remove('visible');
+                            floorGuideHorizontal2F?.classList.remove('visible');
+                            floorGuideVertical?.classList.remove('hidden-on-floor');
                         }
                     };
                     
@@ -338,23 +528,67 @@
                             });
                         }
                     });
+
+                    // Click scroll (横並びナビリンク)
+                    horizontalNavLinks.forEach(link => {
+                        const targetId = link.getAttribute('data-target');
+                        if(targetId) {
+                            link.addEventListener('click', (e) => {
+                                const target = document.querySelector(targetId);
+                                if (target && lenis) {
+                                    lenis.scrollTo(target, { duration: 1.5 });
+                                }
+                            });
+                        }
+                    });
                 }
 
                 /* ------------------------------------------------
                    2. INTRO & GATE ANIMATION
                    ------------------------------------------------ */
-                const startIntro = () => {
-                    const tl = gsap.timeline({
+                let introTimeline = null;
+                let introSkipped = false;
+
+                const skipIntro = () => {
+                    if (introSkipped) return;
+                    introSkipped = true;
+
+                    // アニメーションを即座に完了させる
+                    if (introTimeline) {
+                        introTimeline.kill();
+                    }
+
+                    // イントロを即座に非表示
+                    gsap.to("#intro-overlay", {
+                        opacity: 0,
+                        duration: 0.3,
+                        pointerEvents: 'none',
                         onComplete: () => {
-                            // 元のgemini-html.htmlと同じ：イントロ完了後に物理演算を開始
                             initPhysics();
                         }
                     });
-                    tl.to("#intro-logo", { opacity: 1, scale: 1, duration: 1, ease: "power2.out", delay: 0.5 })
+                };
+
+                const startIntro = () => {
+                    introTimeline = gsap.timeline({
+                        onComplete: () => {
+                            if (!introSkipped) {
+                                initPhysics();
+                            }
+                        }
+                    });
+                    introTimeline.to("#intro-logo", { opacity: 1, scale: 1, duration: 1, ease: "power2.out", delay: 0.5 })
                       .to("#intro-logo", { scale: 1.05, duration: 1.5 })
                       .to("#intro-logo", { opacity: 0, scale: 1.2, duration: 0.5 }, "-=0.2")
                       .to("#intro-overlay", { opacity: 0, duration: 1, pointerEvents: 'none' });
                 };
+
+                // イントロをクリックでスキップ
+                const introOverlay = document.getElementById('intro-overlay');
+                if (introOverlay) {
+                    introOverlay.addEventListener('click', skipIntro);
+                }
+
                 window.addEventListener('load', startIntro);
 
                 const gateTl = gsap.timeline({
@@ -362,10 +596,10 @@
                         trigger: ".hero-gate-container",
                         start: "top top",
                         end: "+=100%",
-                        scrub: 0.5, // 0.5 で素早く反応！（低いほど即座に追従）
+                        scrub: 1.0, // Apple風：滑らかな追従
                         pin: true,
-                        anticipatePin: 1, // ピン留めを予測して滑らかに
-                        invalidateOnRefresh: true, // リフレッシュ時に再計算
+                        anticipatePin: 1,
+                        invalidateOnRefresh: true,
                         onStart: () => {
                             // ゲートが開き始めたときに物理演算を開始
                             initPhysics();
