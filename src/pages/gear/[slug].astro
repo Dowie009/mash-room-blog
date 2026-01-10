@@ -1,0 +1,586 @@
+---
+/**
+ * /gear/[slug].astro - GEAR記事ページ
+ * 方眼紙ノート風デザイン（白×青）
+ */
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+// 動的ルート生成
+export async function getStaticPaths() {
+  const blogEntries = await getCollection('blog');
+  return blogEntries.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+// カテゴリカラー
+const categoryColors: Record<string, string> = {
+  'daw': '#3b82f6',
+  'gear': '#10b981',
+  'plugin': '#8b5cf6',
+  'biz': '#f59e0b',
+  'tips': '#ef4444',
+  'essay': '#ec4899',
+};
+
+const catColor = categoryColors[entry.data.category] || '#6b7280';
+
+// 読了時間計算（ざっくり）
+const wordCount = entry.body.length;
+const readTime = Math.max(1, Math.ceil(wordCount / 500));
+---
+
+<Layout
+  title={`${entry.data.title} | GEAR LAB`}
+  description={entry.data.description || `${entry.data.title} - GEAR LABの記事`}
+>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&family=Zen+Old+Mincho:wght@700;900&family=Space+Grotesk:wght@300;500;700&family=Fira+Code:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <div class="gear-article">
+    <!-- 方眼紙背景 -->
+    <div class="grid-background"></div>
+
+    <!-- ヘッダー -->
+    <header class="header">
+      <div class="header-content">
+        <a href="/gear" class="back-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          GEAR LAB
+        </a>
+        <div class="lab-badge">GEAR LAB</div>
+      </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="main">
+      <article class="article-wrapper">
+        <!-- ヒーロー -->
+        <header class="article-header">
+          <div class="meta-line">
+            <span class="category-badge" style={`--cat-color: ${catColor}`}>
+              {entry.data.category.toUpperCase()}
+            </span>
+            <time class="date">
+              {new Date(entry.data.date).toLocaleDateString('ja-JP', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              })}
+            </time>
+            <span class="read-time">{readTime}分で読める</span>
+          </div>
+
+          <h1 class="article-title">{entry.data.title}</h1>
+
+          {entry.data.description && (
+            <p class="article-description">{entry.data.description}</p>
+          )}
+
+          {entry.data.tags && entry.data.tags.length > 0 && (
+            <div class="tags">
+              {entry.data.tags.map((tag: string) => (
+                <span class="tag">#{tag}</span>
+              ))}
+            </div>
+          )}
+        </header>
+
+        <!-- サムネイル -->
+        {entry.data.thumbnail && (
+          <div class="thumbnail-wrapper">
+            <img src={entry.data.thumbnail} alt={entry.data.title} class="thumbnail" />
+          </div>
+        )}
+
+        <!-- 本文 -->
+        <div class="article-content">
+          <Content />
+        </div>
+
+        <!-- フッター -->
+        <footer class="article-footer">
+          <a href="/gear" class="back-button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            GEAR LABに戻る
+          </a>
+          <div class="footer-brand">
+            <span>🍄</span>
+            <span>きのこ式AI栽培日記</span>
+          </div>
+        </footer>
+      </article>
+    </main>
+  </div>
+</Layout>
+
+<style>
+  /* =====================================================
+     方眼紙ノート風デザイン - 白×青
+     GEAR LAB Technical Style
+     ===================================================== */
+
+  :root {
+    --accent-blue: #007aff;
+    --text-main: #0f172a;
+    --text-sub: #64748b;
+    --line-color: #e2e8f0;
+  }
+
+  .gear-article {
+    min-height: 100vh;
+    background: #ffffff;
+    position: relative;
+    font-family: 'Noto Sans JP', sans-serif;
+  }
+
+  .font-mincho { font-family: 'Zen Old Mincho', serif; }
+  .font-tech { font-family: 'Space Grotesk', sans-serif; }
+  .font-code { font-family: 'Fira Code', monospace; }
+
+  /* 方眼紙背景 */
+  .grid-background {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-color: #ffffff;
+    background-image:
+      linear-gradient(#e8f0fe 1px, transparent 1px),
+      linear-gradient(90deg, #e8f0fe 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.7;
+  }
+
+  /* ヘッダー */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid #e5e9f0;
+  }
+
+  .header-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .back-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-sub);
+    text-decoration: none;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .back-link:hover {
+    color: var(--accent-blue);
+  }
+
+  .lab-badge {
+    background: var(--accent-blue);
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 4px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* メイン */
+  .main {
+    position: relative;
+    z-index: 1;
+  }
+
+  .article-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  /* ヒーロー */
+  .article-header {
+    margin-bottom: 2rem;
+  }
+
+  .meta-line {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .category-badge {
+    background: var(--cat-color);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 3px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .date, .read-time {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    color: var(--text-sub);
+    letter-spacing: 0.02em;
+  }
+
+  .article-title {
+    font-family: 'Zen Old Mincho', serif;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 900;
+    line-height: 1.4;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+    letter-spacing: 0.02em;
+  }
+
+  .article-description {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--text-sub);
+    margin-bottom: 1rem;
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-family: 'Fira Code', monospace;
+    font-size: 0.7rem;
+    color: var(--accent-blue);
+    background: rgba(0, 122, 255, 0.08);
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    letter-spacing: 0.02em;
+  }
+
+  /* サムネイル */
+  .thumbnail-wrapper {
+    margin-bottom: 2.5rem;
+  }
+
+  .thumbnail {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(30, 58, 95, 0.1);
+    border: 1px solid #e5e9f0;
+  }
+
+  /* 本文 */
+  .article-content {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 1rem;
+    line-height: 2;
+    color: var(--text-main);
+  }
+
+  .article-content :global(h2) {
+    font-family: 'Zen Old Mincho', serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin: 3rem 0 1.25rem;
+    padding-bottom: 0.6rem;
+    color: var(--text-main);
+    border-bottom: 1px solid var(--line-color);
+    position: relative;
+  }
+
+  .article-content :global(h2)::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: var(--accent-blue);
+  }
+
+  .article-content :global(h3) {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 2rem 0 0.8rem;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: 0.02em;
+  }
+
+  .article-content :global(h3)::before {
+    content: '//';
+    color: var(--accent-blue);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+
+  .article-content :global(p) {
+    margin-bottom: 1.5rem;
+  }
+
+  .article-content :global(strong) {
+    color: var(--text-main);
+    font-weight: 600;
+    background: linear-gradient(transparent 60%, rgba(0, 122, 255, 0.12) 60%);
+  }
+
+  .article-content :global(code) {
+    background: #f1f5f9;
+    border: 1px solid var(--line-color);
+    padding: 0.15rem 0.45rem;
+    border-radius: 3px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85em;
+    color: var(--accent-blue);
+  }
+
+  .article-content :global(pre) {
+    background: #0f172a;
+    padding: 1.25rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.75rem 0;
+    border: none;
+    position: relative;
+  }
+
+  .article-content :global(pre)::before {
+    content: 'CODE';
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.25rem 0.75rem;
+    background: rgba(0, 122, 255, 0.2);
+    color: var(--accent-blue);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    border-radius: 0 8px 0 8px;
+    letter-spacing: 0.1em;
+  }
+
+  .article-content :global(pre code) {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #e2e8f0;
+    display: block;
+    font-size: 0.9rem;
+  }
+
+  .article-content :global(ul),
+  .article-content :global(ol) {
+    margin: 1.5rem 0;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .article-content :global(li) {
+    margin-bottom: 0.6rem;
+    padding-left: 1.5rem;
+    position: relative;
+  }
+
+  .article-content :global(ul li)::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--accent-blue);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+
+  .article-content :global(ol) {
+    counter-reset: list-counter;
+  }
+
+  .article-content :global(ol li) {
+    counter-increment: list-counter;
+  }
+
+  .article-content :global(ol li)::before {
+    content: counter(list-counter, decimal-leading-zero);
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--accent-blue);
+    font-family: 'Fira Code', monospace;
+    font-weight: 600;
+    font-size: 0.8rem;
+  }
+
+  .article-content :global(blockquote) {
+    border-left: 3px solid var(--accent-blue);
+    padding: 1rem 1.25rem;
+    margin: 1.75rem 0;
+    background: rgba(0, 122, 255, 0.04);
+    border-radius: 0 8px 8px 0;
+    color: var(--text-sub);
+  }
+
+  .article-content :global(blockquote p) {
+    margin-bottom: 0;
+  }
+
+  .article-content :global(a) {
+    color: var(--accent-blue);
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(0, 122, 255, 0.4);
+    transition: all 0.2s;
+  }
+
+  .article-content :global(a:hover) {
+    border-bottom-style: solid;
+    border-bottom-color: var(--accent-blue);
+  }
+
+  .article-content :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1.75rem 0;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  }
+
+  .article-content :global(hr) {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--line-color), transparent);
+    margin: 2.5rem 0;
+  }
+
+  .article-content :global(table) {
+    width: 100%;
+    margin: 1.75rem 0;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 0.9rem;
+  }
+
+  .article-content :global(th),
+  .article-content :global(td) {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--line-color);
+  }
+
+  .article-content :global(th) {
+    background: rgba(0, 122, 255, 0.06);
+    color: var(--text-main);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* フッター */
+  .article-footer {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--line-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1.25rem;
+    background: transparent;
+    border: 1px solid var(--line-color);
+    border-radius: 4px;
+    color: var(--text-sub);
+    text-decoration: none;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+
+  .back-button:hover {
+    background: var(--accent-blue);
+    border-color: var(--accent-blue);
+    color: white;
+    transform: translateX(-4px);
+  }
+
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-sub);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* レスポンシブ */
+  @media (max-width: 768px) {
+    .article-wrapper {
+      padding: 2rem 1.5rem;
+    }
+
+    .article-title {
+      font-size: 1.5rem;
+    }
+
+    .meta-line {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .article-footer {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>

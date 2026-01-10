@@ -1,0 +1,26 @@
+---
+/**
+ * /tech/[slug].astro - TECH記事ページ
+ *
+ * このファイルはデータを取得してPostLayoutに渡すだけ。
+ * デザインを変えたい時は PostLayout.astro を編集してください。
+ */
+import { getCollection } from 'astro:content';
+import PostLayout from '../../layouts/PostLayout.astro';
+
+// 動的ルート生成
+export async function getStaticPaths() {
+  const techEntries = await getCollection('tech');
+  return techEntries.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<PostLayout frontmatter={entry.data} collection="tech">
+  <Content />
+</PostLayout>

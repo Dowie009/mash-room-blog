@@ -1,0 +1,1052 @@
+---
+// Horizontal Scroll Section: Story, Gear, Tech panels
+// V8: Cinematic Luxury - Pin-based Scroll with Scrub Sync
+---
+
+<!-- 3. HORIZONTAL READING -->
+<section class="horizontal-wrapper" id="horizontal-wrapper">
+    <div class="horizontal-container">
+        
+        <!-- Spacer Panel -->
+        <div class="h-panel bg-transparent pointer-events-none">
+            <div class="skeleton-text-box p-16 max-w-2xl text-center pointer-events-auto">
+                <span class="text-[var(--accent-color)] font-mono text-lg mb-6 block">FLOOR 1</span>
+                <h3 class="font-mincho text-7xl md:text-8xl mb-8 leading-none">重力と<br>遊ぶ</h3>
+                <p class="text-xl text-gray-400 leading-loose mb-12 font-bold">
+                    扉が開くと、<br>
+                    ガラスの向こうでアイデアが降り注ぐ。<br>
+                    (今、裏でブロックが落ちてます！)
+                </p>
+                <div class="font-mono text-sm text-gray-500 animate-pulse">
+                    SCROLL DOWN TO DIVE &rarr;
+                </div>
+            </div>
+        </div>
+
+        <!-- Story Panel (Optimized Layout) - Chapter 01 -->
+        <div class="h-panel" id="panel-story">
+            <!-- 3カラムレイアウト: サムネイル(左端) | ボタン(下から突出) | 縦書き文字(右側) -->
+            <div class="panel-layout-container">
+                <!-- 左: サムネイル画像（4cm左にずらす） -->
+                <div class="chapter-panel-wrapper thumbnail-left relative" style="--img-height: 60vh;">
+                    <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl">
+                        <img src="/images/Blog_00.png"
+                            class="w-full h-full object-cover grayscale group-hover:grayscale-0 rounded-sm transition-all duration-700" alt="Story">
+                    </div>
+                </div>
+                <!-- 中央: 巨大縦長ボタン（下から突き出る、横幅2倍） -->
+                <a href="#" class="giant-vertical-button glitch-button bottom-popup-btn">
+                    <div class="button-text-column">
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">STORY →</span>
+                    </div>
+                </a>
+                <!-- 右: 縦書き文字（右側に配置、隙間を作る） -->
+                <div class="merge-text-wrapper text-area-right h-[60vh] md:h-[70vh] flex items-start justify-start">
+                    <div class="tategaki-box flex flex-col justify-start chapter1-text-group" style="--text-scale: 1.8; --text-offset-x: 0px; --text-offset-y: 30px;">
+                        <span class="text-[var(--accent-color)] font-mono text-xs font-bold tracking-widest mb-8 block tategaki-char" style="writing-mode: horizontal-tb;">CHAPTER 01</span>
+                        <h3 class="font-mincho text-3xl md:text-4xl font-black mb-12 leading-relaxed">
+                            <span class="tategaki-char">物</span><span class="tategaki-char">語</span><span class="tategaki-char">の</span><br>
+                            <span class="tategaki-char">積</span><span class="tategaki-char">み</span><span class="tategaki-char">重</span><span class="tategaki-char">ね</span>
+                        </h3>
+                        <p class="text-gray-400 font-medium text-sm md:text-base leading-loose">
+                            <span class="tategaki-char">ブ</span><span class="tategaki-char">ロ</span><span class="tategaki-char">グ</span><span class="tategaki-char">は</span><span class="tategaki-char">地</span><span class="tategaki-char">層</span><span class="tategaki-char">の</span><span class="tategaki-char">よ</span><span class="tategaki-char">う</span><span class="tategaki-char">に</span><span class="tategaki-char">。</span><br>
+                            <span class="tategaki-char">玄</span><span class="tategaki-char">関</span><span class="tategaki-char">の</span><span class="tategaki-char">壁</span><span class="tategaki-char">を</span><span class="tategaki-char">撤</span><span class="tategaki-char">去</span><span class="tategaki-char">し</span><span class="tategaki-char">、</span><br>
+                            <span class="tategaki-char">新</span><span class="tategaki-char">し</span><span class="tategaki-char">い</span><span class="tategaki-char">風</span><span class="tategaki-char">を</span><span class="tategaki-char">通</span><span class="tategaki-char">す</span><span class="tategaki-char">。</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gear Panel (Optimized Layout) - Chapter 02: 3カラムレイアウト -->
+        <div class="h-panel" id="panel-gear">
+            <!-- 3カラムレイアウト: サムネイル(左端) | ボタン(下から突出) | 縦書き文字(右側) -->
+            <div class="panel-layout-container">
+                <!-- 左: サムネイル画像（4cm左にずらす） -->
+                <div class="gear-panel-wrapper thumbnail-left relative" style="--img-height: 60vh;">
+                    <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl gear-image-wrapper">
+                        <img src="/images/カテゴリサムネ　ノケ物語.png" id="gear-panel-image"
+                            class="w-full h-full object-cover rounded-sm transition-all duration-700 gear-colorize-img" alt="Gear">
+                    </div>
+                </div>
+                <!-- 中央: 巨大縦長ボタン（下から突き出る、横幅2倍） -->
+                <a href="/gear" class="giant-vertical-button glitch-button bottom-popup-btn gear-lab-btn">
+                    <div class="button-text-column">
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                        <span class="btn-line">GEAR LAB →</span>
+                    </div>
+                </a>
+                <!-- 右: 縦書き文字（右側に配置、隙間を作る） -->
+                <div class="merge-text-wrapper text-area-right h-[60vh] md:h-[70vh] flex items-start justify-start">
+                    <div class="tategaki-box flex flex-col justify-start chapter1-text-group" style="--text-scale: 1.8; --text-offset-x: 0px; --text-offset-y: 30px;">
+                        <span class="text-[var(--accent-color)] font-mono text-xs font-bold tracking-widest mb-8 block tategaki-char" style="writing-mode: horizontal-tb;">CHAPTER 02</span>
+                        <h3 class="font-mincho text-3xl md:text-4xl font-black mb-12 leading-relaxed">
+                            <span class="tategaki-char">没</span><span class="tategaki-char">入</span><span class="tategaki-char">す</span><span class="tategaki-char">る</span><br>
+                            <span class="tategaki-char">機</span><span class="tategaki-char">材</span><span class="tategaki-char">た</span><span class="tategaki-char">ち</span>
+                        </h3>
+                        <p class="text-gray-400 font-medium text-sm md:text-base leading-loose">
+                            <span class="tategaki-char">3</span><span class="tategaki-char">7</span><span class="tategaki-char">.</span><span class="tategaki-char">5</span><span class="tategaki-char">イ</span><span class="tategaki-char">ン</span><span class="tategaki-char">チ</span><span class="tategaki-char">の</span><span class="tategaki-char">湾</span><span class="tategaki-char">曲</span><span class="tategaki-char">。</span><br>
+                            <span class="tategaki-char">視</span><span class="tategaki-char">界</span><span class="tategaki-char">を</span><span class="tategaki-char">覆</span><span class="tategaki-char">う</span><span class="tategaki-char">情</span><span class="tategaki-char">報</span><span class="tategaki-char">の</span><span class="tategaki-char">海</span><span class="tategaki-char">。</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tech Panel (Optimized Layout) - Chapter 03: 3カラムレイアウト -->
+        <div class="h-panel" id="panel-tech">
+            <!-- 3カラムレイアウト: サムネイル(左端) | ボタン(下から突出) | 縦書き文字(右側) -->
+            <div class="panel-layout-container">
+                <!-- 左: サムネイル画像（4cm左にずらす） -->
+                <div class="chapter-panel-wrapper thumbnail-left relative" style="--img-height: 60vh;">
+                    <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl">
+                        <img src="/images/ノケ物語イラスト.png"
+                            class="w-full h-full object-cover grayscale group-hover:grayscale-0 rounded-sm transition-all duration-700" alt="Tech">
+                    </div>
+                </div>
+                <!-- 中央: 巨大縦長ボタン（下から突き出る、横幅2倍） -->
+                <a href="#" class="giant-vertical-button glitch-button bottom-popup-btn tech-lab-btn">
+                    <div class="button-text-column">
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                        <span class="btn-line">TECH LAB →</span>
+                    </div>
+                </a>
+                <!-- 右: 縦書き文字（右側に配置、隙間を作る） -->
+                <div class="merge-text-wrapper text-area-right h-[60vh] md:h-[70vh] flex items-start justify-start">
+                    <div class="tategaki-box flex flex-col justify-start chapter1-text-group" style="--text-scale: 1.8; --text-offset-x: 0px; --text-offset-y: 30px;">
+                        <span class="text-[var(--accent-color)] font-mono text-xs font-bold tracking-widest mb-8 block tategaki-char" style="writing-mode: horizontal-tb;">CHAPTER 03</span>
+                        <h3 class="font-mincho text-3xl md:text-4xl font-black mb-12 leading-relaxed">
+                            <span class="tategaki-char">技</span><span class="tategaki-char">術</span><span class="tategaki-char">と</span><br>
+                            <span class="tategaki-char">そ</span><span class="tategaki-char">の</span><span class="tategaki-char">先</span><span class="tategaki-char">へ</span>
+                        </h3>
+                        <p class="text-gray-400 font-medium text-sm md:text-base leading-loose">
+                            <span class="tategaki-char">人</span><span class="tategaki-char">工</span><span class="tategaki-char">知</span><span class="tategaki-char">能</span><span class="tategaki-char">と</span><span class="tategaki-char">共</span><span class="tategaki-char">創</span><span class="tategaki-char">す</span><span class="tategaki-char">る</span><span class="tategaki-char">。</span><br>
+                            <span class="tategaki-char">コ</span><span class="tategaki-char">ー</span><span class="tategaki-char">ド</span><span class="tategaki-char">は</span><span class="tategaki-char">詩</span><span class="tategaki-char">に</span><span class="tategaki-char">な</span><span class="tategaki-char">る</span><span class="tategaki-char">。</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<style>
+    /* --- 3. HORIZONTAL SCROLL (STOP & MERGE) --- */
+    .horizontal-wrapper {
+        position: relative; z-index: 60; 
+        background: transparent; 
+        overflow: hidden;
+    }
+    .horizontal-container {
+        display: flex;
+        flex-wrap: nowrap;
+        height: 100vh;
+        will-change: transform;
+        transform: translateZ(0); /* GPU最適化 */
+        backface-visibility: hidden; /* チラつき防止 */
+        gap: 0; /* パネル間のギャップをゼロに */
+        margin: 0 -1px; /* ネガティブマージンで重ねる */
+    }
+
+    .h-panel {
+        width: calc(100vw + 2px); /* 幅を2px広げて境界を完全に隠す */
+        height: 100vh;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        box-sizing: border-box;
+        background: #050505; /* 透明度なしの完全な黒背景 */
+        backdrop-filter: none; /* ブラーを削除して境界線を消す */
+        perspective: 1000px;
+        border: none !important; /* すべての境界線を削除 */
+        outline: none !important; /* アウトラインも削除 */
+        box-shadow: none !important; /* シャドウも削除 */
+        margin: 0 -1px !important; /* ネガティブマージンで隣接パネルと重ねる */
+        padding: 0 !important; /* パディングもゼロに */
+        will-change: transform; /* ハードウェアアクセラレーション */
+        transform: translateZ(0); /* GPU最適化 */
+        backface-visibility: hidden; /* チラつき防止 */
+    }
+
+    /* 縦線を完全に削除 */
+    
+    /* チャプター1,2,3の下1/3の背景を薄くする */
+    .h-panel#panel-story,
+    .h-panel#panel-gear,
+    .h-panel#panel-tech {
+        background: linear-gradient(to bottom,
+            #050505 0%,
+            #050505 66.67%,
+            rgba(5, 5, 5, 0.2) 100%);
+    }
+    
+    /* Spacer Panel（重力と遊ぶ）だけ背景を透明に */
+    .h-panel.bg-transparent {
+        background: transparent !important;
+        backdrop-filter: none;
+    }
+
+    /* Merge Animation Classes */
+    .merge-img-wrapper {
+        transform: translateX(-50px);
+        opacity: 0.5;
+        transition: transform 0.1s, opacity 0.1s;
+        height: var(--img-height, 60vh) !important;
+        aspect-ratio: 3/4 !important;
+    }
+    .merge-img-wrapper img {
+        height: 100% !important;
+        width: 100% !important;
+        object-fit: cover;
+    }
+    .merge-text-wrapper {
+        transform: translateX(50px);
+        opacity: 0;
+        transition: transform 0.1s, opacity 0.1s;
+    }
+    
+    .tategaki-box {
+        writing-mode: vertical-rl;
+        text-orientation: upright;
+        height: 100%; /* 親要素(merge-text-wrapper)の高さに依存させる */
+        letter-spacing: 0.3em; /* 字間を広く */
+        line-height: 2.5; /* 行間も広く */
+    }
+
+    /* グレーの説明文を5px小さく */
+    .tategaki-box p.text-gray-400 {
+        font-size: 11px !important; /* base(16px) - 5px = 11px */
+        letter-spacing: 0.35em; /* 説明文の字間をさらに広く */
+    }
+
+    @media (min-width: 768px) {
+        .tategaki-box p.text-gray-400 {
+            font-size: 13px !important; /* md:base(16px) - 3px程度 */
+        }
+    }
+    
+    /* チャプター1のテキストグループ：サイズと位置を一括調整 */
+    .chapter1-text-group {
+        transform: scale(var(--text-scale, 1)) translate(var(--text-offset-x, 0px), var(--text-offset-y, 0px));
+        transform-origin: top left;
+    }
+    .tategaki-char {
+        display: inline-block;
+        opacity: 0;
+        transform: translateY(20px) scale(1.5);
+    }
+
+    .holo-content {
+        position: relative;
+        z-index: 2;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 4px;
+        overflow: hidden;
+        transition: border-color 0.3s;
+    }
+    .holo-content:hover {
+        border-color: var(--accent-color);
+    }
+
+    /* GEAR Panel ラッパー */
+    .gear-panel-wrapper {
+        position: relative;
+        overflow: visible !important;
+        height: var(--img-height, 60vh);
+        aspect-ratio: 3/4;
+    }
+
+    .gear-panel-wrapper .merge-img-wrapper {
+        height: 100% !important;
+        width: 100% !important;
+        opacity: 1 !important; /* 初期表示を確実に */
+        transform: none !important; /* 初期位置を正常に */
+    }
+
+    /* GEAR Panel スクロール連動カラー化 */
+    .gear-colorize-img {
+        filter: grayscale(100%);
+        transition: filter 1.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s ease;
+    }
+
+    .gear-colorize-img.colorized {
+        filter: grayscale(0%);
+    }
+
+    /* ホバー時も即座にカラー化 */
+    .gear-panel-wrapper:hover .gear-colorize-img {
+        filter: grayscale(0%);
+    }
+
+    /* GEAR LAB ボタン - オレンジミニマルデザイン（画像下に配置） */
+    .gear-lab-button {
+        position: absolute;
+        bottom: -50px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 100;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: var(--accent-color, #ff4d00);
+        color: #fff;
+        font-family: 'Space Grotesk', monospace;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-decoration: none;
+        border: none;
+        border-radius: 3px;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: auto;
+        box-shadow: 0 4px 15px rgba(255, 77, 0, 0.4);
+    }
+
+    .gear-lab-button:hover {
+        background: #ff6a2a;
+        color: #fff;
+        transform: translateX(-50%) scale(1.05);
+        box-shadow: 0 6px 25px rgba(255, 77, 0, 0.5);
+    }
+
+    .gear-lab-button:hover .gear-arrow {
+        transform: translateX(4px);
+    }
+
+    /* ボタンホバー時に画像が少し動く */
+    .gear-panel-wrapper:hover .gear-colorize-img {
+        transform: scale(1.02);
+    }
+
+    /* Chapter 01 & 03 共通ラッパー */
+    .chapter-panel-wrapper {
+        position: relative;
+        overflow: visible !important;
+        height: var(--img-height, 60vh);
+        aspect-ratio: 3/4;
+    }
+
+    .chapter-panel-wrapper .merge-img-wrapper {
+        height: 100% !important;
+        width: 100% !important;
+        opacity: 1 !important; /* 初期表示を確実に */
+        transform: none !important; /* 初期位置を正常に */
+    }
+
+    .chapter-panel-wrapper .merge-img-wrapper img,
+    .gear-panel-wrapper .merge-img-wrapper img {
+        opacity: 1 !important;
+    }
+
+    /* Chapter 01 & 03 ボタン - オレンジミニマルデザイン（画像下に配置） */
+    .chapter-lab-button {
+        position: absolute;
+        bottom: -50px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 100;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: var(--accent-color, #ff4d00);
+        color: #fff;
+        font-family: 'Space Grotesk', monospace;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-decoration: none;
+        border: none;
+        border-radius: 3px;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        pointer-events: auto;
+        box-shadow: 0 4px 15px rgba(255, 77, 0, 0.4);
+    }
+
+    .chapter-lab-button:hover {
+        background: #ff6a2a;
+        color: #fff;
+        box-shadow: 0 6px 25px rgba(255, 77, 0, 0.5);
+    }
+
+    .chapter-lab-button:hover .chapter-arrow {
+        transform: translateX(4px);
+    }
+
+    /* ボタンを文字の下に配置（縦書きレイアウト対応） */
+    .text-button-below {
+        position: relative !important;
+        bottom: auto !important;
+        left: auto !important;
+        transform: none !important;
+        margin-top: 24px;
+        writing-mode: horizontal-tb;
+        opacity: 0;
+    }
+
+    .text-button-below:hover {
+        transform: scale(1.05) !important;
+    }
+
+    /* GEAR LAB ボタンも文字の下用に調整 */
+    .gear-lab-button.text-button-below {
+        position: relative !important;
+        bottom: auto !important;
+        left: auto !important;
+        transform: none !important;
+        margin-top: 24px;
+        writing-mode: horizontal-tb;
+        opacity: 0;
+    }
+
+    .gear-lab-button.text-button-below:hover {
+        transform: scale(1.05) !important;
+    }
+
+    /* ホバー時に画像が少し拡大 */
+    .chapter-panel-wrapper:hover img {
+        transform: scale(1.02);
+    }
+
+    /* --- オレンジ枠アニメーション（時計回り） --- */
+    .border-line-animator {
+        position: absolute;
+        inset: 0;
+        z-index: 10;
+        pointer-events: none;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .border-line-animator::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border: 2px solid transparent;
+        border-radius: 4px;
+        background: linear-gradient(90deg, var(--accent-color, #ff4d00), var(--accent-color, #ff4d00)) border-box;
+        -webkit-mask:
+            linear-gradient(#fff 0 0) padding-box,
+            linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        clip-path: polygon(0 0, 0 0, 0 0, 0 0);
+    }
+
+    /* border-animateクラスが追加されたらアニメーション開始 */
+    .merge-img-wrapper.border-animate .border-line-animator::before {
+        opacity: 1;
+        animation: borderClockwise 1.2s ease-out forwards;
+    }
+
+    @keyframes borderClockwise {
+        0% {
+            clip-path: polygon(0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0);
+        }
+        25% {
+            clip-path: polygon(0 0, 100% 0, 100% 0, 100% 0, 100% 0, 0 0, 0 0, 0 0);
+        }
+        50% {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%, 0 0, 0 0, 0 0);
+        }
+        75% {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 100%, 0 0, 0 0, 0 0);
+        }
+        100% {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 0, 0 0, 0 0, 0 0);
+        }
+    }
+
+    /* Skeleton Text Box - 黒い枠だけ、背景は透明 */
+    .skeleton-text-box {
+        background: rgba(0, 0, 0, 1.5);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    }
+
+    /* --- GEAR Panel 専用スタイル --- */
+    /* 文字エリアを2cm（約20px）左にずらす */
+    .gear-text-area {
+        transform: translateX(-20px);
+    }
+
+    /* 縦にびっしり並ぶ文字列 */
+    .glitch-text-column {
+        font-family: 'Noto Serif JP', serif;
+        font-size: 2rem;
+        font-weight: 900;
+        line-height: 1.1;
+        letter-spacing: 0.1em;
+        writing-mode: vertical-rl;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+    }
+
+    /* 点滅エフェクト */
+    .glitch-blink {
+        animation: glitchBlink 0.1s step-end infinite;
+        animation-delay: calc(var(--blink-delay, 0) * 0.05s);
+    }
+
+    @keyframes glitchBlink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+
+    /* ボタンが出ている時だけ点滅 */
+    .glitch-text-column .glitch-blink,
+    .glitch-desc .glitch-blink {
+        animation: none;
+        opacity: 0;
+    }
+
+    .glitch-text-column.active .glitch-blink,
+    .glitch-desc.active .glitch-blink {
+        animation: glitchBlink 0.08s step-end infinite;
+        opacity: 1;
+    }
+
+    /* 巨大ボタン（0.8cm = 約8px 細く） */
+    .giant-button {
+        width: calc(100% - 8px) !important;
+        height: 60vh !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.5rem !important;
+        letter-spacing: 0.2em !important;
+        border-radius: 4px !important;
+        margin-top: 0 !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        writing-mode: horizontal-tb !important;
+    }
+
+    /* --- 導火線アニメーション（ボタン出現中だけ時計回りに一周） --- */
+    .fuse-line::before {
+        border: 3px solid #000 !important; /* 最初は黒 */
+        opacity: 0;
+    }
+
+    .merge-img-wrapper.fuse-active .fuse-line::before {
+        opacity: 1;
+        animation: fuseClockwise 3s linear forwards;
+    }
+
+    @keyframes fuseClockwise {
+        0% {
+            clip-path: polygon(0 0, 0 0, 0 0, 0 0);
+            border-color: #000;
+        }
+        10% {
+            clip-path: polygon(0 0, 25% 0, 25% 0, 0 0);
+            border-color: var(--accent-color, #ff4d00);
+        }
+        25% {
+            clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+            border-color: var(--accent-color, #ff4d00);
+        }
+        50% {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 100% 100%);
+            border-color: var(--accent-color, #ff4d00);
+        }
+        75% {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+            border-color: var(--accent-color, #ff4d00);
+        }
+        100% {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 0);
+            border-color: var(--accent-color, #ff4d00);
+        }
+    }
+
+    /* --- 「重力と遊ぶ」パネル 物理的減速 --- */
+    .skeleton-text-box.gravity-slow {
+        transition: transform 0.5s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+
+    /* =====================================================
+       3カラムレイアウト: 改良版
+       サムネイル(左) | ボタン(下から突出) | 縦書き文字(右)
+       ===================================================== */
+
+    /* パネルレイアウトコンテナ（3カラム） */
+    .panel-layout-container {
+        display: flex;
+        align-items: flex-end; /* ボタンが下から突き出るように下揃え */
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+        padding: 0 8%;
+        gap: 60px; /* サムネイル・ボタン・文字の間に黒い隙間 */
+        position: relative;
+    }
+
+    /* サムネイルを4cm（約40px）左にずらす */
+    .thumbnail-left {
+        margin-left: -40px;
+        align-self: center; /* サムネイルは中央揃え */
+    }
+
+    /* テキストエリアを右側に配置（隙間を作る） */
+    .text-area-right {
+        margin-right: -20px;
+        margin-left: 40px; /* ボタンとの間に隙間 */
+        align-self: center; /* 文字も中央揃え */
+    }
+
+    /* --- 巨大縦長ボタン (下から突き出る、横幅2倍) --- */
+    .giant-vertical-button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        height: 75vh; /* 画面下から突き出る高さ */
+        width: 140px; /* 横幅2倍 (70px → 140px) */
+        background: var(--accent-color, #ff4d00);
+        border-radius: 4px 4px 0 0; /* 下は角丸なし（突き出ている感） */
+        text-decoration: none;
+        overflow: hidden;
+        opacity: 0 !important; /* 初期非表示（CSSで強制） */
+        transform: translateY(100%) !important; /* 初期位置：画面外下（CSSで強制） */
+        position: relative;
+        z-index: 50;
+        box-shadow: 0 -4px 30px rgba(255, 77, 0, 0.5);
+        align-self: flex-end; /* 下揃え */
+        margin-bottom: -10vh; /* 画面下から突き出す */
+    }
+
+    /* GSAPでアニメーション制御される際に!importantを上書き */
+    .giant-vertical-button.glitch-active,
+    .giant-vertical-button.glitch-done {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+
+    /* 下から突き出るボタン専用スタイル - 削除（上で統合） */
+
+    .giant-vertical-button:hover {
+        box-shadow: 0 -6px 40px rgba(255, 77, 0, 0.7);
+    }
+
+    /* ボタン内の縦並び文字列 */
+    .button-text-column {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        height: 100%;
+        padding: 16px 8px;
+        gap: 6px;
+        overflow: hidden;
+    }
+
+    /* 各行のテキスト（STORY → などがびっしり） - 大きめ＋点滅 */
+    .btn-line {
+        font-family: 'Space Grotesk', monospace;
+        font-size: 12px; /* 横幅2倍に合わせて大きく */
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: #fff;
+        white-space: nowrap;
+        writing-mode: horizontal-tb;
+    }
+
+    /* ボタン内テキストの点滅アニメーション（押せますよ感） */
+    .glitch-button.glitch-done .btn-line {
+        animation: btnTextBlink 1.5s ease-in-out infinite;
+    }
+
+    @keyframes btnTextBlink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+    }
+
+    /* --- グリッチアニメーション（ボタン出現時：下から登場） --- */
+    .glitch-button {
+        animation: none;
+    }
+
+    .glitch-button.glitch-active {
+        opacity: 1 !important;
+        animation: glitchButtonPopup 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    }
+
+    @keyframes glitchButtonPopup {
+        0% {
+            opacity: 1;
+            transform: translateY(100%) translateX(0);
+        }
+        10% {
+            opacity: 1;
+            transform: translateY(80%) translateX(5px);
+        }
+        20% {
+            opacity: 1;
+            transform: translateY(60%) translateX(-5px);
+        }
+        30% {
+            opacity: 1;
+            transform: translateY(40%) translateX(3px);
+        }
+        40% {
+            opacity: 1;
+            transform: translateY(20%) translateX(-3px);
+        }
+        50% {
+            opacity: 1;
+            transform: translateY(10%) translateX(2px);
+        }
+        60% {
+            opacity: 1;
+            transform: translateY(5%) translateX(-2px);
+        }
+        70% {
+            opacity: 1;
+            transform: translateY(2%) translateX(1px);
+        }
+        80% {
+            opacity: 1;
+            transform: translateY(0) translateX(-1px);
+        }
+        90%, 100% {
+            opacity: 1;
+            transform: translateY(0) translateX(0);
+        }
+    }
+
+    /* グリッチテキストエフェクト（出現中のみ） */
+    .glitch-button.glitch-active .btn-line {
+        animation: glitchTextFlash 0.08s steps(2, end) infinite;
+    }
+
+    @keyframes glitchTextFlash {
+        0%, 100% {
+            text-shadow: none;
+            color: #fff;
+        }
+        25% {
+            text-shadow: 2px 0 cyan, -2px 0 magenta;
+            color: #fff;
+        }
+        50% {
+            text-shadow: -2px 0 cyan, 2px 0 magenta;
+            color: #ff0;
+        }
+        75% {
+            text-shadow: 1px 0 yellow, -1px 0 cyan;
+            color: #fff;
+        }
+    }
+
+    /* グリッチ終了後は通常状態に + 点滅継続 */
+    .glitch-button.glitch-done {
+        opacity: 1;
+        transform: translateY(0);
+        animation: none;
+    }
+</style>
+
+<script>
+    if (typeof window !== 'undefined' && typeof gsap !== 'undefined') {
+        /* ================================================
+           V8: CINEMATIC LUXURY - Pin-based Scroll
+           ================================================
+           各Chapterで画面をPinし、その場でストーリーを展開。
+           スクロール量に完全連動（scrub）する没入体験。
+           ================================================ */
+
+        const wrapper = document.querySelector('.horizontal-wrapper');
+        const container = document.querySelector('.horizontal-container');
+        const panels = gsap.utils.toArray('.h-panel');
+        const gravityPanel = panels[0]; // 「重力と遊ぶ」パネル
+        const skeletonBox = gravityPanel?.querySelector('.skeleton-text-box');
+        const chapterPanels = panels.slice(1); // Chapter 1, 2, 3
+
+        /* ------------------------------------------------
+           スクロール設定値
+           「移動もコンテンツの一つ」- 十分なスクロール距離を確保
+           ------------------------------------------------ */
+        const SCROLL_PER_PANEL = window.innerHeight * 5.0; // 各パネルで5画面分スクロール（拡張）
+        const TOTAL_SCROLL = SCROLL_PER_PANEL * panels.length;
+
+        /* ------------------------------------------------
+           Snap設定: 各セクション区切りで緩やかに吸着
+           ------------------------------------------------ */
+        const snapPoints = [];
+        for (let i = 0; i <= panels.length; i++) {
+            snapPoints.push(i / panels.length);
+        }
+
+        /* ================================================
+           MASTER TIMELINE
+           ================================================ */
+        const masterTL = gsap.timeline({
+            scrollTrigger: {
+                trigger: wrapper,
+                pin: true,
+                scrub: 0.8, // スクロールに滑らかに追従
+                anticipatePin: 1,
+                invalidateOnRefresh: true,
+                end: () => "+=" + TOTAL_SCROLL,
+                snap: {
+                    snapTo: snapPoints,
+                    duration: { min: 0.2, max: 0.6 },
+                    ease: "power2.inOut"
+                }
+            }
+        });
+
+        /* ================================================
+           SCENE 0: "Gravity & Gate" - Opening
+           重力と遊ぶカードは最初から表示。
+           1940pxでフェードアウト開始。
+           ================================================ */
+
+        // 初期状態設定
+        if (skeletonBox) {
+            gsap.set(skeletonBox, { y: '0%', opacity: 1, scale: 1 });
+        }
+        gsap.set(gravityPanel, { opacity: 1 });
+
+        // 1940pxでフェードアウト用の独立したScrollTrigger
+        const FADE_OUT_SCROLL = 1940;
+        const wrapperTop = wrapper.getBoundingClientRect().top + window.scrollY;
+
+        ScrollTrigger.create({
+            trigger: wrapper,
+            start: () => `top+=${FADE_OUT_SCROLL} top`,
+            end: () => `top+=${FADE_OUT_SCROLL + 500} top`,
+            scrub: true,
+            onUpdate: (self) => {
+                const progress = self.progress;
+                if (skeletonBox) {
+                    gsap.set(skeletonBox, {
+                        opacity: 1 - progress,
+                        scale: 1 - (progress * 0.05)
+                    });
+                }
+                gsap.set(gravityPanel, {
+                    opacity: 1 - progress
+                });
+            }
+        });
+
+        // Chapter 1への移動（タイムラインで制御）
+        masterTL.to(container, {
+            x: () => -(1 * window.innerWidth) + "px",
+            duration: 2.0,
+            ease: "power2.inOut"
+        });
+
+        /* ================================================
+           SCENE 1-3: Each Chapter
+           Pin状態でストーリー展開 → 次へスライド
+           ================================================ */
+        chapterPanels.forEach((panel, index) => {
+            const panelIndex = index + 1; // 実際のパネルインデックス
+            const img = panel.querySelector('.merge-img-wrapper');
+            const panelImage = panel.querySelector('.merge-img-wrapper img');
+            const txt = panel.querySelector('.merge-text-wrapper');
+            const chars = panel.querySelectorAll('.tategaki-char');
+            const verticalButton = panel.querySelector('.giant-vertical-button');
+
+            // ラベルを設定（デバッグ用）
+            const chapterLabel = `chapter${panelIndex}`;
+
+            /* --- Initial State --- */
+            gsap.set(panel, { opacity: 0 });
+            if (img) gsap.set(img, { opacity: 0, scale: 1.1, x: -50 });
+            if (txt) gsap.set(txt, { opacity: 0, x: 30 });
+            if (chars.length) gsap.set(chars, { opacity: 0, y: 20 });
+
+            /* --- Transition: 横移動で次のChapterへ --- */
+            /* Chapter 1はgravityFadeOutラベルで既に移動開始しているのでスキップ */
+            /* 豪華客船の旋回のような速度感。F1カーではない。 */
+            if (panelIndex > 1) {
+                masterTL.to(container, {
+                    x: () => -(panelIndex * window.innerWidth) + "px",
+                    duration: 1.5, // 3.0 → 1.5 テンポアップ
+                    ease: "power2.inOut"
+                }, chapterLabel + "-=0.5"); // 重ね技：前の演出終わる0.5秒前に移動開始
+            }
+
+            /* --- Scene Enter: Darkness to Light --- */
+            // パネル自体をフェードイン
+            masterTL.to(panel, {
+                opacity: 1,
+                duration: 0.4,
+                ease: "power2.out"
+            }, ">");
+
+            /* --- Ken Burns Effect: サムネイル浮上 --- */
+            if (img) {
+                masterTL.to(img, {
+                    opacity: 1,
+                    scale: 1.0,
+                    x: 0,
+                    duration: 1.2,
+                    ease: "power2.out"
+                }, "<+=0.1");
+            }
+
+            /* --- Text Reveal: スクロール連動で一文字ずつ --- */
+            if (txt) {
+                masterTL.to(txt, {
+                    opacity: 1,
+                    x: 0,
+                    duration: 0.6,
+                    ease: "none" // スクロールに直結
+                }, ">");
+            }
+
+            if (chars.length) {
+                masterTL.to(chars, {
+                    opacity: 1,
+                    y: 0,
+                    stagger: 0.03, // 一文字ずつ
+                    duration: 0.8,
+                    ease: "none" // スクロールに直結
+                }, "<+=0.1");
+            }
+
+            /* --- カラー化 (Ken Burns完了と同時) --- */
+            if (panelImage) {
+                masterTL.to(panelImage, {
+                    filter: 'grayscale(0%)',
+                    duration: 0.8,
+                    ease: "power1.out"
+                }, "<");
+            }
+
+            /* --- 余韻: コンテンツを見せる時間 --- */
+            masterTL.to({}, { duration: 0.5 });
+
+            /* --- Button Glitch Entry --- */
+            if (verticalButton) {
+                // グリッチ開始
+                masterTL.add(() => {
+                    verticalButton.classList.add('glitch-active');
+                });
+
+                // グリッチの尺（短く！）
+                masterTL.to({}, { duration: 0.4 }); // 0.6 → 0.4
+
+                // グリッチ終了 → 点滅モードへ
+                masterTL.add(() => {
+                    verticalButton.classList.remove('glitch-active');
+                    verticalButton.classList.add('glitch-done');
+                });
+
+                // ★余韻は削除！重ね技(-=0.5)で次の移動が食い込むので不要
+            }
+
+            // ★追加余韻も削除！重ね技で解決
+
+            /* --- Chapter 3の場合: 2Fへの移行準備 --- */
+            if (panelIndex === 3) {
+                // Scale Down + パララックス効果で奥に引く
+                masterTL.to(panel, {
+                    scale: 0.9,
+                    opacity: 0.5,
+                    duration: 0.6,
+                    ease: "power2.inOut"
+                });
+            }
+        });
+
+        /* ================================================
+           FINAL: 横スクロール終了後
+           ================================================ */
+        // コンテナを最終位置に固定
+        masterTL.to(container, {
+            x: () => -(chapterPanels.length * window.innerWidth) + "px",
+            duration: 0.3,
+            ease: "power2.out"
+        });
+
+        /* ================================================
+           GEAR Panel: スクロール連動カラー化
+           ================================================ */
+        const gearImage = document.getElementById('gear-panel-image');
+        if (gearImage) {
+            ScrollTrigger.create({
+                trigger: '#panel-gear',
+                start: 'left center',
+                end: 'right center',
+                horizontal: true,
+                onEnter: () => gearImage.classList.add('colorized'),
+                onLeaveBack: () => gearImage.classList.remove('colorized')
+            });
+        }
+
+        /* ================================================
+           Refresh on resize
+           ================================================ */
+        window.addEventListener('resize', () => {
+            ScrollTrigger.refresh();
+        });
+    }
+</script>

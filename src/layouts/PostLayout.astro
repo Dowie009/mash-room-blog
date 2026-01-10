@@ -1,0 +1,787 @@
+---
+/**
+ * PostLayout.astro - 記事ページ専用レイアウト
+ *
+ * このファイルを編集すれば、全記事のデザインが一括で変わります。
+ */
+import Layout from './Layout.astro';
+
+interface Props {
+  frontmatter: {
+    title: string;
+    date: Date;
+    category: string;
+    description?: string;
+    tags?: string[];
+    thumbnail?: string;
+  };
+  collection?: 'tech' | 'gear' | 'story';
+}
+
+const { frontmatter, collection = 'tech' } = Astro.props;
+
+// 日付フォーマット
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
+
+// カテゴリ表示名とカラー
+const categoryConfig: Record<string, { label: string; color: string }> = {
+  // TECH
+  astro: { label: 'ASTRO', color: '#ff5d01' },
+  react: { label: 'REACT', color: '#61dafb' },
+  css: { label: 'CSS', color: '#264de4' },
+  ai: { label: 'AI / CLAUDE', color: '#d97706' },
+  devtips: { label: 'DEV TIPS', color: '#10b981' },
+  // GEAR
+  daw: { label: 'DAW', color: '#8b5cf6' },
+  gear: { label: 'GEAR', color: '#ef4444' },
+  plugin: { label: 'PLUGIN', color: '#06b6d4' },
+  biz: { label: 'BIZ', color: '#f59e0b' },
+  tips: { label: 'TIPS', color: '#84cc16' },
+  essay: { label: 'ESSAY', color: '#ec4899' },
+  // STORY
+  story: { label: 'STORY', color: '#a855f7' },
+  diary: { label: 'DIARY', color: '#f472b6' },
+  review: { label: 'REVIEW', color: '#14b8a6' },
+};
+
+// コレクションごとの設定
+const collectionConfig: Record<string, { href: string; label: string; gradient: string; icon: string }> = {
+  tech: {
+    href: '/tech',
+    label: 'TECH LAB',
+    gradient: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
+    icon: '⚡'
+  },
+  gear: {
+    href: '/gear',
+    label: 'GEAR LAB',
+    gradient: 'linear-gradient(135deg, #f97316, #ef4444)',
+    icon: '🎛️'
+  },
+  story: {
+    href: '/story',
+    label: 'STORY LAB',
+    gradient: 'linear-gradient(135deg, #a855f7, #ec4899)',
+    icon: '📖'
+  },
+};
+
+const config = collectionConfig[collection] || collectionConfig.tech;
+const catConfig = categoryConfig[frontmatter.category] || { label: frontmatter.category.toUpperCase(), color: '#888' };
+
+// 読了時間を計算（仮で5分）
+const readTime = '5 min read';
+---
+
+<Layout title={`${frontmatter.title} | ${config.label}`}>
+  <div class="post-page">
+    <!-- ヒーローセクション -->
+    <header class="hero">
+      <div class="hero-background">
+        <div class="hero-gradient"></div>
+        <div class="hero-grid"></div>
+        <div class="hero-glow"></div>
+      </div>
+
+      <div class="hero-content">
+        <nav class="breadcrumb">
+          <a href="/" class="breadcrumb-link">HOME</a>
+          <span class="breadcrumb-sep">/</span>
+          <a href={config.href} class="breadcrumb-link">{config.label}</a>
+          <span class="breadcrumb-sep">/</span>
+          <span class="breadcrumb-current">{catConfig.label}</span>
+        </nav>
+
+        <div class="hero-meta">
+          <span class="category-badge" style={`--cat-color: ${catConfig.color}`}>
+            {catConfig.label}
+          </span>
+          <div class="meta-info">
+            <time datetime={frontmatter.date.toISOString()}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              {formatDate(frontmatter.date)}
+            </time>
+            <span class="read-time">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              {readTime}
+            </span>
+          </div>
+        </div>
+
+        <h1 class="hero-title">{frontmatter.title}</h1>
+
+        {frontmatter.description && (
+          <p class="hero-description">{frontmatter.description}</p>
+        )}
+
+        {frontmatter.tags && frontmatter.tags.length > 0 && (
+          <div class="hero-tags">
+            {frontmatter.tags.map(tag => (
+              <span class="tag">#{tag}</span>
+            ))}
+          </div>
+        )}
+      </div>
+    </header>
+
+    <!-- サムネイル -->
+    {frontmatter.thumbnail && (
+      <div class="thumbnail-wrapper">
+        <div class="thumbnail">
+          <img src={frontmatter.thumbnail} alt={frontmatter.title} />
+        </div>
+      </div>
+    )}
+
+    <!-- 本文 -->
+    <main class="article-main">
+      <article class="article-content">
+        <slot />
+      </article>
+
+      <!-- サイドバー（目次やシェア） -->
+      <aside class="article-sidebar">
+        <div class="sidebar-card share-card">
+          <h3>Share</h3>
+          <div class="share-buttons">
+            <a href="#" class="share-btn twitter" aria-label="Share on X">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+            </a>
+            <a href="#" class="share-btn facebook" aria-label="Share on Facebook">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+            <button class="share-btn copy" aria-label="Copy link">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- フッターナビ -->
+    <footer class="article-footer">
+      <div class="footer-content">
+        <a href={config.href} class="back-button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>{config.label}に戻る</span>
+        </a>
+
+        <div class="footer-brand">
+          <span class="brand-icon">{config.icon}</span>
+          <span class="brand-text">MASHROOM STUDIO</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+</Layout>
+
+<style>
+  /* =====================================================
+     MUJI ノート風デザイン - 温かみのあるライトテーマ
+     ===================================================== */
+
+  .post-page {
+    /* 無印ノートのようなクリーム〜ベージュ */
+    background: #f8f6f1;
+    min-height: 100vh;
+  }
+
+  /* =====================================================
+     ヒーローセクション
+     ===================================================== */
+
+  .hero {
+    position: relative;
+    padding: 4rem 2rem 3rem;
+    overflow: hidden;
+  }
+
+  .hero-background {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-gradient {
+    position: absolute;
+    inset: 0;
+    /* 淡いウォームグラデーション */
+    background: linear-gradient(180deg,
+      rgba(198, 168, 139, 0.08) 0%,
+      transparent 100%
+    );
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    /* ノートの罫線風 */
+    background-image:
+      linear-gradient(rgba(198, 168, 139, 0.1) 1px, transparent 1px);
+    background-size: 100% 2rem;
+    opacity: 0.5;
+  }
+
+  .hero-glow {
+    display: none;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  /* パンくず */
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+  }
+
+  .breadcrumb-link {
+    color: #a0937d;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .breadcrumb-link:hover {
+    color: #6b5b4f;
+  }
+
+  .breadcrumb-sep {
+    color: #d4ccc0;
+  }
+
+  .breadcrumb-current {
+    color: #8b8070;
+  }
+
+  /* メタ情報 */
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .category-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.9rem;
+    background: var(--cat-color);
+    color: #fff;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    border-radius: 20px;
+  }
+
+  .meta-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #a0937d;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 0.85rem;
+  }
+
+  .meta-info time,
+  .meta-info .read-time {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .meta-info svg {
+    opacity: 0.5;
+  }
+
+  /* タイトル */
+  .hero-title {
+    font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.5;
+    color: #4a4239;
+    margin-bottom: 1rem;
+    letter-spacing: 0.01em;
+  }
+
+  .hero-description {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #7a7062;
+    max-width: 600px;
+  }
+
+  /* タグ */
+  .hero-tags {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+  }
+
+  .tag {
+    color: #a0937d;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 0.85rem;
+    background: rgba(198, 168, 139, 0.15);
+    padding: 0.25rem 0.6rem;
+    border-radius: 12px;
+    transition: all 0.2s;
+  }
+
+  .tag:hover {
+    background: rgba(198, 168, 139, 0.25);
+    color: #6b5b4f;
+  }
+
+  /* =====================================================
+     サムネイル
+     ===================================================== */
+
+  .thumbnail-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .thumbnail {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 30px rgba(74, 66, 57, 0.1);
+    border: 1px solid rgba(198, 168, 139, 0.2);
+  }
+
+  .thumbnail img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* =====================================================
+     本文エリア
+     ===================================================== */
+
+  .article-main {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  @media (min-width: 1100px) {
+    .article-main {
+      max-width: 1000px;
+      grid-template-columns: 1fr 200px;
+    }
+  }
+
+  /* 本文スタイル */
+  .article-content {
+    font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
+    font-size: 1rem;
+    line-height: 2.1;
+    color: #5a524a;
+  }
+
+  .article-content :global(h2) {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 3rem 0 1.25rem;
+    padding-bottom: 0.6rem;
+    color: #4a4239;
+    position: relative;
+    border-bottom: 2px solid #e8e2d9;
+  }
+
+  .article-content :global(h2)::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: #c6a88b;
+    border-radius: 1px;
+  }
+
+  .article-content :global(h3) {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 2rem 0 0.8rem;
+    color: #5a524a;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .article-content :global(h3)::before {
+    content: '●';
+    color: #c6a88b;
+    font-size: 0.5rem;
+  }
+
+  .article-content :global(p) {
+    margin-bottom: 1.5rem;
+  }
+
+  .article-content :global(strong) {
+    color: #4a4239;
+    font-weight: 600;
+    background: linear-gradient(transparent 60%, rgba(198, 168, 139, 0.25) 60%);
+  }
+
+  .article-content :global(code) {
+    background: #eee9e0;
+    border: 1px solid #e0d9ce;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    color: #6b5b4f;
+  }
+
+  .article-content :global(pre) {
+    background: #f0ebe3;
+    padding: 1.25rem;
+    border-radius: 12px;
+    overflow-x: auto;
+    margin: 1.75rem 0;
+    border: 1px solid #e0d9ce;
+    position: relative;
+  }
+
+  .article-content :global(pre)::before {
+    content: 'CODE';
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.25rem 0.75rem;
+    background: #e0d9ce;
+    color: #8b8070;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 500;
+    border-radius: 0 12px 0 8px;
+    letter-spacing: 0.05em;
+  }
+
+  .article-content :global(pre code) {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #5a524a;
+    display: block;
+  }
+
+  .article-content :global(ul),
+  .article-content :global(ol) {
+    margin: 1.5rem 0;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .article-content :global(li) {
+    margin-bottom: 0.6rem;
+    padding-left: 1.5rem;
+    position: relative;
+  }
+
+  .article-content :global(ul li)::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.85rem;
+    width: 5px;
+    height: 5px;
+    background: #c6a88b;
+    border-radius: 50%;
+  }
+
+  .article-content :global(ol) {
+    counter-reset: list-counter;
+  }
+
+  .article-content :global(ol li) {
+    counter-increment: list-counter;
+  }
+
+  .article-content :global(ol li)::before {
+    content: counter(list-counter);
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #c6a88b;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .article-content :global(blockquote) {
+    border-left: 3px solid #c6a88b;
+    padding: 1rem 1.25rem;
+    margin: 1.75rem 0;
+    background: rgba(198, 168, 139, 0.08);
+    border-radius: 0 12px 12px 0;
+    color: #7a7062;
+    font-style: normal;
+  }
+
+  .article-content :global(blockquote p) {
+    margin-bottom: 0;
+  }
+
+  .article-content :global(a) {
+    color: #8b7355;
+    text-decoration: none;
+    border-bottom: 1px dashed #c6a88b;
+    transition: all 0.2s;
+  }
+
+  .article-content :global(a:hover) {
+    color: #6b5b4f;
+    border-bottom-style: solid;
+  }
+
+  .article-content :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin: 1.75rem 0;
+    box-shadow: 0 6px 20px rgba(74, 66, 57, 0.1);
+  }
+
+  .article-content :global(hr) {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #e0d9ce, transparent);
+    margin: 2.5rem 0;
+  }
+
+  /* テーブル */
+  .article-content :global(table) {
+    width: 100%;
+    margin: 1.75rem 0;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .article-content :global(th),
+  .article-content :global(td) {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e8e2d9;
+  }
+
+  .article-content :global(th) {
+    background: rgba(198, 168, 139, 0.15);
+    color: #4a4239;
+    font-weight: 600;
+  }
+
+  /* =====================================================
+     サイドバー
+     ===================================================== */
+
+  .article-sidebar {
+    display: none;
+  }
+
+  @media (min-width: 1100px) {
+    .article-sidebar {
+      display: block;
+      position: sticky;
+      top: 2rem;
+      align-self: start;
+    }
+  }
+
+  .sidebar-card {
+    background: rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(198, 168, 139, 0.2);
+    border-radius: 16px;
+    padding: 1.25rem;
+  }
+
+  .sidebar-card h3 {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    color: #a0937d;
+    margin-bottom: 0.75rem;
+  }
+
+  .share-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .share-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(198, 168, 139, 0.1);
+    border: 1px solid rgba(198, 168, 139, 0.2);
+    border-radius: 10px;
+    color: #a0937d;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .share-btn:hover {
+    background: rgba(198, 168, 139, 0.2);
+    color: #6b5b4f;
+    transform: translateY(-2px);
+  }
+
+  .share-btn.twitter:hover {
+    background: rgba(29, 161, 242, 0.1);
+    border-color: rgba(29, 161, 242, 0.2);
+    color: #1da1f2;
+  }
+
+  .share-btn.facebook:hover {
+    background: rgba(24, 119, 242, 0.1);
+    border-color: rgba(24, 119, 242, 0.2);
+    color: #1877f2;
+  }
+
+  /* =====================================================
+     フッター
+     ===================================================== */
+
+  .article-footer {
+    border-top: 1px solid #e8e2d9;
+    padding: 2rem;
+    margin-top: 1rem;
+    background: rgba(255, 255, 255, 0.4);
+  }
+
+  .footer-content {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1.25rem;
+    background: rgba(198, 168, 139, 0.1);
+    border: 1px solid rgba(198, 168, 139, 0.25);
+    border-radius: 25px;
+    color: #8b8070;
+    text-decoration: none;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+
+  .back-button:hover {
+    background: rgba(198, 168, 139, 0.2);
+    color: #6b5b4f;
+    transform: translateX(-4px);
+  }
+
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #b0a595;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 0.8rem;
+  }
+
+  .brand-icon {
+    font-size: 1rem;
+  }
+
+  /* =====================================================
+     レスポンシブ
+     ===================================================== */
+
+  @media (max-width: 768px) {
+    .hero {
+      padding: 3rem 1.5rem 2rem;
+    }
+
+    .hero-title {
+      font-size: 1.5rem;
+    }
+
+    .hero-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .thumbnail-wrapper {
+      padding: 0 1rem;
+    }
+
+    .article-main {
+      padding: 2rem 1.5rem;
+    }
+
+    .article-content {
+      font-size: 0.95rem;
+    }
+
+    .article-content :global(h2) {
+      font-size: 1.25rem;
+    }
+
+    .footer-content {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>

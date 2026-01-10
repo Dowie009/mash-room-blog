@@ -3,26 +3,51 @@ import '../styles/global.css';
 
 interface Props {
   title?: string;
+  description?: string;
+  ogImage?: string;
   version?: string;
   canonicalUrl?: string;
 }
 
-const { 
-  title = 'SAPPORO MASH ROOM STUDIO (Blog Archive)',
+const SITE_URL = 'https://mashroom-studio.com';
+const DEFAULT_OG_IMAGE = '/images/og-default.png';
+
+const {
+  title = 'きのこ式AI栽培日記 | MASHROOM STUDIO',
+  description = 'クリエイターのためのAI活用術。TECH LAB・GEAR LAB・STORY LABの3つの研究室から、AI時代のものづくりを発信します。',
+  ogImage = DEFAULT_OG_IMAGE,
   version,
-  canonicalUrl 
+  canonicalUrl
 } = Astro.props;
+
+const ogImageUrl = ogImage.startsWith('http') ? ogImage : `${SITE_URL}${ogImage}`;
 ---
 
 <!doctype html>
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="物語（Story）とテック（Tech）の融合。夕暮れのトーンで紡ぐブログアーカイブ。" />
+    <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     {/* favicon.svgが存在しない場合はコメントアウト */}
     {/* <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> */}
     <meta name="generator" content={Astro.generator} />
+
+    {/* OGP (Open Graph Protocol) */}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="きのこ式AI栽培日記" />
+    <meta property="og:locale" content="ja_JP" />
+
+    {/* Twitter Card */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
     
     {/* キャッシュ制御: 検索エンジンに最新版を取得させる */}
     <meta name="robots" content="noarchive, noimageindex" />
@@ -48,7 +73,7 @@ const {
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@700;900&family=Space+Grotesk:wght@300;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@700;900&family=Zen+Maru+Gothic:wght@400;500;700&family=Space+Grotesk:wght@300;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet" />
   </head>
   <body>
     <slot />

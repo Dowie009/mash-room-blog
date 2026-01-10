@@ -1,5 +1,6 @@
 ---
 // Horizontal Scroll Section: Story, Gear, Tech panels
+// V8: Cinematic Luxury - Pin-based Scroll with Scrub Sync
 ---
 
 <!-- 3. HORIZONTAL READING -->
@@ -810,203 +811,242 @@
 
 <script>
     if (typeof window !== 'undefined' && typeof gsap !== 'undefined') {
-        /* ------------------------------------------------
-           4. HORIZONTAL SCROLL - 3カラムレイアウト対応
-           セクション間で異なるスクロール硬さを適用
-           ------------------------------------------------ */
+        /* ================================================
+           V8: CINEMATIC LUXURY - Pin-based Scroll
+           ================================================
+           各Chapterで画面をPinし、その場でストーリーを展開。
+           スクロール量に完全連動（scrub）する没入体験。
+           ================================================ */
+
         const wrapper = document.querySelector('.horizontal-wrapper');
         const container = document.querySelector('.horizontal-container');
         const panels = gsap.utils.toArray('.h-panel');
-        const spacerPanel = panels[0]; // 「重力と遊ぶ」パネル
-        const skeletonBox = spacerPanel.querySelector('.skeleton-text-box');
+        const gravityPanel = panels[0]; // 「重力と遊ぶ」パネル
+        const skeletonBox = gravityPanel?.querySelector('.skeleton-text-box');
+        const chapterPanels = panels.slice(1); // Chapter 1, 2, 3
 
         /* ------------------------------------------------
-           GEAR Panel スクロール連動カラー化
+           スクロール設定値
+           「移動もコンテンツの一つ」- 十分なスクロール距離を確保
            ------------------------------------------------ */
-        const gearImage = document.getElementById('gear-panel-image');
+        const SCROLL_PER_PANEL = window.innerHeight * 5.0; // 各パネルで5画面分スクロール（拡張）
+        const TOTAL_SCROLL = SCROLL_PER_PANEL * panels.length;
 
         /* ------------------------------------------------
-           スクロール硬さの設定
-           scrub値が小さいほど硬い（反応が鈍い）
+           Snap設定: 各セクション区切りで緩やかに吸着
            ------------------------------------------------ */
-        // 基準値 0.2 から計算
-        const scrubGravity = 0.2 * 0.65;    // 重力と遊ぶカード出現: 35%硬く = 0.13
-        const scrubCh1to2 = 0.2 * 0.55;     // Chapter1→2間: 45%硬く = 0.11
-        const scrubCh2to3 = 0.2 * 0.55;     // Chapter2→3間: 45%硬く = 0.11
-        const scrubCh3toF2 = 0.2 * 0.70;    // Chapter3→2階: 30%硬く = 0.14
+        const snapPoints = [];
+        for (let i = 0; i <= panels.length; i++) {
+            snapPoints.push(i / panels.length);
+        }
 
-        const tl = gsap.timeline({
+        /* ================================================
+           MASTER TIMELINE
+           ================================================ */
+        const masterTL = gsap.timeline({
             scrollTrigger: {
                 trigger: wrapper,
                 pin: true,
-                scrub: scrubGravity, // 初期値（重力と遊ぶカード用）
+                scrub: 0.8, // スクロールに滑らかに追従
                 anticipatePin: 1,
                 invalidateOnRefresh: true,
-                // スクロール距離1.5
-                end: () => "+=" + (panels.length * window.innerWidth * 1.5),
-                // スクロール位置に応じてscrub値を動的に変更
-                onUpdate: (self) => {
-                    const progress = self.progress;
-                    const st = self;
-
-                    // 進行度に応じてscrub値を変更
-                    // 0-20%: 重力と遊ぶカード (35%硬く)
-                    // 20-45%: Chapter1→2 (45%硬く)
-                    // 45-70%: Chapter2→3 (45%硬く)
-                    // 70-100%: Chapter3→2階 (30%硬く)
-
-                    if (progress < 0.20) {
-                        st.vars.scrub = scrubGravity;
-                    } else if (progress < 0.45) {
-                        st.vars.scrub = scrubCh1to2;
-                    } else if (progress < 0.70) {
-                        st.vars.scrub = scrubCh2to3;
-                    } else {
-                        st.vars.scrub = scrubCh3toF2;
-                    }
+                end: () => "+=" + TOTAL_SCROLL,
+                snap: {
+                    snapTo: snapPoints,
+                    duration: { min: 0.2, max: 0.6 },
+                    ease: "power2.inOut"
                 }
             }
         });
 
-        /* ------------------------------------------------
-           「重力と遊ぶ」パネル - 消失問題修正版
-           スクロール開始から最後まで表示し続ける
-           35%硬くして出現
-           ------------------------------------------------ */
+        /* ================================================
+           SCENE 0: "Gravity & Gate" - Opening
+           重力と遊ぶカードは最初から表示。
+           1940pxでフェードアウト開始。
+           ================================================ */
+
+        // 初期状態設定
         if (skeletonBox) {
-            // 初期状態：中央に表示
-            gsap.set(skeletonBox, { y: 0, opacity: 1, scale: 1 });
-
-            // 1. しばらく表示を維持（消えないように長めに）
-            tl.to(skeletonBox, {
-                y: 0,
-                opacity: 1,
-                duration: 1.5,
-                ease: "none"
-            });
-
-            // 2. フェードアウト開始（次のパネルへの移行直前）- 60%カット
-            tl.to(skeletonBox, {
-                opacity: 0,
-                scale: 0.95,
-                duration: 0.12, // 0.3 * 0.4 = 0.12 (60%カット)
-                ease: "power2.inOut"
-            });
-        } else {
-            tl.to({}, { duration: 1.0 });
+            gsap.set(skeletonBox, { y: '0%', opacity: 1, scale: 1 });
         }
+        gsap.set(gravityPanel, { opacity: 1 });
 
-        // Spacer Panelをフェードアウト（60%カット）
-        tl.to(spacerPanel, {
-            opacity: 0,
-            scale: 0.95,
-            duration: 0.16, // 0.4 * 0.4 = 0.16 (60%カット)
+        // 1940pxでフェードアウト用の独立したScrollTrigger
+        const FADE_OUT_SCROLL = 1940;
+        const wrapperTop = wrapper.getBoundingClientRect().top + window.scrollY;
+
+        ScrollTrigger.create({
+            trigger: wrapper,
+            start: () => `top+=${FADE_OUT_SCROLL} top`,
+            end: () => `top+=${FADE_OUT_SCROLL + 500} top`,
+            scrub: true,
+            onUpdate: (self) => {
+                const progress = self.progress;
+                if (skeletonBox) {
+                    gsap.set(skeletonBox, {
+                        opacity: 1 - progress,
+                        scale: 1 - (progress * 0.05)
+                    });
+                }
+                gsap.set(gravityPanel, {
+                    opacity: 1 - progress
+                });
+            }
+        });
+
+        // Chapter 1への移動（タイムラインで制御）
+        masterTL.to(container, {
+            x: () => -(1 * window.innerWidth) + "px",
+            duration: 2.0,
             ease: "power2.inOut"
-        }, "<");
+        });
 
-        panels.forEach((panel, i) => {
-            if (i === 0) return;
-
-            // コンテンツ要素を取得（3カラムレイアウト対応）
+        /* ================================================
+           SCENE 1-3: Each Chapter
+           Pin状態でストーリー展開 → 次へスライド
+           ================================================ */
+        chapterPanels.forEach((panel, index) => {
+            const panelIndex = index + 1; // 実際のパネルインデックス
             const img = panel.querySelector('.merge-img-wrapper');
             const panelImage = panel.querySelector('.merge-img-wrapper img');
             const txt = panel.querySelector('.merge-text-wrapper');
             const chars = panel.querySelectorAll('.tategaki-char');
-
-            // 新しい巨大縦長ボタン（3カラム用）
             const verticalButton = panel.querySelector('.giant-vertical-button');
 
-            // ボタンを初期非表示に（CSSで !important 指定済み、GSAPは後でクラス追加時に制御）
+            // ラベルを設定（デバッグ用）
+            const chapterLabel = `chapter${panelIndex}`;
 
-            // Chapter 01（i === 1）の場合、フェードオーバーラップ効果
-            if (i === 1) {
-                // パネル自体を初期状態で少し透明に
-                gsap.set(panel, { opacity: 0.7 });
+            /* --- Initial State --- */
+            gsap.set(panel, { opacity: 0 });
+            if (img) gsap.set(img, { opacity: 0, scale: 1.1, x: -50 });
+            if (txt) gsap.set(txt, { opacity: 0, x: 30 });
+            if (chars.length) gsap.set(chars, { opacity: 0, y: 20 });
 
-                // 1. パネル移動 + フェードイン（60%カット後の隙間）
-                tl.to(container, {
-                    x: - (i * 100) + "vw",
-                    ease: "power1.inOut",
-                    duration: 0.32 // 0.8 * 0.4 = 0.32 (60%カット)
-                });
+            /* --- Transition: 横移動で次のChapterへ --- */
+            /* Chapter 1はgravityFadeOutラベルで既に移動開始しているのでスキップ */
+            /* 豪華客船の旋回のような速度感。F1カーではない。 */
+            if (panelIndex > 1) {
+                masterTL.to(container, {
+                    x: () => -(panelIndex * window.innerWidth) + "px",
+                    duration: 1.5, // 3.0 → 1.5 テンポアップ
+                    ease: "power2.inOut"
+                }, chapterLabel + "-=0.5"); // 重ね技：前の演出終わる0.5秒前に移動開始
+            }
 
-                // パネル自体をフェードイン
-                tl.to(panel, {
+            /* --- Scene Enter: Darkness to Light --- */
+            // パネル自体をフェードイン
+            masterTL.to(panel, {
+                opacity: 1,
+                duration: 0.4,
+                ease: "power2.out"
+            }, ">");
+
+            /* --- Ken Burns Effect: サムネイル浮上 --- */
+            if (img) {
+                masterTL.to(img, {
                     opacity: 1,
-                    duration: 0.2, // 0.5 * 0.4
+                    scale: 1.0,
+                    x: 0,
+                    duration: 1.2,
                     ease: "power2.out"
-                }, "<+=0.04");
+                }, "<+=0.1");
+            }
 
-                // Spacer Panelを完全に消す
-                tl.to(spacerPanel, {
-                    opacity: 0,
-                    duration: 0.12 // 0.3 * 0.4
+            /* --- Text Reveal: スクロール連動で一文字ずつ --- */
+            if (txt) {
+                masterTL.to(txt, {
+                    opacity: 1,
+                    x: 0,
+                    duration: 0.6,
+                    ease: "none" // スクロールに直結
+                }, ">");
+            }
+
+            if (chars.length) {
+                masterTL.to(chars, {
+                    opacity: 1,
+                    y: 0,
+                    stagger: 0.03, // 一文字ずつ
+                    duration: 0.8,
+                    ease: "none" // スクロールに直結
+                }, "<+=0.1");
+            }
+
+            /* --- カラー化 (Ken Burns完了と同時) --- */
+            if (panelImage) {
+                masterTL.to(panelImage, {
+                    filter: 'grayscale(0%)',
+                    duration: 0.8,
+                    ease: "power1.out"
                 }, "<");
-            } else {
-                // 通常のパネル移動
-                tl.to(container, {
-                    x: - (i * 100) + "vw",
-                    ease: "none",
-                    duration: 0.8
+            }
+
+            /* --- 余韻: コンテンツを見せる時間 --- */
+            masterTL.to({}, { duration: 0.5 });
+
+            /* --- Button Glitch Entry --- */
+            if (verticalButton) {
+                // グリッチ開始
+                masterTL.add(() => {
+                    verticalButton.classList.add('glitch-active');
+                });
+
+                // グリッチの尺（短く！）
+                masterTL.to({}, { duration: 0.4 }); // 0.6 → 0.4
+
+                // グリッチ終了 → 点滅モードへ
+                masterTL.add(() => {
+                    verticalButton.classList.remove('glitch-active');
+                    verticalButton.classList.add('glitch-done');
+                });
+
+                // ★余韻は削除！重ね技(-=0.5)で次の移動が食い込むので不要
+            }
+
+            // ★追加余韻も削除！重ね技で解決
+
+            /* --- Chapter 3の場合: 2Fへの移行準備 --- */
+            if (panelIndex === 3) {
+                // Scale Down + パララックス効果で奥に引く
+                masterTL.to(panel, {
+                    scale: 0.9,
+                    opacity: 0.5,
+                    duration: 0.6,
+                    ease: "power2.inOut"
                 });
             }
+        });
 
-            if(img && txt) {
-                // ★ 新しいアニメーション順序（3カラムレイアウト） ★
+        /* ================================================
+           FINAL: 横スクロール終了後
+           ================================================ */
+        // コンテナを最終位置に固定
+        masterTL.to(container, {
+            x: () => -(chapterPanels.length * window.innerWidth) + "px",
+            duration: 0.3,
+            ease: "power2.out"
+        });
 
-                // 1. サムネイルが左にガチャッとはまる
-                tl.fromTo(img,
-                    { x: -80, opacity: 0 },
-                    { x: 0, opacity: 1, duration: 0.8, ease: "power2.out" },
-                    "<+=0.1"
-                );
+        /* ================================================
+           GEAR Panel: スクロール連動カラー化
+           ================================================ */
+        const gearImage = document.getElementById('gear-panel-image');
+        if (gearImage) {
+            ScrollTrigger.create({
+                trigger: '#panel-gear',
+                start: 'left center',
+                end: 'right center',
+                horizontal: true,
+                onEnter: () => gearImage.classList.add('colorized'),
+                onLeaveBack: () => gearImage.classList.remove('colorized')
+            });
+        }
 
-                // 2. サムネイルがはまったら → 文字が出現開始
-                tl.fromTo(txt,
-                    { x: 50, opacity: 0 },
-                    { x: 0, opacity: 1, duration: 0.6, ease: "power1.out" },
-                    ">" // 画像の後
-                );
-
-                // 3. 文字が一文字ずつ出現（シネマライク）
-                tl.fromTo(chars,
-                    { y: 30, opacity: 0 },
-                    { y: 0, opacity: 1, stagger: 0.02, duration: 0.8, ease: "power1.out" },
-                    "<+=0.1"
-                );
-
-                // 4. 文字出現中にサムネイルをカラー化
-                if (panelImage) {
-                    tl.to(panelImage, {
-                        filter: 'grayscale(0%)',
-                        duration: 0.6,
-                        ease: "power1.out"
-                    }, "<+=0.2");
-                }
-
-                // 5. 文字が完全に終わった後、ボタンをグリッチアニメーションで下から出現
-                if (verticalButton) {
-                    // 文字完了後に間を置く
-                    tl.to({}, { duration: 0.3 }, ">");
-
-                    // グリッチアニメーションでボタンが下から出現（クラス追加のみ）
-                    tl.add(() => {
-                        verticalButton.classList.add('glitch-active');
-                    });
-
-                    // アニメーション時間分待つ
-                    tl.to({}, { duration: 0.8 });
-
-                    // グリッチアニメーション終了後、通常状態に（点滅継続）
-                    tl.add(() => {
-                        verticalButton.classList.remove('glitch-active');
-                        verticalButton.classList.add('glitch-done');
-                    });
-
-                    // 余韻（短め）
-                    tl.to({}, { duration: 0.2 });
-                }
-            }
+        /* ================================================
+           Refresh on resize
+           ================================================ */
+        window.addEventListener('resize', () => {
+            ScrollTrigger.refresh();
         });
     }
 </script>

@@ -1,23 +1,39 @@
 import { defineCollection, z } from 'astro:content';
 
+// GEAR/STORY用（既存）
 const blogCollection = defineCollection({
-  type: 'content', // Markdownファイル
+  type: 'content',
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
     category: z.enum(['daw', 'gear', 'plugin', 'biz', 'tips', 'essay']),
-    thumbnail: z.string(), // 画像パス
-    description: z.string().optional(), // 説明文（オプション）
+    thumbnail: z.string(),
+    description: z.string().optional(),
     tags: z.array(z.string()).default([]),
-    // グリッド表示用のサイズ設定
     gridSize: z.object({
-      colSpan: z.number().default(12), // デフォルトは12（フル幅）
-      rowSpan: z.number().default(1), // デフォルトは1行
-      height: z.number().optional(), // カードの高さ（px）
+      colSpan: z.number().default(12),
+      rowSpan: z.number().default(1),
+      height: z.number().optional(),
     }).optional(),
+  }),
+});
+
+// TECH用（新規）
+const techCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    date: z.coerce.date(),
+    category: z.enum(['astro', 'react', 'css', 'ai', 'devtips']),
+    thumbnail: z.string().optional(),
+    description: z.string().optional(),
+    tags: z.array(z.string()).default([]),
+    // 公開状態（下書き機能）
+    draft: z.boolean().default(false),
   }),
 });
 
 export const collections = {
   'blog': blogCollection,
+  'tech': techCollection,
 };
