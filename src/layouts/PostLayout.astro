@@ -15,7 +15,7 @@ interface Props {
     tags?: string[];
     thumbnail?: string;
   };
-  collection?: 'tech' | 'gear' | 'story';
+  collection?: 'tech' | 'gear' | 'story' | 'ai';
 }
 
 const { frontmatter, collection = 'tech' } = Astro.props;
@@ -48,6 +48,12 @@ const categoryConfig: Record<string, { label: string; color: string }> = {
   story: { label: 'STORY', color: '#a855f7' },
   diary: { label: 'DIARY', color: '#f472b6' },
   review: { label: 'REVIEW', color: '#14b8a6' },
+  // AI LAB
+  chat: { label: 'CHAT', color: '#00ffff' },
+  dev: { label: 'DEV', color: '#ffaa00' },
+  art: { label: 'ART', color: '#ff00ff' },
+  music: { label: 'MUSIC', color: '#39ff14' },
+  hack: { label: 'HACK', color: '#ffff00' },
 };
 
 // コレクションごとの設定
@@ -69,6 +75,12 @@ const collectionConfig: Record<string, { href: string; label: string; gradient: 
     label: 'STORY LAB',
     gradient: 'linear-gradient(135deg, #a855f7, #ec4899)',
     icon: '📖'
+  },
+  ai: {
+    href: '/ai',
+    label: 'AI LAB',
+    gradient: 'linear-gradient(135deg, #00ffff, #ff00ff)',
+    icon: '🤖'
   },
 };
 

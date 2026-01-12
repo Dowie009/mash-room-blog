@@ -2,7 +2,7 @@
 title: Astro Content Collectionsで記事管理システムを構築した話
 date: 2026-01-10
 category: astro
-
+thumbnail: /images/Blog_00.png
 description: Astro Content AstroのContent Collectionsを使って、型安全な記事管理システムを構築した実装メモで記事管理システムを構築した話
 tags: ['Astro', 'Content Collections', 'TypeScript', 'ブログ構築']
 draft: false

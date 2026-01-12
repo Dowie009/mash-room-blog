@@ -2,6 +2,7 @@
 title: TECH LAB システム構築開始
 date: 2026-01-10
 category: astro
+thumbnail: /images/01.png
 description: CockpitからブログへのリアルタイムPJ発信システムを構築中
 tags: ['Astro', 'React', 'Claude Code', 'Cockpit']
 draft: false

@@ -1,7 +1,7 @@
 import { defineCollection, z } from 'astro:content';
 
-// GEAR/STORY用（既存）
-const blogCollection = defineCollection({
+// DTM用
+const dtmCollection = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
@@ -18,7 +18,7 @@ const blogCollection = defineCollection({
   }),
 });
 
-// TECH用（新規）
+// TECH用（Chapter 03）
 const techCollection = defineCollection({
   type: 'content',
   schema: z.object({
@@ -34,6 +34,6 @@ const techCollection = defineCollection({
 });
 
 export const collections = {
-  'blog': blogCollection,
+  'dtm': dtmCollection,
   'tech': techCollection,
 };

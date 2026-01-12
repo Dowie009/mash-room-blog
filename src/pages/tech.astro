@@ -1,0 +1,887 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+// Content Collectionsから記事データを取得（下書き除外）
+const allPosts = await getCollection('tech', ({ data }) => !data.draft);
+// 日付でソート（新しい順）
+const sortedPosts = allPosts.sort((a, b) =>
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+// 日付フォーマット関数
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).replace(/\//g, '.');
+};
+
+// カテゴリラベル
+const categoryLabels: Record<string, string> = {
+  'astro': 'ASTRO',
+  'react': 'REACT',
+  'css': 'CSS',
+  'ai': 'AI',
+  'devtips': 'DEV TIPS',
+};
+
+// カテゴリカラー
+const categoryColors: Record<string, string> = {
+  'astro': '#00ffff',
+  'react': '#61dafb',
+  'css': '#264de4',
+  'ai': '#ffaa00',
+  'devtips': '#10b981',
+};
+
+// 記事データをJavaScript形式に変換
+const articlesData = sortedPosts.map((post, index) => ({
+  id: index,
+  slug: post.slug,
+  title: post.data.title,
+  cat: post.data.category,
+  catColor: categoryColors[post.data.category] || '#00ffff',
+  date: formatDate(post.data.date),
+  img: post.data.thumbnail || `https://images.unsplash.com/photo-${1500000000000 + index * 10}?q=80&w=600&auto=format&fit=crop`,
+  description: post.data.description || '',
+  tags: post.data.tags || [],
+}));
+
+// カテゴリ一覧（techコレクションのカテゴリ）
+const categories = [
+  { id: 'ALL', color: '#00ffff' },
+  { id: 'astro', color: '#00ffff', label: 'ASTRO' },
+  { id: 'react', color: '#61dafb', label: 'REACT' },
+  { id: 'css', color: '#264de4', label: 'CSS' },
+  { id: 'ai', color: '#ffaa00', label: 'AI' },
+  { id: 'devtips', color: '#10b981', label: 'DEV TIPS' },
+];
+---
+
+<Layout title="MASHROOM | TECH LAB">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Zen+Old+Mincho:wght@700;900&family=Space+Grotesk:wght@300;500;700&family=Noto+Sans+JP:wght@300;400;700&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- LIBRARIES -->
+  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+  <script is:inline src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <script is:inline src="https://unpkg.com/lucide@latest"></script>
+
+  <style is:global>
+    /* === GLOBAL VARIABLES === */
+    :root {
+      --bg-deep: #05020a;
+      --text-main: #ffffff;
+      --accent-cyan: #00ffff;
+      --accent-hot: #ff00ff;
+      
+      /* Category Colors (Neon) */
+      --col-astro: #00ffff; 
+      --col-react: #ffaa00;
+      --col-css: #ff00ff;
+      --col-ai: #39ff14;  
+      --col-devtips: #ffff00;
+    }
+
+    body {
+      background-color: var(--bg-deep);
+      color: var(--text-main);
+      font-family: 'Noto Sans JP', sans-serif;
+      overflow: hidden;
+      margin: 0; padding: 0;
+      cursor: none;
+    }
+
+    .font-cyber { font-family: 'Orbitron', sans-serif; }
+    .font-mincho { font-family: 'Zen Old Mincho', serif; }
+    .font-code { font-family: 'Fira Code', monospace; }
+
+    /* --- PERFORMANCE FIXES --- */
+    .will-transform { will-change: transform; }
+    .will-opacity { will-change: opacity; }
+
+    /* --- 1. BACKGROUND LAYERS --- */
+    #video-bg {
+      position: fixed; inset: 0; z-index: 0;
+      width: 100%; height: 100%; object-fit: cover;
+      opacity: 0.4; pointer-events: none;
+    }
+
+    .deep-space-overlay {
+      position: fixed; inset: 0; z-index: 4; pointer-events: none;
+      background: radial-gradient(circle, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%);
+    }
+
+    .comic-halftone {
+      position: fixed; inset: 0; z-index: 5; pointer-events: none;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+      background-size: 4px 4px; 
+      opacity: 0.08; 
+      mix-blend-mode: overlay;
+    }
+
+    /* --- 2. UI COMPONENTS --- */
+    #ui-layer {
+      position: fixed; inset: 0; z-index: 100; pointer-events: none;
+      padding: 2rem;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .ai-header { display: flex; justify-content: space-between; align-items: flex-start; pointer-events: auto; }
+    .ai-logo {
+      font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1.8rem;
+      letter-spacing: 0.1em; color: white; 
+      text-shadow: 2px 2px 0px #000, 0 0 10px var(--accent-cyan);
+    }
+    .ai-status {
+      font-family: 'Fira Code', monospace; font-size: 0.7rem; color: rgba(255,255,255,0.6);
+      text-align: right;
+    }
+
+    /* HUD Buttons */
+    .hud-container {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      z-index: 110; pointer-events: auto;
+      display: flex; gap: 0.8rem; align-items: center;
+    }
+    .hud-btn {
+      position: relative; width: 54px; height: 64px;
+      border: 2px solid rgba(255,255,255,0.3);
+      background: rgba(0,0,0,0.8);
+      color: rgba(255,255,255,0.8); border-radius: 8px;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      cursor: pointer; transition: transform 0.2s, border-color 0.2s, color 0.2s;
+      box-shadow: 2px 2px 0px #000;
+      padding: 4px;
+      gap: 2px;
+    }
+    .hud-btn-icon {
+      font-size: 1.2rem;
+    }
+    .hud-btn-label {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.5rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      opacity: 0.8;
+      text-transform: uppercase;
+    }
+    .hud-btn:hover { 
+      transform: scale(1.05); 
+      border-color: white; 
+      color: white; 
+    }
+    .hud-btn:hover .hud-btn-label {
+      opacity: 1;
+    }
+    .hud-btn.active { 
+      border-color: var(--accent-cyan); 
+      color: var(--accent-cyan); 
+      box-shadow: 0 0 10px var(--accent-cyan); 
+    }
+    .hud-btn.active .hud-btn-label {
+      opacity: 1;
+    }
+
+    /* Category Color Activations */
+    .hud-btn[data-cat="astro"].active { border-color: var(--col-astro); color: var(--col-astro); box-shadow: 0 0 15px var(--col-astro); }
+    .hud-btn[data-cat="react"].active { border-color: var(--col-react); color: var(--col-react); box-shadow: 0 0 15px var(--col-react); }
+    .hud-btn[data-cat="css"].active { border-color: var(--col-css); color: var(--col-css); box-shadow: 0 0 15px var(--col-css); }
+    .hud-btn[data-cat="ai"].active { border-color: var(--col-ai); color: var(--col-ai); box-shadow: 0 0 15px var(--col-ai); }
+    .hud-btn[data-cat="devtips"].active { border-color: var(--col-devtips); color: var(--col-devtips); box-shadow: 0 0 15px var(--col-devtips); }
+
+    /* --- 3. 3D & CARD STYLES --- */
+    #tunnel-scene {
+      position: fixed; inset: 0; perspective: 800px; overflow: hidden;
+      z-index: 10;
+    }
+    #tunnel-world {
+      position: absolute; width: 100%; height: 100%;
+      transform-style: preserve-3d;
+    }
+    
+    /* Category Neon Colors */
+    .ai-card-3d[data-cat="astro"] { --neon: var(--col-astro); }
+    .ai-card-3d[data-cat="react"] { --neon: var(--col-react); }
+    .ai-card-3d[data-cat="css"] { --neon: var(--col-css); }
+    .ai-card-3d[data-cat="ai"] { --neon: var(--col-ai); }
+    .ai-card-3d[data-cat="devtips"] { --neon: var(--col-devtips); }
+    
+    .ai-card-3d {
+      position: absolute;
+      width: 260px; height: 340px;
+      left: 50%; top: 50%;
+      margin-left: -130px; margin-top: -170px;
+      
+      background: rgba(10, 10, 15, 0.8);
+      backdrop-filter: blur(8px);
+      border: 2px solid rgba(168, 85, 247, 0.4);
+      border-radius: 4px;
+      
+      transform-style: preserve-3d;
+      cursor: pointer;
+      
+      will-change: transform, opacity; 
+      
+      opacity: 0.4;
+      filter: grayscale(100%);
+      transition: border-color 0.3s, opacity 0.3s, filter 0.3s, box-shadow 0.3s;
+    }
+    
+    .ai-card-3d.active-zone {
+      opacity: 1;
+      filter: grayscale(0%);
+      border-color: rgba(255, 255, 255, 0.6);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+    
+    .ai-card-3d:hover {
+      opacity: 1;
+      filter: grayscale(0%) brightness(1.2);
+      border-color: var(--neon, var(--accent-cyan));
+      z-index: 1000;
+      box-shadow: 0 0 30px var(--neon, var(--accent-cyan)), 
+                  inset 0 0 20px rgba(255, 255, 255, 0.1);
+    }
+
+    .ai-card-3d.formation-mode { 
+      opacity: 1 !important; 
+      filter: grayscale(0%) !important;
+      box-shadow: 0 0 25px var(--neon, currentColor) !important;
+    }
+
+    .ai-card-inner {
+      position: absolute; inset: 2px;
+      display: flex; flex-direction: column; 
+      background: #000;
+      overflow: hidden; pointer-events: none;
+    }
+    .ai-card-img {
+      width: 100%; height: 60%; object-fit: cover;
+      border-bottom: 2px solid; /* カテゴリー色が動的に適用される */
+      filter: grayscale(100%);
+      transition: filter 0.3s;
+    }
+    .ai-card-3d:hover .ai-card-img {
+      filter: grayscale(0%);
+    }
+    .ai-card-3d.active-zone .ai-card-img {
+      filter: grayscale(0%);
+    }
+    .ai-card-info { 
+      padding: 1rem; color: white; flex-grow: 1; 
+      display: flex; flex-direction: column;
+    }
+    .ai-card-title {
+      font-family: 'Zen Old Mincho', serif; font-size: 1rem; margin-bottom: 0.5rem;
+      line-height: 1.5; font-weight: 900;
+    }
+    .ai-card-meta {
+      font-family: 'Fira Code', monospace; font-size: 0.6rem; 
+      display: flex; justify-content: space-between; margin-bottom: 0.5rem;
+      font-weight: bold;
+    }
+    .ai-card-meta-category {
+      /* カテゴリー色が動的に適用される */
+    }
+
+    /* --- 4. FLOATING ASSETS --- */
+    .floater-container {
+      position: fixed; inset: 0; z-index: 20; pointer-events: none; overflow: hidden;
+    }
+    .floater {
+      position: absolute; will-change: transform; pointer-events: auto; cursor: pointer;
+      filter: drop-shadow(4px 4px 0px rgba(0,0,0,0.8));
+    }
+    .floater:hover { transform: scale(1.1); filter: drop-shadow(0 0 10px white); z-index: 100; }
+
+    /* --- 5. CURSOR --- */
+    #fighter-cursor {
+      position: fixed; top: 0; left: 0; width: 50px; height: 50px;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      will-change: transform;
+      transition: transform 0.05s linear;
+      mix-blend-mode: screen;
+      filter: drop-shadow(0 0 5px var(--accent-cyan));
+    }
+    body.list-mode #fighter-cursor {
+      display: block !important;
+      opacity: 1 !important;
+    }
+
+    /* --- 6. LIST VIEW --- */
+    #list-view-container {
+      position: fixed; inset: 0; z-index: 200;
+      background: #05020a;
+      padding: 6rem 2rem;
+      display: none; opacity: 0;
+      overflow-y: auto;
+    }
+    .list-header {
+      max-width: 1000px; margin: 0 auto 3rem; border-bottom: 2px solid #333;
+      padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: end;
+    }
+    .list-row {
+      display: grid; grid-template-columns: 120px 1fr 100px; gap: 2rem;
+      padding: 1.5rem 1rem; border-bottom: 1px solid #222;
+      cursor: pointer; transition: background 0.2s; color: #999;
+      align-items: center; max-width: 1000px; margin: 0 auto;
+    }
+    .list-row:hover {
+      background: #111; color: white; border-left: 4px solid var(--accent-cyan);
+    }
+    .list-date { font-family: 'Fira Code', monospace; font-size: 0.8rem; }
+    .list-title { font-family: 'Zen Old Mincho', serif; font-size: 1.2rem; font-weight: 700; }
+    .list-cat { 
+      font-family: 'Orbitron', sans-serif; font-size: 0.7rem; 
+      border: 1px solid currentColor; padding: 4px 8px; text-align: center;
+    }
+
+    /* Scroll hint */
+    .scroll-hint {
+      position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
+      text-align: center; color: var(--accent-cyan); font-family: 'Fira Code', monospace;
+      font-size: 0.75rem; opacity: 0.7; z-index: 101; pointer-events: none;
+    }
+  </style>
+
+  <!-- VIDEO BACKGROUND -->
+  <video id="video-bg" autoplay loop muted playsinline>
+    <source src="/images/bg-video.mp4" type="video/mp4">
+  </video>
+
+  <!-- OVERLAYS -->
+  <div class="deep-space-overlay"></div>
+  <div class="comic-halftone"></div>
+
+  <!-- FLOATING OBJECTS LAYER -->
+  <div class="floater-container" id="floater-layer"></div>
+
+  <!-- UI LAYER -->
+  <div id="ui-layer">
+    <header class="ai-header">
+      <div class="ai-logo">MASHROOM.TECH</div>
+      <div class="ai-status">
+        <span id="mode-display">MODE: FREE_FLIGHT</span><br>
+        CHAPTER 03<br>
+        <span style="font-size: 0.6rem; color: rgba(255,255,255,0.4);">v2.1.0-DEBUG</span>
+      </div>
+    </header>
+
+    <!-- HUD -->
+    <div class="hud-container">
+      <button class="hud-btn" id="btn-list" title="DATABASE">
+        <i data-lucide="list" class="w-5 h-5"></i>
+      </button>
+      <div class="w-[1px] h-6 bg-gray-500"></div>
+      
+      <!-- Category Buttons -->
+      <button class="hud-btn active" data-cat="ALL" title="ALL">
+        <i data-lucide="grid" class="w-4 h-4 hud-btn-icon"></i>
+        <span class="hud-btn-label">ALL</span>
+      </button>
+      <button class="hud-btn" data-cat="astro" title="ASTRO">
+        <i data-lucide="zap" class="w-4 h-4 hud-btn-icon"></i>
+        <span class="hud-btn-label">ASTRO</span>
+      </button>
+      <button class="hud-btn" data-cat="react" title="REACT">
+        <i data-lucide="atom" class="w-4 h-4 hud-btn-icon"></i>
+        <span class="hud-btn-label">REACT</span>
+      </button>
+      <button class="hud-btn" data-cat="css" title="CSS">
+        <i data-lucide="palette" class="w-4 h-4 hud-btn-icon"></i>
+        <span class="hud-btn-label">CSS</span>
+      </button>
+      <button class="hud-btn" data-cat="ai" title="AI">
+        <i data-lucide="sparkles" class="w-4 h-4 hud-btn-icon"></i>
+        <span class="hud-btn-label">AI</span>
+      </button>
+      <button class="hud-btn" data-cat="devtips" title="DEV TIPS">
+        <i data-lucide="code" class="w-4 h-4 hud-btn-icon"></i>
+        <span class="hud-btn-label">DEV TIPS</span>
+      </button>
+    </div>
+    
+    <div class="scroll-hint">
+      <p>SCROLL TO WARP</p>
+    </div>
+  </div>
+
+  <!-- 3D TUNNEL -->
+  <div id="tunnel-scene">
+    <div id="tunnel-world"></div>
+  </div>
+
+  <!-- LIST MODE OVERLAY -->
+  <div id="list-view-container">
+    <div class="list-header">
+      <h2 class="font-cyber text-4xl text-white">ARCHIVE.LOG</h2>
+      <button id="close-list-btn" class="text-white hover:text-[var(--accent-cyan)]">
+        <i data-lucide="x" class="w-8 h-8"></i>
+      </button>
+    </div>
+    <div id="list-grid"></div>
+  </div>
+
+  <!-- CURSOR -->
+  <div id="fighter-cursor">
+    <svg viewBox="0 0 24 24" fill="none" stroke="cyan" stroke-width="2">
+      <path d="M12 2L2 22L12 18L22 22L12 2Z" />
+    </svg>
+  </div>
+
+  <!-- Data injection -->
+  <script is:inline define:vars={{ articlesData, categories, categoryLabels }}>
+    (function() {
+      try {
+        window.TECH_PAGE_DATA = {
+          articlesData: JSON.parse(JSON.stringify(articlesData || [])),
+          categories: JSON.parse(JSON.stringify(categories || [])),
+          categoryLabels: JSON.parse(JSON.stringify(categoryLabels || {}))
+        };
+        console.log('[TECH DEBUG] Data injected:', window.TECH_PAGE_DATA);
+      } catch(e) {
+        console.error('[TECH DEBUG] Data injection error:', e);
+        window.TECH_PAGE_DATA = {
+          articlesData: [],
+          categories: [],
+          categoryLabels: {}
+        };
+      }
+    })();
+  </script>
+
+  <script is:inline>
+    // Wait for all libraries and DOM to load
+    function initTechPage() {
+      if (typeof gsap === 'undefined' || typeof lucide === 'undefined') {
+        console.error('GSAP or Lucide not loaded, retrying...');
+        setTimeout(initTechPage, 100);
+        return;
+      }
+
+      const data = window.TECH_PAGE_DATA;
+      if (!data) {
+        console.error('Data not loaded');
+        return;
+      }
+
+      lucide.createIcons();
+      gsap.registerPlugin(ScrollTrigger, Flip);
+
+      console.log('[TECH DEBUG] Initializing tech page...');
+      console.log('[TECH DEBUG] Data:', data);
+
+      const floatingAssets = [
+        '/images/shihtzu.png', '/images/pizza.png',
+        '/images/tape.png', '/images/mushroom.png'
+      ];
+
+      const articlesData = data.articlesData || [];
+      const categoryLabels = data.categoryLabels || {};
+      
+      console.log('[TECH DEBUG] Articles count:', articlesData.length);
+
+      // --- イントロアニメーション ---
+      const comicHalftone = document.querySelector('.comic-halftone');
+      const tunnelScene = document.getElementById('tunnel-scene');
+      
+      // 最初はドットフィルターとカードを非表示
+      if (comicHalftone) {
+        gsap.set(comicHalftone, { opacity: 0 });
+      }
+      if (tunnelScene) {
+        gsap.set(tunnelScene, { opacity: 0 });
+      }
+      
+      // 2秒かけてドットフィルターをフェードイン
+      const introTimeline = gsap.timeline();
+      introTimeline
+        .to(comicHalftone, {
+          opacity: 0.8,
+          duration: 2,
+          ease: "power2.out"
+        })
+        .to(tunnelScene, {
+          opacity: 1,
+          duration: 0.5,
+          ease: "power2.out"
+        }, "-=0.3"); // ドットフィルターが80%ほど見えたらカードを表示
+
+      // --- 3D Tunnel Engine ---
+      const tunnelWorld = document.getElementById('tunnel-world');
+      if (!tunnelWorld) {
+        console.error('[TECH DEBUG] tunnel-world element not found');
+        return;
+      }
+      let scrollZ = 0;
+      let targetScrollZ = 0;
+      const cardInterval = 400; // カード間隔を400pxに調整（密度をさらに上げる）
+      
+      // マウス位置の初期化（updateTunnelより前に定義）
+      let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
+      
+      // 密度の増量：記事データを複製して50枚のカードを生成（カテゴリーを平等に分配）
+      const targetCardCount = 50;
+      const duplicatedArticles = [];
+      
+      // カテゴリーごとに記事を分類
+      const articlesByCategory = {};
+      articlesData.forEach(article => {
+        if (!articlesByCategory[article.cat]) {
+          articlesByCategory[article.cat] = [];
+        }
+        articlesByCategory[article.cat].push(article);
+      });
+      
+      console.log('[CATEGORY DEBUG] Articles by category:', articlesByCategory);
+      
+      // 各カテゴリーから平等に取得（50枚をカテゴリー数で割る）
+      const categoryKeys = Object.keys(articlesByCategory);
+      const cardsPerCategory = Math.ceil(targetCardCount / categoryKeys.length);
+      
+      console.log('[CATEGORY DEBUG] Categories:', categoryKeys);
+      console.log('[CATEGORY DEBUG] Cards per category:', cardsPerCategory);
+      
+      for (let i = 0; i < targetCardCount; i++) {
+        const categoryIndex = i % categoryKeys.length;
+        const category = categoryKeys[categoryIndex];
+        const categoryArticles = articlesByCategory[category] || [];
+        const articleIndex = Math.floor(i / categoryKeys.length) % categoryArticles.length;
+        duplicatedArticles.push(categoryArticles[articleIndex] || articlesData[0]);
+      }
+      
+      console.log('[CATEGORY DEBUG] Total duplicated articles:', duplicatedArticles.length);
+      const categoryDistribution = categoryKeys.map(cat => ({
+        category: cat,
+        count: duplicatedArticles.filter(a => a.cat === cat).length
+      }));
+      console.log('[CATEGORY DEBUG] Category distribution:', categoryDistribution);
+      
+      const totalDepth = duplicatedArticles.length * cardInterval;
+      let isFiltered = false;
+      let isListMode = false;
+
+      // Create 3D Cards with Random Scatter (50枚生成)
+      const cardElements = duplicatedArticles.map((article, i) => {
+        const el = document.createElement('div');
+        el.className = 'ai-card-3d';
+        el.dataset.cat = article.cat;
+        el.dataset.slug = article.slug;
+        
+        // 完全ランダム配置（X軸: 画面幅の1.5倍〜2倍、Y軸: 画面高さの1.2倍）
+        const xRange = window.innerWidth * 1.75;
+        const yRange = window.innerHeight * 1.2;
+        const x = (Math.random() - 0.5) * xRange;
+        const y = (Math.random() - 0.5) * yRange;
+        const z = -i * cardInterval;
+        
+        // ランダムな回転（-15deg 〜 15deg）
+        const rotation = (Math.random() - 0.5) * 30;
+        
+        el.dataset.baseX = x;
+        el.dataset.baseY = y;
+        el.dataset.baseZ = z;
+        el.dataset.rotation = rotation;
+        
+        // カテゴリー色を取得
+        const categoryColor = article.catColor || '#00ffff';
+        
+        el.innerHTML = `
+          <div class="ai-card-inner">
+            <img src="${article.img}" class="ai-card-img" alt="${article.title}" style="border-bottom-color: ${categoryColor};">
+            <div class="ai-card-info">
+              <div class="ai-card-meta">
+                <span class="ai-card-meta-category" style="color: ${categoryColor};">${categoryLabels[article.cat] || article.cat.toUpperCase()}</span>
+                <span>${article.date}</span>
+              </div>
+              <h3 class="ai-card-title">${article.title}</h3>
+            </div>
+          </div>
+        `;
+        
+        el.addEventListener('click', () => {
+          if(!isListMode && !isFiltered) {
+            window.location.href = `/tech/${article.slug}`;
+          }
+        });
+
+        tunnelWorld.appendChild(el);
+        return el;
+      });
+
+      // 3D Loop (Optimized for Astro lifecycle)
+      let animationFrameId = null;
+      function updateTunnel() {
+        if (isListMode) {
+          if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+          }
+          return;
+        }
+
+        // 滑らかな動きのための最適化
+        scrollZ += (targetScrollZ - scrollZ) * 0.08;
+        
+        cardElements.forEach((card) => {
+          if (card.classList.contains('formation-mode')) return;
+
+          const baseX = parseFloat(card.dataset.baseX);
+          const baseY = parseFloat(card.dataset.baseY);
+          const baseZ = parseFloat(card.dataset.baseZ);
+          const rotation = parseFloat(card.dataset.rotation || 0);
+
+          // シームレスな無限ループ（モジュロ演算）
+          let z = (baseZ + scrollZ) % totalDepth;
+          // カメラの後ろに行ったら、一番奥へ再配置（ループ）
+          if (z > 500) z -= totalDepth;
+
+          // パフォーマンス対策: 画面外のカードを非表示
+          let opacity = 0;
+          let isVisible = false;
+
+          // 視野範囲: -2500px 〜 400px
+          if (z > -2500 && z < 400) {
+            isVisible = true;
+            // フェードイン/アウト
+            if (z < -1500) {
+              opacity = (2500 + z) / 1000; // -1500px で完全に見える
+            } else if (z > 0) {
+              opacity = (400 - z) / 400; // 0px で完全に見える、400px で消える
+            } else {
+              opacity = 1; // カメラの前で完全に見える
+            }
+          }
+
+          const finalOpacity = Math.max(0, Math.min(1, opacity));
+
+          if (isVisible && finalOpacity > 0.01) {
+            card.style.display = 'block';
+            card.style.opacity = finalOpacity;
+            
+            // パララックス効果（マウス位置に応じて微調整）
+            const paraX = (mouseX - window.innerWidth/2) * 0.05;
+            const paraY = (mouseY - window.innerHeight/2) * 0.05;
+            
+            // 3D変換（回転を含む）
+            card.style.transform = `translate3d(${baseX - paraX}px, ${baseY - paraY}px, ${z}px) rotateZ(${rotation}deg)`;
+
+            // アクティブゾーン（カメラの近く）
+            if (z > -800 && z < 200) {
+              card.classList.add('active-zone');
+            } else {
+              card.classList.remove('active-zone');
+            }
+          } else {
+            // 画面外のカードは完全に非表示（パフォーマンス対策）
+            card.style.display = 'none';
+            card.style.opacity = '0';
+          }
+        });
+
+        animationFrameId = requestAnimationFrame(updateTunnel);
+      }
+      
+      // アニメーションループの開始
+      updateTunnel();
+
+      // Scroll Input
+      window.addEventListener('wheel', (e) => {
+        if (!isFiltered && !isListMode) {
+          targetScrollZ += e.deltaY * 3;
+          if(targetScrollZ < 0) targetScrollZ = 0;
+        }
+      });
+
+      // --- List Mode Toggle ---
+      const listBtn = document.getElementById('btn-list');
+      const closeListBtn = document.getElementById('close-list-btn');
+      const listView = document.getElementById('list-view-container');
+      const listGrid = document.getElementById('list-grid');
+
+      // Populate List
+      articlesData.forEach(a => {
+        const item = document.createElement('div');
+        item.className = "list-row";
+        item.addEventListener('click', () => {
+          window.location.href = `/tech/${a.slug}`;
+        });
+        item.innerHTML = `
+          <div class="list-date">${a.date}</div>
+          <div class="list-title" style="color:${a.catColor}">${a.title}</div>
+          <div class="list-cat" style="color:${a.catColor}; border-color:${a.catColor}">${categoryLabels[a.cat] || a.cat.toUpperCase()}</div>
+        `;
+        listGrid.appendChild(item);
+      });
+
+      const toggleListMode = (show) => {
+        isListMode = show;
+        if(show) {
+          gsap.to("#tunnel-scene", { opacity: 0, duration: 0.5 });
+          listView.style.display = 'block';
+          gsap.fromTo(listView, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.5 });
+          document.body.classList.add('list-mode');
+          document.getElementById('mode-display').innerText = "MODE: DATABASE";
+        } else {
+          gsap.to(listView, { opacity: 0, y: 50, duration: 0.3, onComplete: () => listView.style.display = 'none' });
+          gsap.to("#tunnel-scene", { opacity: 1, duration: 0.5 });
+          document.body.classList.remove('list-mode');
+          document.getElementById('mode-display').innerText = "MODE: FREE_FLIGHT";
+          requestAnimationFrame(updateTunnel);
+        }
+      };
+
+      listBtn.addEventListener('click', () => toggleListMode(true));
+      closeListBtn.addEventListener('click', () => toggleListMode(false));
+
+      // --- Category Formation ---
+      const hudBtns = document.querySelectorAll('.hud-btn[data-cat]');
+      const categoryColorMap = {
+        'astro': '#00ffff',
+        'react': '#61dafb',
+        'css': '#264de4',
+        'ai': '#ffaa00',
+        'devtips': '#10b981',
+      };
+      
+      hudBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          if(isListMode) return;
+          const cat = btn.dataset.cat;
+          hudBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          if (cat === 'ALL') {
+            isFiltered = false;
+            document.getElementById('mode-display').innerText = "MODE: FREE_FLIGHT";
+            cardElements.forEach(card => card.classList.remove('formation-mode'));
+          } else {
+            isFiltered = true;
+            const modeDisplay = document.getElementById('mode-display');
+            if (modeDisplay) {
+              modeDisplay.innerText = `MODE: TARGET [${cat.toUpperCase()}]`;
+            }
+            
+            // デバッグ: カテゴリフィルター開始
+            console.log('[CATEGORY DEBUG] Filtering category:', cat);
+            
+            // 選択されたカテゴリのカードをフィルタリング（小文字で比較）
+            const catLower = cat.toLowerCase();
+            const filteredCards = cardElements.filter(card => card.dataset.cat && card.dataset.cat.toLowerCase() === catLower);
+            const cardCount = filteredCards.length;
+            
+            console.log('[CATEGORY DEBUG] Filtered cards count:', cardCount);
+            console.log('[CATEGORY DEBUG] Total cards:', cardElements.length);
+            
+            // グリッド配置の計算（常に中央に配置）
+            const cols = Math.min(5, Math.max(1, Math.ceil(Math.sqrt(cardCount)))); // 最大5列、最小1列
+            const spX = 280;
+            const spY = 400;
+            
+            // 中央配置のためのオフセット計算
+            const totalRows = Math.ceil(cardCount / cols);
+            const centerOffsetX = (cols - 1) * spX / 2;
+            const centerOffsetY = (totalRows - 1) * spY / 2;
+            
+            console.log('[CATEGORY DEBUG] Grid:', { cols, totalRows, cardCount });
+            console.log('[CATEGORY DEBUG] Offsets:', { centerOffsetX, centerOffsetY });
+            
+            let idx = 0;
+            
+            cardElements.forEach((card, cardIndex) => {
+              card.classList.remove('active-zone');
+              const cardCat = card.dataset.cat ? card.dataset.cat.toLowerCase() : '';
+              
+              if (cardCat === catLower) {
+                card.classList.add('formation-mode');
+                card.style.display = 'block';
+                
+                const r = Math.floor(idx / cols);
+                const c = idx % cols;
+                const tx = c * spX - centerOffsetX;
+                const ty = r * spY - centerOffsetY;
+                
+                console.log(`[CATEGORY DEBUG] Card ${idx}:`, { r, c, tx, ty });
+                
+                gsap.to(card, {
+                  x: tx, y: ty, z: -200, rotationX:0, rotationY:0, rotationZ:0,
+                  opacity: 1, duration: 1, ease: "power3.out",
+                  onComplete: () => {
+                    if (idx === cardCount - 1) {
+                      console.log('[CATEGORY DEBUG] All cards positioned');
+                    }
+                  }
+                });
+                idx++;
+              } else {
+                card.classList.remove('formation-mode');
+                gsap.to(card, { z: -5000, opacity: 0, duration: 0.5 });
+              }
+            });
+            
+            console.log('[CATEGORY DEBUG] Formation complete');
+          }
+        });
+      });
+
+      // --- Mouse & Cursor ---
+      // mouseX, mouseYは既に定義済み（上で初期化）
+      const fighter = document.getElementById('fighter-cursor');
+      
+      if (fighter) {
+        document.addEventListener('mousemove', e => {
+          mouseX = e.clientX; mouseY = e.clientY;
+          gsap.to(fighter, { x: mouseX, y: mouseY, duration: 0.05 });
+        });
+      }
+
+      // --- Floating Objects (Temporarily disabled to avoid 404 errors) ---
+      // TODO: Add floating images later when assets are ready
+      const floaterContainer = document.getElementById('floater-layer');
+      if (floaterContainer) {
+        console.log('[TECH DEBUG] Floating objects disabled (images not found)');
+        // Temporarily disable floating objects to avoid 404 errors
+        // for (let i = 0; i < 15; i++) {
+        //   const asset = floatingAssets[i % floatingAssets.length];
+        //   const img = document.createElement('img');
+        //   img.src = asset; img.className = 'floater';
+        //   img.style.width = (50 + Math.random() * 80) + 'px';
+        //   img.style.opacity = '0.7';
+        //   img.onerror = () => { img.style.display = 'none'; }; // Hide on error
+        //   gsap.set(img, { x: Math.random()*window.innerWidth, y: Math.random()*window.innerHeight });
+        //   floaterContainer.appendChild(img);
+        //   
+        //   const anim = (el) => {
+        //     gsap.to(el, {
+        //       x: Math.random()*window.innerWidth, y: Math.random()*window.innerHeight,
+        //       rotation: Math.random()*360, duration: 15+Math.random()*15, ease: "sine.inOut",
+        //       onComplete: () => anim(el)
+        //     });
+        //   };
+        //   anim(img);
+        //   
+        //   img.addEventListener('click', () => {
+        //     gsap.to(img, { scale: 1.5, duration: 0.1, yoyo: true, repeat: 1 });
+        //   });
+        // }
+      }
+
+      // Start
+      updateTunnel();
+    }
+
+    // Initialize when DOM and libraries are ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initTechPage);
+    } else {
+      // DOM already loaded, wait a bit for scripts
+      setTimeout(initTechPage, 100);
+    }
+  </script>
+</Layout>
