@@ -30,10 +30,10 @@ const categoryLabels: Record<string, string> = {
 // カテゴリカラー
 const categoryColors: Record<string, string> = {
   'astro': '#00ffff',
-  'react': '#61dafb',
-  'css': '#264de4',
-  'ai': '#ffaa00',
-  'devtips': '#10b981',
+  'react': '#ffaa00',
+  'css': '#ff00ff',
+  'ai': '#39ff14',
+  'devtips': '#ffff00',
 };
 
 // 記事データをJavaScript形式に変換
@@ -109,20 +109,24 @@ const categories = [
     #video-bg {
       position: fixed; inset: 0; z-index: 0;
       width: 100%; height: 100%; object-fit: cover;
-      opacity: 0.4; pointer-events: none;
+      opacity: 1; pointer-events: none;
+      transition: opacity 0.3s;
     }
 
     .deep-space-overlay {
       position: fixed; inset: 0; z-index: 4; pointer-events: none;
-      background: radial-gradient(circle, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%);
+      background: radial-gradient(circle, rgba(0,0,0,0) 0%, rgba(0,0,0,0.15) 100%);
+      opacity: 0;
+      transition: opacity 2s ease-out;
     }
 
     .comic-halftone {
       position: fixed; inset: 0; z-index: 5; pointer-events: none;
-      background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-      background-size: 4px 4px; 
-      opacity: 0.08; 
-      mix-blend-mode: overlay;
+      background-image: radial-gradient(circle, rgba(0,0,0,0.6) 2px, transparent 2px);
+      background-size: 12px 12px; 
+      opacity: 0; 
+      mix-blend-mode: normal; /* overlayを外して通常表示に */
+      transition: opacity 2s ease-out;
     }
 
     /* --- 2. UI COMPONENTS --- */
@@ -199,8 +203,14 @@ const categories = [
       position: fixed; inset: 0; perspective: 800px; overflow: hidden;
       z-index: 10;
     }
+    
+    /* ランダム整列時のみスクロール可能 */
+    #tunnel-scene.random-arrange-mode {
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
     #tunnel-world {
-      position: absolute; width: 100%; height: 100%;
+      position: absolute; width: 100%; min-height: 100%;
       transform-style: preserve-3d;
     }
     
@@ -219,7 +229,7 @@ const categories = [
       
       background: rgba(10, 10, 15, 0.8);
       backdrop-filter: blur(8px);
-      border: 2px solid rgba(168, 85, 247, 0.4);
+      border: 0.5px solid rgba(168, 85, 247, 0.4);
       border-radius: 4px;
       
       transform-style: preserve-3d;
@@ -229,13 +239,30 @@ const categories = [
       
       opacity: 0.4;
       filter: grayscale(100%);
-      transition: border-color 0.3s, opacity 0.3s, filter 0.3s, box-shadow 0.3s;
+      transition: opacity 0.3s, filter 0.3s, box-shadow 0.3s;
+    }
+    
+    /* SVG border animation */
+    .card-border-animated {
+      opacity: 1;
+    }
+    
+    .border-stroke {
+      animation: rotate-border-svg 2s linear infinite;
+    }
+    
+    @keyframes rotate-border-svg {
+      0% { 
+        stroke-dashoffset: 0; 
+      }
+      100% { 
+        stroke-dashoffset: 1200; 
+      }
     }
     
     .ai-card-3d.active-zone {
       opacity: 1;
       filter: grayscale(0%);
-      border-color: rgba(255, 255, 255, 0.6);
       box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
     }
     
@@ -247,11 +274,41 @@ const categories = [
       box-shadow: 0 0 30px var(--neon, var(--accent-cyan)), 
                   inset 0 0 20px rgba(255, 255, 255, 0.1);
     }
+    
+    .ai-card-3d:hover::before {
+      opacity: 1;
+    }
 
     .ai-card-3d.formation-mode { 
       opacity: 1 !important; 
       filter: grayscale(0%) !important;
       box-shadow: 0 0 25px var(--neon, currentColor) !important;
+    }
+    
+    /* ワンちゃんモード：カードを大きく */
+    #tunnel-scene.random-arrange-mode .ai-card-3d.formation-mode {
+      width: 400px !important;
+      height: 520px !important;
+    }
+    
+    #tunnel-scene.random-arrange-mode .ai-card-3d.formation-mode .ai-card-img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+    }
+    
+    #tunnel-scene.random-arrange-mode .ai-card-3d.formation-mode .ai-card-title {
+      font-size: 1.4rem;
+      line-height: 1.4;
+    }
+    
+    #tunnel-scene.random-arrange-mode .ai-card-3d.formation-mode .ai-card-category {
+      font-size: 0.9rem;
+      padding: 6px 12px;
+    }
+    
+    #tunnel-scene.random-arrange-mode .ai-card-3d.formation-mode .ai-card-date {
+      font-size: 0.85rem;
     }
 
     .ai-card-inner {
@@ -301,14 +358,57 @@ const categories = [
 
     /* --- 5. CURSOR --- */
     #fighter-cursor {
-      position: fixed; top: 0; left: 0; width: 50px; height: 50px;
-      pointer-events: none; z-index: 9999;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 50px;
+      height: 50px;
+      pointer-events: none;
+      z-index: 99999; /* 最前面に表示 */
       transform: translate(-50%, -50%);
+      mix-blend-mode: screen; /* 明るく表示 */
+      filter: drop-shadow(0 0 4px cyan); /* 控えめなグロー */
+      opacity: 0;
       will-change: transform;
-      transition: transform 0.05s linear;
-      mix-blend-mode: screen;
-      filter: drop-shadow(0 0 5px var(--accent-cyan));
     }
+
+    /* 戦闘機のSVG */
+    #fighter-svg {
+      width: 100%;
+      height: 100%;
+      fill: none; /* 中央の光を削除 */
+      stroke: #00ffff; /* 明るいシアン */
+      stroke-width: 2.5; /* 太くして見やすく */
+      overflow: visible;
+      transform-origin: center center;
+    }
+
+    /* 回転する照準（レティクル） */
+    #reticle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 70px;
+      height: 70px;
+      border: 2px dashed rgba(255, 255, 255, 0.6); /* 白に戻す */
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: spin 4s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* スマホなどタッチデバイスでは非表示 */
+    @media (hover: none) {
+      #fighter-cursor {
+        display: none !important;
+      }
+    }
+
     body.list-mode #fighter-cursor {
       display: block !important;
       opacity: 1 !important;
@@ -322,6 +422,79 @@ const categories = [
       display: none; opacity: 0;
       overflow-y: auto;
     }
+    
+    /* --- 7. ARCHIVE GRID VIEW --- */
+    #archive-grid-container {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(5, 2, 10, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 6rem 2rem;
+      display: none; opacity: 0;
+      overflow-y: auto;
+    }
+    .archive-grid {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+      padding: 2rem 0;
+    }
+    .archive-card {
+      background: rgba(10, 10, 15, 0.8);
+      backdrop-filter: blur(8px);
+      border: 0.5px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+    .archive-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
+      border-color: var(--accent-cyan);
+    }
+    .archive-card-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-bottom: 2px solid;
+    }
+    .archive-card-info {
+      padding: 1.5rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .archive-card-meta {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+      align-items: center;
+    }
+    .archive-card-category {
+      font-weight: 600;
+      padding: 4px 8px;
+      border: 1px solid currentColor;
+      border-radius: 4px;
+    }
+    .archive-card-title {
+      font-family: 'Zen Old Mincho', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1.5;
+      margin-bottom: 0.5rem;
+    }
+    .archive-card-date {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: auto;
+    }
     .list-header {
       max-width: 1000px; margin: 0 auto 3rem; border-bottom: 2px solid #333;
       padding-bottom: 1rem; display: flex; justify-content: space-between; align-items: end;
@@ -333,8 +506,13 @@ const categories = [
       align-items: center; max-width: 1000px; margin: 0 auto;
     }
     .list-row:hover {
-      background: #111; color: white; border-left: 4px solid var(--accent-cyan);
+      background: #111; color: white;
     }
+    .list-row[data-cat="astro"]:hover { border-left: 4px solid var(--col-astro); }
+    .list-row[data-cat="react"]:hover { border-left: 4px solid var(--col-react); }
+    .list-row[data-cat="css"]:hover { border-left: 4px solid var(--col-css); }
+    .list-row[data-cat="ai"]:hover { border-left: 4px solid var(--col-ai); }
+    .list-row[data-cat="devtips"]:hover { border-left: 4px solid var(--col-devtips); }
     .list-date { font-family: 'Fira Code', monospace; font-size: 0.8rem; }
     .list-title { font-family: 'Zen Old Mincho', serif; font-size: 1.2rem; font-weight: 700; }
     .list-cat { 
@@ -347,6 +525,133 @@ const categories = [
       position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
       text-align: center; color: var(--accent-cyan); font-family: 'Fira Code', monospace;
       font-size: 0.75rem; opacity: 0.7; z-index: 101; pointer-events: none;
+    }
+    
+    /* デバッグ情報表示 */
+    #debug-info {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: rgba(0, 0, 0, 0.9);
+      border: 2px solid #00ffff;
+      border-radius: 8px;
+      padding: 1rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.75rem;
+      color: #00ffff;
+      z-index: 100000;
+      min-width: 250px;
+      display: none;
+    }
+    #debug-info.show {
+      display: block;
+    }
+    #debug-info .debug-item {
+      margin: 0.25rem 0;
+      padding: 0.25rem;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+    }
+    #debug-info .debug-item:last-child {
+      border-bottom: none;
+    }
+    #debug-info .debug-label {
+      color: #ffff00;
+      font-weight: bold;
+    }
+    #debug-info .debug-value {
+      color: #00ff00;
+    }
+    #debug-info .debug-warning {
+      color: #ff6600;
+    }
+    #debug-info .debug-error {
+      color: #ff0000;
+    }
+    
+    /* Coordinate display */
+    #coordinate-display {
+      position: fixed; top: 2rem; right: 2rem; z-index: 102;
+      background: rgba(0, 0, 0, 0.8); border: 2px solid var(--accent-cyan);
+      padding: 0.8rem 1.2rem; border-radius: 8px;
+      font-family: 'Fira Code', monospace; font-size: 0.9rem;
+      color: var(--accent-cyan); pointer-events: none;
+      box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+      min-width: 180px;
+    }
+    #coordinate-display .coord-label {
+      color: rgba(255, 255, 255, 0.6); font-size: 0.7rem; margin-bottom: 0.3rem;
+    }
+    #coordinate-display .coord-value {
+      color: var(--accent-cyan); font-weight: 600; letter-spacing: 0.1em;
+    }
+    #coordinate-display .version-info {
+      margin-top: 0.8rem;
+      padding-top: 0.8rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.4);
+      text-align: center;
+    }
+    
+    /* Tooltip bubble - positioned near the dog in lower left */
+    #coordinate-tooltip {
+      position: fixed; 
+      bottom: 15%; 
+      left: 5%; 
+      z-index: 102;
+      background: rgba(0, 0, 0, 0.9); 
+      padding: 1rem 1.5rem; border-radius: 8px;
+      font-family: 'Fira Code', monospace; font-size: 0.85rem;
+      pointer-events: auto;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+      max-width: 250px;
+      opacity: 1;
+      cursor: pointer;
+      transform: translateY(0);
+      border: 2px solid transparent;
+      background-clip: padding-box;
+    }
+    #coordinate-tooltip::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 8px;
+      padding: 2px;
+      background: linear-gradient(135deg, #ffffff, #ffff00);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      z-index: -1;
+    }
+    #coordinate-tooltip:hover {
+      background: rgba(0, 0, 0, 0.95);
+      box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
+    }
+    #coordinate-tooltip::after {
+      content: '';
+      position: absolute; left: 2rem; bottom: -8px;
+      width: 0; height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid #ffff00;
+      filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+    }
+    #coordinate-tooltip .tooltip-text {
+      background: linear-gradient(135deg, #ffffff, #ffff00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.6;
+      text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      opacity: 1;
+      /* ドット文字風の効果 */
+      text-rendering: optimizeSpeed;
+      -webkit-font-smoothing: none;
+      -moz-osx-font-smoothing: unset;
+      image-rendering: pixelated;
     }
   </style>
 
@@ -369,7 +674,7 @@ const categories = [
       <div class="ai-status">
         <span id="mode-display">MODE: FREE_FLIGHT</span><br>
         CHAPTER 03<br>
-        <span style="font-size: 0.6rem; color: rgba(255,255,255,0.4);">v2.1.0-DEBUG</span>
+        <span style="font-size: 0.6rem; color: rgba(255,255,255,0.4);">v2.4.1</span>
       </div>
     </header>
 
@@ -410,10 +715,53 @@ const categories = [
     <div class="scroll-hint">
       <p>SCROLL TO WARP</p>
     </div>
+    
+    <!-- Coordinate Display -->
+    <div id="coordinate-display">
+      <div class="coord-label">MOUSE POSITION</div>
+      <div class="coord-value">X: <span id="coord-x">0</span> | Y: <span id="coord-y">0</span></div>
+      <div class="version-info">v2.7.0</div>
+    </div>
+    
+    <!-- デバッグ情報表示 -->
+    <div id="debug-info">
+      <div class="debug-item">
+        <span class="debug-label">カーソル FPS:</span>
+        <span class="debug-value" id="debug-cursor-fps">60</span>
+      </div>
+      <div class="debug-item">
+        <span class="debug-label">カーソル更新時間:</span>
+        <span class="debug-value" id="debug-cursor-time">0.00ms</span>
+      </div>
+      <div class="debug-item">
+        <span class="debug-label">最大更新時間:</span>
+        <span class="debug-value" id="debug-cursor-max">0.00ms</span>
+      </div>
+      <div class="debug-item">
+        <span class="debug-label">3Dアニメーション:</span>
+        <span class="debug-value" id="debug-3d-status">停止</span>
+      </div>
+      <div class="debug-item">
+        <span class="debug-label">フィルターモード:</span>
+        <span class="debug-value" id="debug-filter-mode">OFF</span>
+      </div>
+      <div class="debug-item">
+        <span class="debug-label">ランダム整列:</span>
+        <span class="debug-value" id="debug-random-mode">OFF</span>
+      </div>
+      <div class="debug-item" style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(0, 255, 255, 0.5);">
+        <span class="debug-label" style="font-size: 0.7rem;">※ Dキーで表示/非表示 | F12で詳細</span>
+      </div>
+    </div>
+    
+    <!-- Tooltip Bubble -->
+    <div id="coordinate-tooltip">
+      <div class="tooltip-text">見づらい場合は、<br>僕をタップしてね</div>
+    </div>
   </div>
 
   <!-- 3D TUNNEL -->
-  <div id="tunnel-scene">
+  <div id="tunnel-scene" id="tunnel-scene-clickable">
     <div id="tunnel-world"></div>
   </div>
 
@@ -427,22 +775,35 @@ const categories = [
     </div>
     <div id="list-grid"></div>
   </div>
+  
+  <!-- ARCHIVE GRID MODE OVERLAY -->
+  <div id="archive-grid-container">
+    <div class="list-header">
+      <h2 class="font-cyber text-4xl text-white">ARCHIVE.GRID</h2>
+      <button id="close-archive-btn" class="text-white hover:text-[var(--accent-cyan)]">
+        <i data-lucide="x" class="w-8 h-8"></i>
+      </button>
+    </div>
+    <div id="archive-grid" class="archive-grid"></div>
+  </div>
 
   <!-- CURSOR -->
   <div id="fighter-cursor">
-    <svg viewBox="0 0 24 24" fill="none" stroke="cyan" stroke-width="2">
-      <path d="M12 2L2 22L12 18L22 22L12 2Z" />
+    <div id="reticle"></div>
+    <svg id="fighter-svg" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2L2 22L12 18L22 22L12 2Z" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   </div>
 
   <!-- Data injection -->
-  <script is:inline define:vars={{ articlesData, categories, categoryLabels }}>
+  <script is:inline define:vars={{ articlesData, categories, categoryLabels, categoryColors }}>
     (function() {
       try {
         window.TECH_PAGE_DATA = {
           articlesData: JSON.parse(JSON.stringify(articlesData || [])),
           categories: JSON.parse(JSON.stringify(categories || [])),
-          categoryLabels: JSON.parse(JSON.stringify(categoryLabels || {}))
+          categoryLabels: JSON.parse(JSON.stringify(categoryLabels || {})),
+          categoryColors: JSON.parse(JSON.stringify(categoryColors || {}))
         };
         console.log('[TECH DEBUG] Data injected:', window.TECH_PAGE_DATA);
       } catch(e) {
@@ -450,7 +811,8 @@ const categories = [
         window.TECH_PAGE_DATA = {
           articlesData: [],
           categories: [],
-          categoryLabels: {}
+          categoryLabels: {},
+          categoryColors: {}
         };
       }
     })();
@@ -484,34 +846,72 @@ const categories = [
 
       const articlesData = data.articlesData || [];
       const categoryLabels = data.categoryLabels || {};
+      const categoryColors = data.categoryColors || {};
       
       console.log('[TECH DEBUG] Articles count:', articlesData.length);
 
-      // --- イントロアニメーション ---
+      // --- ローディングアニメーション v2.2 ---
+      const videoBg = document.getElementById('video-bg');
+      const deepSpaceOverlay = document.querySelector('.deep-space-overlay');
       const comicHalftone = document.querySelector('.comic-halftone');
       const tunnelScene = document.getElementById('tunnel-scene');
+      const uiLayer = document.getElementById('ui-layer');
       
-      // 最初はドットフィルターとカードを非表示
+      // 初期状態：動画のみ表示（フィルターなし）、その他は非表示
+      if (videoBg) {
+        gsap.set(videoBg, { opacity: 1 });
+      }
+      if (deepSpaceOverlay) {
+        gsap.set(deepSpaceOverlay, { opacity: 0 });
+      }
       if (comicHalftone) {
         gsap.set(comicHalftone, { opacity: 0 });
       }
       if (tunnelScene) {
         gsap.set(tunnelScene, { opacity: 0 });
       }
+      if (uiLayer) {
+        gsap.set(uiLayer, { opacity: 0 });
+      }
       
-      // 2秒かけてドットフィルターをフェードイン
-      const introTimeline = gsap.timeline();
+      // ローディングアニメーション：動画表示 → 2秒後にフィルター → カード登場
+      const introTimeline = gsap.timeline({ delay: 0.5 });
       introTimeline
-        .to(comicHalftone, {
-          opacity: 0.8,
+        // オーバーレイを薄めに表示
+        .to(deepSpaceOverlay, {
+          opacity: 1,
           duration: 2,
           ease: "power2.out"
-        })
+        }, 0)
+        // ドットを表示
+        .to(comicHalftone, {
+          opacity: 1, // 完全に表示
+          duration: 2,
+          ease: "power2.out"
+        }, 0)
+        // フィルターがかかったら動画の透明度を下げる
+        .to(videoBg, {
+          opacity: 0.85,
+          duration: 1.5,
+          ease: "power2.out"
+        }, 0.5)
+        // カードとUIを表示
         .to(tunnelScene, {
+          opacity: 1,
+          duration: 0.8,
+          ease: "power2.out"
+        }, 1.5)
+        .to(uiLayer, {
+          opacity: 1,
+          duration: 0.8,
+          ease: "power2.out"
+        }, 1.5)
+        // カーソルも同時に表示
+        .to('#fighter-cursor', {
           opacity: 1,
           duration: 0.5,
           ease: "power2.out"
-        }, "-=0.3"); // ドットフィルターが80%ほど見えたらカードを表示
+        }, 1.5);
 
       // --- 3D Tunnel Engine ---
       const tunnelWorld = document.getElementById('tunnel-world');
@@ -539,25 +939,67 @@ const categories = [
         articlesByCategory[article.cat].push(article);
       });
       
-      console.log('[CATEGORY DEBUG] Articles by category:', articlesByCategory);
+      // 仮のカード用に、主要カテゴリー（astro, react, css, ai）を均等に振り分け
+      const mainCategories = ['astro', 'react', 'css', 'ai'];
+      const cardsPerMainCategory = Math.floor(targetCardCount / mainCategories.length);
+      const remainingCards = targetCardCount % mainCategories.length;
       
-      // 各カテゴリーから平等に取得（50枚をカテゴリー数で割る）
-      const categoryKeys = Object.keys(articlesByCategory);
-      const cardsPerCategory = Math.ceil(targetCardCount / categoryKeys.length);
+      console.log('[CATEGORY DEBUG] Main categories distribution:', {
+        categories: mainCategories,
+        cardsPerCategory: cardsPerMainCategory,
+        remaining: remainingCards
+      });
       
-      console.log('[CATEGORY DEBUG] Categories:', categoryKeys);
-      console.log('[CATEGORY DEBUG] Cards per category:', cardsPerCategory);
-      
-      for (let i = 0; i < targetCardCount; i++) {
-        const categoryIndex = i % categoryKeys.length;
-        const category = categoryKeys[categoryIndex];
+      // 各主要カテゴリーから均等にカードを生成（まず配列に追加）
+      const categoryCards = [];
+      mainCategories.forEach((category, catIndex) => {
+        const cardsForThisCategory = cardsPerMainCategory + (catIndex < remainingCards ? 1 : 0);
         const categoryArticles = articlesByCategory[category] || [];
-        const articleIndex = Math.floor(i / categoryKeys.length) % categoryArticles.length;
-        duplicatedArticles.push(categoryArticles[articleIndex] || articlesData[0]);
+        
+        // カテゴリーに記事がない場合は、仮の記事データを作成
+        for (let i = 0; i < cardsForThisCategory; i++) {
+          if (categoryArticles.length > 0) {
+            // 既存の記事を循環して使用
+            const articleIndex = i % categoryArticles.length;
+            categoryCards.push(categoryArticles[articleIndex]);
+          } else {
+            // 仮の記事データを作成
+            categoryCards.push({
+              id: `temp-${category}-${i}`,
+              slug: `temp-${category}-${i}`,
+              title: `${categoryLabels[category] || category.toUpperCase()} Article ${i + 1}`,
+              cat: category,
+              catColor: categoryColors[category] || '#00ffff',
+              date: new Date().toLocaleDateString('ja-JP').replace(/\//g, '.'),
+              img: `https://images.unsplash.com/photo-${1500000000000 + (catIndex * 1000) + (i * 10)}?q=80&w=600&auto=format&fit=crop`,
+              description: `Sample ${categoryLabels[category] || category} article`,
+              tags: [category],
+            });
+          }
+        }
+      });
+      
+      // カードをランダムにシャッフル（Fisher-Yatesアルゴリズム）
+      for (let i = categoryCards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [categoryCards[i], categoryCards[j]] = [categoryCards[j], categoryCards[i]];
       }
       
+      // シャッフルしたカードを追加
+      duplicatedArticles.push(...categoryCards);
+      
+      // 既存のカテゴリー（devtipsなど）の記事も追加
+      Object.keys(articlesByCategory).forEach(cat => {
+        if (!mainCategories.includes(cat)) {
+          articlesByCategory[cat].forEach(article => {
+            duplicatedArticles.push(article);
+          });
+        }
+      });
+      
       console.log('[CATEGORY DEBUG] Total duplicated articles:', duplicatedArticles.length);
-      const categoryDistribution = categoryKeys.map(cat => ({
+      const allCategoryKeys = [...mainCategories, ...Object.keys(articlesByCategory).filter(cat => !mainCategories.includes(cat))];
+      const categoryDistribution = allCategoryKeys.map(cat => ({
         category: cat,
         count: duplicatedArticles.filter(a => a.cat === cat).length
       }));
@@ -566,6 +1008,7 @@ const categories = [
       const totalDepth = duplicatedArticles.length * cardInterval;
       let isFiltered = false;
       let isListMode = false;
+      let isArchiveMode = false;
 
       // Create 3D Cards with Random Scatter (50枚生成)
       const cardElements = duplicatedArticles.map((article, i) => {
@@ -592,7 +1035,30 @@ const categories = [
         // カテゴリー色を取得
         const categoryColor = article.catColor || '#00ffff';
         
+        // グラデーション用の色を決定（カテゴリーごとに異なる色を混ぜる）
+        const gradientColors = {
+          'astro': { start: '#00ffff', end: '#ff69b4' }, // シアン → ピンク
+          'react': { start: '#ffaa00', end: '#ff0000' }, // オレンジ → 赤
+          'css': { start: '#ff00ff', end: '#ffff00' }, // マゼンタ → イエロー
+          'ai': { start: '#39ff14', end: '#0080ff' }, // グリーン → ブルー
+          'devtips': { start: '#ffff00', end: '#0080ff' } // イエロー → ブルー
+        };
+        const gradient = gradientColors[article.cat] || { start: categoryColor, end: categoryColor };
+        
+        // 時計回りアニメーション用のSVG border（周囲の長さ: 260*2 + 340*2 = 1200）
+        const perimeter = 1200;
+        const dashLength = perimeter * 0.25; // 25%の長さで光る
+        
         el.innerHTML = `
+          <svg class="card-border-animated" viewBox="0 0 260 340" preserveAspectRatio="none" style="position: absolute; inset: -2px; width: calc(100% + 4px); height: calc(100% + 4px); pointer-events: none; z-index: 1; border-radius: 4px; overflow: visible;">
+            <defs>
+              <linearGradient id="gradient-${article.cat}-${i}" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="${gradient.start}"/>
+                <stop offset="100%" stop-color="${gradient.end}"/>
+              </linearGradient>
+            </defs>
+            <rect x="1" y="1" width="258" height="338" rx="4" fill="none" stroke="url(#gradient-${article.cat}-${i})" stroke-width="1" class="border-stroke" stroke-dasharray="${dashLength} ${perimeter - dashLength}" stroke-dashoffset="0"/>
+          </svg>
           <div class="ai-card-inner">
             <img src="${article.img}" class="ai-card-img" alt="${article.title}" style="border-bottom-color: ${categoryColor};">
             <div class="ai-card-info">
@@ -606,7 +1072,11 @@ const categories = [
         `;
         
         el.addEventListener('click', () => {
-          if(!isListMode && !isFiltered) {
+          if(!isListMode && !isFiltered && !isArchiveMode) {
+            // 仮の記事の場合は遷移しない
+            if (article.slug.startsWith('temp-')) {
+              return;
+            }
             window.location.href = `/tech/${article.slug}`;
           }
         });
@@ -618,18 +1088,29 @@ const categories = [
       // 3D Loop (Optimized for Astro lifecycle)
       let animationFrameId = null;
       function updateTunnel() {
-        if (isListMode) {
+        // リストモード、フィルターモード、アーカイブモード、ランダム整列モード時はアニメーションを完全に停止
+        const tunnelScene = document.getElementById('tunnel-scene');
+        const isRandomArrange = tunnelScene && tunnelScene.classList.contains('random-arrange-mode');
+        
+        if (isListMode || isFiltered || isArchiveMode || isRandomArrange) {
           if (animationFrameId) {
             cancelAnimationFrame(animationFrameId);
             animationFrameId = null;
           }
+          const debug3dEl = document.getElementById('debug-3d-status');
+          if (debug3dEl) debug3dEl.textContent = '停止';
           return;
         }
+        
+        // デバッグ情報を更新
+        const debug3dEl = document.getElementById('debug-3d-status');
+        if (debug3dEl) debug3dEl.textContent = '実行中';
 
         // 滑らかな動きのための最適化
         scrollZ += (targetScrollZ - scrollZ) * 0.08;
         
         cardElements.forEach((card) => {
+          // フィルターモードのカードはスキップ（formation-modeで管理）
           if (card.classList.contains('formation-mode')) return;
 
           const baseX = parseFloat(card.dataset.baseX);
@@ -688,12 +1169,15 @@ const categories = [
         animationFrameId = requestAnimationFrame(updateTunnel);
       }
       
-      // アニメーションループの開始
-      updateTunnel();
+      // ローディングアニメーション完了後にアニメーションループを開始
+      // イントロアニメーションのタイムラインが完了してから開始
+      setTimeout(() => {
+        updateTunnel();
+      }, 2500); // ローディングアニメーションの時間（2秒 + 0.5秒のマージン）
 
       // Scroll Input
       window.addEventListener('wheel', (e) => {
-        if (!isFiltered && !isListMode) {
+        if (!isFiltered && !isListMode && !isArchiveMode) {
           targetScrollZ += e.deltaY * 3;
           if(targetScrollZ < 0) targetScrollZ = 0;
         }
@@ -705,11 +1189,35 @@ const categories = [
       const listView = document.getElementById('list-view-container');
       const listGrid = document.getElementById('list-grid');
 
-      // Populate List
-      articlesData.forEach(a => {
+      // Populate List（実際の記事 + 仮のカードも含める）
+      const allArticlesForList = [...articlesData, ...duplicatedArticles];
+      // 重複を除去（slugで判定）
+      const uniqueArticles = [];
+      const seenSlugs = new Set();
+      allArticlesForList.forEach(a => {
+        if (!seenSlugs.has(a.slug)) {
+          seenSlugs.add(a.slug);
+          uniqueArticles.push(a);
+        }
+      });
+      
+      // 日付でソート（新しい順）
+      uniqueArticles.sort((a, b) => {
+        const dateA = new Date(a.date.replace(/\./g, '/'));
+        const dateB = new Date(b.date.replace(/\./g, '/'));
+        return dateB - dateA;
+      });
+      
+      uniqueArticles.forEach(a => {
         const item = document.createElement('div');
         item.className = "list-row";
+        item.dataset.cat = a.cat;
         item.addEventListener('click', () => {
+          // 仮の記事の場合は、カテゴリーページに遷移
+          if (a.slug.startsWith('temp-')) {
+            // 仮の記事はクリックしても遷移しない、またはカテゴリーフィルターを適用
+            return;
+          }
           window.location.href = `/tech/${a.slug}`;
         });
         item.innerHTML = `
@@ -737,7 +1245,13 @@ const categories = [
         }
       };
 
-      listBtn.addEventListener('click', () => toggleListMode(true));
+      // リストボタンをアーカイブグリッドモードに切り替え（後で定義されるtoggleArchiveModeRefを使用）
+      let toggleArchiveModeRef = null;
+      listBtn.addEventListener('click', () => {
+        if (toggleArchiveModeRef) {
+          toggleArchiveModeRef(true);
+        }
+      });
       closeListBtn.addEventListener('click', () => toggleListMode(false));
 
       // --- Category Formation ---
@@ -752,7 +1266,7 @@ const categories = [
       
       hudBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-          if(isListMode) return;
+          if(isListMode || isArchiveMode) return;
           const cat = btn.dataset.cat;
           hudBtns.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
@@ -760,7 +1274,45 @@ const categories = [
           if (cat === 'ALL') {
             isFiltered = false;
             document.getElementById('mode-display').innerText = "MODE: FREE_FLIGHT";
-            cardElements.forEach(card => card.classList.remove('formation-mode'));
+            
+            // ランダム整列モードを解除
+            const tunnelScene = document.getElementById('tunnel-scene');
+            if (tunnelScene) {
+              tunnelScene.classList.remove('random-arrange-mode');
+              tunnelScene.style.overflow = 'hidden';
+            }
+            const tunnelWorld = document.getElementById('tunnel-world');
+            if (tunnelWorld) {
+              tunnelWorld.style.minHeight = '100%';
+            }
+            
+            // すべてのカードをリセット
+            cardElements.forEach(card => {
+              card.classList.remove('formation-mode');
+              // 元の位置に戻す
+              const baseX = parseFloat(card.dataset.baseX);
+              const baseY = parseFloat(card.dataset.baseY);
+              const baseZ = parseFloat(card.dataset.baseZ);
+              const rotation = parseFloat(card.dataset.rotation || 0);
+              
+              gsap.to(card, {
+                x: 0, y: 0, z: baseZ, rotationX: 0, rotationY: 0, rotationZ: rotation,
+                opacity: 1, duration: 1, ease: "power3.out"
+              });
+            });
+            
+            // アニメーションループを再開
+            if (!animationFrameId) {
+              updateTunnel();
+            }
+            
+            // デバッグ情報を更新
+            const filterModeEl = document.getElementById('debug-filter-mode');
+            if (filterModeEl) filterModeEl.textContent = 'OFF';
+            const debug3dEl = document.getElementById('debug-3d-status');
+            if (debug3dEl) debug3dEl.textContent = '実行中';
+            const randomModeEl = document.getElementById('debug-random-mode');
+            if (randomModeEl) randomModeEl.textContent = 'OFF';
           } else {
             isFiltered = true;
             const modeDisplay = document.getElementById('mode-display');
@@ -768,12 +1320,21 @@ const categories = [
               modeDisplay.innerText = `MODE: TARGET [${cat.toUpperCase()}]`;
             }
             
+            // アニメーションループを停止
+            if (animationFrameId) {
+              cancelAnimationFrame(animationFrameId);
+              animationFrameId = null;
+            }
+            
             // デバッグ: カテゴリフィルター開始
             console.log('[CATEGORY DEBUG] Filtering category:', cat);
             
             // 選択されたカテゴリのカードをフィルタリング（小文字で比較）
             const catLower = cat.toLowerCase();
-            const filteredCards = cardElements.filter(card => card.dataset.cat && card.dataset.cat.toLowerCase() === catLower);
+            const filteredCards = cardElements.filter(card => {
+              const cardCat = card.dataset.cat ? card.dataset.cat.toLowerCase() : '';
+              return cardCat === catLower;
+            });
             const cardCount = filteredCards.length;
             
             console.log('[CATEGORY DEBUG] Filtered cards count:', cardCount);
@@ -794,23 +1355,24 @@ const categories = [
             
             let idx = 0;
             
-            cardElements.forEach((card, cardIndex) => {
+            // すべてのカードを処理
+            cardElements.forEach((card) => {
               card.classList.remove('active-zone');
               const cardCat = card.dataset.cat ? card.dataset.cat.toLowerCase() : '';
               
               if (cardCat === catLower) {
+                // 選択されたカテゴリーのカードのみ表示
                 card.classList.add('formation-mode');
                 card.style.display = 'block';
+                card.style.pointerEvents = 'auto';
                 
                 const r = Math.floor(idx / cols);
                 const c = idx % cols;
                 const tx = c * spX - centerOffsetX;
                 const ty = r * spY - centerOffsetY;
                 
-                console.log(`[CATEGORY DEBUG] Card ${idx}:`, { r, c, tx, ty });
-                
                 gsap.to(card, {
-                  x: tx, y: ty, z: -200, rotationX:0, rotationY:0, rotationZ:0,
+                  x: tx, y: ty, z: -200, rotationX: 0, rotationY: 0, rotationZ: 0,
                   opacity: 1, duration: 1, ease: "power3.out",
                   onComplete: () => {
                     if (idx === cardCount - 1) {
@@ -820,8 +1382,16 @@ const categories = [
                 });
                 idx++;
               } else {
+                // 選択されていないカテゴリーのカードは完全に非表示
                 card.classList.remove('formation-mode');
-                gsap.to(card, { z: -5000, opacity: 0, duration: 0.5 });
+                card.style.pointerEvents = 'none';
+                gsap.to(card, {
+                  x: 0, y: 0, z: -5000, rotationX: 0, rotationY: 0, rotationZ: 0,
+                  opacity: 0, duration: 0.5, ease: "power2.in",
+                  onComplete: () => {
+                    card.style.display = 'none';
+                  }
+                });
               }
             });
             
@@ -830,16 +1400,572 @@ const categories = [
         });
       });
 
-      // --- Mouse & Cursor ---
-      // mouseX, mouseYは既に定義済み（上で初期化）
+      // --- Mouse & Cursor (Optimized for smooth animation) ---
       const fighter = document.getElementById('fighter-cursor');
+      const fighterSvg = document.getElementById('fighter-svg');
       
       if (fighter) {
-        document.addEventListener('mousemove', e => {
-          mouseX = e.clientX; mouseY = e.clientY;
-          gsap.to(fighter, { x: mouseX, y: mouseY, duration: 0.05 });
+        // 初期位置を設定（画面中央）
+        const initialX = window.innerWidth / 2;
+        const initialY = window.innerHeight / 2;
+        fighter.style.transform = `translate(${initialX}px, ${initialY}px) translate(-50%, -50%)`;
+        fighter.style.opacity = '1';
+
+        // バンク効果用の変数（既存のmouseX, mouseYは使用）
+        let lastMouseX = initialX;
+        let lastMouseY = initialY;
+        let movementX = 0;
+        
+        // カーソル用の独立したアニメーションループ（常にスムーズに動作）
+        let cursorCurrentX = initialX;
+        let cursorCurrentY = initialY;
+        let cursorAnimationId = null;
+        let currentMouseX = initialX;
+        let currentMouseY = initialY;
+        
+        // デバッグ用：パフォーマンス測定
+        let cursorFrameCount = 0;
+        let cursorLastTime = performance.now();
+        let cursorFPS = 60;
+        let cursorUpdateTime = 0;
+        let cursorMaxUpdateTime = 0;
+        
+        const updateCursor = () => {
+          // デバッグ情報表示時のみパフォーマンス測定（負荷軽減）
+          const debugInfo = document.getElementById('debug-info');
+          const isDebugVisible = debugInfo && debugInfo.classList.contains('show');
+          const startTime = isDebugVisible ? performance.now() : 0;
+          
+          if (!fighter) {
+            cursorAnimationId = requestAnimationFrame(updateCursor);
+            return;
+          }
+          
+          // 線形補間（lerp）で滑らかに追従（最適化：計算を簡略化）
+          const lerp = 0.2;
+          const diffX = currentMouseX - cursorCurrentX;
+          const diffY = currentMouseY - cursorCurrentY;
+          
+          // 変化が小さい場合はスキップ（パフォーマンス最適化）
+          if (Math.abs(diffX) > 0.1 || Math.abs(diffY) > 0.1) {
+            cursorCurrentX += diffX * lerp;
+            cursorCurrentY += diffY * lerp;
+            
+            // 直接CSS transformを更新（GSAPを使わず、パフォーマンス最適化）
+            fighter.style.transform = `translate(${cursorCurrentX}px, ${cursorCurrentY}px) translate(-50%, -50%)`;
+          }
+          
+          // SVGの回転は別フレームで更新（負荷分散）
+          if (fighterSvg && Math.abs(movementX) > 0.1) {
+            const tilt = movementX * 1.5;
+            fighterSvg.style.transform = `rotate(${tilt}deg)`;
+          }
+          
+          // パフォーマンス測定（デバッグ情報表示時のみ、負荷を軽減）
+          if (isDebugVisible) {
+            const updateTime = performance.now() - startTime;
+            cursorUpdateTime = updateTime;
+            cursorMaxUpdateTime = Math.max(cursorMaxUpdateTime, updateTime);
+            
+            cursorFrameCount++;
+            const now = performance.now();
+            if (now - cursorLastTime >= 1000) {
+              cursorFPS = cursorFrameCount;
+              cursorFrameCount = 0;
+              cursorLastTime = now;
+              
+              // デバッグ情報を画面に表示（1秒に1回のみ）
+              const fpsEl = document.getElementById('debug-cursor-fps');
+              const timeEl = document.getElementById('debug-cursor-time');
+              const maxEl = document.getElementById('debug-cursor-max');
+              
+              if (fpsEl) {
+                fpsEl.textContent = cursorFPS;
+                fpsEl.className = cursorFPS < 50 ? 'debug-value debug-warning' : 'debug-value';
+              }
+              if (timeEl) {
+                timeEl.textContent = `${cursorUpdateTime.toFixed(2)}ms`;
+                timeEl.className = cursorUpdateTime > 5 ? 'debug-value debug-warning' : 'debug-value';
+              }
+              if (maxEl) {
+                maxEl.textContent = `${cursorMaxUpdateTime.toFixed(2)}ms`;
+                maxEl.className = cursorMaxUpdateTime > 16 ? 'debug-value debug-error' : 'debug-value';
+              }
+              
+              // コンソールに出力（FPSが低い場合のみ）
+              if (cursorFPS < 50) {
+                console.warn(`[CURSOR DEBUG] Low FPS: ${cursorFPS} | Update time: ${cursorUpdateTime.toFixed(2)}ms | Max: ${cursorMaxUpdateTime.toFixed(2)}ms`);
+              }
+            } else {
+              // リアルタイム更新（FPS以外、デバッグ表示時のみ）
+              const timeEl = document.getElementById('debug-cursor-time');
+              if (timeEl) {
+                const updateTime = performance.now() - startTime;
+                timeEl.textContent = `${updateTime.toFixed(2)}ms`;
+                timeEl.className = updateTime > 5 ? 'debug-value debug-warning' : 'debug-value';
+              }
+            }
+          } else {
+            // デバッグ非表示時はFPSカウントのみ（軽量）
+            cursorFrameCount++;
+            const now = performance.now();
+            if (now - cursorLastTime >= 1000) {
+              cursorFPS = cursorFrameCount;
+              cursorFrameCount = 0;
+              cursorLastTime = now;
+            }
+          }
+          
+          cursorAnimationId = requestAnimationFrame(updateCursor);
+        };
+        
+        // カーソルアニメーションループを開始
+        updateCursor();
+
+        // マウス移動イベント
+        const handleMouseMove = (e) => {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+          currentMouseX = e.clientX;
+          currentMouseY = e.clientY;
+          
+          // 座標表示を更新
+          const coordX = document.getElementById('coord-x');
+          const coordY = document.getElementById('coord-y');
+          if (coordX) coordX.textContent = mouseX;
+          if (coordY) coordY.textContent = mouseY;
+          
+          // 移動量を計算（バンク効果用）
+          movementX = e.movementX || (mouseX - lastMouseX);
+          lastMouseX = mouseX;
+          lastMouseY = mouseY;
+        };
+
+        document.addEventListener('mousemove', handleMouseMove);
+        
+        // デバッグ情報の表示/非表示を切り替え（Dキーでトグル）
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'd' || e.key === 'D') {
+            const debugInfo = document.getElementById('debug-info');
+            if (debugInfo) {
+              debugInfo.classList.toggle('show');
+              if (debugInfo.classList.contains('show')) {
+                console.log('[DEBUG] デバッグ情報を表示しました。F12のコンソールでも詳細を確認できます。');
+              }
+            }
+          }
+        });
+
+        // マウスが画面外に出た時の処理（カーソルの透明度は変更しない）
+        // document.addEventListener('mouseleave', () => {
+        //   gsap.to(fighter, { opacity: 0.3, duration: 0.3 });
+        // });
+
+        // document.addEventListener('mouseenter', () => {
+        //   gsap.to(fighter, { opacity: 1, duration: 0.3 });
+        // });
+      }
+      
+      // 余白クリックでALLモードに戻す機能
+      const tunnelSceneForClick = document.getElementById('tunnel-scene');
+      if (tunnelSceneForClick) {
+        tunnelSceneForClick.addEventListener('click', (e) => {
+          // カードをクリックした場合は何もしない
+          if (e.target.closest('.ai-card-3d')) {
+            return;
+          }
+          
+          // フィルターモードまたはランダム整列モードの時のみALLに戻す
+          if (isFiltered || tunnelSceneForClick.classList.contains('random-arrange-mode')) {
+            const allBtn = document.querySelector('.hud-btn[data-cat="ALL"]');
+            if (allBtn) {
+              allBtn.click();
+            }
+          }
         });
       }
+      
+      // ツールチップのクリックイベント - アーカイブグリッドモードに切り替え
+      const tooltip = document.getElementById('coordinate-tooltip');
+      const archiveGridContainer = document.getElementById('archive-grid-container');
+      const archiveGrid = document.getElementById('archive-grid');
+      const closeArchiveBtn = document.getElementById('close-archive-btn');
+      
+      // アーカイブグリッドモードの切り替え
+      toggleArchiveModeRef = (show) => {
+        isArchiveMode = show;
+        if (show) {
+          // アーカイブグリッドを表示
+          gsap.to("#tunnel-scene", { opacity: 0, duration: 0.5 });
+          gsap.to("#ui-layer", { opacity: 0.3, duration: 0.5 });
+          if (archiveGridContainer) {
+            archiveGridContainer.style.display = 'block';
+            gsap.fromTo(archiveGridContainer, { opacity: 0, y: 50 }, { opacity: 1, y: 0, duration: 0.5 });
+          }
+          const modeDisplay = document.getElementById('mode-display');
+          if (modeDisplay) {
+            modeDisplay.innerText = "MODE: ARCHIVE_GRID";
+          }
+          
+          // アニメーションループを停止（カーソルは動き続ける）
+          if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+          }
+        } else {
+          // アーカイブグリッドを非表示
+          if (archiveGridContainer) {
+            gsap.to(archiveGridContainer, { opacity: 0, y: 50, duration: 0.3, onComplete: () => {
+              if (archiveGridContainer) archiveGridContainer.style.display = 'none';
+            }});
+          }
+          gsap.to("#tunnel-scene", { opacity: 1, duration: 0.5 });
+          gsap.to("#ui-layer", { opacity: 1, duration: 0.5 });
+          const modeDisplay = document.getElementById('mode-display');
+          if (modeDisplay) {
+            modeDisplay.innerText = "MODE: FREE_FLIGHT";
+          }
+          requestAnimationFrame(updateTunnel);
+        }
+      };
+      
+      // ランダム整列モード（3Dトンネル内でカードをランダムに整列）
+      const randomArrangeCards = () => {
+        // フィルターモードを解除してALLに戻す
+        isFiltered = false;
+        const allBtn = document.querySelector('.hud-btn[data-cat="ALL"]');
+        hudBtns.forEach(b => b.classList.remove('active'));
+        if (allBtn) allBtn.classList.add('active');
+        const modeDisplay = document.getElementById('mode-display');
+        if (modeDisplay) {
+          modeDisplay.innerText = "MODE: FREE_FLIGHT";
+        }
+        
+        // カードをランダムにシャッフル（先にシャッフル）
+        const shuffledCards = [...cardElements].sort(() => Math.random() - 0.5);
+        
+        // ワンちゃんモード：カードを大きく、見やすく（表示数を制限して軽量化）
+        const cardWidth = 400; // 260 → 400に拡大
+        const cardHeight = 520; // 高さも比例して拡大
+        const cardGap = 50;
+        const padding = 60;
+        const availableWidth = window.innerWidth - (padding * 2);
+        const cols = Math.max(1, Math.min(2, Math.floor((availableWidth + cardGap) / (cardWidth + cardGap)))); // 最大2列
+        const maxDisplayCards = 12; // 最初の12枚だけ表示（軽量化）
+        const displayCards = shuffledCards.slice(0, maxDisplayCards);
+        const rows = Math.ceil(displayCards.length / cols);
+        const spX = cardWidth + cardGap;
+        const spY = cardHeight + cardGap;
+        
+        // 中央配置のためのオフセット計算（左右の空白をなくす）
+        const totalWidth = (cols - 1) * spX;
+        const centerOffsetX = totalWidth / 2;
+        const centerOffsetY = (rows - 1) * spY / 2;
+        
+        // トンネルワールドとシーンの高さを調整（スクロール可能にする）
+        const tunnelWorld = document.getElementById('tunnel-world');
+        const tunnelScene = document.getElementById('tunnel-scene');
+        if (tunnelWorld && tunnelScene) {
+          const totalHeight = rows * spY + padding * 2;
+          tunnelWorld.style.minHeight = `${totalHeight}px`;
+          tunnelScene.classList.add('random-arrange-mode');
+          // スクロール位置をリセット
+          tunnelScene.scrollTop = 0;
+        }
+        
+        // デバッグ情報を更新
+        const randomModeEl = document.getElementById('debug-random-mode');
+        if (randomModeEl) randomModeEl.textContent = 'ON';
+        const debug3dEl = document.getElementById('debug-3d-status');
+        if (debug3dEl) debug3dEl.textContent = '停止';
+        
+        // アニメーションループを完全に停止（確実に停止）
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
+        
+        // すべてのカードを表示状態にリセット
+        cardElements.forEach(card => {
+          // 既存のアニメーションを停止
+          gsap.killTweensOf(card);
+          // 初期状態を設定（確実に表示されるように）
+          card.style.opacity = '1';
+          card.style.display = 'block';
+          card.style.pointerEvents = 'auto';
+          card.style.visibility = 'visible';
+          // GPUアクセラレーションを有効化（パフォーマンス最適化）
+          card.style.willChange = 'transform';
+          card.style.transformStyle = 'preserve-3d';
+          // ランダム整列モード時は不要なフィルター効果を無効化（パフォーマンス最適化）
+          card.style.filter = 'none';
+          card.style.boxShadow = 'none';
+        });
+        
+        // パフォーマンス最適化：表示するカードのみ処理（最大12枚）
+        displayCards.forEach((card, idx) => {
+          const r = Math.floor(idx / cols);
+          const c = idx % cols;
+          const tx = c * spX - centerOffsetX;
+          const ty = r * spY - centerOffsetY + padding; // 上部にパディングを追加
+          
+          // すべてのカードを表示（仮想スクロールは一旦無効化）
+          card.classList.add('formation-mode');
+          card.style.display = 'block';
+          card.style.opacity = '1';
+          card.style.visibility = 'visible';
+          
+          // ランダム整列モード時はSVGボーダーアニメーションを停止（パフォーマンス最適化）
+          const borderSvg = card.querySelector('.card-border-animated');
+          if (borderSvg) {
+            const borderRect = borderSvg.querySelector('.border-stroke');
+            if (borderRect) {
+              // アニメーションを停止
+              borderRect.style.animation = 'none';
+              // stroke-dashoffsetを固定（アニメーション停止）
+              borderRect.style.strokeDashoffset = '0';
+            }
+          }
+          
+          // 即座に位置を設定（アニメーション前に確実に表示、GPUアクセラレーション使用）
+          gsap.set(card, {
+            x: tx, 
+            y: ty, 
+            z: -200, 
+            rotationX: 0, 
+            rotationY: 0, 
+            rotationZ: 0,
+            opacity: 1,
+            force3D: true, // GPUアクセラレーションを強制
+            transformPerspective: 1000
+          });
+          
+          // その後、スムーズにアニメーション（必要に応じて、GPUアクセラレーション使用）
+          gsap.to(card, {
+            x: tx, 
+            y: ty, 
+            z: -200, 
+            rotationX: 0, 
+            rotationY: 0, 
+            rotationZ: 0,
+            opacity: 1, 
+            duration: 1.5, 
+            ease: "power3.out",
+            force3D: true, // GPUアクセラレーションを強制
+            transformPerspective: 1000
+          });
+        });
+        
+        // 仮想スクロールは一旦無効化（パフォーマンス問題が解決したら再検討）
+        // すべてのカードを表示するが、SVGアニメーションは停止しているのでパフォーマンスは改善されている
+        
+        // カテゴリー順に並べることを促すアナウンスを表示
+        setTimeout(() => {
+          showCategoryHint();
+        }, 2000);
+      };
+      
+      // カテゴリー順に並べることを促すアナウンス
+      const showCategoryHint = () => {
+        const hint = document.createElement('div');
+        hint.id = 'category-hint';
+        hint.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: rgba(0, 0, 0, 0.95);
+          border: 2px solid var(--accent-cyan);
+          padding: 2rem 3rem;
+          border-radius: 12px;
+          z-index: 10000;
+          text-align: center;
+          font-family: 'Fira Code', monospace;
+          color: var(--accent-cyan);
+          box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
+          max-width: 600px;
+          opacity: 0;
+        `;
+        hint.innerHTML = `
+          <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: #ffff00;">ランダムに整列しました！</h3>
+          <p style="font-size: 1rem; line-height: 1.8; margin-bottom: 1.5rem;">
+            下のカテゴリーボタンを押すと、<br>
+            カテゴリー順に並べ替えられます。
+          </p>
+          <button id="close-hint-btn" style="
+            background: var(--accent-cyan);
+            color: #000;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 6px;
+            font-family: 'Fira Code', monospace;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+          ">了解</button>
+        `;
+        document.body.appendChild(hint);
+        
+        gsap.to(hint, { opacity: 1, duration: 0.5 });
+        
+        const closeBtn = document.getElementById('close-hint-btn');
+        if (closeBtn) {
+          closeBtn.addEventListener('click', () => {
+            gsap.to(hint, { opacity: 0, duration: 0.3, onComplete: () => {
+              hint.remove();
+            }});
+          });
+        }
+        
+        // 5秒後に自動で閉じる
+        setTimeout(() => {
+          if (hint.parentNode) {
+            gsap.to(hint, { opacity: 0, duration: 0.3, onComplete: () => {
+              hint.remove();
+            }});
+          }
+        }, 5000);
+      };
+      
+      // ツールチップとワンちゃんゾーンのクリックイベント（ランダム整列）
+      if (tooltip) {
+        tooltip.addEventListener('click', (e) => {
+          e.stopPropagation();
+          randomArrangeCards();
+        });
+      }
+      
+      // ワンちゃんゾーン（ツールチップの下のエリア）をクリック可能にする
+      const dogZone = document.createElement('div');
+      dogZone.style.cssText = `
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 300px;
+        height: 200px;
+        z-index: 101;
+        pointer-events: auto;
+        cursor: pointer;
+      `;
+      dogZone.addEventListener('click', (e) => {
+        e.stopPropagation();
+        randomArrangeCards();
+      });
+      document.body.appendChild(dogZone);
+      
+      // ツールチップの位置に合わせてワンちゃんゾーンを配置
+      const updateDogZone = () => {
+        if (tooltip && dogZone) {
+          const tooltipRect = tooltip.getBoundingClientRect();
+          dogZone.style.left = `${tooltipRect.left}px`;
+          dogZone.style.top = `${tooltipRect.bottom}px`;
+          dogZone.style.width = `${tooltipRect.width}px`;
+          dogZone.style.height = '150px';
+        }
+      };
+      
+      // ツールチップの位置更新時にワンちゃんゾーンも更新
+      if (typeof updateTooltipPosition === 'function') {
+        const originalUpdateTooltipPosition = updateTooltipPosition;
+        updateTooltipPosition = function() {
+          if (originalUpdateTooltipPosition) {
+            originalUpdateTooltipPosition();
+          }
+          setTimeout(updateDogZone, 100);
+        };
+      }
+      updateDogZone();
+      
+      if (closeArchiveBtn) {
+        closeArchiveBtn.addEventListener('click', () => {
+          toggleArchiveModeRef(false);
+        });
+      }
+      
+      // アーカイブグリッドに記事を追加（時系列でソート）
+      if (archiveGrid) {
+        // 重複を除去した記事リストを使用（既に時系列でソート済み）
+        uniqueArticles.forEach(article => {
+          const card = document.createElement('div');
+          card.className = 'archive-card';
+          const categoryColor = article.catColor || '#00ffff';
+          
+          card.innerHTML = `
+            <img src="${article.img}" class="archive-card-img" alt="${article.title}" style="border-bottom-color: ${categoryColor};">
+            <div class="archive-card-info">
+              <div class="archive-card-meta">
+                <span class="archive-card-category" style="color: ${categoryColor};">${categoryLabels[article.cat] || article.cat.toUpperCase()}</span>
+                <span class="archive-card-date">${article.date}</span>
+              </div>
+              <h3 class="archive-card-title" style="color: ${categoryColor};">${article.title}</h3>
+            </div>
+          `;
+          
+          card.addEventListener('click', () => {
+            // 仮の記事の場合は遷移しない
+            if (article.slug.startsWith('temp-')) {
+              return;
+            }
+            window.location.href = `/tech/${article.slug}`;
+          });
+          
+          archiveGrid.appendChild(card);
+        });
+      }
+      
+      // 背景動画の位置に合わせてツールチップを配置
+      const videoBgForTooltip = videoBg || document.getElementById('video-bg');
+      updateTooltipPosition = function() {
+          if (videoBgForTooltip && tooltip) {
+            // 動画のメタデータが読み込まれているか確認
+            if (videoBgForTooltip.videoWidth > 0 && videoBgForTooltip.videoHeight > 0) {
+              const videoAspectRatio = videoBgForTooltip.videoWidth / videoBgForTooltip.videoHeight;
+              const containerAspectRatio = window.innerWidth / window.innerHeight;
+              
+              // object-fit: cover の場合、動画がクロップされる可能性がある
+              let videoDisplayWidth, videoDisplayHeight, videoOffsetX, videoOffsetY;
+              
+              if (videoAspectRatio > containerAspectRatio) {
+                // 動画が横長の場合、高さに合わせてクロップ
+                videoDisplayHeight = window.innerHeight;
+                videoDisplayWidth = videoDisplayHeight * videoAspectRatio;
+                videoOffsetX = (window.innerWidth - videoDisplayWidth) / 2;
+                videoOffsetY = 0;
+              } else {
+                // 動画が縦長の場合、幅に合わせてクロップ
+                videoDisplayWidth = window.innerWidth;
+                videoDisplayHeight = videoDisplayWidth / videoAspectRatio;
+                videoOffsetX = 0;
+                videoOffsetY = (window.innerHeight - videoDisplayHeight) / 2;
+              }
+              
+              // ワンちゃんの位置を動画内の相対位置で指定（調整可能）
+              const dogXPercent = 0.10; // 動画の左から10%
+              const dogYPercent = 0.80; // 動画の上から80%（下から20%）
+              
+              // ツールチップの位置を計算（ワンちゃんの上に配置）
+              const tooltipX = videoOffsetX + (videoDisplayWidth * dogXPercent);
+              const tooltipY = videoOffsetY + (videoDisplayHeight * dogYPercent) - 120; // ワンちゃんの上120px
+              
+              tooltip.style.left = `${tooltipX}px`;
+              tooltip.style.top = `${tooltipY}px`;
+              tooltip.style.bottom = 'auto';
+              tooltip.style.transform = 'translateY(0)';
+            } else {
+              // メタデータがまだ読み込まれていない場合、再試行
+              setTimeout(updateTooltipPosition, 100);
+            }
+          }
+        };
+        
+      // 初期配置とリサイズ時の更新
+      if (videoBgForTooltip) {
+        videoBgForTooltip.addEventListener('loadedmetadata', updateTooltipPosition);
+        videoBgForTooltip.addEventListener('loadeddata', updateTooltipPosition);
+      }
+      window.addEventListener('resize', updateTooltipPosition);
+      // 少し遅延させて実行（動画のメタデータが読み込まれるまで待つ）
+      setTimeout(updateTooltipPosition, 500);
 
       // --- Floating Objects (Temporarily disabled to avoid 404 errors) ---
       // TODO: Add floating images later when assets are ready
