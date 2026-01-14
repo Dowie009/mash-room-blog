@@ -53,6 +53,12 @@ topic: ai-journey
   cursor: pointer !important;
 }
 
+/* 会話コンテナの最大幅（広いレイアウトでも読みやすく） */
+#article-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
 /* 大きい文字 */
 .big { font-size: 1.2em; font-weight: bold; }
 /* マーカー（ダークモード対応：線の透明度を下げて文字を見やすく） */
@@ -229,8 +235,8 @@ topic: ai-journey
   <div style="margin-bottom: 1rem;">
     <div style="color: #00ffff; margin-bottom: 0.5rem; font-weight: bold;">✨ おすすめプリセット</div>
     <div style="display: flex; gap: 0.25rem; flex-wrap: wrap; position: relative; z-index: 10;">
-      <button type="button" onclick="applyRecommendedPreset(1)" id="rec-1" style="flex: 1; padding: 0.5rem 0.2rem; border-radius: 6px; border: 2px solid #1a1a2e; background: linear-gradient(135deg, #0a0a12, #1a1a2e); color: #00ffff; cursor: pointer; font-size: 0.65rem; text-shadow: 0 0 5px #00ffff; position: relative; z-index: 10; pointer-events: auto;" title="サイバーダーク">1</button>
-      <button type="button" onclick="applyRecommendedPreset(2)" id="rec-2" style="flex: 1; padding: 0.5rem 0.2rem; border-radius: 6px; border: 2px solid #2d1b4e; background: linear-gradient(135deg, #1a1a2e, #2d1b4e); color: #9b59b6; cursor: pointer; font-size: 0.65rem; text-shadow: 0 0 5px #9b59b6; position: relative; z-index: 10; pointer-events: auto;" title="ギャラクシー">2</button>
+      <button type="button" onclick="applyRecommendedPreset(1)" id="rec-1" style="flex: 1; padding: 0.5rem 0.2rem; border-radius: 6px; border: 2px solid #2d1b4e; background: linear-gradient(135deg, #1a1a2e, #2d1b4e); color: #9b59b6; cursor: pointer; font-size: 0.65rem; text-shadow: 0 0 5px #9b59b6; position: relative; z-index: 10; pointer-events: auto;" title="ギャラクシー">1</button>
+      <button type="button" onclick="applyRecommendedPreset(2)" id="rec-2" style="flex: 1; padding: 0.5rem 0.2rem; border-radius: 6px; border: 2px solid #1a1a2e; background: linear-gradient(135deg, #0a0a12, #1a1a2e); color: #00ffff; cursor: pointer; font-size: 0.65rem; text-shadow: 0 0 5px #00ffff; position: relative; z-index: 10; pointer-events: auto;" title="サイバーダーク">2</button>
       <button type="button" onclick="applyRecommendedPreset(3)" id="rec-3" style="flex: 1; padding: 0.5rem 0.2rem; border-radius: 6px; border: 2px solid #1a3a3a; background: linear-gradient(135deg, #0d2626, #1a3a3a); color: #00ff88; cursor: pointer; font-size: 0.65rem; text-shadow: 0 0 5px #00ff88; position: relative; z-index: 10; pointer-events: auto;" title="オーロラ">3</button>
       <button type="button" onclick="applyRecommendedPreset(4)" id="rec-4" style="flex: 1; padding: 0.5rem 0.2rem; border-radius: 6px; border: 2px solid #ffd0e0; background: linear-gradient(135deg, #fff8fa, #fff0f5); color: #d44a7a; cursor: pointer; font-size: 0.65rem; position: relative; z-index: 10; pointer-events: auto;" title="さくら">4</button>
       <button type="button" onclick="applyRecommendedPreset(5)" id="rec-5" style="flex: 1; padding: 0.5rem 0.2rem; border-radius: 6px; border: 2px solid #e0e0e0; background: linear-gradient(145deg, #ffffff, #f8f8f8); color: #333; cursor: pointer; font-size: 0.65rem; position: relative; z-index: 10; pointer-events: auto;" title="クリーンライト">5</button>
@@ -252,6 +258,17 @@ topic: ai-journey
     <div style="display: flex; gap: 0.25rem; flex-wrap: wrap; margin-top: 0.25rem;">
       <button onclick="setFont('klee')" id="font-klee" style="flex: 1; min-width: 45px; padding: 0.4rem 0.2rem; border-radius: 6px; border: 1px solid #555; background: rgba(255,255,255,0.05); color: #aaa; cursor: pointer; font-size: 0.6rem; font-family: 'Klee One', cursive;">手書き</button>
       <button onclick="setFont('sawarabi')" id="font-sawarabi" style="flex: 1; min-width: 45px; padding: 0.4rem 0.2rem; border-radius: 6px; border: 1px solid #555; background: rgba(255,255,255,0.05); color: #aaa; cursor: pointer; font-size: 0.6rem; font-family: 'Sawarabi Gothic', sans-serif;">さわらび</button>
+    </div>
+  </div>
+
+  <!-- ズーム（文字サイズ） -->
+  <div style="margin-bottom: 1rem;">
+    <div style="color: #888; margin-bottom: 0.5rem;">🔍 ズーム</div>
+    <div style="display: flex; gap: 0.25rem; align-items: center;">
+      <button onclick="setZoom(-1)" style="width: 32px; height: 32px; border-radius: 6px; border: 1px solid #555; background: rgba(255,255,255,0.05); color: #aaa; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center;">−</button>
+      <div id="zoom-level" style="flex: 1; text-align: center; color: #aaa; font-size: 0.7rem;">100%</div>
+      <button onclick="setZoom(1)" style="width: 32px; height: 32px; border-radius: 6px; border: 1px solid #555; background: rgba(255,255,255,0.05); color: #aaa; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center;">+</button>
+      <button onclick="setZoom(0)" style="padding: 0.4rem 0.6rem; border-radius: 6px; border: 1px solid #555; background: rgba(255,255,255,0.05); color: #888; cursor: pointer; font-size: 0.6rem;">リセット</button>
     </div>
   </div>
 
@@ -730,7 +747,8 @@ let currentState = {
   bubbleStyle: 'glass',
   scrollEnabled: false,
   font: 'noto',
-  chaosMode: false
+  chaosMode: false,
+  zoom: 100
 };
 
 const STORAGE_KEY = 'aibou-blog-style';
@@ -771,6 +789,72 @@ function setFont(fontKey, skipSave = false) {
   });
 
   if (!skipSave) saveState();
+}
+
+// ================================
+// ズーム（文字サイズ）
+// ================================
+const ZOOM_STEP = 10;
+const ZOOM_MIN = 70;
+const ZOOM_MAX = 150;
+
+function setZoom(direction, skipSave = false) {
+  // direction: 1 = 拡大, -1 = 縮小, 0 = リセット
+  if (direction === 0) {
+    currentState.zoom = 100;
+  } else {
+    const newZoom = currentState.zoom + (direction * ZOOM_STEP);
+    currentState.zoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, newZoom));
+  }
+
+  applyZoom();
+  if (!skipSave) saveState();
+}
+
+function applyZoom() {
+  const scale = currentState.zoom / 100;
+
+  // 記事全体のコンテナを取得して横幅・文字サイズを拡張
+  const articleWrapper = document.getElementById('article-container');
+  if (articleWrapper) {
+    // 基本900px × スケールで横幅も広がる（最大1200pxまで）
+    const newMaxWidth = Math.min(Math.round(900 * scale), 1200);
+    articleWrapper.style.maxWidth = `${newMaxWidth}px`;
+    // 基本1.1em × スケール
+    articleWrapper.style.fontSize = `${1.1 * scale}em`;
+  }
+
+  // 吹き出し・テキスト全体にズームを適用
+  document.querySelectorAll('.aibou-bubble, .michi-bubble').forEach(el => {
+    el.style.fontSize = `${scale}em`;
+  });
+
+  // アイコンサイズも調整
+  document.querySelectorAll('.aibou-bubble, .michi-bubble').forEach(el => {
+    const parent = el.closest('[style*="display: flex"]');
+    if (parent) {
+      const icon = parent.querySelector('[style*="width: 48px"]') || parent.querySelector('[style*="border-radius: 50%"]');
+      if (icon) {
+        const iconSize = Math.round(48 * scale);
+        icon.style.width = `${iconSize}px`;
+        icon.style.height = `${iconSize}px`;
+        icon.style.fontSize = `${1.5 * scale}rem`;
+      }
+    }
+  });
+
+  // 名前ラベルのサイズも調整
+  document.querySelectorAll('.aibou-name, .michi-name').forEach(el => {
+    el.style.fontSize = `${0.75 * scale}rem`;
+  });
+
+  // 表示を更新
+  const zoomDisplay = document.getElementById('zoom-level');
+  if (zoomDisplay) {
+    zoomDisplay.textContent = `${currentState.zoom}%`;
+  }
+
+  console.log('🔍 ズーム適用:', currentState.zoom + '% (幅:', Math.min(Math.round(700 * scale), 1000) + 'px)');
 }
 
 // ================================
@@ -1031,20 +1115,20 @@ function setBubbleStyle(styleName, skipSave = false) {
 // おすすめプリセット（暗→明の5段階）
 // ================================
 const recommendedPresets = {
-  // 1: サイバーダーク（最も暗い）
+  // 1: ギャラクシー（暗め紫）※デフォルト
   1: {
     baseBg: 'dark',
-    glowTheme: 'cyber',
-    bubbleStyle: 'neon',
+    glowTheme: 'galaxy',
+    bubbleStyle: 'glass',
     scrollEnabled: false,
     font: 'noto',
     chaosMode: false
   },
-  // 2: ギャラクシー（暗め紫）
+  // 2: サイバーダーク（ネオン強め）
   2: {
     baseBg: 'dark',
-    glowTheme: 'galaxy',
-    bubbleStyle: 'glass',
+    glowTheme: 'cyber',
+    bubbleStyle: 'neon',
     scrollEnabled: false,
     font: 'noto',
     chaosMode: false
@@ -1078,32 +1162,56 @@ const recommendedPresets = {
   }
 };
 
+let lastAppliedPreset = 0;
+
 function applyRecommendedPreset(num) {
   try {
+    // 同じプリセットを連打した場合はスキップ（特にプリセット3の動画問題を防ぐ）
+    if (lastAppliedPreset === num) {
+      return;
+    }
+    lastAppliedPreset = num;
+
     const preset = recommendedPresets[num];
     if (!preset) {
       return;
     }
 
-    // 先にカオスモードを必ず解除（どのプリセットからでも）
+    // ★★★ 先にカオスモードを必ず解除（どのプリセットからでも）★★★
+    // 引き継ぎ書より：明示的にクラス削除+動画停止+display:none
     const page = document.querySelector('.post-page');
     const video = document.getElementById('chaos-video-bg');
+
+    // 1. chaos-modeクラスを削除
     if (page) {
       page.classList.remove('chaos-mode');
     }
+
+    // 2. 動画を完全に停止・非表示
     if (video) {
       video.classList.remove('active');
-      try { video.pause(); } catch(e) {}
+      video.style.display = 'none';
+      video.style.opacity = '0';
+      video.style.visibility = 'hidden';
+      try {
+        video.pause();
+        video.currentTime = 0;
+      } catch(e) {}
     }
 
-    // currentStateを完全にプリセットの値で置き換え
+    // 3. currentStateのchaosModeも先にfalseに
+    currentState.chaosMode = false;
+
+    // currentStateを完全にプリセットの値で置き換え（ズームは現在値を維持）
+    const currentZoom = currentState.zoom || 100;
     currentState = {
       baseBg: preset.baseBg,
       glowTheme: preset.glowTheme,
       bubbleStyle: preset.bubbleStyle,
       scrollEnabled: preset.scrollEnabled,
       font: preset.font,
-      chaosMode: preset.chaosMode
+      chaosMode: preset.chaosMode,
+      zoom: currentZoom
     };
 
     // 各設定を直接適用（applyStateを使わず個別に）
@@ -1171,6 +1279,10 @@ function applyRecommendedPreset(num) {
     if (currentState.chaosMode) {
       if (page) page.classList.add('chaos-mode');
       if (video) {
+        // display:noneを解除してから再生
+        video.style.display = 'block';
+        video.style.opacity = '1';
+        video.style.visibility = 'visible';
         video.classList.add('active');
         video.play().catch(() => {});
       }
@@ -1237,9 +1349,10 @@ function loadState() {
   if (saved) {
     try {
       const parsed = JSON.parse(saved);
-      // フォント未設定の場合のデフォルト値
+      // フォント・ズーム未設定の場合のデフォルト値
       currentState = { ...currentState, ...parsed };
       if (!currentState.font) currentState.font = 'noto';
+      if (!currentState.zoom) currentState.zoom = 100;
     } catch(e) {}
   }
   const savedMyPresets = localStorage.getItem(STORAGE_KEY + '-my-presets');
@@ -1271,6 +1384,12 @@ function applyState() {
 
   setChaosMode(currentState.chaosMode || false, true);
   console.log('  ✓ setChaosMode完了:', currentState.chaosMode);
+
+  // ズームを適用
+  if (currentState.zoom) {
+    applyZoom();
+    console.log('  ✓ applyZoom完了:', currentState.zoom);
+  }
 
   updateMyPresetButtons();
 
@@ -1404,7 +1523,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<div style="max-width: 700px; margin: 0 auto; padding: 0 1rem; transform: translateX(120px);">
+<div id="article-container">
 
 
 <!-- あいぼー（導入） -->
