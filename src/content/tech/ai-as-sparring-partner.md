@@ -869,11 +869,11 @@ const baseBgStyles = {
     switcherText: '#fff'
   },
   gray: {
-    bg: 'linear-gradient(180deg, #2a2a2a 0%, #333333 50%, #2a2a2a 100%)',
+    bg: 'linear-gradient(180deg, #3a3a3a 0%, #4a4a4a 50%, #3a3a3a 100%)',
     text: '#e0e0e0',
-    switcherBg: 'rgba(40,40,40,0.95)',
-    switcherBorder: 'rgba(255,255,255,0.15)',
-    switcherText: '#ddd'
+    switcherBg: 'rgba(60,60,60,0.95)',
+    switcherBorder: 'rgba(255,255,255,0.2)',
+    switcherText: '#eee'
   },
   light: {
     bg: 'linear-gradient(180deg, #ffffff 0%, #f8f8f8 50%, #f0f0f0 100%)',
@@ -901,11 +901,61 @@ function setBaseBg(theme, skipSave = false) {
     switcher.querySelector('div').style.color = style.switcherText;
   }
 
-  // タイトル色をライト/ダークモードで切り替え
+  // タイトル・ヘッダー周りをライト/ダークモードで切り替え
   const postTitle = document.querySelector('.hero-title');
   if (postTitle) {
-    postTitle.style.color = isLight ? '#333' : '#fff';
+    postTitle.style.color = isLight ? '#222' : '#fff';
   }
+  const heroDesc = document.querySelector('.hero-description');
+  if (heroDesc) {
+    heroDesc.style.color = isLight ? '#555' : '#999';
+  }
+  // パンくず
+  document.querySelectorAll('.breadcrumb-link').forEach(el => {
+    el.style.color = isLight ? '#0077aa' : '#00ffff';
+  });
+  document.querySelectorAll('.breadcrumb-current').forEach(el => {
+    el.style.color = isLight ? '#666' : '#888';
+  });
+  // メタ情報
+  const metaInfo = document.querySelector('.meta-info');
+  if (metaInfo) {
+    metaInfo.style.color = isLight ? '#555' : '#666';
+  }
+  // カテゴリバッジ
+  const catBadge = document.querySelector('.category-badge');
+  if (catBadge && isLight) {
+    catBadge.style.textShadow = 'none';
+  }
+  // タグ
+  document.querySelectorAll('.tag').forEach(el => {
+    if (isLight) {
+      el.style.color = '#0077aa';
+      el.style.background = 'rgba(0,119,170,0.1)';
+      el.style.borderColor = 'rgba(0,119,170,0.3)';
+      el.style.textShadow = 'none';
+    } else {
+      el.style.color = '#00ffff';
+      el.style.background = 'rgba(0,255,255,0.08)';
+      el.style.borderColor = 'rgba(0,255,255,0.2)';
+    }
+  });
+  // キャラクター紹介
+  document.querySelectorAll('.character-name').forEach(el => {
+    // 元の色をそのまま維持（あいぼーはシアン、道ゐはピンク）
+  });
+  document.querySelectorAll('.character-desc').forEach(el => {
+    el.style.color = isLight ? '#666' : '#666';
+  });
+  document.querySelectorAll('.character-intro-inner').forEach(el => {
+    if (isLight) {
+      el.style.background = 'linear-gradient(135deg, rgba(0,119,170,0.08), rgba(200,100,140,0.08))';
+      el.style.borderColor = 'rgba(0,0,0,0.1)';
+    } else {
+      el.style.background = 'linear-gradient(135deg, rgba(0,255,255,0.05), rgba(255,0,255,0.05))';
+      el.style.borderColor = 'rgba(255,255,255,0.1)';
+    }
+  });
 
   // ネオンテキストをライトモード対応
   document.querySelectorAll('.neon-cyan, .neon-pink, .neon-yellow').forEach(el => {
@@ -1131,29 +1181,29 @@ const recommendedPresets = {
     font: 'noto',
     chaosMode: false
   },
-  // 2: ミッドナイト（控えめダーク・グロー薄め）
+  // 2: ミッドナイト（控えめダーク・吹き出し白）
   2: {
     baseBg: 'dark',
     glowTheme: 'none',
-    bubbleStyle: 'dark',
+    bubbleStyle: 'solid',
     scrollEnabled: false,
     font: 'noto',
     chaosMode: false
   },
-  // 3: グレーモード（落ち着いたモノトーン）
+  // 3: グレーモード（薄めグレー・ガラス吹き出し）
   3: {
     baseBg: 'gray',
     glowTheme: 'none',
-    bubbleStyle: 'solid',
+    bubbleStyle: 'glass',
     scrollEnabled: false,
     font: 'noto',
     chaosMode: false
   },
-  // 4: ライト（白背景・白カード）
+  // 4: ライト（白背景・淡い吹き出し）
   4: {
     baseBg: 'light',
     glowTheme: 'none',
-    bubbleStyle: 'solid',
+    bubbleStyle: 'pastel',
     scrollEnabled: false,
     font: 'noto',
     chaosMode: false
