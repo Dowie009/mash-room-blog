@@ -193,6 +193,62 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     <main class="article-main">
       <article class="article-content">
         <slot />
+
+        <!-- 著者カード -->
+        <div class="author-section">
+          <div class="author-section-header">
+            <span class="author-section-label">WRITTEN BY</span>
+          </div>
+          <div class="author-card" id="author-card">
+            <div class="author-avatar" id="author-avatar-trigger">
+              <img src="/images/tech/mashiba-profile.jpg" alt="Mashiba Dowie" />
+            </div>
+            <div class="author-info">
+              <span class="author-name">Mashiba Dowie</span>
+              <span class="author-name-jp">真柴道ゐ</span>
+              <span class="author-role">Creator / MASHROOM STUDIO</span>
+            </div>
+            <div class="author-card-arrow">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 著者ポップアップ -->
+        <div class="author-popup" id="author-popup">
+          <div class="author-popup-inner">
+            <button class="author-popup-close" id="author-popup-close">&times;</button>
+            <div class="author-popup-avatar">
+              <img src="/images/tech/mashiba-profile.jpg" alt="Mashiba Dowie" />
+            </div>
+            <span class="author-popup-label">ABOUT THE AUTHOR</span>
+            <h3 class="author-popup-name">Mashiba Dowie</h3>
+            <span class="author-popup-name-jp">真柴道ゐ</span>
+            <p class="author-popup-bio">
+              音楽とテクノロジーを愛するクリエイター。<br/>
+              DTM・AI・Web開発を独学で学び、<br/>
+              AIとの対話で日々新しい発見をしています。
+            </p>
+            <div class="author-popup-buttons">
+              <a href="https://mashroom-studio-web.vercel.app/#profile" class="author-popup-btn primary" target="_blank" rel="noopener">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>Profile</span>
+              </a>
+              <a href="https://mashroom-studio-web.vercel.app/" class="author-popup-btn secondary" target="_blank" rel="noopener">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Homepage</span>
+              </a>
+            </div>
+          </div>
+        </div>
       </article>
 
       <!-- サイドバー（目次やシェア） -->
@@ -837,6 +893,321 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
   }
 
   /* =====================================================
+     著者カード
+     ===================================================== */
+
+  .author-section {
+    margin-top: 4rem;
+    max-width: 800px;
+  }
+
+  .author-section-header {
+    margin-bottom: 1rem;
+  }
+
+  .author-section-label {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: #00ffff;
+    padding: 0.4rem 1rem;
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 4px;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  }
+
+  .author-card {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(10, 10, 20, 0.9), rgba(20, 20, 40, 0.9));
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .author-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #00ffff, #ff00ff, #00ffff);
+    background-size: 200% 100%;
+    animation: author-card-glow 3s linear infinite;
+  }
+
+  @keyframes author-card-glow {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
+  }
+
+  .author-card:hover {
+    border-color: rgba(0, 255, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 255, 255, 0.15), 0 0 20px rgba(0, 255, 255, 0.1);
+  }
+
+  .author-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #ff6b9d;
+    flex-shrink: 0;
+    box-shadow: 0 0 15px rgba(255, 107, 157, 0.3);
+  }
+
+  .author-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .author-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    flex: 1;
+  }
+
+  .author-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.02em;
+  }
+
+  .author-name-jp {
+    font-size: 0.8rem;
+    color: #888;
+    font-family: 'Zen Maru Gothic', sans-serif;
+  }
+
+  .author-role {
+    font-size: 0.7rem;
+    color: #00ffff;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+  }
+
+  .author-card-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: rgba(0, 255, 255, 0.1);
+    border-radius: 50%;
+    color: #00ffff;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .author-card:hover .author-card-arrow {
+    background: rgba(0, 255, 255, 0.2);
+    transform: translateX(4px);
+  }
+
+  .author-label {
+    font-size: 0.7rem;
+    color: #666;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  /* 著者ポップアップ */
+  .author-popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .author-popup.active {
+    display: flex;
+  }
+
+  .author-popup-inner {
+    position: relative;
+    max-width: 400px;
+    width: 100%;
+    background: linear-gradient(180deg, #0d0d18 0%, #1a1a2e 100%);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 255, 255, 0.1);
+  }
+
+  .author-popup-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #888;
+    font-size: 1.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  .author-popup-close:hover {
+    background: rgba(255, 100, 100, 0.2);
+    color: #ff6666;
+  }
+
+  .author-popup-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #ff6b9d;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 0 20px rgba(255, 107, 157, 0.3);
+  }
+
+  .author-popup-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .author-popup-label {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: #00ffff;
+    margin-bottom: 1rem;
+    opacity: 0.7;
+  }
+
+  .author-popup-name {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.02em;
+  }
+
+  .author-popup-name-jp {
+    display: block;
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 1.25rem;
+    font-family: 'Zen Maru Gothic', sans-serif;
+  }
+
+  .author-popup-bio {
+    font-size: 0.85rem;
+    line-height: 1.9;
+    color: #aaa;
+    margin-bottom: 2rem;
+    font-family: 'Zen Maru Gothic', sans-serif;
+  }
+
+  .author-popup-buttons {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+  }
+
+  .author-popup-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    min-width: 120px;
+  }
+
+  .author-popup-btn.primary {
+    background: linear-gradient(135deg, #00ffff, #0088ff);
+    color: #000;
+    border: none;
+  }
+
+  .author-popup-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 255, 255, 0.4);
+  }
+
+  .author-popup-btn.primary svg {
+    stroke: #000;
+  }
+
+  .author-popup-btn.secondary {
+    background: transparent;
+    color: #ff6b9d;
+    border: 1px solid rgba(255, 107, 157, 0.5);
+  }
+
+  .author-popup-btn.secondary:hover {
+    background: rgba(255, 107, 157, 0.1);
+    border-color: #ff6b9d;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255, 107, 157, 0.2);
+  }
+
+  .author-popup-btn.secondary svg {
+    stroke: #ff6b9d;
+  }
+
+  .author-popup-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #00ffff, #0088ff);
+    border: none;
+    border-radius: 30px;
+    color: #000;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .author-popup-link:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+  }
+
+  .author-popup-link svg {
+    stroke: #000;
+  }
+
+  /* =====================================================
      フッター
      ===================================================== */
 
@@ -943,5 +1314,91 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
       flex-direction: column;
       text-align: center;
     }
+
+    .author-section {
+      margin-top: 3rem;
+    }
+
+    .author-card {
+      padding: 1rem;
+      gap: 1rem;
+    }
+
+    .author-avatar {
+      width: 48px;
+      height: 48px;
+    }
+
+    .author-name {
+      font-size: 0.95rem;
+    }
+
+    .author-name-jp {
+      font-size: 0.7rem;
+    }
+
+    .author-card-arrow {
+      width: 28px;
+      height: 28px;
+    }
+
+    .author-popup-inner {
+      padding: 2rem 1.5rem;
+    }
+
+    .author-popup-name {
+      font-size: 1.3rem;
+    }
+
+    .author-popup-buttons {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .author-popup-btn {
+      width: 100%;
+    }
   }
 </style>
+
+<script>
+  // 著者カード ポップアップ
+  document.addEventListener('DOMContentLoaded', () => {
+    const authorCard = document.getElementById('author-card');
+    const authorPopup = document.getElementById('author-popup');
+    const authorPopupClose = document.getElementById('author-popup-close');
+
+    if (authorCard && authorPopup) {
+      // カードクリックでポップアップ表示
+      authorCard.addEventListener('click', () => {
+        authorPopup.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+
+      // 閉じるボタン
+      if (authorPopupClose) {
+        authorPopupClose.addEventListener('click', (e) => {
+          e.stopPropagation();
+          authorPopup.classList.remove('active');
+          document.body.style.overflow = '';
+        });
+      }
+
+      // 背景クリックで閉じる
+      authorPopup.addEventListener('click', (e) => {
+        if (e.target === authorPopup) {
+          authorPopup.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+
+      // ESCキーで閉じる
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && authorPopup.classList.contains('active')) {
+          authorPopup.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+  });
+</script>
