@@ -106,70 +106,123 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     <div class="cyber-overlay"></div>
     <div class="cyber-particles"></div>
 
-    <!-- ヒーローバナー（TECHページ用） -->
-    {collection === 'tech' && (
-      <div class="hero-banner">
-        <img src="/images/tech/tech-hero-banner.png" alt="MASHROOM TECH" />
-      </div>
-    )}
-
-    <!-- ヒーローセクション -->
-    <header class="hero">
-
-      <div class="hero-content">
-        <nav class="breadcrumb">
-          <a href="/" class="breadcrumb-link">HOME</a>
-          <span class="breadcrumb-sep">/</span>
-          <a href={config.href} class="breadcrumb-link">{config.label}</a>
-          <span class="breadcrumb-sep">/</span>
-          <span class="breadcrumb-current">{catConfig.label}</span>
-        </nav>
-
-        <div class="hero-meta">
-          <span class="category-badge" style={`--cat-color: ${catConfig.color}`}>
-            {catConfig.label}
-          </span>
-          {levelLabel && (
-            <span class="level-badge">
-              <span class="level-icon">Lv.{frontmatter.learningLevel}</span>
-              <span class="level-text">{levelLabel}</span>
-            </span>
-          )}
-          <div class="meta-info">
-            <time datetime={frontmatter.date.toISOString()}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
-              </svg>
-              {formatDate(frontmatter.date)}
-            </time>
-            <span class="read-time">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-              </svg>
-              {readTime}
-            </span>
+    <!-- ヒーローセクション（TECHページ用：バナー付き） -->
+    {collection === 'tech' ? (
+      <header class="hero-with-banner">
+        <img src="/images/tech/tech-hero-banner.png" alt="MASHROOM TECH" class="hero-banner-img" />
+        <div class="hero-banner-overlay">
+          <div class="hero-banner-content">
+            <!-- 上部：パンくず＋カテゴリ＋メタ -->
+            <div class="hero-banner-top">
+              <nav class="breadcrumb breadcrumb-banner">
+                <a href="/" class="breadcrumb-link">HOME</a>
+                <span class="breadcrumb-sep">/</span>
+                <a href={config.href} class="breadcrumb-link">{config.label}</a>
+                <span class="breadcrumb-sep">/</span>
+                <span class="breadcrumb-current">{catConfig.label}</span>
+              </nav>
+              <div class="hero-meta-banner">
+                <span class="category-badge category-badge-banner" style={`--cat-color: ${catConfig.color}`}>
+                  {catConfig.label}
+                </span>
+                {levelLabel && (
+                  <span class="level-badge level-badge-banner">
+                    <span class="level-icon">Lv.{frontmatter.learningLevel}</span>
+                    <span class="level-text">{levelLabel}</span>
+                  </span>
+                )}
+              </div>
+            </div>
+            <!-- 中央：タイトル -->
+            <h1 class="hero-title hero-title-banner">{frontmatter.title}</h1>
+            <!-- 下部（ピンクバー）：タグ＋日付 -->
+            <div class="hero-banner-bottom">
+              {frontmatter.tags && frontmatter.tags.length > 0 && (
+                <div class="hero-tags hero-tags-banner">
+                  {frontmatter.tags.map(tag => (
+                    <span class="tag tag-banner">#{tag}</span>
+                  ))}
+                </div>
+              )}
+              <div class="meta-info meta-info-banner">
+                <time datetime={frontmatter.date.toISOString()}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                  </svg>
+                  {formatDate(frontmatter.date)}
+                </time>
+                <span class="read-time">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                  {readTime}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
+      </header>
+    ) : (
+      <header class="hero">
+        <div class="hero-content">
+          <nav class="breadcrumb">
+            <a href="/" class="breadcrumb-link">HOME</a>
+            <span class="breadcrumb-sep">/</span>
+            <a href={config.href} class="breadcrumb-link">{config.label}</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">{catConfig.label}</span>
+          </nav>
 
-        <h1 class="hero-title">{frontmatter.title}</h1>
-
-        {frontmatter.description && (
-          <p class="hero-description">{frontmatter.description}</p>
-        )}
-
-        {frontmatter.tags && frontmatter.tags.length > 0 && (
-          <div class="hero-tags">
-            {frontmatter.tags.map(tag => (
-              <span class="tag">#{tag}</span>
-            ))}
+          <div class="hero-meta">
+            <span class="category-badge" style={`--cat-color: ${catConfig.color}`}>
+              {catConfig.label}
+            </span>
+            {levelLabel && (
+              <span class="level-badge">
+                <span class="level-icon">Lv.{frontmatter.learningLevel}</span>
+                <span class="level-text">{levelLabel}</span>
+              </span>
+            )}
+            <div class="meta-info">
+              <time datetime={frontmatter.date.toISOString()}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                {formatDate(frontmatter.date)}
+              </time>
+              <span class="read-time">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                {readTime}
+              </span>
+            </div>
           </div>
-        )}
-      </div>
-    </header>
+
+          <h1 class="hero-title">{frontmatter.title}</h1>
+
+          {frontmatter.description && (
+            <p class="hero-description">{frontmatter.description}</p>
+          )}
+
+          {frontmatter.tags && frontmatter.tags.length > 0 && (
+            <div class="hero-tags">
+              {frontmatter.tags.map(tag => (
+                <span class="tag">#{tag}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      </header>
+    )}
 
     <!-- キャラクター紹介（ai-journey記事用） -->
     {frontmatter.category === 'ai-journey' && (
@@ -370,22 +423,140 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
   }
 
   /* =====================================================
-     ヒーローバナー
+     ヒーローバナー（TECH用・全幅オーバーレイ）
      ===================================================== */
 
-  .hero-banner {
+  .hero-with-banner {
     position: relative;
+    width: 100%;
     z-index: 1;
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 2rem 2rem 0;
   }
 
-  .hero-banner img {
+  .hero-banner-img {
     width: 100%;
     height: auto;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    display: block;
+    min-height: 300px;
+    object-fit: cover;
+  }
+
+  .hero-banner-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.5rem 2rem;
+  }
+
+  .hero-banner-content {
+    max-width: 1300px;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  /* 上部エリア */
+  .hero-banner-top {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .breadcrumb-banner {
+    margin-bottom: 0;
+  }
+
+  .breadcrumb-banner .breadcrumb-link {
+    color: #333;
+    opacity: 0.9;
+    text-shadow: none;
+  }
+
+  .breadcrumb-banner .breadcrumb-link:hover {
+    color: #000;
+    opacity: 1;
+  }
+
+  .breadcrumb-banner .breadcrumb-sep {
+    color: #666;
+  }
+
+  .breadcrumb-banner .breadcrumb-current {
+    color: #555;
+  }
+
+  .hero-meta-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .category-badge-banner {
+    background: rgba(255, 255, 255, 0.9);
+    text-shadow: none;
+  }
+
+  .level-badge-banner {
+    background: rgba(255, 255, 255, 0.9);
+  }
+
+  /* 中央：タイトル */
+  .hero-title-banner {
+    color: #222 !important;
+    text-shadow: none;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    margin: 0;
+    padding: 0 1rem;
+  }
+
+  /* 下部エリア（ピンクバーに配置） */
+  .hero-banner-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    margin: 0 -2rem -1.5rem -2rem;
+    padding-left: 3rem;
+    padding-right: 3rem;
+    /* ピンクバーの位置に合わせる（画像の約70%の位置） */
+    position: absolute;
+    bottom: 18%;
+    left: 0;
+    right: 0;
+  }
+
+  .hero-tags-banner {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin: 0;
+  }
+
+  .tag-banner {
+    color: #fff !important;
+    background: rgba(0, 0, 0, 0.4) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    text-shadow: none;
+  }
+
+  .meta-info-banner {
+    color: #fff;
+    font-size: 0.75rem;
+  }
+
+  .meta-info-banner time,
+  .meta-info-banner .read-time {
+    color: #fff;
+  }
+
+  .meta-info-banner svg {
+    stroke: #fff;
+    opacity: 0.8;
   }
 
   /* =====================================================
@@ -1296,12 +1467,40 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
      ===================================================== */
 
   @media (max-width: 768px) {
-    .hero-banner {
-      padding: 1rem 1rem 0;
+    /* バナー付きヒーロー（スマホ） */
+    .hero-banner-overlay {
+      padding: 1rem;
     }
 
-    .hero-banner img {
-      border-radius: 12px;
+    .hero-banner-img {
+      min-height: 250px;
+    }
+
+    .hero-title-banner {
+      font-size: 1.2rem;
+      padding: 0 0.5rem;
+    }
+
+    .hero-banner-bottom {
+      bottom: 12%;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .tag-banner {
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+    }
+
+    .meta-info-banner {
+      font-size: 0.65rem;
+    }
+
+    .hero-meta-banner {
+      flex-wrap: wrap;
     }
 
     .hero {
