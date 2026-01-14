@@ -231,15 +231,15 @@ topic: ai-journey
 <div id="style-switcher" style="position: fixed; top: 60px; right: 20px; z-index: 9999; background: rgba(0,0,0,0.95); border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; padding: 1rem; font-size: 0.75rem; max-width: 260px; max-height: 80vh; overflow-y: auto; pointer-events: auto !important; isolation: isolate;">
   <div style="color: #fff; font-weight: bold; margin-bottom: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 0.5rem;">🎨 スタイル調整</div>
 
-  <!-- おすすめプリセット（暗→明） -->
+  <!-- おすすめプリセット（暗→明 + 裏モード） -->
   <div style="margin-bottom: 1rem;">
     <div style="color: #00ffff; margin-bottom: 0.5rem; font-weight: bold;">✨ おすすめプリセット</div>
     <div style="display: flex; gap: 0.25rem; flex-wrap: wrap; position: relative; z-index: 10;">
       <button type="button" onclick="applyRecommendedPreset(1)" id="rec-1" style="flex: 1; padding: 0.5rem 0.2rem; border-radius: 6px; border: 2px solid #2d1b4e; background: linear-gradient(135deg, #1a1a2e, #2d1b4e); color: #9b59b6; cursor: pointer; font-size: 0.65rem; text-shadow: 0 0 5px #9b59b6; position: relative; z-index: 10; pointer-events: auto;" title="ギャラクシー">1</button>
-      <button type="button" onclick="applyRecommendedPreset(2)" id="rec-2" style="flex: 1; padding: 0.5rem 0.2rem; border-radius: 6px; border: 2px solid #1a1a2e; background: linear-gradient(135deg, #0a0a12, #1a1a2e); color: #00ffff; cursor: pointer; font-size: 0.65rem; text-shadow: 0 0 5px #00ffff; position: relative; z-index: 10; pointer-events: auto;" title="サイバーダーク">2</button>
-      <button type="button" onclick="applyRecommendedPreset(3)" id="rec-3" style="flex: 1; padding: 0.5rem 0.2rem; border-radius: 6px; border: 2px solid #1a3a3a; background: linear-gradient(135deg, #0d2626, #1a3a3a); color: #00ff88; cursor: pointer; font-size: 0.65rem; text-shadow: 0 0 5px #00ff88; position: relative; z-index: 10; pointer-events: auto;" title="オーロラ">3</button>
-      <button type="button" onclick="applyRecommendedPreset(4)" id="rec-4" style="flex: 1; padding: 0.5rem 0.2rem; border-radius: 6px; border: 2px solid #ffd0e0; background: linear-gradient(135deg, #fff8fa, #fff0f5); color: #d44a7a; cursor: pointer; font-size: 0.65rem; position: relative; z-index: 10; pointer-events: auto;" title="さくら">4</button>
-      <button type="button" onclick="applyRecommendedPreset(5)" id="rec-5" style="flex: 1; padding: 0.5rem 0.2rem; border-radius: 6px; border: 2px solid #e0e0e0; background: linear-gradient(145deg, #ffffff, #f8f8f8); color: #333; cursor: pointer; font-size: 0.65rem; position: relative; z-index: 10; pointer-events: auto;" title="クリーンライト">5</button>
+      <button type="button" onclick="applyRecommendedPreset(2)" id="rec-2" style="flex: 1; padding: 0.5rem 0.2rem; border-radius: 6px; border: 2px solid #222; background: linear-gradient(135deg, #0a0a0f, #151518); color: #888; cursor: pointer; font-size: 0.65rem; position: relative; z-index: 10; pointer-events: auto;" title="ミッドナイト">2</button>
+      <button type="button" onclick="applyRecommendedPreset(3)" id="rec-3" style="flex: 1; padding: 0.5rem 0.2rem; border-radius: 6px; border: 2px solid #555; background: linear-gradient(135deg, #2a2a2a, #3a3a3a); color: #bbb; cursor: pointer; font-size: 0.65rem; position: relative; z-index: 10; pointer-events: auto;" title="グレー">3</button>
+      <button type="button" onclick="applyRecommendedPreset(4)" id="rec-4" style="flex: 1; padding: 0.5rem 0.2rem; border-radius: 6px; border: 2px solid #e0e0e0; background: linear-gradient(145deg, #ffffff, #f8f8f8); color: #333; cursor: pointer; font-size: 0.65rem; position: relative; z-index: 10; pointer-events: auto;" title="ライト">4</button>
+      <button type="button" onclick="applyRecommendedPreset(5)" id="rec-5" style="flex: 1; padding: 0.5rem 0.2rem; border-radius: 6px; border: 2px solid #ff00ff; background: linear-gradient(135deg, #1a0020, #2d0040); color: #ff00ff; cursor: pointer; font-size: 0.65rem; text-shadow: 0 0 5px #ff00ff; position: relative; z-index: 10; pointer-events: auto;" title="裏モード">裏</button>
     </div>
     <div style="display: flex; justify-content: space-between; color: #666; font-size: 0.6rem; margin-top: 0.25rem;">
       <span>← 暗</span>
@@ -868,6 +868,13 @@ const baseBgStyles = {
     switcherBorder: 'rgba(255,255,255,0.2)',
     switcherText: '#fff'
   },
+  gray: {
+    bg: 'linear-gradient(180deg, #2a2a2a 0%, #333333 50%, #2a2a2a 100%)',
+    text: '#e0e0e0',
+    switcherBg: 'rgba(40,40,40,0.95)',
+    switcherBorder: 'rgba(255,255,255,0.15)',
+    switcherText: '#ddd'
+  },
   light: {
     bg: 'linear-gradient(180deg, #ffffff 0%, #f8f8f8 50%, #f0f0f0 100%)',
     text: '#333333',
@@ -1124,41 +1131,41 @@ const recommendedPresets = {
     font: 'noto',
     chaosMode: false
   },
-  // 2: サイバーダーク（ネオン強め）
+  // 2: ミッドナイト（控えめダーク・グロー薄め）
   2: {
     baseBg: 'dark',
-    glowTheme: 'cyber',
-    bubbleStyle: 'neon',
-    scrollEnabled: false,
-    font: 'noto',
-    chaosMode: false
-  },
-  // 3: カオスモード（バチバチ遊び）
-  3: {
-    baseBg: 'dark',
-    glowTheme: 'cyber',
+    glowTheme: 'none',
     bubbleStyle: 'dark',
-    scrollEnabled: true,
-    font: 'noto',
-    chaosMode: true
-  },
-  // 4: さくら（明るめピンク）
-  4: {
-    baseBg: 'light',
-    glowTheme: 'sakura',
-    bubbleStyle: 'pastel',
     scrollEnabled: false,
-    font: 'maru',
+    font: 'noto',
     chaosMode: false
   },
-  // 5: クリーンライト（最も明るい）
-  5: {
+  // 3: グレーモード（落ち着いたモノトーン）
+  3: {
+    baseBg: 'gray',
+    glowTheme: 'none',
+    bubbleStyle: 'solid',
+    scrollEnabled: false,
+    font: 'noto',
+    chaosMode: false
+  },
+  // 4: ライト（白背景・白カード）
+  4: {
     baseBg: 'light',
     glowTheme: 'none',
     bubbleStyle: 'solid',
     scrollEnabled: false,
     font: 'noto',
     chaosMode: false
+  },
+  // 5: 裏モード（カオス・バチバチ遊び）
+  5: {
+    baseBg: 'dark',
+    glowTheme: 'cyber',
+    bubbleStyle: 'dark',
+    scrollEnabled: true,
+    font: 'noto',
+    chaosMode: true
   }
 };
 
