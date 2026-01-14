@@ -24,12 +24,17 @@ const techCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
-    category: z.enum(['astro', 'react', 'css', 'ai', 'devtips']),
+    category: z.enum(['astro', 'react', 'css', 'ai', 'devtips', 'ai-journey', 'dtm-ai', 'ai-tools']),
     thumbnail: z.string().optional(),
     description: z.string().optional(),
     tags: z.array(z.string()).default([]),
     // 公開状態（下書き機能）
     draft: z.boolean().default(false),
+    // Learning Level システム
+    learningLevel: z.number().min(1).max(5).optional(),
+    topic: z.string().optional(),
+    prerequisites: z.array(z.string()).optional(),
+    unlocks: z.array(z.string()).optional(),
   }),
 });
 
