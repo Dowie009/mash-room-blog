@@ -1977,22 +1977,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </div>
 
-<!-- 次に読む記事（フッター） -->
-<div id="footer-section" style="margin-top: 3rem; padding: 2rem 1.5rem; background: rgba(0,0,0,0.3); border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);">
-  <h2 style="font-size: 1.1rem; margin-bottom: 1.5rem; color: #fff;">📚 次に読む記事</h2>
-  <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-    <a href="/tech/chatgpt-searched-myself" class="footer-link" style="display: block; padding: 1rem; background: rgba(0,191,255,0.1); border: 1px solid rgba(0,191,255,0.3); border-radius: 12px; text-decoration: none; color: #00bfff; transition: all 0.2s;">
-      <span style="font-size: 0.75rem; color: #888;">◀ 前回</span><br/>
-      <span style="font-weight: bold;">ChatGPTに自分のことを調べさせたら感動した話</span>
-    </a>
-    <a href="/tech/ai-email-assistant" class="footer-link" style="display: block; padding: 1rem; background: rgba(255,107,157,0.1); border: 1px solid rgba(255,107,157,0.3); border-radius: 12px; text-decoration: none; color: #ff6b9d; transition: all 0.2s; opacity: 0.6;">
-      <span style="font-size: 0.75rem; color: #888;">次回 ▶</span><br/>
-      <span style="font-weight: bold;">難しいメールの返信をAIに任せ始めた日</span>
-      <span style="font-size: 0.75rem; margin-left: 0.5rem; color: #888;">（準備中）</span>
-    </a>
-  </div>
-  <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); font-size: 0.85rem; color: #888; text-align: center;">
-    この記事は MASHROOM STUDIO Ch3 TECH・AI の記事です。<br/>
-    🤖 あいぼーと道ゐちゃんの会話形式でお届けしました！
-  </div>
-</div>
