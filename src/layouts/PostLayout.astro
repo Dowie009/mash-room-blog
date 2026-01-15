@@ -92,6 +92,17 @@ const collectionConfig: Record<string, { href: string; label: string; gradient: 
 const config = collectionConfig[collection] || collectionConfig.tech;
 const catConfig = categoryConfig[frontmatter.category] || { label: frontmatter.category.toUpperCase(), color: '#888' };
 
+// ヒーローバナー動画パターン設定
+// A: ai-journey (宇宙背景)
+// B: ai-tips (その他TECH記事用)
+// C: 静止画版 (バックアップ - PostLayout-C-static.astro.backup)
+const heroPatternConfig: Record<string, { video: string; label: string }> = {
+  'ai-journey': { video: '/images/tech/hero-patterns/pattern-a-journey.mp4', label: 'A' },
+  'ai-tips': { video: '/images/tech/hero-patterns/pattern-b-tips.mp4', label: 'B' },
+  // デフォルト（その他のTECHカテゴリ）はBパターンを使用
+};
+const heroPattern = heroPatternConfig[frontmatter.category] || heroPatternConfig['ai-tips'];
+
 // 読了時間を計算（仮で5分）
 const readTime = '5 min read';
 
@@ -106,13 +117,17 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     <div class="cyber-overlay"></div>
     <div class="cyber-particles"></div>
 
-    <!-- ヒーローセクション（TECHページ用：バナー付き） -->
+    <!-- ヒーローセクション（TECHページ用：動画バナー - カテゴリ別自動切り替え） -->
     {collection === 'tech' ? (
-      <header class="hero-with-banner">
-        <img src="/images/tech/tech-hero-banner.png" alt="MASHROOM TECH" class="hero-banner-img" />
+      <header class="hero-with-banner" data-pattern={heroPattern.label}>
+        <div class="hero-video-container">
+          <video autoplay muted loop playsinline class="hero-banner-video">
+            <source src={heroPattern.video} type="video/mp4" />
+          </video>
+        </div>
         <div class="hero-banner-overlay">
           <div class="hero-banner-content">
-            <!-- 上部：パンくず＋カテゴリ＋メタ -->
+            <!-- 上部左：パンくず（大きく・水色グロー） -->
             <div class="hero-banner-top">
               <nav class="breadcrumb breadcrumb-banner">
                 <a href="/" class="breadcrumb-link">HOME</a>
@@ -133,9 +148,34 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
                 )}
               </div>
             </div>
-            <!-- 中央：タイトル -->
-            <h1 class="hero-title hero-title-banner">{frontmatter.title}</h1>
-            <!-- 下部（ピンクバー）：タグ＋日付 -->
+
+            <!-- 中央：キャラクター紹介カード（バナー内・黄色エリア） -->
+            {frontmatter.category === 'ai-journey' && (
+              <div class="character-intro-banner">
+                <div class="character-banner">
+                  <div class="character-avatar-banner aibou">🤖</div>
+                  <div class="character-info-banner">
+                    <span class="character-name-banner">あいぼー</span>
+                    <span class="character-role-banner">関西弁AI・ナビゲーター</span>
+                  </div>
+                </div>
+                <span class="character-x-banner">×</span>
+                <div class="character-banner">
+                  <div class="character-avatar-banner michi">
+                    <img src="/images/tech/mashiba-profile.jpg" alt="道ゐ" />
+                  </div>
+                  <div class="character-info-banner">
+                    <span class="character-name-banner">道ゐ</span>
+                    <span class="character-role-banner">真柴道ゐ・語り手</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <!-- タイトル（バナー内） -->
+            <h1 class="hero-title-banner">{frontmatter.title}</h1>
+
+            <!-- ピンクバー上：ハッシュタグ（水色グロー） -->
             <div class="hero-banner-bottom">
               {frontmatter.tags && frontmatter.tags.length > 0 && (
                 <div class="hero-tags hero-tags-banner">
@@ -144,24 +184,6 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
                   ))}
                 </div>
               )}
-              <div class="meta-info meta-info-banner">
-                <time datetime={frontmatter.date.toISOString()}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                  </svg>
-                  {formatDate(frontmatter.date)}
-                </time>
-                <span class="read-time">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <polyline points="12 6 12 12 16 14"></polyline>
-                  </svg>
-                  {readTime}
-                </span>
-              </div>
             </div>
           </div>
         </div>
@@ -222,31 +244,6 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
           )}
         </div>
       </header>
-    )}
-
-    <!-- キャラクター紹介（ai-journey記事用） -->
-    {frontmatter.category === 'ai-journey' && (
-      <div class="character-intro">
-        <div class="character-intro-inner">
-          <div class="character">
-            <div class="character-avatar aibou">🤖</div>
-            <div class="character-info">
-              <span class="character-name" style="color: #00ffff;">あいぼー</span>
-              <span class="character-desc">関西弁AI・ナビゲーター</span>
-            </div>
-          </div>
-          <span class="character-x">×</span>
-          <div class="character">
-            <div class="character-avatar user">
-              <img src="/images/tech/mashiba-profile.jpg" alt="道ゐ" />
-            </div>
-            <div class="character-info">
-              <span class="character-name" style="color: #ff6b9d;">道ゐ</span>
-              <span class="character-desc">真柴道ゐ・語り手</span>
-            </div>
-          </div>
-        </div>
-      </div>
     )}
 
     <!-- 本文 -->
@@ -424,6 +421,7 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
 
   /* =====================================================
      ヒーローバナー（TECH用・全幅オーバーレイ）
+     画像サイズ: 1400x500px 固定
      ===================================================== */
 
   .hero-with-banner {
@@ -432,131 +430,392 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     z-index: 1;
   }
 
+  /* 動画コンテナ - 1400x500にクロップ */
+  .hero-video-container {
+    width: 100%;
+    aspect-ratio: 1400 / 500;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .hero-banner-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: cover;
+  }
+
+  /* Aパターン用（静止画） - 残しておく */
   .hero-banner-img {
     width: 100%;
     height: auto;
     display: block;
-    min-height: 300px;
+    aspect-ratio: 1400 / 500;
     object-fit: cover;
   }
 
   .hero-banner-overlay {
     position: absolute;
     inset: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 1.5rem 2rem;
   }
 
   .hero-banner-content {
-    max-width: 1300px;
-    margin: 0 auto;
+    position: relative;
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
   }
 
-  /* 上部エリア */
+  /* =====================================================
+     上部エリア：パンくず＋バッジ（大きく・水色グロー）
+     ===================================================== */
   .hero-banner-top {
+    position: absolute;
+    top: 16.5%;
+    left: 20.7%;
+    transform: scale(1.15);
+    transform-origin: top left;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
   }
 
+  /* パンくず - 白背景で視認性UP */
   .breadcrumb-banner {
     margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
   }
 
   .breadcrumb-banner .breadcrumb-link {
-    color: #333;
-    opacity: 0.9;
-    text-shadow: none;
+    display: inline-block;
+    color: #1a1a2e;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 20px;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .breadcrumb-banner .breadcrumb-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 200, 255, 0.3), transparent);
+    transition: left 0.5s ease;
   }
 
   .breadcrumb-banner .breadcrumb-link:hover {
-    color: #000;
-    opacity: 1;
+    background: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+
+  .breadcrumb-banner .breadcrumb-link:hover::before {
+    left: 100%;
   }
 
   .breadcrumb-banner .breadcrumb-sep {
-    color: #666;
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin: 0 0.1rem;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
   }
 
   .breadcrumb-banner .breadcrumb-current {
-    color: #555;
+    display: inline-block;
+    color: #1a1a2e;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    background: #fff;
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
   .hero-meta-banner {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    margin-top: 0.75rem;
   }
 
+  /* カテゴリバッジ - グラデーションボーダー＆ホログラム風 */
   .category-badge-banner {
-    background: rgba(255, 255, 255, 0.9);
-    text-shadow: none;
+    display: inline-block;
+    color: #fff !important;
+    font-size: 0.85rem;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.3rem;
+    background: linear-gradient(135deg, #ff3d7f 0%, #ff6b9d 50%, #ff3d7f 100%);
+    background-size: 200% 200%;
+    border: none;
+    border-radius: 4px;
+    position: relative;
+    animation: gradient-shift 3s ease infinite;
+    box-shadow: 0 4px 15px rgba(255, 61, 127, 0.4);
   }
 
+  .category-badge-banner::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(135deg, #ff3d7f, #ff00ff, #ff6b9d, #ff3d7f);
+    background-size: 400% 400%;
+    border-radius: 6px;
+    z-index: -1;
+    animation: border-dance 4s linear infinite;
+    opacity: 0.7;
+  }
+
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  @keyframes border-dance {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* レベルバッジ - ダーク背景＋オレンジアクセント */
   .level-badge-banner {
-    background: rgba(255, 255, 255, 0.9);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #fff !important;
+    font-size: 0.8rem;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em;
+    padding: 0.6rem 1.2rem;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid #ff9500;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(255, 149, 0, 0.3);
+    backdrop-filter: blur(8px);
   }
 
-  /* 中央：タイトル */
-  .hero-title-banner {
-    color: #222 !important;
-    text-shadow: none;
-    font-size: clamp(1.5rem, 4vw, 2.2rem);
-    margin: 0;
-    padding: 0 1rem;
+  .level-badge-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 149, 0, 0.4), transparent);
+    animation: shine-sweep 2.5s ease-in-out infinite;
   }
 
-  /* 下部エリア（ピンクバーに配置） */
-  .hero-banner-bottom {
+  @keyframes shine-sweep {
+    0% { left: -50%; }
+    100% { left: 150%; }
+  }
+
+  .level-badge-banner .level-icon {
+    color: #ff9500;
+    font-weight: 900;
+    font-size: 0.9rem;
+  }
+
+  .level-badge-banner .level-text {
+    color: #fff;
+    font-weight: 700;
+  }
+
+  /* =====================================================
+     中央：キャラクター紹介（Bパターン - シンプル・背景なし）
+     ===================================================== */
+  .character-intro-banner {
+    position: absolute;
+    top: 79.4%;
+    left: 36.6%;
+    transform: scale(1.36);
+    transform-origin: top left;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 1rem;
-    padding: 0.5rem 1rem;
-    margin: 0 -2rem -1.5rem -2rem;
-    padding-left: 3rem;
-    padding-right: 3rem;
-    /* ピンクバーの位置に合わせる（画像の約70%の位置） */
+    /* 背景なし - 文字とアイコンのみ */
+    background: transparent;
+    padding: 0;
+  }
+
+  .character-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .character-avatar-banner {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    position: relative;
+  }
+
+  /* あいぼー = ピンク */
+  .character-avatar-banner.aibou {
+    background: linear-gradient(135deg, #ff6b9d, #ff3d7f);
+    border: 3px solid #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  /* 道ゐ = 水色 */
+  .character-avatar-banner.michi {
+    border: 3px solid #00ffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+  }
+
+  .character-avatar-banner.michi img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .character-info-banner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* あいぼーの名前 = ピンク（白背景で映える） */
+  .character-banner:first-child .character-name-banner {
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 800;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  /* 道ゐの名前 = 水色 */
+  .character-banner:last-child .character-name-banner {
+    color: #00ffff;
+    font-size: 0.95rem;
+    font-weight: 800;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  .character-name-banner {
+    font-size: 0.95rem;
+    font-weight: 800;
+  }
+
+  .character-role-banner {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.6rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .character-x-banner {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+    font-weight: 300;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* =====================================================
+     タイトル（バナー内）
+     ===================================================== */
+  .hero-title-banner {
     position: absolute;
-    bottom: 18%;
-    left: 0;
-    right: 0;
+    top: 43.5%;
+    left: 25.0%;
+    transform: scale(1.5);
+    transform-origin: top left;
+    font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 700;
+    line-height: 1.4;
+    color: #ffffff;
+    margin: 0;
+    max-width: 60%;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.5);
+  }
+
+  /* パターンB用：黒文字・影なし */
+  .hero-with-banner[data-pattern="B"] .hero-title-banner {
+    color: #1a1a2e;
+    text-shadow: none;
+  }
+
+  /* =====================================================
+     ピンクバー：ハッシュタグ（水色グロー）
+     ===================================================== */
+  .hero-banner-bottom {
+    position: absolute;
+    top: 56.9%;
+    left: 25.1%;
+    transform: scale(1.37);
+    transform-origin: top left;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
   }
 
   .hero-tags-banner {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.75rem;
     flex-wrap: wrap;
     margin: 0;
   }
 
   .tag-banner {
-    color: #fff !important;
-    background: rgba(0, 0, 0, 0.4) !important;
-    border-color: rgba(255, 255, 255, 0.3) !important;
-    text-shadow: none;
+    color: #00ffff !important;
+    background: rgba(0, 212, 255, 0.2) !important;
+    border: 1px solid rgba(0, 212, 255, 0.6) !important;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 0.9rem;
+    border-radius: 6px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
   }
 
-  .meta-info-banner {
-    color: #fff;
-    font-size: 0.75rem;
-  }
-
-  .meta-info-banner time,
-  .meta-info-banner .read-time {
-    color: #fff;
-  }
-
-  .meta-info-banner svg {
-    stroke: #fff;
-    opacity: 0.8;
+  .tag-banner:hover {
+    background: rgba(0, 212, 255, 0.3) !important;
   }
 
   /* =====================================================
@@ -1468,39 +1727,64 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
 
   @media (max-width: 768px) {
     /* バナー付きヒーロー（スマホ） */
-    .hero-banner-overlay {
-      padding: 1rem;
+    .hero-banner-top {
+      top: 3%;
+      left: 2%;
     }
 
-    .hero-banner-img {
-      min-height: 250px;
-    }
-
-    .hero-title-banner {
-      font-size: 1.2rem;
-      padding: 0 0.5rem;
+    .breadcrumb-banner {
+      font-size: 0.8rem;
     }
 
     .hero-banner-bottom {
       bottom: 12%;
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.5rem;
+      left: 2%;
+      right: 2%;
     }
 
     .tag-banner {
       font-size: 0.7rem;
-      padding: 0.2rem 0.5rem;
-    }
-
-    .meta-info-banner {
-      font-size: 0.65rem;
+      padding: 0.25rem 0.5rem;
     }
 
     .hero-meta-banner {
       flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .category-badge-banner {
+      font-size: 0.8rem;
+      padding: 0.35rem 0.8rem;
+    }
+
+    .level-badge-banner {
+      font-size: 0.75rem;
+      padding: 0.35rem 0.7rem;
+    }
+
+    /* キャラクター紹介（スマホ） */
+    .character-intro-banner {
+      top: 45%;
+      padding: 0.5rem 1rem;
+      gap: 0.6rem;
+    }
+
+    .character-avatar-banner {
+      width: 32px;
+      height: 32px;
+      font-size: 1.2rem;
+    }
+
+    .character-name-banner {
+      font-size: 0.75rem;
+    }
+
+    .character-role-banner {
+      font-size: 0.55rem;
+    }
+
+    .character-x-banner {
+      font-size: 1rem;
     }
 
     .hero {
@@ -1634,4 +1918,227 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
       });
     }
   });
+
+  // ================================
+  // 🔧 配置デバッグモード（開発用）
+  // URLに ?debug=layout を付けると有効
+  // ================================
+  if (window.location.search.includes('debug=layout')) {
+    console.log('🔧 配置デバッグモード ON');
+    console.log('📍 ドラッグ: 要素を移動（サイズ固定）');
+    console.log('📋 配置が決まったら、「位置をコピー」ボタンでCSS値を取得');
+
+    const banner = document.querySelector('.hero-with-banner');
+    if (!banner) {
+      console.log('⚠️ バナーが見つかりません（TECHページ以外）');
+    } else {
+      // 固定スケール値（Aパターンで確定した値）
+      const FIXED_SCALES = {
+        top: 1.15,
+        title: 1.5,
+        char: 1.36,
+        bottom: 1.37
+      };
+
+      // ドラッグ可能にする要素
+      const draggables = [
+        { el: document.querySelector('.hero-banner-top'), name: 'パンくず＋バッジ', scale: FIXED_SCALES.top },
+        { el: document.querySelector('.hero-title-banner'), name: 'タイトル', scale: FIXED_SCALES.title },
+        { el: document.querySelector('.character-intro-banner'), name: 'キャラ紹介', scale: FIXED_SCALES.char },
+        { el: document.querySelector('.hero-banner-bottom'), name: 'ハッシュタグ', scale: FIXED_SCALES.bottom }
+      ];
+
+      const bannerRect = banner.getBoundingClientRect();
+
+      draggables.forEach(({ el, name, scale }) => {
+        if (!el) return;
+
+        // スタイル追加（ドラッグ可能を示す）
+        el.style.cursor = 'move';
+        el.style.outline = '2px dashed #ff00ff';
+        el.style.outlineOffset = '2px';
+        el.style.position = 'absolute';
+        // スケールを固定で維持
+        el.style.transform = `scale(${scale})`;
+        el.style.transformOrigin = 'top left';
+
+        let isDragging = false;
+        let startX, startY, startLeft, startTop;
+
+        // ドラッグのイベント
+        el.addEventListener('mousedown', (e) => {
+          isDragging = true;
+          const rect = el.getBoundingClientRect();
+          startX = e.clientX;
+          startY = e.clientY;
+          // スケール考慮した実際の位置
+          startLeft = rect.left - bannerRect.left;
+          startTop = rect.top - bannerRect.top;
+          e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+          if (!isDragging) return;
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          const newLeft = startLeft + dx;
+          const newTop = startTop + dy;
+
+          // %に変換
+          const leftPercent = (newLeft / bannerRect.width * 100).toFixed(1);
+          const topPercent = (newTop / bannerRect.height * 100).toFixed(1);
+
+          el.style.left = leftPercent + '%';
+          el.style.top = topPercent + '%';
+          el.style.bottom = 'auto';
+          el.style.right = 'auto';
+          // スケールは固定で維持！
+          el.style.transform = `scale(${scale})`;
+        });
+
+        document.addEventListener('mouseup', () => {
+          if (isDragging) {
+            const rect = el.getBoundingClientRect();
+            const leftPercent = ((rect.left - bannerRect.left) / bannerRect.width * 100).toFixed(1);
+            const topPercent = ((rect.top - bannerRect.top) / bannerRect.height * 100).toFixed(1);
+
+            console.log(`\n📍 ${name}:`);
+            console.log(`   top: ${topPercent}%; left: ${leftPercent}%;`);
+
+            isDragging = false;
+          }
+        });
+      });
+
+      // 動画パターン情報
+      const videoEl = document.querySelector('.hero-banner-video source');
+      const currentPattern = videoEl?.getAttribute('src')?.includes('pattern-a') ? 'A' : 'B';
+
+      // 位置調整パネルを追加（パターン切り替え機能付き）
+      const controlPanel = document.createElement('div');
+      controlPanel.innerHTML = `
+        <div style="position: fixed; bottom: 20px; left: 20px; z-index: 99999; background: rgba(0,0,0,0.95); color: #fff; padding: 1rem; border-radius: 8px; border: 2px solid #00ffff; font-size: 12px; width: 300px;">
+          <strong style="color: #00ffff; display: block; margin-bottom: 0.75rem;">📍 位置調整パネル</strong>
+
+          <!-- パターン切り替え -->
+          <div style="margin-bottom: 1rem; padding: 0.75rem; background: rgba(255,0,255,0.1); border: 1px solid #ff00ff; border-radius: 4px;">
+            <span style="color: #ff00ff; font-weight: bold;">🎬 動画パターン切り替え</span>
+            <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+              <button id="switch-pattern-a" style="flex: 1; padding: 0.5rem; background: ${currentPattern === 'A' ? '#ff00ff' : 'rgba(255,255,255,0.1)'}; color: ${currentPattern === 'A' ? '#000' : '#fff'}; border: 1px solid #ff00ff; border-radius: 4px; cursor: pointer; font-weight: bold;">A: ai-journey</button>
+              <button id="switch-pattern-b" style="flex: 1; padding: 0.5rem; background: ${currentPattern === 'B' ? '#ff00ff' : 'rgba(255,255,255,0.1)'}; color: ${currentPattern === 'B' ? '#000' : '#fff'}; border: 1px solid #ff00ff; border-radius: 4px; cursor: pointer; font-weight: bold;">B: ai-tips</button>
+            </div>
+            <p style="color: #888; font-size: 9px; margin-top: 0.5rem; margin-bottom: 0;">現在: パターン<span id="current-pattern">${currentPattern}</span></p>
+          </div>
+
+          <p style="color: #888; font-size: 10px; margin-bottom: 0.75rem;">サイズはAパターンで固定済み<br/>ドラッグで位置のみ調整</p>
+
+          <div style="margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 4px;">
+            <span style="color: #ff6b9d;">パンくず＋バッジ:</span>
+            <span style="color: #888; font-size: 10px;"> scale(${FIXED_SCALES.top})</span>
+          </div>
+          <div style="margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 4px;">
+            <span style="color: #ffff00;">タイトル:</span>
+            <span style="color: #888; font-size: 10px;"> scale(${FIXED_SCALES.title})</span>
+          </div>
+          <div style="margin-bottom: 0.5rem; padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 4px;">
+            <span style="color: #ff6b9d;">キャラカード:</span>
+            <span style="color: #888; font-size: 10px;"> scale(${FIXED_SCALES.char})</span>
+          </div>
+          <div style="margin-bottom: 0.75rem; padding: 0.5rem; background: rgba(255,255,255,0.05); border-radius: 4px;">
+            <span style="color: #00ffff;">ハッシュタグ:</span>
+            <span style="color: #888; font-size: 10px;"> scale(${FIXED_SCALES.bottom})</span>
+          </div>
+
+          <button id="copy-positions" style="width: 100%; padding: 0.5rem; background: #00ffff; color: #000; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">📋 位置をコピー</button>
+        </div>
+      `;
+      document.body.appendChild(controlPanel);
+
+      // パターン切り替え処理
+      const videoSource = document.querySelector('.hero-banner-video source');
+      const video = document.querySelector('.hero-banner-video');
+      const btnA = document.getElementById('switch-pattern-a');
+      const btnB = document.getElementById('switch-pattern-b');
+      const patternLabel = document.getElementById('current-pattern');
+
+      const switchPattern = (pattern) => {
+        const src = pattern === 'A'
+          ? '/images/tech/hero-patterns/pattern-a-journey.mp4'
+          : '/images/tech/hero-patterns/pattern-b-tips.mp4';
+
+        if (videoSource) {
+          videoSource.setAttribute('src', src);
+          video.load();
+          video.play();
+        }
+
+        // data-pattern属性を更新（CSSスタイル切り替え用）
+        banner.setAttribute('data-pattern', pattern);
+
+        // ボタンスタイル更新
+        btnA.style.background = pattern === 'A' ? '#ff00ff' : 'rgba(255,255,255,0.1)';
+        btnA.style.color = pattern === 'A' ? '#000' : '#fff';
+        btnB.style.background = pattern === 'B' ? '#ff00ff' : 'rgba(255,255,255,0.1)';
+        btnB.style.color = pattern === 'B' ? '#000' : '#fff';
+        patternLabel.textContent = pattern;
+
+        console.log(`🎬 パターン${pattern}に切り替えました`);
+      };
+
+      btnA?.addEventListener('click', () => switchPattern('A'));
+      btnB?.addEventListener('click', () => switchPattern('B'));
+
+      const topEl = document.querySelector('.hero-banner-top');
+      const titleEl = document.querySelector('.hero-title-banner');
+      const charEl = document.querySelector('.character-intro-banner');
+      const bottomEl = document.querySelector('.hero-banner-bottom');
+
+      // CSS値をコピー（位置のみ、サイズは固定値）
+      document.getElementById('copy-positions').addEventListener('click', () => {
+        const getPos = (el) => {
+          if (!el) return { top: 0, left: 0 };
+          const rect = el.getBoundingClientRect();
+          const bannerRect = banner.getBoundingClientRect();
+          return {
+            top: ((rect.top - bannerRect.top) / bannerRect.height * 100).toFixed(1),
+            left: ((rect.left - bannerRect.left) / bannerRect.width * 100).toFixed(1)
+          };
+        };
+
+        const topPos = getPos(topEl);
+        const titlePos = getPos(titleEl);
+        const charPos = getPos(charEl);
+        const bottomPos = getPos(bottomEl);
+
+        const css = `
+/* パンくず＋バッジ */
+.hero-banner-top { top: ${topPos.top}%; left: ${topPos.left}%; }
+
+/* タイトル */
+.hero-title-banner { top: ${titlePos.top}%; left: ${titlePos.left}%; }
+
+/* キャラ紹介カード */
+.character-intro-banner { top: ${charPos.top}%; left: ${charPos.left}%; }
+
+/* ハッシュタグ */
+.hero-banner-bottom { top: ${bottomPos.top}%; left: ${bottomPos.left}%; }
+`;
+        navigator.clipboard.writeText(css).then(() => {
+          alert('位置をクリップボードにコピーしました！');
+          console.log('📋 コピーした位置:\n' + css);
+        });
+      });
+
+      // 使い方ガイドを画面に表示
+      const guide = document.createElement('div');
+      guide.innerHTML = `
+        <div style="position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 99999; background: rgba(0,0,0,0.9); color: #fff; padding: 1rem 2rem; border-radius: 8px; border: 2px solid #ff00ff; font-size: 14px; text-align: center;">
+          <strong style="color: #ff00ff;">🔧 位置調整モード</strong><br/>
+          <span style="color: #00ffff;">ドラッグで位置のみ調整（サイズ固定）</span><br/>
+          <small style="color: #888;">パネルでA/B切り替え可能</small>
+        </div>
+      `;
+      document.body.appendChild(guide);
+    }
+  }
 </script>

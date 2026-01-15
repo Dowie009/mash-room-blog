@@ -23,11 +23,12 @@ topic: ai-journey
   visibility: hidden !important;
 }
 
-/* スタイルスイッチャーを常に最前面に */
+/* スタイルスイッチャーを常に最前面に + スクロール表示トランジション */
 #style-switcher {
   z-index: 99999 !important;
   pointer-events: auto !important;
   isolation: isolate;
+  transition: opacity 0.3s ease;
 }
 #style-switcher * {
   pointer-events: auto !important;
@@ -39,11 +40,12 @@ topic: ai-journey
   cursor: pointer !important;
 }
 
-/* シェアカードも最前面に */
+/* シェアカードも最前面に + スクロール表示トランジション */
 #share-card {
   z-index: 99998 !important;
   pointer-events: auto !important;
   isolation: isolate;
+  transition: opacity 0.3s ease;
 }
 #share-card * {
   pointer-events: auto !important;
@@ -532,13 +534,14 @@ topic: ai-journey
 </div>
 
 <style>
-/* Cyber Style Button - TRANSMITと統一 */
+/* Cyber Style Button - TRANSMITと統一 + スクロール表示トランジション */
 .cyber-style-wrapper {
   position: fixed;
   top: 80px;
   right: 20px;
   z-index: 999;
   display: none;
+  transition: opacity 0.3s ease;
 }
 
 .cyber-style-card {
@@ -1577,6 +1580,80 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 初回訪問チェック（ポップアップ表示）
   checkFirstVisit();
+
+  // ================================
+  // ヘッダー下から表示するスクロール監視
+  // ================================
+  const styleSwitcher = document.getElementById('style-switcher');
+  const toggleWrapper = document.getElementById('switcher-toggle-wrapper');
+  const shareCard = document.getElementById('share-card');
+  const hintPopup = document.getElementById('style-hint-popup');
+
+  // バナー高さを取得（ビューポート幅 × 500/1400）
+  function getBannerHeight() {
+    const banner = document.querySelector('.hero-banner-img');
+    if (banner) return banner.offsetHeight;
+    // フォールバック: アスペクト比から計算
+    return window.innerWidth * (500 / 1400);
+  }
+
+  // 初期状態は非表示
+  function hideFloatingElements() {
+    if (styleSwitcher) styleSwitcher.style.opacity = '0';
+    if (styleSwitcher) styleSwitcher.style.pointerEvents = 'none';
+    if (toggleWrapper) toggleWrapper.style.opacity = '0';
+    if (toggleWrapper) toggleWrapper.style.pointerEvents = 'none';
+    if (shareCard) shareCard.style.opacity = '0';
+    if (shareCard) shareCard.style.pointerEvents = 'none';
+    if (hintPopup) hintPopup.style.opacity = '0';
+    if (hintPopup) hintPopup.style.pointerEvents = 'none';
+  }
+
+  function showFloatingElements() {
+    if (styleSwitcher) styleSwitcher.style.opacity = '1';
+    if (styleSwitcher) styleSwitcher.style.pointerEvents = 'auto';
+    if (toggleWrapper) toggleWrapper.style.opacity = '1';
+    if (toggleWrapper) toggleWrapper.style.pointerEvents = 'auto';
+    if (shareCard) shareCard.style.opacity = '1';
+    if (shareCard) shareCard.style.pointerEvents = 'auto';
+    if (hintPopup) hintPopup.style.opacity = '1';
+    if (hintPopup) hintPopup.style.pointerEvents = 'auto';
+  }
+
+  // 初期非表示
+  hideFloatingElements();
+
+  // スクロール監視
+  let lastScrollY = 0;
+  function checkScrollPosition() {
+    const scrollY = window.scrollY;
+    const threshold = getBannerHeight() - 50; // バナー高さ - 50px
+
+    if (scrollY > threshold) {
+      showFloatingElements();
+    } else {
+      hideFloatingElements();
+    }
+    lastScrollY = scrollY;
+  }
+
+  // 初回チェック
+  checkScrollPosition();
+
+  // スクロールイベント（パフォーマンス最適化）
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        checkScrollPosition();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+
+  // リサイズ時も再計算
+  window.addEventListener('resize', checkScrollPosition);
 });
 </script>
 
