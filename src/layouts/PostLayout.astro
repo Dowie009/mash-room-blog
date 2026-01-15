@@ -5,6 +5,7 @@
  * サイバー/ダークテーマ - あいぼーとの会話形式に最適化
  */
 import Layout from './Layout.astro';
+import { getCollection } from 'astro:content';
 
 interface Props {
   frontmatter: {
@@ -102,6 +103,44 @@ const heroPatternConfig: Record<string, { video: string; label: string }> = {
   // デフォルト（その他のTECHカテゴリ）はBパターンを使用
 };
 const heroPattern = heroPatternConfig[frontmatter.category] || heroPatternConfig['ai-tips'];
+
+// フッターバナー動画パターン設定
+// A: ai-journey用フッター
+// B: その他TECH記事用フッター
+const footerPatternConfig: Record<string, string> = {
+  'ai-journey': '/images/tech/hero-patterns/Aパーンのフッター.mp4',
+  'default': '/images/tech/hero-patterns/footer-pattern-b.V2.mp4',
+};
+const footerPattern = footerPatternConfig[frontmatter.category] || footerPatternConfig['default'];
+
+// 前後記事を自動取得（TECHコレクション用）
+let prevPost: { slug: string; title: string } | null = null;
+let nextPost: { slug: string; title: string } | null = null;
+
+if (collection === 'tech') {
+  const allPosts = await getCollection('tech', ({ data }) => !data.draft);
+  // 日付順でソート（新しい順）
+  const sortedPosts = allPosts.sort((a, b) =>
+    new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+  );
+
+  // 現在の記事のslugを取得（URLから）
+  const currentSlug = Astro.url.pathname.split('/').pop();
+  const currentIndex = sortedPosts.findIndex(post => post.slug === currentSlug);
+
+  if (currentIndex !== -1) {
+    // 前の記事（より新しい記事）
+    if (currentIndex > 0) {
+      const prev = sortedPosts[currentIndex - 1];
+      prevPost = { slug: prev.slug, title: prev.data.title };
+    }
+    // 次の記事（より古い記事）
+    if (currentIndex < sortedPosts.length - 1) {
+      const next = sortedPosts[currentIndex + 1];
+      nextPost = { slug: next.slug, title: next.data.title };
+    }
+  }
+}
 
 // 読了時間を計算（仮で5分）
 const readTime = '5 min read';
@@ -250,104 +289,174 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     <main class="article-main">
       <article class="article-content">
         <slot />
-
-        <!-- 著者カード -->
-        <div class="author-section">
-          <div class="author-section-header">
-            <span class="author-section-label">WRITTEN BY</span>
-          </div>
-          <div class="author-card" id="author-card">
-            <div class="author-avatar" id="author-avatar-trigger">
-              <img src="/images/tech/mashiba-profile.jpg" alt="Mashiba Dowie" />
-            </div>
-            <div class="author-info">
-              <span class="author-name">Mashiba Dowie</span>
-              <span class="author-name-jp">真柴道ゐ</span>
-              <span class="author-role">Creator / MASHROOM STUDIO</span>
-            </div>
-            <div class="author-card-arrow">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="9 18 15 12 9 6"></polyline>
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        <!-- 著者ポップアップ -->
-        <div class="author-popup" id="author-popup">
-          <div class="author-popup-inner">
-            <button class="author-popup-close" id="author-popup-close">&times;</button>
-            <div class="author-popup-avatar">
-              <img src="/images/tech/mashiba-profile.jpg" alt="Mashiba Dowie" />
-            </div>
-            <span class="author-popup-label">ABOUT THE AUTHOR</span>
-            <h3 class="author-popup-name">Mashiba Dowie</h3>
-            <span class="author-popup-name-jp">真柴道ゐ</span>
-            <p class="author-popup-bio">
-              音楽とテクノロジーを愛するクリエイター。<br/>
-              DTM・AI・Web開発を独学で学び、<br/>
-              AIとの対話で日々新しい発見をしています。
-            </p>
-            <div class="author-popup-buttons">
-              <a href="https://mashroom-studio-web.vercel.app/#profile" class="author-popup-btn primary" target="_blank" rel="noopener">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="12" cy="7" r="4"></circle>
-                </svg>
-                <span>Profile</span>
-              </a>
-              <a href="https://mashroom-studio-web.vercel.app/" class="author-popup-btn secondary" target="_blank" rel="noopener">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-                <span>Homepage</span>
-              </a>
-            </div>
-          </div>
-        </div>
       </article>
 
-      <!-- サイドバー（目次やシェア） -->
+      <!-- 右サイドバー（CUSTOMIZE / TRANSMIT） -->
       <aside class="article-sidebar">
-        <div class="sidebar-card share-card">
-          <h3>Share</h3>
-          <div class="share-buttons">
-            <a href="#" class="share-btn twitter" aria-label="Share on X">
+        <!-- CUSTOMIZE カード -->
+        <div class="sidebar-card customize-card">
+          <div class="sidebar-card-header">
+            <span class="sidebar-card-title">CUSTOMIZE</span>
+            <span class="sidebar-card-dot"></span>
+          </div>
+          <button class="customize-btn" id="customize-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            <span class="customize-label">OPEN</span>
+          </button>
+        </div>
+
+        <!-- TRANSMIT カード -->
+        <div class="sidebar-card transmit-card">
+          <div class="sidebar-card-header">
+            <span class="sidebar-card-title">TRANSMIT</span>
+            <span class="sidebar-card-dot"></span>
+          </div>
+          <div class="transmit-buttons">
+            <a href="#" class="transmit-btn post" aria-label="Post on X" id="share-x">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
               </svg>
+              <span>POST</span>
             </a>
-            <a href="#" class="share-btn facebook" aria-label="Share on Facebook">
+            <a href="#" class="transmit-btn share" aria-label="Share on Facebook" id="share-fb">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
+              <span>SHARE</span>
             </a>
-            <button class="share-btn copy" aria-label="Copy link">
+            <button class="transmit-btn copy" aria-label="Copy link" id="copy-link">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
               </svg>
+              <span>COPY</span>
             </button>
           </div>
         </div>
       </aside>
     </main>
 
+    <!-- フッターバナー（TECHページ用：16:9動画 + ドットフィルター） -->
+    {collection === 'tech' && (
+      <section class="footer-banner">
+        <div class="footer-video-container">
+          <video autoplay muted loop playsinline class="footer-banner-video">
+            <source src={footerPattern} type="video/mp4" />
+          </video>
+          <!-- 下半分ドットフィルター -->
+          <div class="footer-dot-filter"></div>
+        </div>
+        <div class="footer-banner-overlay">
+          <div class="footer-banner-content">
+            <!-- 次に読む記事セクション -->
+            {(prevPost || nextPost) && (
+              <div class="footer-nav-section">
+                <h3 class="footer-section-title">次に読む記事</h3>
+                <div class="footer-nav-cards">
+                  {prevPost && (
+                    <a href={`/tech/${prevPost.slug}`} class="footer-nav-card">
+                      <span class="footer-nav-label">◀ 前の記事</span>
+                      <span class="footer-nav-title">{prevPost.title}</span>
+                    </a>
+                  )}
+                  {nextPost && (
+                    <a href={`/tech/${nextPost.slug}`} class="footer-nav-card">
+                      <span class="footer-nav-label">次の記事 ▶</span>
+                      <span class="footer-nav-title">{nextPost.title}</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
+
+            <!-- プロフィールカード（固定） -->
+            <div class="footer-profile-section">
+              <span class="footer-profile-label">WRITTEN BY</span>
+              <div class="footer-profile-card">
+                <div class="footer-profile-avatar">
+                  <img src="/images/tech/mashiba-profile.jpg" alt="Mashiba Dowie" />
+                </div>
+                <div class="footer-profile-info">
+                  <span class="footer-profile-name">Mashiba Dowie</span>
+                  <span class="footer-profile-name-jp">真柴道ゐ</span>
+                  <span class="footer-profile-role">Creator / MASHROOM STUDIO</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 回遊リンク & SNS -->
+            <div class="footer-actions-section">
+              <!-- 回遊リンク -->
+              <div class="footer-nav-links">
+                <span class="footer-nav-links-label">EXPLORE MORE</span>
+                <div class="footer-nav-links-grid">
+                  <a href="/tech" class="footer-nav-link tech">
+                    <span class="nav-link-icon">⚡</span>
+                    <span class="nav-link-text">TECH LAB</span>
+                  </a>
+                  <a href="/story" class="footer-nav-link story">
+                    <span class="nav-link-icon">📖</span>
+                    <span class="nav-link-text">STORY</span>
+                  </a>
+                  <a href="/dtm" class="footer-nav-link dtm">
+                    <span class="nav-link-icon">🎹</span>
+                    <span class="nav-link-text">DTM LAB</span>
+                  </a>
+                  <a href="/gear" class="footer-nav-link gear">
+                    <span class="nav-link-icon">🎛️</span>
+                    <span class="nav-link-text">GEAR</span>
+                  </a>
+                  <a href="https://mashroom-studio-web.vercel.app/" target="_blank" rel="noopener" class="footer-nav-link home">
+                    <span class="nav-link-icon">🏠</span>
+                    <span class="nav-link-text">HOMEPAGE</span>
+                  </a>
+                  <a href="https://mashroom-studio-web.vercel.app/#profile" target="_blank" rel="noopener" class="footer-nav-link profile">
+                    <span class="nav-link-icon">👤</span>
+                    <span class="nav-link-text">ABOUT ME</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- SNSリンク -->
+              <div class="footer-social-section">
+                <span class="footer-social-label">FOLLOW US</span>
+                <div class="footer-social-links">
+                  <a href="https://twitter.com/mashiba_dowie" target="_blank" rel="noopener" class="footer-social-btn" aria-label="X (Twitter)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    </svg>
+                  </a>
+                  <a href="https://github.com/mashiba-dowie" target="_blank" rel="noopener" class="footer-social-btn" aria-label="GitHub">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                  </a>
+                  <a href="https://www.youtube.com/@mashiba_dowie" target="_blank" rel="noopener" class="footer-social-btn" aria-label="YouTube">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                  </a>
+                  <a href="https://www.instagram.com/mashiba_dowie" target="_blank" rel="noopener" class="footer-social-btn" aria-label="Instagram">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    )}
+
     <!-- フッターナビ -->
     <footer class="article-footer">
       <div class="footer-content">
-        <a href={config.href} class="back-button">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
-          <span>{config.label}に戻る</span>
-        </a>
-
         <div class="footer-brand">
-          <span class="brand-icon">{config.icon}</span>
-          <span class="brand-text">MASHROOM STUDIO</span>
+          <img src="/images/tech/hero-patterns/MASHROOM_LOGO_ORANGE.png" alt="MASHROOM STUDIO" class="brand-logo" />
         </div>
       </div>
     </footer>
@@ -1349,6 +1458,164 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
   }
 
   /* =====================================================
+     CUSTOMIZE / TRANSMIT カード
+     ===================================================== */
+
+  .sidebar-card + .sidebar-card {
+    margin-top: 1rem;
+  }
+
+  .sidebar-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+
+  .sidebar-card-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: #666;
+    text-transform: uppercase;
+  }
+
+  .sidebar-card-dot {
+    width: 6px;
+    height: 6px;
+    background: #00ffff;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+    animation: dot-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes dot-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* CUSTOMIZE カード */
+  .customize-card {
+    background: linear-gradient(135deg, rgba(10, 10, 20, 0.95), rgba(20, 20, 40, 0.95));
+    border: 1px solid rgba(0, 255, 255, 0.2);
+  }
+
+  .customize-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.7rem 1rem;
+    background: rgba(8, 12, 18, 0.95);
+    border: 1.5px solid rgba(0, 255, 255, 0.4);
+    border-radius: 10px;
+    color: #00ffff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .customize-btn:hover {
+    background: rgba(0, 255, 255, 0.08);
+    border-color: rgba(0, 255, 255, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 255, 255, 0.3);
+  }
+
+  .customize-btn svg {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.4s ease;
+  }
+
+  .customize-btn:hover svg {
+    transform: rotate(90deg);
+  }
+
+  .customize-label {
+    font-weight: 700;
+  }
+
+  /* TRANSMIT カード */
+  .transmit-card {
+    background: linear-gradient(135deg, rgba(10, 10, 20, 0.95), rgba(20, 20, 40, 0.95));
+    border: 1px solid rgba(255, 0, 255, 0.2);
+  }
+
+  .transmit-card .sidebar-card-dot {
+    background: #ff00ff;
+    box-shadow: 0 0 8px rgba(255, 0, 255, 0.6);
+  }
+
+  .transmit-buttons {
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .transmit-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.7rem 0.4rem;
+    background: rgba(30, 30, 40, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    color: #777;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.5rem;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .transmit-btn svg {
+    width: 20px;
+    height: 20px;
+    opacity: 0.7;
+    transition: opacity 0.25s ease;
+  }
+
+  .transmit-btn span {
+    font-weight: 700;
+  }
+
+  .transmit-btn:hover {
+    transform: translateY(-3px);
+  }
+
+  .transmit-btn:hover svg {
+    opacity: 1;
+  }
+
+  .transmit-btn.post:hover {
+    background: rgba(29, 161, 242, 0.12);
+    border-color: rgba(29, 161, 242, 0.35);
+    color: #1da1f2;
+    box-shadow: 0 6px 16px rgba(29, 161, 242, 0.25);
+  }
+
+  .transmit-btn.share:hover {
+    background: rgba(24, 119, 242, 0.12);
+    border-color: rgba(24, 119, 242, 0.35);
+    color: #1877f2;
+    box-shadow: 0 6px 16px rgba(24, 119, 242, 0.25);
+  }
+
+  .transmit-btn.copy:hover {
+    background: rgba(0, 255, 255, 0.12);
+    border-color: rgba(0, 255, 255, 0.35);
+    color: #00ffff;
+    box-shadow: 0 6px 16px rgba(0, 255, 255, 0.25);
+  }
+
+  /* =====================================================
      著者カード
      ===================================================== */
 
@@ -1664,6 +1931,339 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
   }
 
   /* =====================================================
+     フッターバナー（16:9動画）
+     ===================================================== */
+
+  .footer-banner {
+    position: relative;
+    width: 100%;
+    z-index: 1;
+  }
+
+  .footer-video-container {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .footer-banner-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* 下半分ドットフィルター */
+  .footer-dot-filter {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60%;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at center, rgba(0, 0, 0, 0.4) 1px, transparent 1px),
+      linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.6) 40%, transparent 100%);
+    background-size: 4px 4px, 100% 100%;
+    z-index: 1;
+  }
+
+  .footer-banner-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 2;
+  }
+
+  .footer-banner-content {
+    width: 100%;
+    max-width: 1300px;
+    padding: 2rem;
+    padding-bottom: 3rem;
+  }
+
+  /* 次に読む記事セクション */
+  .footer-nav-section {
+    margin-bottom: 2rem;
+  }
+
+  .footer-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #00ffff;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  }
+
+  .footer-nav-cards {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-nav-card {
+    flex: 1;
+    min-width: 280px;
+    padding: 1.25rem;
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .footer-nav-card:hover {
+    background: rgba(0, 0, 0, 0.95);
+    border-color: #00ffff;
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 255, 255, 0.2);
+  }
+
+  .footer-nav-label {
+    font-size: 0.75rem;
+    color: #888;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .footer-nav-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #00ffff;
+    line-height: 1.4;
+  }
+
+  /* プロフィールセクション */
+  .footer-profile-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .footer-profile-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #ff6b9d;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.1em;
+  }
+
+  .footer-profile-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid rgba(255, 107, 157, 0.3);
+    border-radius: 12px;
+    max-width: 400px;
+  }
+
+  .footer-profile-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #ff6b9d;
+    flex-shrink: 0;
+  }
+
+  .footer-profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .footer-profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .footer-profile-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .footer-profile-name-jp {
+    font-size: 0.85rem;
+    color: #888;
+  }
+
+  .footer-profile-role {
+    font-size: 0.75rem;
+    color: #ff6b9d;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* 回遊リンク & SNSリンク */
+  .footer-actions-section {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  /* 回遊リンク */
+  .footer-nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .footer-nav-links-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #00ffff;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.15em;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  }
+
+  .footer-nav-links-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+
+  .footer-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .footer-nav-link .nav-link-icon {
+    font-size: 1.1rem;
+  }
+
+  .footer-nav-link .nav-link-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: #888;
+  }
+
+  .footer-nav-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .footer-nav-link:hover .nav-link-text {
+    color: #fff;
+  }
+
+  /* カテゴリ別カラー */
+  .footer-nav-link.tech { border-color: rgba(6, 182, 212, 0.4); }
+  .footer-nav-link.tech:hover {
+    background: rgba(6, 182, 212, 0.15);
+    border-color: #06b6d4;
+    box-shadow: 0 6px 20px rgba(6, 182, 212, 0.3);
+  }
+  .footer-nav-link.tech:hover .nav-link-text { color: #06b6d4; }
+
+  .footer-nav-link.story { border-color: rgba(168, 85, 247, 0.4); }
+  .footer-nav-link.story:hover {
+    background: rgba(168, 85, 247, 0.15);
+    border-color: #a855f7;
+    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.3);
+  }
+  .footer-nav-link.story:hover .nav-link-text { color: #a855f7; }
+
+  .footer-nav-link.dtm { border-color: rgba(236, 72, 153, 0.4); }
+  .footer-nav-link.dtm:hover {
+    background: rgba(236, 72, 153, 0.15);
+    border-color: #ec4899;
+    box-shadow: 0 6px 20px rgba(236, 72, 153, 0.3);
+  }
+  .footer-nav-link.dtm:hover .nav-link-text { color: #ec4899; }
+
+  .footer-nav-link.gear { border-color: rgba(249, 115, 22, 0.4); }
+  .footer-nav-link.gear:hover {
+    background: rgba(249, 115, 22, 0.15);
+    border-color: #f97316;
+    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.3);
+  }
+  .footer-nav-link.gear:hover .nav-link-text { color: #f97316; }
+
+  .footer-nav-link.home { border-color: rgba(255, 107, 157, 0.4); }
+  .footer-nav-link.home:hover {
+    background: rgba(255, 107, 157, 0.15);
+    border-color: #ff6b9d;
+    box-shadow: 0 6px 20px rgba(255, 107, 157, 0.3);
+  }
+  .footer-nav-link.home:hover .nav-link-text { color: #ff6b9d; }
+
+  .footer-nav-link.profile { border-color: rgba(255, 255, 0, 0.4); }
+  .footer-nav-link.profile:hover {
+    background: rgba(255, 255, 0, 0.1);
+    border-color: #ffff00;
+    box-shadow: 0 6px 20px rgba(255, 255, 0, 0.2);
+  }
+  .footer-nav-link.profile:hover .nav-link-text { color: #ffff00; }
+
+  /* SNSセクション */
+  .footer-social-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .footer-social-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #ff6b9d;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.15em;
+  }
+
+  .footer-social-links {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .footer-social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: #888;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .footer-social-btn:hover {
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 6px 20px rgba(255, 107, 157, 0.3);
+  }
+
+  .footer-social-btn svg {
+    fill: currentColor;
+  }
+
+  .footer-social-btn:nth-child(1):hover { color: #1da1f2; border-color: #1da1f2; background: rgba(29, 161, 242, 0.15); }
+  .footer-social-btn:nth-child(2):hover { color: #fff; border-color: #fff; background: rgba(255, 255, 255, 0.1); }
+  .footer-social-btn:nth-child(3):hover { color: #ff0000; border-color: #ff0000; background: rgba(255, 0, 0, 0.15); }
+  .footer-social-btn:nth-child(4):hover { color: #e1306c; border-color: #e1306c; background: rgba(225, 48, 108, 0.15); }
+
+  /* =====================================================
      フッター
      ===================================================== */
 
@@ -1672,53 +2272,50 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     z-index: 1;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding: 2rem;
-    margin-top: 1rem;
-    background: rgba(0, 0, 0, 0.3);
+    margin-top: 0;
+    background: linear-gradient(180deg, rgba(10, 10, 20, 0.95), rgba(5, 5, 12, 1));
   }
 
   .footer-content {
     max-width: 1300px;
     margin: 0 auto;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
   }
 
-  .back-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.75rem 1.25rem;
-    background: rgba(0, 255, 255, 0.05);
-    border: 1px solid rgba(0, 255, 255, 0.2);
-    border-radius: 8px;
-    color: #00ffff;
-    text-decoration: none;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem;
-    transition: all 0.2s;
-  }
-
-  .back-button:hover {
-    background: rgba(0, 255, 255, 0.1);
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
-    transform: translateX(-4px);
-  }
-
   .footer-brand {
     display: flex;
+    flex-direction: column;
     align-items: center;
     gap: 0.5rem;
-    color: #444;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.05em;
+    text-align: center;
   }
 
-  .brand-icon {
+  .footer-brand .brand-logo {
+    height: 60px;
+    width: auto;
+    filter: drop-shadow(0 0 15px rgba(255, 165, 0, 0.6));
+  }
+
+  .footer-brand .brand-text {
+    font-family: 'JetBrains Mono', monospace;
     font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    background: linear-gradient(135deg, #00ffff, #ff6b9d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .footer-brand .brand-tagline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: #666;
+    letter-spacing: 0.1em;
   }
 
   /* =====================================================
@@ -1830,6 +2427,19 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     .footer-content {
       flex-direction: column;
       text-align: center;
+    }
+
+    /* 回遊リンクのレスポンシブ */
+    .footer-nav-links-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .footer-nav-link .nav-link-text {
+      font-size: 0.65rem;
+    }
+
+    .footer-social-links {
+      justify-content: center;
     }
 
     .author-section {
@@ -2140,5 +2750,134 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
       `;
       document.body.appendChild(guide);
     }
+
+    // フッターバナーのデバッグ
+    const footerBanner = document.querySelector('.footer-banner');
+    if (footerBanner) {
+      console.log('🎬 フッターバナー デバッグ ON');
+
+      // フッター用デバッグパネル
+      const footerDebugPanel = document.createElement('div');
+      footerDebugPanel.innerHTML = `
+        <div style="position: fixed; bottom: 20px; right: 20px; z-index: 99999; background: rgba(0,0,0,0.95); color: #fff; padding: 1rem; border-radius: 8px; border: 2px solid #ff6b9d; font-size: 12px; width: 280px;">
+          <strong style="color: #ff6b9d; display: block; margin-bottom: 0.75rem;">🎬 フッターバナー調整</strong>
+
+          <div style="margin-bottom: 0.75rem;">
+            <label style="color: #888; font-size: 10px; display: block; margin-bottom: 0.25rem;">ドットフィルター高さ</label>
+            <input type="range" id="footer-dot-height" min="30" max="100" value="60" style="width: 100%;" />
+            <span id="footer-dot-height-val" style="color: #00ffff; font-size: 11px;">60%</span>
+          </div>
+
+          <div style="margin-bottom: 0.75rem;">
+            <label style="color: #888; font-size: 10px; display: block; margin-bottom: 0.25rem;">ドット濃さ</label>
+            <input type="range" id="footer-dot-opacity" min="20" max="100" value="40" style="width: 100%;" />
+            <span id="footer-dot-opacity-val" style="color: #00ffff; font-size: 11px;">0.4</span>
+          </div>
+
+          <div style="margin-bottom: 0.75rem;">
+            <label style="color: #888; font-size: 10px; display: block; margin-bottom: 0.25rem;">背景グラデ濃さ</label>
+            <input type="range" id="footer-bg-opacity" min="40" max="100" value="85" style="width: 100%;" />
+            <span id="footer-bg-opacity-val" style="color: #00ffff; font-size: 11px;">0.85</span>
+          </div>
+
+          <button id="footer-copy-css" style="width: 100%; padding: 0.5rem; background: #ff6b9d; color: #000; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">📋 CSSをコピー</button>
+        </div>
+      `;
+      document.body.appendChild(footerDebugPanel);
+
+      const dotFilter = document.querySelector('.footer-dot-filter');
+      const heightSlider = document.getElementById('footer-dot-height');
+      const opacitySlider = document.getElementById('footer-dot-opacity');
+      const bgOpacitySlider = document.getElementById('footer-bg-opacity');
+      const heightVal = document.getElementById('footer-dot-height-val');
+      const opacityVal = document.getElementById('footer-dot-opacity-val');
+      const bgOpacityVal = document.getElementById('footer-bg-opacity-val');
+
+      const updateDotFilter = () => {
+        const h = heightSlider.value;
+        const o = opacitySlider.value / 100;
+        const bg = bgOpacitySlider.value / 100;
+
+        heightVal.textContent = h + '%';
+        opacityVal.textContent = o.toFixed(2);
+        bgOpacityVal.textContent = bg.toFixed(2);
+
+        dotFilter.style.height = h + '%';
+        dotFilter.style.background = `
+          radial-gradient(circle at center, rgba(0, 0, 0, ${o}) 1px, transparent 1px),
+          linear-gradient(to top, rgba(0, 0, 0, ${bg}) 0%, rgba(0, 0, 0, ${bg * 0.7}) 40%, transparent 100%)
+        `;
+      };
+
+      heightSlider?.addEventListener('input', updateDotFilter);
+      opacitySlider?.addEventListener('input', updateDotFilter);
+      bgOpacitySlider?.addEventListener('input', updateDotFilter);
+
+      document.getElementById('footer-copy-css')?.addEventListener('click', () => {
+        const h = heightSlider.value;
+        const o = opacitySlider.value / 100;
+        const bg = bgOpacitySlider.value / 100;
+
+        const css = `
+.footer-dot-filter {
+  height: ${h}%;
+  background:
+    radial-gradient(circle at center, rgba(0, 0, 0, ${o}) 1px, transparent 1px),
+    linear-gradient(to top, rgba(0, 0, 0, ${bg}) 0%, rgba(0, 0, 0, ${(bg * 0.7).toFixed(2)}) 40%, transparent 100%);
+  background-size: 4px 4px, 100% 100%;
+}`;
+        navigator.clipboard.writeText(css).then(() => {
+          alert('フッターCSSをコピーしました！');
+          console.log('📋 フッターCSS:\n' + css);
+        });
+      });
+    }
   }
+
+  // ================================
+  // TRANSMIT ボタン機能
+  // ================================
+  document.addEventListener('DOMContentLoaded', () => {
+    const pageUrl = encodeURIComponent(window.location.href);
+    const pageTitle = encodeURIComponent(document.title);
+
+    // X (Twitter) シェア
+    const shareX = document.getElementById('share-x');
+    if (shareX) {
+      shareX.href = `https://twitter.com/intent/tweet?url=${pageUrl}&text=${pageTitle}`;
+      shareX.target = '_blank';
+      shareX.rel = 'noopener noreferrer';
+    }
+
+    // Facebook シェア
+    const shareFb = document.getElementById('share-fb');
+    if (shareFb) {
+      shareFb.href = `https://www.facebook.com/sharer/sharer.php?u=${pageUrl}`;
+      shareFb.target = '_blank';
+      shareFb.rel = 'noopener noreferrer';
+    }
+
+    // リンクをコピー
+    const copyLink = document.getElementById('copy-link');
+    if (copyLink) {
+      copyLink.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          // コピー成功フィードバック
+          const span = copyLink.querySelector('span');
+          const originalText = span.textContent;
+          span.textContent = 'COPIED!';
+          copyLink.style.color = '#00ffff';
+          copyLink.style.borderColor = 'rgba(0, 255, 255, 0.5)';
+          setTimeout(() => {
+            span.textContent = originalText;
+            copyLink.style.color = '';
+            copyLink.style.borderColor = '';
+          }, 2000);
+        } catch (err) {
+          console.error('コピーに失敗しました:', err);
+        }
+      });
+    }
+  });
 </script>
