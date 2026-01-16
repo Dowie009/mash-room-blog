@@ -485,7 +485,9 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
                 </a>
 
                 <!-- 4. Website / Portfolio -->
-                <a href="https://mashroom-studio-web.vercel.app/" target="_blank" rel="noopener" class="bento-item website-card glass-panel">
+                <a href="https://mashroom-studio-web.vercel.app/" target="_blank" rel="noopener" class="bento-item website-card">
+                  <img src="/images/thumbnails/website-hero-thumb.png" alt="MASHROOM STUDIO" class="website-bg-image" />
+                  <div class="website-overlay"></div>
                   <div class="website-content">
                     <span class="website-label">Official Website</span>
                     <h3 class="website-title">ポートフォリオ & スタジオ公式サイト</h3>
@@ -2059,12 +2061,49 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     margin-bottom: 2rem;
   }
 
+  /* Pattern A: Tech & Tips（左）- 明るい白ガラス */
   .tech-panel {
     border-top: 4px solid #a855f7;
+    background: rgba(255, 255, 255, 0.95);
   }
 
+  /* Pattern B: AI Journey（右）- 暗めのダークガラス */
   .journey-panel {
     border-top: 4px solid #3b82f6;
+    background: rgba(15, 23, 42, 0.9);
+  }
+
+  .journey-panel .panel-title {
+    color: #f1f5f9;
+  }
+
+  .journey-panel .panel-subtitle {
+    color: #94a3b8;
+  }
+
+  .journey-panel .article-title {
+    color: #e2e8f0;
+  }
+
+  .journey-panel .article-date {
+    color: #64748b;
+  }
+
+  .journey-panel .article-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-left-color: #3b82f6;
+  }
+
+  .journey-panel .article-item:hover .article-title {
+    color: #60a5fa;
+  }
+
+  .journey-panel .view-all-link {
+    color: #60a5fa;
+  }
+
+  .journey-panel .view-all-link:hover {
+    color: #93c5fd;
   }
 
   .panel-header {
@@ -2089,8 +2128,8 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
   }
 
   .journey-icon {
-    background: #dbeafe;
-    color: #3b82f6;
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
   }
 
   .panel-titles {
@@ -2479,45 +2518,84 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
 
   /* Website Card */
   .website-card {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 1.25rem 1.5rem;
-    background: rgba(219, 234, 254, 0.9) !important;
-    border-color: rgba(255, 255, 255, 0.4) !important;
     text-decoration: none;
+    overflow: hidden;
+    border-radius: 16px;
+    min-height: 80px;
+  }
+
+  .website-bg-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.4s ease;
+    z-index: 0;
+  }
+
+  .website-card:hover .website-bg-image {
+    transform: scale(1.05);
+  }
+
+  .website-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.1) 100%);
+    z-index: 1;
+    transition: background 0.3s ease;
+  }
+
+  .website-card:hover .website-overlay {
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.05) 100%);
   }
 
   .website-content {
     flex: 1;
+    position: relative;
+    z-index: 2;
   }
 
   .website-label {
     font-size: 0.7rem;
     font-weight: 700;
-    color: #3b82f6;
+    color: #93c5fd;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   }
 
   .website-title {
     font-size: 1.1rem;
     font-weight: 700;
-    color: #1f2937;
+    color: #fff;
     margin: 0.25rem 0 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   }
 
   .website-arrow {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.9);
     color: #3b82f6;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
     flex-shrink: 0;
+    position: relative;
+    z-index: 2;
   }
 
   .website-card:hover .website-arrow {

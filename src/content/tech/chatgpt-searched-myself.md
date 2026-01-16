@@ -474,8 +474,16 @@ function applyState() {
 
 // 初期化
 document.addEventListener('DOMContentLoaded', () => {
-  loadState();
-  applyState();
+  // 保存された状態があるか確認
+  const savedState = localStorage.getItem(STORAGE_KEY);
+
+  if (savedState) {
+    loadState();
+    applyState();
+  } else {
+    // 初回訪問者：プリセット1を適用（Pattern B: AI Journey = 暗めテーマ）
+    applyRecommendedPreset(1);
+  }
 });
 </script>
 

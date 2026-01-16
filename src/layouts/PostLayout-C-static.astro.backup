@@ -1,0 +1,2170 @@
+---
+/**
+ * PostLayout.astro - 記事ページ専用レイアウト
+ *
+ * サイバー/ダークテーマ - あいぼーとの会話形式に最適化
+ */
+import Layout from './Layout.astro';
+
+interface Props {
+  frontmatter: {
+    title: string;
+    date: Date;
+    category: string;
+    description?: string;
+    tags?: string[];
+    thumbnail?: string;
+    learningLevel?: number;
+    topic?: string;
+  };
+  collection?: 'tech' | 'gear' | 'story' | 'ai';
+}
+
+const { frontmatter, collection = 'tech' } = Astro.props;
+
+// 日付フォーマット
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
+
+// カテゴリ表示名とカラー
+const categoryConfig: Record<string, { label: string; color: string }> = {
+  // TECH
+  astro: { label: 'ASTRO', color: '#ff5d01' },
+  react: { label: 'REACT', color: '#61dafb' },
+  css: { label: 'CSS', color: '#264de4' },
+  ai: { label: 'AI / CLAUDE', color: '#d97706' },
+  devtips: { label: 'DEV TIPS', color: '#10b981' },
+  'ai-journey': { label: 'AI JOURNEY', color: '#00ffff' },
+  'dtm-ai': { label: 'DTM × AI', color: '#ff6b9d' },
+  'ai-tools': { label: 'AI TOOLS', color: '#a855f7' },
+  // GEAR
+  daw: { label: 'DAW', color: '#8b5cf6' },
+  gear: { label: 'GEAR', color: '#ef4444' },
+  plugin: { label: 'PLUGIN', color: '#06b6d4' },
+  biz: { label: 'BIZ', color: '#f59e0b' },
+  tips: { label: 'TIPS', color: '#84cc16' },
+  essay: { label: 'ESSAY', color: '#ec4899' },
+  // STORY
+  story: { label: 'STORY', color: '#a855f7' },
+  diary: { label: 'DIARY', color: '#f472b6' },
+  review: { label: 'REVIEW', color: '#14b8a6' },
+  // AI LAB
+  chat: { label: 'CHAT', color: '#00ffff' },
+  dev: { label: 'DEV', color: '#ffaa00' },
+  art: { label: 'ART', color: '#ff00ff' },
+  music: { label: 'MUSIC', color: '#39ff14' },
+  hack: { label: 'HACK', color: '#ffff00' },
+};
+
+// コレクションごとの設定
+const collectionConfig: Record<string, { href: string; label: string; gradient: string; icon: string }> = {
+  tech: {
+    href: '/tech',
+    label: 'TECH LAB',
+    gradient: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
+    icon: '⚡'
+  },
+  gear: {
+    href: '/gear',
+    label: 'GEAR LAB',
+    gradient: 'linear-gradient(135deg, #f97316, #ef4444)',
+    icon: '🎛️'
+  },
+  story: {
+    href: '/story',
+    label: 'STORY LAB',
+    gradient: 'linear-gradient(135deg, #a855f7, #ec4899)',
+    icon: '📖'
+  },
+  ai: {
+    href: '/ai',
+    label: 'AI LAB',
+    gradient: 'linear-gradient(135deg, #00ffff, #ff00ff)',
+    icon: '🤖'
+  },
+};
+
+const config = collectionConfig[collection] || collectionConfig.tech;
+const catConfig = categoryConfig[frontmatter.category] || { label: frontmatter.category.toUpperCase(), color: '#888' };
+
+// 読了時間を計算（仮で5分）
+const readTime = '5 min read';
+
+// Learning Level表示
+const levelLabels = ['', '入門', '基礎', '実践', '応用', '発展'];
+const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningLevel] : null;
+---
+
+<Layout title={`${frontmatter.title} | ${config.label}`}>
+  <div class="post-page">
+    <!-- 3層サイバー背景 -->
+    <div class="cyber-overlay"></div>
+    <div class="cyber-particles"></div>
+
+    <!-- ヒーローセクション（TECHページ用：バナー付き） -->
+    {collection === 'tech' ? (
+      <header class="hero-with-banner">
+        <img src="/images/tech/tech-hero-banner.png" alt="MASHROOM TECH" class="hero-banner-img" />
+        <div class="hero-banner-overlay">
+          <div class="hero-banner-content">
+            <!-- 上部左：パンくず（大きく・水色グロー） -->
+            <div class="hero-banner-top">
+              <nav class="breadcrumb breadcrumb-banner">
+                <a href="/" class="breadcrumb-link">HOME</a>
+                <span class="breadcrumb-sep">/</span>
+                <a href={config.href} class="breadcrumb-link">{config.label}</a>
+                <span class="breadcrumb-sep">/</span>
+                <span class="breadcrumb-current">{catConfig.label}</span>
+              </nav>
+              <div class="hero-meta-banner">
+                <span class="category-badge category-badge-banner" style={`--cat-color: ${catConfig.color}`}>
+                  {catConfig.label}
+                </span>
+                {levelLabel && (
+                  <span class="level-badge level-badge-banner">
+                    <span class="level-icon">Lv.{frontmatter.learningLevel}</span>
+                    <span class="level-text">{levelLabel}</span>
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <!-- 中央：キャラクター紹介カード（バナー内・黄色エリア） -->
+            {frontmatter.category === 'ai-journey' && (
+              <div class="character-intro-banner">
+                <div class="character-banner">
+                  <div class="character-avatar-banner aibou">🤖</div>
+                  <div class="character-info-banner">
+                    <span class="character-name-banner">あいぼー</span>
+                    <span class="character-role-banner">関西弁AI・ナビゲーター</span>
+                  </div>
+                </div>
+                <span class="character-x-banner">×</span>
+                <div class="character-banner">
+                  <div class="character-avatar-banner michi">
+                    <img src="/images/tech/mashiba-profile.jpg" alt="道ゐ" />
+                  </div>
+                  <div class="character-info-banner">
+                    <span class="character-name-banner">道ゐ</span>
+                    <span class="character-role-banner">真柴道ゐ・語り手</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <!-- タイトル（バナー内） -->
+            <h1 class="hero-title-banner">{frontmatter.title}</h1>
+
+            <!-- ピンクバー上：ハッシュタグ（水色グロー） -->
+            <div class="hero-banner-bottom">
+              {frontmatter.tags && frontmatter.tags.length > 0 && (
+                <div class="hero-tags hero-tags-banner">
+                  {frontmatter.tags.map(tag => (
+                    <span class="tag tag-banner">#{tag}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </header>
+    ) : (
+      <header class="hero">
+        <div class="hero-content">
+          <nav class="breadcrumb">
+            <a href="/" class="breadcrumb-link">HOME</a>
+            <span class="breadcrumb-sep">/</span>
+            <a href={config.href} class="breadcrumb-link">{config.label}</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">{catConfig.label}</span>
+          </nav>
+
+          <div class="hero-meta">
+            <span class="category-badge" style={`--cat-color: ${catConfig.color}`}>
+              {catConfig.label}
+            </span>
+            {levelLabel && (
+              <span class="level-badge">
+                <span class="level-icon">Lv.{frontmatter.learningLevel}</span>
+                <span class="level-text">{levelLabel}</span>
+              </span>
+            )}
+            <div class="meta-info">
+              <time datetime={frontmatter.date.toISOString()}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                {formatDate(frontmatter.date)}
+              </time>
+              <span class="read-time">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                {readTime}
+              </span>
+            </div>
+          </div>
+
+          <h1 class="hero-title">{frontmatter.title}</h1>
+
+          {frontmatter.description && (
+            <p class="hero-description">{frontmatter.description}</p>
+          )}
+
+          {frontmatter.tags && frontmatter.tags.length > 0 && (
+            <div class="hero-tags">
+              {frontmatter.tags.map(tag => (
+                <span class="tag">#{tag}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      </header>
+    )}
+
+    <!-- 本文 -->
+    <main class="article-main">
+      <article class="article-content">
+        <slot />
+
+        <!-- 著者カード -->
+        <div class="author-section">
+          <div class="author-section-header">
+            <span class="author-section-label">WRITTEN BY</span>
+          </div>
+          <div class="author-card" id="author-card">
+            <div class="author-avatar" id="author-avatar-trigger">
+              <img src="/images/tech/mashiba-profile.jpg" alt="Mashiba Dowie" />
+            </div>
+            <div class="author-info">
+              <span class="author-name">Mashiba Dowie</span>
+              <span class="author-name-jp">真柴道ゐ</span>
+              <span class="author-role">Creator / MASHROOM STUDIO</span>
+            </div>
+            <div class="author-card-arrow">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- 著者ポップアップ -->
+        <div class="author-popup" id="author-popup">
+          <div class="author-popup-inner">
+            <button class="author-popup-close" id="author-popup-close">&times;</button>
+            <div class="author-popup-avatar">
+              <img src="/images/tech/mashiba-profile.jpg" alt="Mashiba Dowie" />
+            </div>
+            <span class="author-popup-label">ABOUT THE AUTHOR</span>
+            <h3 class="author-popup-name">Mashiba Dowie</h3>
+            <span class="author-popup-name-jp">真柴道ゐ</span>
+            <p class="author-popup-bio">
+              音楽とテクノロジーを愛するクリエイター。<br/>
+              DTM・AI・Web開発を独学で学び、<br/>
+              AIとの対話で日々新しい発見をしています。
+            </p>
+            <div class="author-popup-buttons">
+              <a href="https://mashroom-studio-web.vercel.app/#profile" class="author-popup-btn primary" target="_blank" rel="noopener">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>Profile</span>
+              </a>
+              <a href="https://mashroom-studio-web.vercel.app/" class="author-popup-btn secondary" target="_blank" rel="noopener">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+                <span>Homepage</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- サイドバー（目次やシェア） -->
+      <aside class="article-sidebar">
+        <div class="sidebar-card share-card">
+          <h3>Share</h3>
+          <div class="share-buttons">
+            <a href="#" class="share-btn twitter" aria-label="Share on X">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+            </a>
+            <a href="#" class="share-btn facebook" aria-label="Share on Facebook">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+              </svg>
+            </a>
+            <button class="share-btn copy" aria-label="Copy link">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- フッターナビ -->
+    <footer class="article-footer">
+      <div class="footer-content">
+        <a href={config.href} class="back-button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>{config.label}に戻る</span>
+        </a>
+
+        <div class="footer-brand">
+          <span class="brand-icon">{config.icon}</span>
+          <span class="brand-text">MASHROOM STUDIO</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+</Layout>
+
+<style>
+  /* =====================================================
+     サイバー/ダークテーマ - あいぼー会話形式対応
+     ===================================================== */
+
+  .post-page {
+    position: relative;
+    min-height: 100vh;
+    color: #e0e0e0;
+    overflow: hidden;
+    /* ベース背景 */
+    background: linear-gradient(180deg, #0a0a12 0%, #0d0d18 50%, #08080f 100%);
+    background-attachment: fixed;
+  }
+
+  /* ネオングロー用の疑似要素 */
+  .post-page::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 20%, var(--glow-1, rgba(0, 255, 255, 0.4)) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, var(--glow-2, rgba(255, 0, 255, 0.35)) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 30% at 50% 50%, var(--glow-3, rgba(0, 128, 255, 0.25)) 0%, transparent 50%);
+    transition: background 0.8s ease;
+  }
+
+  /* =====================================================
+     3層サイバー背景システム（Layer 2, 3用）
+     ===================================================== */
+
+  /* Layer 1は.post-pageに直接設定済み */
+
+  /* Layer 2: 中間層 - グリッド＆メッシュ（一時無効）
+  .post-page::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
+      linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(rgba(255, 0, 255, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 0, 255, 0.015) 1px, transparent 1px);
+    background-size:
+      60px 60px,
+      60px 60px,
+      15px 15px,
+      15px 15px;
+    mask-image: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.1) 100%);
+    -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.1) 100%);
+  }
+  */
+
+  /* Layer 3: 最前面（一時無効）*/
+  .cyber-overlay {
+    display: none;
+  }
+
+  .cyber-particles {
+    display: none;
+  }
+
+  /* =====================================================
+     ヒーローバナー（TECH用・全幅オーバーレイ）
+     画像サイズ: 1400x500px 固定
+     ===================================================== */
+
+  .hero-with-banner {
+    position: relative;
+    width: 100%;
+    z-index: 1;
+  }
+
+  .hero-banner-img {
+    width: 100%;
+    height: auto;
+    display: block;
+    /* アスペクト比を維持 (500/1400 ≈ 35.7%) */
+    aspect-ratio: 1400 / 500;
+    object-fit: cover;
+  }
+
+  .hero-banner-overlay {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hero-banner-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* =====================================================
+     上部エリア：パンくず＋バッジ（大きく・水色グロー）
+     ===================================================== */
+  .hero-banner-top {
+    position: absolute;
+    top: 6.5%;
+    left: 3.4%;
+    transform: scale(1.15);
+    transform-origin: top left;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  /* パンくず - わかりやすいナビゲーション */
+  .breadcrumb-banner {
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .breadcrumb-banner .breadcrumb-link {
+    display: inline-block;
+    color: #fff;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    border-radius: 20px;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+  }
+
+  .breadcrumb-banner .breadcrumb-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+  }
+
+  .breadcrumb-banner .breadcrumb-link:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+  }
+
+  .breadcrumb-banner .breadcrumb-link:hover::before {
+    left: 100%;
+  }
+
+  .breadcrumb-banner .breadcrumb-sep {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9rem;
+    margin: 0 0.1rem;
+  }
+
+  .breadcrumb-banner .breadcrumb-current {
+    display: inline-block;
+    color: #fff;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    border-radius: 20px;
+    backdrop-filter: blur(4px);
+  }
+
+  .hero-meta-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+  }
+
+  /* カテゴリバッジ - グラデーションボーダー＆ホログラム風 */
+  .category-badge-banner {
+    display: inline-block;
+    color: #fff !important;
+    font-size: 0.85rem;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.3rem;
+    background: linear-gradient(135deg, #ff3d7f 0%, #ff6b9d 50%, #ff3d7f 100%);
+    background-size: 200% 200%;
+    border: none;
+    border-radius: 4px;
+    position: relative;
+    animation: gradient-shift 3s ease infinite;
+    box-shadow: 0 4px 15px rgba(255, 61, 127, 0.4);
+  }
+
+  .category-badge-banner::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(135deg, #ff3d7f, #ff00ff, #ff6b9d, #ff3d7f);
+    background-size: 400% 400%;
+    border-radius: 6px;
+    z-index: -1;
+    animation: border-dance 4s linear infinite;
+    opacity: 0.7;
+  }
+
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  @keyframes border-dance {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* レベルバッジ - サイバーインジケーター */
+  .level-badge-banner {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #0a0a12 !important;
+    font-size: 0.8rem;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em;
+    padding: 0.6rem 1.2rem;
+    background: linear-gradient(90deg, #00ff88, #00ffff);
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4);
+  }
+
+  .level-badge-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    animation: shine-sweep 2.5s ease-in-out infinite;
+  }
+
+  @keyframes shine-sweep {
+    0% { left: -50%; }
+    100% { left: 150%; }
+  }
+
+  .level-badge-banner .level-icon {
+    color: #0a0a12;
+    font-weight: 900;
+    font-size: 0.9rem;
+  }
+
+  .level-badge-banner .level-text {
+    color: #0a0a12;
+    font-weight: 700;
+  }
+
+  /* =====================================================
+     中央：キャラクター紹介（オレンジカード）
+     ===================================================== */
+  .character-intro-banner {
+    position: absolute;
+    top: 81.3%;
+    left: 35.1%;
+    transform: scale(1.36);
+    transform-origin: top left;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    /* オレンジグラデーション背景 */
+    background: linear-gradient(135deg, #ff8c00, #ff6600);
+    padding: 0.8rem 1.5rem;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(255, 140, 0, 0.4);
+  }
+
+  /* 光沢アニメーション（レベルバッジと同じ） */
+  .character-intro-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: shine-sweep-card 2.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  @keyframes shine-sweep-card {
+    0% { left: -50%; }
+    100% { left: 150%; }
+  }
+
+  .character-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .character-avatar-banner {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    position: relative;
+  }
+
+  /* あいぼー = ピンク */
+  .character-avatar-banner.aibou {
+    background: linear-gradient(135deg, #ff6b9d, #ff3d7f);
+    border: 3px solid #fff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  /* 道ゐ = 水色 */
+  .character-avatar-banner.michi {
+    border: 3px solid #00ffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+  }
+
+  .character-avatar-banner.michi img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .character-info-banner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* あいぼーの名前 = ピンク（白背景で映える） */
+  .character-banner:first-child .character-name-banner {
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 800;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  /* 道ゐの名前 = 水色 */
+  .character-banner:last-child .character-name-banner {
+    color: #00ffff;
+    font-size: 0.95rem;
+    font-weight: 800;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  .character-name-banner {
+    font-size: 0.95rem;
+    font-weight: 800;
+  }
+
+  .character-role-banner {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.6rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .character-x-banner {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+    font-weight: 300;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* =====================================================
+     タイトル（バナー内）
+     ===================================================== */
+  .hero-title-banner {
+    position: absolute;
+    top: 32.7%;
+    left: 3.3%;
+    transform: scale(1);
+    transform-origin: top left;
+    font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 700;
+    line-height: 1.4;
+    color: #ffffff;
+    margin: 0;
+    max-width: 60%;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.5);
+  }
+
+  /* =====================================================
+     ピンクバー：ハッシュタグ（水色グロー）
+     ===================================================== */
+  .hero-banner-bottom {
+    position: absolute;
+    top: 54.2%;
+    left: 9.2%;
+    transform: scale(1.37);
+    transform-origin: top left;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .hero-tags-banner {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin: 0;
+  }
+
+  .tag-banner {
+    color: #00ffff !important;
+    background: rgba(0, 212, 255, 0.2) !important;
+    border: 1px solid rgba(0, 212, 255, 0.6) !important;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.4rem 0.9rem;
+    border-radius: 6px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+  }
+
+  .tag-banner:hover {
+    background: rgba(0, 212, 255, 0.3) !important;
+  }
+
+  /* =====================================================
+     ヒーローセクション
+     ===================================================== */
+
+  .hero {
+    position: relative;
+    padding: 2rem 2rem 3rem;
+    z-index: 1;
+  }
+
+  .hero-content {
+    position: relative;
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  /* パンくず */
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+
+  .breadcrumb-link {
+    color: #00ffff;
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+
+  .breadcrumb-link:hover {
+    opacity: 1;
+  }
+
+  .breadcrumb-sep {
+    color: #444;
+  }
+
+  .breadcrumb-current {
+    color: #888;
+  }
+
+  /* メタ情報 */
+  .hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .category-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.9rem;
+    background: linear-gradient(135deg, var(--cat-color), transparent);
+    border: 1px solid var(--cat-color);
+    color: var(--cat-color);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    border-radius: 4px;
+    text-shadow: 0 0 10px var(--cat-color);
+  }
+
+  .level-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.9rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+  }
+
+  .level-icon {
+    color: #ffaa00;
+    font-weight: bold;
+  }
+
+  .level-text {
+    color: #888;
+  }
+
+  .meta-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #666;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+  }
+
+  .meta-info time,
+  .meta-info .read-time {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .meta-info svg {
+    opacity: 0.5;
+  }
+
+  /* タイトル */
+  .hero-title {
+    font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.5;
+    color: #ffffff;
+    margin-bottom: 1rem;
+    letter-spacing: 0.01em;
+  }
+
+  .hero-description {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #999;
+    max-width: 600px;
+  }
+
+  /* タグ */
+  .hero-tags {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+  }
+
+  .tag {
+    color: #00ffff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    background: rgba(0, 255, 255, 0.08);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+
+  .tag:hover {
+    background: rgba(0, 255, 255, 0.15);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+  }
+
+  /* =====================================================
+     キャラクター紹介
+     ===================================================== */
+
+  .character-intro {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .character-intro-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.05), rgba(255, 0, 255, 0.05));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+  }
+
+  .character {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .character-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .character-avatar.aibou {
+    background: linear-gradient(135deg, #00ffff, #0088ff);
+  }
+
+  .character-avatar.user {
+    border: 2px solid #ff6b9d;
+  }
+
+  .character-avatar.user img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .character-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .character-name {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+
+  .character-desc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: #666;
+  }
+
+  .character-x {
+    color: #444;
+    font-size: 1.5rem;
+    font-weight: 300;
+  }
+
+  /* =====================================================
+     本文エリア
+     ===================================================== */
+
+  .article-main {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+  }
+
+  @media (min-width: 1400px) {
+    .article-main {
+      max-width: 1400px;
+      grid-template-columns: 1fr 200px;
+    }
+  }
+
+  /* 本文スタイル */
+  .article-content {
+    font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
+    font-size: 1.1rem;
+    line-height: 2.1;
+    color: #d0d0d0;
+  }
+
+  .article-content :global(h2) {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 3rem 0 1.25rem;
+    padding-bottom: 0.6rem;
+    color: #ffffff;
+    position: relative;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .article-content :global(h2)::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, #00ffff, #ff00ff);
+    border-radius: 1px;
+  }
+
+  .article-content :global(h3) {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 2rem 0 0.8rem;
+    color: #00ffff;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .article-content :global(h3)::before {
+    content: '▸';
+    color: #00ffff;
+    font-size: 0.8rem;
+  }
+
+  .article-content :global(p) {
+    margin-bottom: 1.5rem;
+  }
+
+  .article-content :global(strong) {
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  .article-content :global(code) {
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85em;
+    color: #00ffff;
+  }
+
+  .article-content :global(pre) {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1.25rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 1.75rem 0;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    position: relative;
+  }
+
+  .article-content :global(pre)::before {
+    content: 'CODE';
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.25rem 0.75rem;
+    background: rgba(0, 255, 255, 0.2);
+    color: #00ffff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 500;
+    border-radius: 0 8px 0 8px;
+    letter-spacing: 0.05em;
+  }
+
+  .article-content :global(pre code) {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #e0e0e0;
+    display: block;
+  }
+
+  .article-content :global(ul),
+  .article-content :global(ol) {
+    margin: 1.5rem 0;
+    padding-left: 0;
+    list-style: none;
+  }
+
+  .article-content :global(li) {
+    margin-bottom: 0.6rem;
+    padding-left: 1.5rem;
+    position: relative;
+  }
+
+  .article-content :global(ul li)::before {
+    content: '▹';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #00ffff;
+    font-size: 0.8rem;
+  }
+
+  .article-content :global(ol) {
+    counter-reset: list-counter;
+  }
+
+  .article-content :global(ol li) {
+    counter-increment: list-counter;
+  }
+
+  .article-content :global(ol li)::before {
+    content: counter(list-counter);
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #00ffff;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .article-content :global(blockquote) {
+    border-left: 3px solid #00ffff;
+    padding: 1rem 1.25rem;
+    margin: 1.75rem 0;
+    background: rgba(0, 255, 255, 0.05);
+    border-radius: 0 8px 8px 0;
+    color: #aaa;
+    font-style: normal;
+  }
+
+  .article-content :global(blockquote p) {
+    margin-bottom: 0;
+  }
+
+  .article-content :global(a) {
+    color: #00ffff;
+    text-decoration: none;
+    border-bottom: 1px dashed rgba(0, 255, 255, 0.5);
+    transition: all 0.2s;
+  }
+
+  .article-content :global(a:hover) {
+    color: #00ffff;
+    border-bottom-style: solid;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  }
+
+  .article-content :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 1.75rem 0;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .article-content :global(hr) {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.3), transparent);
+    margin: 2.5rem 0;
+  }
+
+  /* テーブル */
+  .article-content :global(table) {
+    width: 100%;
+    margin: 1.75rem 0;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .article-content :global(th),
+  .article-content :global(td) {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .article-content :global(th) {
+    background: rgba(0, 255, 255, 0.1);
+    color: #00ffff;
+    font-weight: 600;
+  }
+
+  /* =====================================================
+     サイドバー
+     ===================================================== */
+
+  .article-sidebar {
+    display: none;
+  }
+
+  @media (min-width: 1100px) {
+    .article-sidebar {
+      display: block;
+      position: sticky;
+      top: 2rem;
+      align-self: start;
+    }
+  }
+
+  .sidebar-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.25rem;
+  }
+
+  .sidebar-card h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: #666;
+    margin-bottom: 0.75rem;
+  }
+
+  .share-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .share-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #666;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .share-btn:hover {
+    background: rgba(0, 255, 255, 0.1);
+    border-color: rgba(0, 255, 255, 0.3);
+    color: #00ffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 255, 255, 0.2);
+  }
+
+  .share-btn.twitter:hover {
+    color: #1da1f2;
+    border-color: rgba(29, 161, 242, 0.3);
+  }
+
+  .share-btn.facebook:hover {
+    color: #1877f2;
+    border-color: rgba(24, 119, 242, 0.3);
+  }
+
+  /* =====================================================
+     著者カード
+     ===================================================== */
+
+  .author-section {
+    margin-top: 4rem;
+    max-width: 800px;
+  }
+
+  .author-section-header {
+    margin-bottom: 1rem;
+  }
+
+  .author-section-label {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: #00ffff;
+    padding: 0.4rem 1rem;
+    background: rgba(0, 255, 255, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 4px;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  }
+
+  .author-card {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(10, 10, 20, 0.9), rgba(20, 20, 40, 0.9));
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .author-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #00ffff, #ff00ff, #00ffff);
+    background-size: 200% 100%;
+    animation: author-card-glow 3s linear infinite;
+  }
+
+  @keyframes author-card-glow {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
+  }
+
+  .author-card:hover {
+    border-color: rgba(0, 255, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0, 255, 255, 0.15), 0 0 20px rgba(0, 255, 255, 0.1);
+  }
+
+  .author-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #ff6b9d;
+    flex-shrink: 0;
+    box-shadow: 0 0 15px rgba(255, 107, 157, 0.3);
+  }
+
+  .author-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .author-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    flex: 1;
+  }
+
+  .author-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.02em;
+  }
+
+  .author-name-jp {
+    font-size: 0.8rem;
+    color: #888;
+    font-family: 'Zen Maru Gothic', sans-serif;
+  }
+
+  .author-role {
+    font-size: 0.7rem;
+    color: #00ffff;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+  }
+
+  .author-card-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: rgba(0, 255, 255, 0.1);
+    border-radius: 50%;
+    color: #00ffff;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .author-card:hover .author-card-arrow {
+    background: rgba(0, 255, 255, 0.2);
+    transform: translateX(4px);
+  }
+
+  .author-label {
+    font-size: 0.7rem;
+    color: #666;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  /* 著者ポップアップ */
+  .author-popup {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .author-popup.active {
+    display: flex;
+  }
+
+  .author-popup-inner {
+    position: relative;
+    max-width: 400px;
+    width: 100%;
+    background: linear-gradient(180deg, #0d0d18 0%, #1a1a2e 100%);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 255, 255, 0.1);
+  }
+
+  .author-popup-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #888;
+    font-size: 1.5rem;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  .author-popup-close:hover {
+    background: rgba(255, 100, 100, 0.2);
+    color: #ff6666;
+  }
+
+  .author-popup-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #ff6b9d;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 0 20px rgba(255, 107, 157, 0.3);
+  }
+
+  .author-popup-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .author-popup-label {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: #00ffff;
+    margin-bottom: 1rem;
+    opacity: 0.7;
+  }
+
+  .author-popup-name {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.02em;
+  }
+
+  .author-popup-name-jp {
+    display: block;
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 1.25rem;
+    font-family: 'Zen Maru Gothic', sans-serif;
+  }
+
+  .author-popup-bio {
+    font-size: 0.85rem;
+    line-height: 1.9;
+    color: #aaa;
+    margin-bottom: 2rem;
+    font-family: 'Zen Maru Gothic', sans-serif;
+  }
+
+  .author-popup-buttons {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+  }
+
+  .author-popup-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    min-width: 120px;
+  }
+
+  .author-popup-btn.primary {
+    background: linear-gradient(135deg, #00ffff, #0088ff);
+    color: #000;
+    border: none;
+  }
+
+  .author-popup-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 255, 255, 0.4);
+  }
+
+  .author-popup-btn.primary svg {
+    stroke: #000;
+  }
+
+  .author-popup-btn.secondary {
+    background: transparent;
+    color: #ff6b9d;
+    border: 1px solid rgba(255, 107, 157, 0.5);
+  }
+
+  .author-popup-btn.secondary:hover {
+    background: rgba(255, 107, 157, 0.1);
+    border-color: #ff6b9d;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(255, 107, 157, 0.2);
+  }
+
+  .author-popup-btn.secondary svg {
+    stroke: #ff6b9d;
+  }
+
+  .author-popup-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #00ffff, #0088ff);
+    border: none;
+    border-radius: 30px;
+    color: #000;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .author-popup-link:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+  }
+
+  .author-popup-link svg {
+    stroke: #000;
+  }
+
+  /* =====================================================
+     フッター
+     ===================================================== */
+
+  .article-footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    margin-top: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .footer-content {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.75rem 1.25rem;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    border-radius: 8px;
+    color: #00ffff;
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+
+  .back-button:hover {
+    background: rgba(0, 255, 255, 0.1);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    transform: translateX(-4px);
+  }
+
+  .footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #444;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+
+  .brand-icon {
+    font-size: 1rem;
+  }
+
+  /* =====================================================
+     レスポンシブ
+     ===================================================== */
+
+  @media (max-width: 768px) {
+    /* バナー付きヒーロー（スマホ） */
+    .hero-banner-top {
+      top: 3%;
+      left: 2%;
+    }
+
+    .breadcrumb-banner {
+      font-size: 0.8rem;
+    }
+
+    .hero-banner-bottom {
+      bottom: 12%;
+      left: 2%;
+      right: 2%;
+    }
+
+    .tag-banner {
+      font-size: 0.7rem;
+      padding: 0.25rem 0.5rem;
+    }
+
+    .hero-meta-banner {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .category-badge-banner {
+      font-size: 0.8rem;
+      padding: 0.35rem 0.8rem;
+    }
+
+    .level-badge-banner {
+      font-size: 0.75rem;
+      padding: 0.35rem 0.7rem;
+    }
+
+    /* キャラクター紹介（スマホ） */
+    .character-intro-banner {
+      top: 45%;
+      padding: 0.5rem 1rem;
+      gap: 0.6rem;
+    }
+
+    .character-avatar-banner {
+      width: 32px;
+      height: 32px;
+      font-size: 1.2rem;
+    }
+
+    .character-name-banner {
+      font-size: 0.75rem;
+    }
+
+    .character-role-banner {
+      font-size: 0.55rem;
+    }
+
+    .character-x-banner {
+      font-size: 1rem;
+    }
+
+    .hero {
+      padding: 1.5rem 1.5rem 2rem;
+    }
+
+    .hero-title {
+      font-size: 1.5rem;
+    }
+
+    .hero-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .character-intro {
+      padding: 0 1rem;
+    }
+
+    .character-intro-inner {
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .character-x {
+      transform: rotate(90deg);
+    }
+
+    .article-main {
+      padding: 2rem 1.5rem;
+    }
+
+    .article-content {
+      font-size: 0.95rem;
+    }
+
+    .article-content :global(h2) {
+      font-size: 1.25rem;
+    }
+
+    .footer-content {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .author-section {
+      margin-top: 3rem;
+    }
+
+    .author-card {
+      padding: 1rem;
+      gap: 1rem;
+    }
+
+    .author-avatar {
+      width: 48px;
+      height: 48px;
+    }
+
+    .author-name {
+      font-size: 0.95rem;
+    }
+
+    .author-name-jp {
+      font-size: 0.7rem;
+    }
+
+    .author-card-arrow {
+      width: 28px;
+      height: 28px;
+    }
+
+    .author-popup-inner {
+      padding: 2rem 1.5rem;
+    }
+
+    .author-popup-name {
+      font-size: 1.3rem;
+    }
+
+    .author-popup-buttons {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .author-popup-btn {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  // 著者カード ポップアップ
+  document.addEventListener('DOMContentLoaded', () => {
+    const authorCard = document.getElementById('author-card');
+    const authorPopup = document.getElementById('author-popup');
+    const authorPopupClose = document.getElementById('author-popup-close');
+
+    if (authorCard && authorPopup) {
+      // カードクリックでポップアップ表示
+      authorCard.addEventListener('click', () => {
+        authorPopup.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+
+      // 閉じるボタン
+      if (authorPopupClose) {
+        authorPopupClose.addEventListener('click', (e) => {
+          e.stopPropagation();
+          authorPopup.classList.remove('active');
+          document.body.style.overflow = '';
+        });
+      }
+
+      // 背景クリックで閉じる
+      authorPopup.addEventListener('click', (e) => {
+        if (e.target === authorPopup) {
+          authorPopup.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+
+      // ESCキーで閉じる
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && authorPopup.classList.contains('active')) {
+          authorPopup.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+  });
+
+  // ================================
+  // 🔧 配置デバッグモード（開発用）
+  // URLに ?debug=layout を付けると有効
+  // ================================
+  if (window.location.search.includes('debug=layout')) {
+    console.log('🔧 配置デバッグモード ON');
+    console.log('📍 ドラッグ: 要素を移動');
+    console.log('📐 右下の青ハンドル: サイズ変更');
+    console.log('📋 配置が決まったら、コンソールのCSS値をコピー');
+
+    const banner = document.querySelector('.hero-with-banner');
+    if (!banner) {
+      console.log('⚠️ バナーが見つかりません（TECHページ以外）');
+    } else {
+      // ドラッグ可能にする要素
+      const draggables = [
+        { el: document.querySelector('.hero-banner-top'), name: 'パンくず＋バッジ (.hero-banner-top)' },
+        { el: document.querySelector('.hero-title-banner'), name: 'タイトル (.hero-title-banner)' },
+        { el: document.querySelector('.character-intro-banner'), name: 'キャラ紹介 (.character-intro-banner)' },
+        { el: document.querySelector('.hero-banner-bottom'), name: 'ハッシュタグ (.hero-banner-bottom)' }
+      ];
+
+      const bannerRect = banner.getBoundingClientRect();
+
+      draggables.forEach(({ el, name }) => {
+        if (!el) return;
+
+        // スタイル追加（ドラッグ可能を示す）
+        el.style.cursor = 'move';
+        el.style.outline = '2px dashed #ff00ff';
+        el.style.outlineOffset = '2px';
+        el.style.position = 'absolute';
+
+        // リサイズハンドルを追加
+        const resizeHandle = document.createElement('div');
+        resizeHandle.style.cssText = `
+          position: absolute;
+          bottom: -8px;
+          right: -8px;
+          width: 16px;
+          height: 16px;
+          background: #00ffff;
+          border: 2px solid #fff;
+          border-radius: 50%;
+          cursor: nwse-resize;
+          z-index: 99999;
+        `;
+        el.style.position = 'absolute';
+        el.appendChild(resizeHandle);
+
+        let isDragging = false;
+        let isResizing = false;
+        let startX, startY, startLeft, startTop, startWidth, startHeight;
+
+        // リサイズハンドルのイベント
+        resizeHandle.addEventListener('mousedown', (e) => {
+          isResizing = true;
+          startX = e.clientX;
+          startY = e.clientY;
+          startWidth = el.offsetWidth;
+          startHeight = el.offsetHeight;
+          e.preventDefault();
+          e.stopPropagation();
+        });
+
+        // ドラッグのイベント
+        el.addEventListener('mousedown', (e) => {
+          if (isResizing) return;
+          isDragging = true;
+          const rect = el.getBoundingClientRect();
+          startX = e.clientX;
+          startY = e.clientY;
+          startLeft = rect.left - bannerRect.left;
+          startTop = rect.top - bannerRect.top;
+          e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+          if (isResizing) {
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            const newWidth = Math.max(50, startWidth + dx);
+            const newHeight = Math.max(20, startHeight + dy);
+            el.style.width = newWidth + 'px';
+            el.style.height = 'auto';
+            // フォントサイズも調整（比率で）
+            const scale = newWidth / startWidth;
+            el.style.fontSize = (scale * 100) + '%';
+          } else if (isDragging) {
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            const newLeft = startLeft + dx;
+            const newTop = startTop + dy;
+
+            // %に変換
+            const leftPercent = (newLeft / bannerRect.width * 100).toFixed(1);
+            const topPercent = (newTop / bannerRect.height * 100).toFixed(1);
+
+            el.style.left = leftPercent + '%';
+            el.style.top = topPercent + '%';
+            el.style.bottom = 'auto';
+            el.style.right = 'auto';
+            el.style.transform = 'none';
+          }
+        });
+
+        document.addEventListener('mouseup', () => {
+          if (isDragging || isResizing) {
+            const rect = el.getBoundingClientRect();
+            const leftPercent = ((rect.left - bannerRect.left) / bannerRect.width * 100).toFixed(1);
+            const topPercent = ((rect.top - bannerRect.top) / bannerRect.height * 100).toFixed(1);
+            const bottomPercent = (100 - (rect.bottom - bannerRect.top) / bannerRect.height * 100).toFixed(1);
+            const computed = getComputedStyle(el);
+
+            console.log(`\n📍 ${name}:`);
+            console.log(`   top: ${topPercent}%;`);
+            console.log(`   left: ${leftPercent}%;`);
+            console.log(`   /* bottom: ${bottomPercent}%; */`);
+            if (isResizing) {
+              console.log(`   font-size: ${computed.fontSize};`);
+              console.log(`   /* または scale: ${(el.offsetWidth / startWidth).toFixed(2)} */`);
+            }
+
+            isDragging = false;
+            isResizing = false;
+          }
+        });
+      });
+
+      // スケールコントロールパネルを追加
+      const controlPanel = document.createElement('div');
+      controlPanel.innerHTML = `
+        <div style="position: fixed; bottom: 20px; left: 20px; z-index: 99999; background: rgba(0,0,0,0.95); color: #fff; padding: 1rem; border-radius: 8px; border: 2px solid #00ffff; font-size: 12px; width: 280px;">
+          <strong style="color: #00ffff; display: block; margin-bottom: 0.75rem;">📐 サイズ調整パネル</strong>
+
+          <div style="margin-bottom: 0.75rem;">
+            <label style="color: #ff6b9d; font-size: 11px;">パンくず＋バッジ</label>
+            <input type="range" id="scale-top" min="50" max="150" value="115" style="width: 100%;">
+            <span id="scale-top-val" style="color: #888;">115%</span>
+          </div>
+
+          <div style="margin-bottom: 0.75rem;">
+            <label style="color: #ffff00; font-size: 11px;">タイトル</label>
+            <input type="range" id="scale-title" min="50" max="150" value="100" style="width: 100%;">
+            <span id="scale-title-val" style="color: #888;">100%</span>
+          </div>
+
+          <div style="margin-bottom: 0.75rem;">
+            <label style="color: #ff6b9d; font-size: 11px;">キャラ紹介カード</label>
+            <input type="range" id="scale-char" min="50" max="150" value="136" style="width: 100%;">
+            <span id="scale-char-val" style="color: #888;">136%</span>
+          </div>
+
+          <div style="margin-bottom: 0.75rem;">
+            <label style="color: #ff6b9d; font-size: 11px;">ハッシュタグ</label>
+            <input type="range" id="scale-bottom" min="50" max="150" value="137" style="width: 100%;">
+            <span id="scale-bottom-val" style="color: #888;">137%</span>
+          </div>
+
+          <button id="copy-scales" style="width: 100%; padding: 0.5rem; background: #00ffff; color: #000; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">📋 CSS値をコピー</button>
+        </div>
+      `;
+      document.body.appendChild(controlPanel);
+
+      // スケールスライダーのイベント
+      const topEl = document.querySelector('.hero-banner-top');
+      const titleEl = document.querySelector('.hero-title-banner');
+      const charEl = document.querySelector('.character-intro-banner');
+      const bottomEl = document.querySelector('.hero-banner-bottom');
+
+      document.getElementById('scale-top').addEventListener('input', (e) => {
+        const val = e.target.value;
+        document.getElementById('scale-top-val').textContent = val + '%';
+        if (topEl) topEl.style.transform = `scale(${val / 100})`;
+        if (topEl) topEl.style.transformOrigin = 'top left';
+      });
+
+      document.getElementById('scale-title').addEventListener('input', (e) => {
+        const val = e.target.value;
+        document.getElementById('scale-title-val').textContent = val + '%';
+        if (titleEl) titleEl.style.transform = `scale(${val / 100})`;
+        if (titleEl) titleEl.style.transformOrigin = 'top left';
+      });
+
+      document.getElementById('scale-char').addEventListener('input', (e) => {
+        const val = e.target.value;
+        document.getElementById('scale-char-val').textContent = val + '%';
+        if (charEl) charEl.style.transform = `scale(${val / 100})`;
+        if (charEl) charEl.style.transformOrigin = 'top left';
+      });
+
+      document.getElementById('scale-bottom').addEventListener('input', (e) => {
+        const val = e.target.value;
+        document.getElementById('scale-bottom-val').textContent = val + '%';
+        if (bottomEl) bottomEl.style.transform = `scale(${val / 100})`;
+        if (bottomEl) bottomEl.style.transformOrigin = 'top left';
+      });
+
+      // CSS値をコピー
+      document.getElementById('copy-scales').addEventListener('click', () => {
+        const topScale = document.getElementById('scale-top').value;
+        const titleScale = document.getElementById('scale-title').value;
+        const charScale = document.getElementById('scale-char').value;
+        const bottomScale = document.getElementById('scale-bottom').value;
+
+        // 位置も取得
+        const getPos = (el) => {
+          if (!el) return { top: 0, left: 0 };
+          const rect = el.getBoundingClientRect();
+          const bannerRect = banner.getBoundingClientRect();
+          return {
+            top: ((rect.top - bannerRect.top) / bannerRect.height * 100).toFixed(1),
+            left: ((rect.left - bannerRect.left) / bannerRect.width * 100).toFixed(1)
+          };
+        };
+
+        const topPos = getPos(topEl);
+        const titlePos = getPos(titleEl);
+        const charPos = getPos(charEl);
+        const bottomPos = getPos(bottomEl);
+
+        const css = `
+/* パンくず＋バッジ */
+.hero-banner-top {
+  top: ${topPos.top}%;
+  left: ${topPos.left}%;
+  transform: scale(${topScale / 100});
+  transform-origin: top left;
+}
+
+/* タイトル */
+.hero-title-banner {
+  top: ${titlePos.top}%;
+  left: ${titlePos.left}%;
+  transform: scale(${titleScale / 100});
+  transform-origin: top left;
+}
+
+/* キャラ紹介カード */
+.character-intro-banner {
+  top: ${charPos.top}%;
+  left: ${charPos.left}%;
+  transform: scale(${charScale / 100});
+  transform-origin: top left;
+}
+
+/* ハッシュタグ */
+.hero-banner-bottom {
+  top: ${bottomPos.top}%;
+  left: ${bottomPos.left}%;
+  transform: scale(${bottomScale / 100});
+  transform-origin: top left;
+}
+`;
+        navigator.clipboard.writeText(css).then(() => {
+          alert('CSS値をクリップボードにコピーしました！');
+          console.log('📋 コピーしたCSS:\n' + css);
+        });
+      });
+
+      // 使い方ガイドを画面に表示
+      const guide = document.createElement('div');
+      guide.innerHTML = `
+        <div style="position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 99999; background: rgba(0,0,0,0.9); color: #fff; padding: 1rem 2rem; border-radius: 8px; border: 2px solid #ff00ff; font-size: 14px; text-align: center;">
+          <strong style="color: #ff00ff;">🔧 配置デバッグモード</strong><br/>
+          <span style="color: #00ffff;">ドラッグで移動 / 左下パネルでサイズ調整</span><br/>
+          <small style="color: #888;">「CSS値をコピー」で反映用コードを取得</small>
+        </div>
+      `;
+      document.body.appendChild(guide);
+    }
+  }
+</script>
