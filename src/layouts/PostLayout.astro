@@ -351,102 +351,157 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
         </div>
         <div class="footer-banner-overlay">
           <div class="footer-banner-content">
-            <!-- 次に読む記事セクション -->
-            {(prevPost || nextPost) && (
-              <div class="footer-nav-section">
-                <h3 class="footer-section-title">次に読む記事</h3>
-                <div class="footer-nav-cards">
-                  {prevPost && (
-                    <a href={`/tech/${prevPost.slug}`} class="footer-nav-card">
-                      <span class="footer-nav-label">◀ 前の記事</span>
-                      <span class="footer-nav-title">{prevPost.title}</span>
+
+            <!-- ===== Story-Driven Footer Hub ===== -->
+
+            <!-- SECTION 1: Context Switcher (Tech & Tips / AI Journey) -->
+            <div class="context-switcher">
+
+              <!-- Column A: Tech & Tips -->
+              <div class="glass-panel tech-panel">
+                <div class="panel-header">
+                  <div class="panel-icon tech-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                    </svg>
+                  </div>
+                  <div class="panel-titles">
+                    <h3 class="panel-title">Tech & Tips</h3>
+                    <p class="panel-subtitle">AI活用・実装ログ・効率化の備忘録</p>
+                  </div>
+                </div>
+                <ul class="article-list">
+                  <li>
+                    <a href="/tech/ai-as-sparring-partner" class="article-item">
+                      <div class="article-meta">
+                        <span class="article-badge new">NEW</span>
+                        <span class="article-date">2026.01.12</span>
+                      </div>
+                      <h4 class="article-title">AIは壁打ち相手として最強だった</h4>
                     </a>
-                  )}
-                  {nextPost && (
-                    <a href={`/tech/${nextPost.slug}`} class="footer-nav-card">
-                      <span class="footer-nav-label">次の記事 ▶</span>
-                      <span class="footer-nav-title">{nextPost.title}</span>
+                  </li>
+                  <li>
+                    <a href="/tech/astro-content-collections" class="article-item">
+                      <span class="article-date">2026.01.05</span>
+                      <h4 class="article-title">Astro Content Collectionsで記事管理を効率化</h4>
                     </a>
-                  )}
+                  </li>
+                  <li>
+                    <a href="/tech/chatgpt-searched-myself" class="article-item">
+                      <span class="article-date">2025.12.20</span>
+                      <h4 class="article-title">ChatGPTに自分のことを調べさせたら感動した話</h4>
+                    </a>
+                  </li>
+                </ul>
+                <div class="panel-footer">
+                  <a href="/tech" class="view-all-link tech-link">View All Tech Tips →</a>
                 </div>
               </div>
-            )}
 
-            <!-- プロフィールカード（固定） -->
-            <div class="footer-profile-section">
-              <span class="footer-profile-label">WRITTEN BY</span>
-              <div class="footer-profile-card">
-                <div class="footer-profile-avatar">
-                  <img src="/images/tech/mashiba-profile.jpg" alt="Mashiba Dowie" />
+              <!-- Column B: AI Journey -->
+              <div class="glass-panel journey-panel">
+                <div class="panel-header">
+                  <div class="panel-icon journey-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                  </div>
+                  <div class="panel-titles">
+                    <h3 class="panel-title">AI Journey</h3>
+                    <p class="panel-subtitle">AIとの対話ログ・思考と感情の記録</p>
+                  </div>
                 </div>
-                <div class="footer-profile-info">
-                  <span class="footer-profile-name">Mashiba Dowie</span>
-                  <span class="footer-profile-name-jp">真柴道ゐ</span>
-                  <span class="footer-profile-role">Creator / MASHROOM STUDIO</span>
+                <ul class="article-list">
+                  <li>
+                    <a href="/tech/ai-as-sparring-partner" class="article-item journey-item">
+                      <div class="article-meta">
+                        <span class="article-badge new journey-badge">NEW</span>
+                        <span class="article-date">2026.01.10</span>
+                      </div>
+                      <h4 class="article-title">補助金の申請書を書くのが辛すぎてAIに相談した結果</h4>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/tech/chatgpt-searched-myself" class="article-item journey-item">
+                      <span class="article-date">2026.01.02</span>
+                      <h4 class="article-title">S氏との会議前に壁打ちをして気づいた、経営の視点</h4>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/tech/chatgpt-searched-myself" class="article-item journey-item">
+                      <span class="article-date">2025.12.28</span>
+                      <h4 class="article-title">なぜ僕は「ジェミー」と呼びたいのか？AIとの距離感の話</h4>
+                    </a>
+                  </li>
+                </ul>
+                <div class="panel-footer">
+                  <a href="/tech?category=ai-journey" class="view-all-link journey-link">Read Full Story →</a>
                 </div>
+              </div>
+
+            </div>
+
+            <!-- SECTION 2: Dive Deeper (Who is Owner? Bento Grid) -->
+            <div class="dive-deeper">
+              <div class="dive-header">
+                <h2 class="dive-title">Who is Owner?</h2>
+                <p class="dive-subtitle">クリエイティブと経営の狭間で。</p>
+              </div>
+
+              <div class="bento-grid">
+
+                <!-- 1. Author Profile -->
+                <div class="bento-item profile-card glass-panel">
+                  <div class="profile-avatar">
+                    <img src="/images/tech/mashiba-profile.jpg" alt="道ゐ" />
+                  </div>
+                  <span class="profile-label">WRITTEN BY</span>
+                  <h3 class="profile-name">道ゐ <span class="profile-name-en">/ Dowie</span></h3>
+                  <p class="profile-desc">音楽スタジオ運営 / A-Sketch新人発掘担当。日々の業務やS氏とのやり取りの中で得た気づきを記録しています。</p>
+                  <a href="https://mashroom-studio-web.vercel.app/#profile" target="_blank" rel="noopener" class="profile-link">プロフィール詳細</a>
+                </div>
+
+                <!-- 2. Story (ノケ物語) -->
+                <a href="/story" class="bento-item story-card">
+                  <img src="/images/ノケ物語サムネ.png" alt="ノケ物語" class="story-thumbnail" />
+                  <div class="story-overlay"></div>
+                  <div class="story-content">
+                    <span class="story-badge">My Story</span>
+                    <h3 class="story-title">ノケ物語</h3>
+                    <p class="story-hover-text">これまでの歩みと、これからの物語。</p>
+                  </div>
+                </a>
+
+                <!-- 3. DTM / Studio -->
+                <a href="/dtm" class="bento-item dtm-card">
+                  <img src="/images/thumbnails/dtm/dtm-thumb-01-studio-desk.png" alt="SOUND LAB" class="dtm-thumbnail" />
+                  <div class="dtm-overlay"></div>
+                  <div class="dtm-content">
+                    <span class="dtm-label">MUSIC / DTM</span>
+                    <h3 class="dtm-title">SOUND<br/>LAB.</h3>
+                    <p class="dtm-desc">使用機材、制作実績、DTMの技術ログ。</p>
+                    <span class="dtm-link">Explore Studio →</span>
+                  </div>
+                </a>
+
+                <!-- 4. Website / Portfolio -->
+                <a href="https://mashroom-studio-web.vercel.app/" target="_blank" rel="noopener" class="bento-item website-card glass-panel">
+                  <div class="website-content">
+                    <span class="website-label">Official Website</span>
+                    <h3 class="website-title">ポートフォリオ & スタジオ公式サイト</h3>
+                  </div>
+                  <div class="website-arrow">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                    </svg>
+                  </div>
+                </a>
+
               </div>
             </div>
 
-            <!-- 回遊リンク & SNS -->
-            <div class="footer-actions-section">
-              <!-- 回遊リンク -->
-              <div class="footer-nav-links">
-                <span class="footer-nav-links-label">EXPLORE MORE</span>
-                <div class="footer-nav-links-grid">
-                  <a href="/tech" class="footer-nav-link tech">
-                    <span class="nav-link-icon">⚡</span>
-                    <span class="nav-link-text">TECH LAB</span>
-                  </a>
-                  <a href="/story" class="footer-nav-link story">
-                    <span class="nav-link-icon">📖</span>
-                    <span class="nav-link-text">STORY</span>
-                  </a>
-                  <a href="/dtm" class="footer-nav-link dtm">
-                    <span class="nav-link-icon">🎹</span>
-                    <span class="nav-link-text">DTM LAB</span>
-                  </a>
-                  <a href="/gear" class="footer-nav-link gear">
-                    <span class="nav-link-icon">🎛️</span>
-                    <span class="nav-link-text">GEAR</span>
-                  </a>
-                  <a href="https://mashroom-studio-web.vercel.app/" target="_blank" rel="noopener" class="footer-nav-link home">
-                    <span class="nav-link-icon">🏠</span>
-                    <span class="nav-link-text">HOMEPAGE</span>
-                  </a>
-                  <a href="https://mashroom-studio-web.vercel.app/#profile" target="_blank" rel="noopener" class="footer-nav-link profile">
-                    <span class="nav-link-icon">👤</span>
-                    <span class="nav-link-text">ABOUT ME</span>
-                  </a>
-                </div>
-              </div>
+            <!-- ===== /Story-Driven Footer Hub ===== -->
 
-              <!-- SNSリンク -->
-              <div class="footer-social-section">
-                <span class="footer-social-label">FOLLOW US</span>
-                <div class="footer-social-links">
-                  <a href="https://twitter.com/mashiba_dowie" target="_blank" rel="noopener" class="footer-social-btn" aria-label="X (Twitter)">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-                    </svg>
-                  </a>
-                  <a href="https://github.com/mashiba-dowie" target="_blank" rel="noopener" class="footer-social-btn" aria-label="GitHub">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                  </a>
-                  <a href="https://www.youtube.com/@mashiba_dowie" target="_blank" rel="noopener" class="footer-social-btn" aria-label="YouTube">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
-                    </svg>
-                  </a>
-                  <a href="https://www.instagram.com/mashiba_dowie" target="_blank" rel="noopener" class="footer-social-btn" aria-label="Instagram">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                    </svg>
-                  </a>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -1979,241 +2034,552 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
 
   .footer-banner-content {
     width: 100%;
-    max-width: 1300px;
+    max-width: 1400px;
     padding: 2rem;
     padding-bottom: 3rem;
   }
 
-  /* 次に読む記事セクション */
-  .footer-nav-section {
+  /* ===== Story-Driven Footer Hub ===== */
+
+  /* 共通ガラスパネル */
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border-radius: 24px;
+  }
+
+  /* --- SECTION 1: Context Switcher --- */
+  .context-switcher {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
     margin-bottom: 2rem;
   }
 
-  .footer-section-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #00ffff;
-    margin-bottom: 1rem;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  .tech-panel {
+    border-top: 4px solid #a855f7;
   }
 
-  .footer-nav-cards {
+  .journey-panel {
+    border-top: 4px solid #3b82f6;
+  }
+
+  .panel-header {
     display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem;
   }
 
-  .footer-nav-card {
+  .panel-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tech-icon {
+    background: #f3e8ff;
+    color: #a855f7;
+  }
+
+  .journey-icon {
+    background: #dbeafe;
+    color: #3b82f6;
+  }
+
+  .panel-titles {
     flex: 1;
-    min-width: 280px;
-    padding: 1.25rem;
-    background: rgba(0, 0, 0, 0.85);
-    border: 1px solid rgba(0, 255, 255, 0.3);
+  }
+
+  .panel-title {
+    font-family: 'Montserrat', 'JetBrains Mono', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0;
+  }
+
+  .panel-subtitle {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0;
+  }
+
+  .article-list {
+    list-style: none;
+    padding: 0 1rem;
+    margin: 0;
+  }
+
+  .article-item {
+    display: block;
+    padding: 0.875rem 1rem;
     border-radius: 12px;
     text-decoration: none;
     transition: all 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    border-left: 4px solid transparent;
   }
 
-  .footer-nav-card:hover {
-    background: rgba(0, 0, 0, 0.95);
-    border-color: #00ffff;
-    transform: translateY(-4px);
-    box-shadow: 0 8px 24px rgba(0, 255, 255, 0.2);
+  .article-item:hover {
+    background: rgba(255, 255, 255, 0.6);
+    padding-left: 1.25rem;
   }
 
-  .footer-nav-label {
-    font-size: 0.75rem;
-    color: #888;
-    font-family: 'JetBrains Mono', monospace;
+  .tech-panel .article-item:hover {
+    border-left-color: #a855f7;
   }
 
-  .footer-nav-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #00ffff;
-    line-height: 1.4;
+  .journey-item:hover {
+    border-left-color: #3b82f6 !important;
   }
 
-  /* プロフィールセクション */
-  .footer-profile-section {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .footer-profile-label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #ff6b9d;
-    font-family: 'JetBrains Mono', monospace;
-    letter-spacing: 0.1em;
-  }
-
-  .footer-profile-card {
+  .article-meta {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 1.25rem;
-    background: rgba(0, 0, 0, 0.85);
-    border: 1px solid rgba(255, 107, 157, 0.3);
-    border-radius: 12px;
-    max-width: 400px;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
   }
 
-  .footer-profile-avatar {
-    width: 64px;
-    height: 64px;
+  .article-badge {
+    font-size: 0.6rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 9999px;
+    text-transform: uppercase;
+  }
+
+  .article-badge.new {
+    background: #a855f7;
+    color: #fff;
+  }
+
+  .article-badge.journey-badge {
+    background: #3b82f6;
+  }
+
+  .article-date {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    font-family: 'Montserrat', monospace;
+  }
+
+  .article-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1f2937;
+    line-height: 1.4;
+    margin: 0;
+    transition: color 0.2s ease;
+  }
+
+  .tech-panel .article-item:hover .article-title {
+    color: #a855f7;
+  }
+
+  .journey-item:hover .article-title {
+    color: #3b82f6 !important;
+  }
+
+  .panel-footer {
+    padding: 1rem 1.5rem;
+    text-align: right;
+  }
+
+  .view-all-link {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: text-decoration 0.2s ease;
+  }
+
+  .view-all-link:hover {
+    text-decoration: underline;
+  }
+
+  .tech-link {
+    color: #a855f7;
+  }
+
+  .journey-link {
+    color: #3b82f6;
+  }
+
+  /* --- SECTION 2: Dive Deeper (Bento Grid) --- */
+  .dive-deeper {
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .dive-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .dive-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+  }
+
+  .dive-subtitle {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0;
+  }
+
+  .bento-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 1rem;
+  }
+
+  .bento-item {
+    transition: transform 0.3s ease;
+    overflow: hidden;
+  }
+
+  .bento-item:hover {
+    transform: scale(1.02);
+  }
+
+  /* Profile Card */
+  .profile-card {
+    grid-row: span 2;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .profile-avatar {
+    width: 72px;
+    height: 72px;
     border-radius: 50%;
     overflow: hidden;
-    border: 2px solid #ff6b9d;
-    flex-shrink: 0;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
   }
 
-  .footer-profile-avatar img {
+  .profile-avatar img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  .footer-profile-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
+  .profile-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
   }
 
-  .footer-profile-name {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #fff;
+  .profile-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0.25rem 0 0.5rem;
   }
 
-  .footer-profile-name-jp {
+  .profile-name-en {
+    font-size: 1rem;
+    font-weight: 400;
+    color: #6b7280;
+  }
+
+  .profile-desc {
     font-size: 0.85rem;
-    color: #888;
+    color: #4b5563;
+    line-height: 1.6;
+    flex: 1;
+    margin-bottom: 1rem;
   }
 
-  .footer-profile-role {
-    font-size: 0.75rem;
-    color: #ff6b9d;
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  /* 回遊リンク & SNSリンク */
-  .footer-actions-section {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
-  }
-
-  /* 回遊リンク */
-  .footer-nav-links {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .footer-nav-links-label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #00ffff;
-    font-family: 'JetBrains Mono', monospace;
-    letter-spacing: 0.15em;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
-  }
-
-  .footer-nav-links-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.75rem;
-  }
-
-  .footer-nav-link {
+  .profile-link {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    background: rgba(0, 0, 0, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 8px;
-    text-decoration: none;
-    transition: all 0.3s ease;
-  }
-
-  .footer-nav-link .nav-link-icon {
-    font-size: 1.1rem;
-  }
-
-  .footer-nav-link .nav-link-text {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    color: #888;
-  }
-
-  .footer-nav-link:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-  }
-
-  .footer-nav-link:hover .nav-link-text {
+    justify-content: center;
+    padding: 0.75rem;
+    background: #1f2937;
     color: #fff;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: background 0.2s ease;
   }
 
-  /* カテゴリ別カラー */
-  .footer-nav-link.tech { border-color: rgba(6, 182, 212, 0.4); }
-  .footer-nav-link.tech:hover {
-    background: rgba(6, 182, 212, 0.15);
-    border-color: #06b6d4;
-    box-shadow: 0 6px 20px rgba(6, 182, 212, 0.3);
+  .profile-link:hover {
+    background: #000;
   }
-  .footer-nav-link.tech:hover .nav-link-text { color: #06b6d4; }
 
-  .footer-nav-link.story { border-color: rgba(168, 85, 247, 0.4); }
-  .footer-nav-link.story:hover {
-    background: rgba(168, 85, 247, 0.15);
-    border-color: #a855f7;
-    box-shadow: 0 6px 20px rgba(168, 85, 247, 0.3);
+  /* Story Card */
+  .story-card {
+    position: relative;
+    border-radius: 24px;
+    text-decoration: none;
+    display: block;
+    overflow: hidden;
   }
-  .footer-nav-link.story:hover .nav-link-text { color: #a855f7; }
 
-  .footer-nav-link.dtm { border-color: rgba(236, 72, 153, 0.4); }
-  .footer-nav-link.dtm:hover {
-    background: rgba(236, 72, 153, 0.15);
-    border-color: #ec4899;
-    box-shadow: 0 6px 20px rgba(236, 72, 153, 0.3);
+  .story-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
   }
-  .footer-nav-link.dtm:hover .nav-link-text { color: #ec4899; }
 
-  .footer-nav-link.gear { border-color: rgba(249, 115, 22, 0.4); }
-  .footer-nav-link.gear:hover {
-    background: rgba(249, 115, 22, 0.15);
-    border-color: #f97316;
-    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.3);
+  .story-card:hover .story-thumbnail {
+    transform: scale(1.08);
   }
-  .footer-nav-link.gear:hover .nav-link-text { color: #f97316; }
 
-  .footer-nav-link.home { border-color: rgba(255, 107, 157, 0.4); }
-  .footer-nav-link.home:hover {
-    background: rgba(255, 107, 157, 0.15);
-    border-color: #ff6b9d;
-    box-shadow: 0 6px 20px rgba(255, 107, 157, 0.3);
+  .story-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    transition: opacity 0.3s ease;
   }
-  .footer-nav-link.home:hover .nav-link-text { color: #ff6b9d; }
 
-  .footer-nav-link.profile { border-color: rgba(255, 255, 0, 0.4); }
-  .footer-nav-link.profile:hover {
-    background: rgba(255, 255, 0, 0.1);
-    border-color: #ffff00;
-    box-shadow: 0 6px 20px rgba(255, 255, 0, 0.2);
+  .story-card:hover .story-overlay {
+    opacity: 0.15;
   }
-  .footer-nav-link.profile:hover .nav-link-text { color: #ffff00; }
+
+  .story-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 1.5rem;
+    z-index: 2;
+  }
+
+  .story-badge {
+    display: inline-block;
+    padding: 0.3rem 0.6rem;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 4px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  .story-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .story-hover-text {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0.5rem 0 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .story-card:hover .story-hover-text {
+    opacity: 1;
+  }
+
+  /* DTM Card */
+  .dtm-card {
+    grid-row: span 2;
+    position: relative;
+    min-height: 280px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-decoration: none;
+    display: block;
+    overflow: hidden;
+  }
+
+  .dtm-thumbnail {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  .dtm-card:hover .dtm-thumbnail {
+    transform: scale(1.08);
+  }
+
+  .dtm-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.4) 0%, rgba(0, 0, 0, 0.75) 100%);
+  }
+
+  .dtm-content {
+    position: absolute;
+    inset: 0;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 2;
+  }
+
+  .dtm-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.3rem 0.5rem;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    align-self: flex-start;
+  }
+
+  .dtm-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .dtm-desc {
+    font-size: 0.85rem;
+    color: #d1d5db;
+    margin: 0.5rem 0;
+  }
+
+  .dtm-link {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fff;
+    border-bottom: 1px solid #fff;
+    padding-bottom: 0.25rem;
+    display: inline-block;
+  }
+
+  /* Website Card */
+  .website-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    background: rgba(219, 234, 254, 0.9) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    text-decoration: none;
+  }
+
+  .website-content {
+    flex: 1;
+  }
+
+  .website-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #3b82f6;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .website-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin: 0.25rem 0 0;
+  }
+
+  .website-arrow {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    color: #3b82f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  .website-card:hover .website-arrow {
+    background: #fff;
+    transform: scale(1.1);
+  }
+
+  /* ===== /Story-Driven Footer Hub ===== */
+
+  /* 旧スタイル（互換性のため残す場合は以下をコメントアウト解除）*/
+  .next-action-bar {
+    display: none; /* 新デザインでは非表示 */
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .next-action-label {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    background: #e6ff00;
+    color: #000;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    border-radius: 4px 4px 0 0;
+  }
+
+  .next-action-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 0;
+    padding: 1rem 2rem;
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: 0 0 4px 4px;
+    min-width: 100%;
+  }
+
+  .next-action-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6b9ac4;
+    text-decoration: none;
+    padding: 0.3rem 0.8rem;
+    transition: all 0.2s ease;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.8);
+    letter-spacing: 0.05em;
+  }
+
+  .next-action-link:hover {
+    color: #fff;
+    text-shadow: 0 0 10px rgba(107, 154, 196, 0.8);
+  }
+
+  .next-action-divider {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.8rem;
+  }
 
   /* SNSセクション */
   .footer-social-section {
@@ -2429,13 +2795,53 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
       text-align: center;
     }
 
-    /* 回遊リンクのレスポンシブ */
-    .footer-nav-links-grid {
-      grid-template-columns: repeat(2, 1fr);
+    /* Story-Driven Footer Hubのレスポンシブ */
+    .context-switcher {
+      grid-template-columns: 1fr;
+      gap: 1rem;
     }
 
-    .footer-nav-link .nav-link-text {
-      font-size: 0.65rem;
+    .panel-header {
+      padding: 1rem;
+    }
+
+    .panel-title {
+      font-size: 1rem;
+    }
+
+    .article-item {
+      padding: 0.75rem;
+    }
+
+    .article-title {
+      font-size: 0.85rem;
+    }
+
+    .dive-header {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .dive-title {
+      font-size: 1.5rem;
+    }
+
+    .bento-grid {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+    }
+
+    .profile-card {
+      grid-row: auto;
+    }
+
+    .dtm-card {
+      grid-row: auto;
+      min-height: 200px;
+    }
+
+    .story-card {
+      min-height: 140px;
     }
 
     .footer-social-links {
