@@ -33,11 +33,11 @@ const latestArticles = [
 
         <!-- Spacer Panel: 中央カード（次回予告 ↔ 新着記事 クロスフェード） -->
         <div class="h-panel bg-transparent pointer-events-none" id="spacer-panel">
-            <!-- クロスフェード用コンテナ：両コンテンツを同じ位置に重ねる -->
-            <div class="crossfade-container">
+            <!-- 1つのカード枠：中のコンテンツだけがクロスフェード -->
+            <div class="skeleton-text-box p-16 max-w-2xl text-center pointer-events-auto" id="unified-card">
 
-                <!-- ===== 次回予告カード ===== -->
-                <div class="skeleton-text-box p-16 max-w-2xl text-center pointer-events-auto crossfade-item" id="main-card">
+                <!-- ===== 次回予告コンテンツ ===== -->
+                <div class="card-content" id="yokoku-content">
                     <span class="text-[var(--accent-color)] font-mono text-lg mb-6 block">FLOOR 1</span>
                     <h3 class="font-mincho text-7xl md:text-8xl mb-8 leading-none">次回<br>予告</h3>
                     <p class="text-xl text-gray-400 leading-loose mb-8 font-bold">
@@ -57,31 +57,25 @@ const latestArticles = [
                     </div>
                 </div>
 
-                <!-- ===== 新着記事コンテンツ（雑誌風レイアウト）===== -->
-                <div class="articles-magazine-panel crossfade-item" id="articles-content">
-                    <!-- 左側：大きなタイトル -->
-                    <div class="magazine-header">
-                        <span class="text-[var(--accent-color)] font-mono text-sm tracking-widest mb-4 block">NEW ARTICLES</span>
-                        <h2 class="font-mincho text-6xl md:text-7xl leading-tight mb-6">
-                            新着<br>記事
-                        </h2>
-                        <p class="text-gray-400 text-lg">最新の投稿をチェック</p>
-                    </div>
+                <!-- ===== 新着記事コンテンツ ===== -->
+                <div class="card-content" id="articles-content">
+                    <span class="text-[var(--accent-color)] font-mono text-lg mb-6 block">NEW ARTICLES</span>
+                    <h3 class="font-mincho text-7xl md:text-8xl mb-8 leading-none">新着<br>記事</h3>
 
-                    <!-- 右側：記事リスト（雑誌風カード） -->
-                    <div class="magazine-articles">
-                        {latestArticles.map((article, index) => (
-                            <a href={article.href} class="magazine-article-card">
-                                <div class="article-number">{String(index + 1).padStart(2, '0')}</div>
-                                <div class="article-info">
-                                    <span class={`magazine-category ${article.category.toLowerCase()}`}>
-                                        {article.category}
-                                    </span>
-                                    <h3 class="magazine-title">{article.data.title}</h3>
-                                </div>
-                                <div class="article-arrow">→</div>
+                    <!-- 記事リスト -->
+                    <div class="new-articles-list">
+                        {latestArticles.map((article) => (
+                            <a href={article.href} class="new-article-item">
+                                <span class={`article-category ${article.category.toLowerCase()}`}>
+                                    {article.category}
+                                </span>
+                                <span class="article-title">{article.data.title}</span>
                             </a>
                         ))}
+                    </div>
+
+                    <div class="font-mono text-sm text-gray-500 animate-pulse mt-8">
+                        SCROLL TO EXPLORE &rarr;
                     </div>
                 </div>
 
@@ -246,49 +240,44 @@ const latestArticles = [
 </section>
 
 <style>
-    /* === クロスフェードコンテナ === */
-    .crossfade-container {
+    /* === 統一カード（クロスフェード用） === */
+    #unified-card {
         position: relative;
+    }
+
+    /* カード内コンテンツ：同じ位置に重ねる */
+    .card-content {
+        /* 次回予告と新着記事を同じ位置に重ねる */
+    }
+
+    /* 次回予告コンテンツ */
+    #yokoku-content {
+        opacity: 1;
+    }
+
+    /* 新着記事コンテンツ */
+    #articles-content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 64px; /* p-16 と同じ */
+        opacity: 0;
+        pointer-events: none;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        width: 100%;
-        height: 100%;
     }
 
-    /* クロスフェードアイテム共通：中央に重ねて配置 */
-    .crossfade-item {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        /* GSAPでopacity制御 */
-    }
-
-    /* 次回予告カード */
-    #main-card {
-        opacity: 1;
-        z-index: 2;
-    }
-
-    /* 新着記事パネル（雑誌風） */
-    #articles-content {
-        opacity: 0;
-        z-index: 1;
-        pointer-events: none;
-    }
-
-    /* === 新着記事パネル（雑誌風レイアウト） === */
-    .articles-magazine-panel {
+    /* 新着記事リスト */
+    .new-articles-list {
         display: flex;
-        gap: 60px;
-        align-items: center;
-        padding: 50px 60px;
-        background: rgba(0, 0, 0, 0.9);
-        backdrop-filter: blur(12px);
-        border: 2px solid rgba(255, 255, 255, 0.15);
-        border-radius: 12px;
-        box-shadow: 0 0 50px rgba(0, 0, 0, 0.7);
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+        max-width: 400px;
     }
 
     .magazine-header {
@@ -1177,9 +1166,9 @@ const latestArticles = [
         const skeletonBox = spacerPanel.querySelector('.skeleton-text-box');
 
         /* ------------------------------------------------
-           クロスフェード用要素の参照
+           クロスフェード用要素の参照（カード内コンテンツ）
            ------------------------------------------------ */
-        const mainCard = document.getElementById('main-card');
+        const yokokuContent = document.getElementById('yokoku-content');
         const articlesContent = document.getElementById('articles-content');
 
         /* ------------------------------------------------
@@ -1208,22 +1197,22 @@ const latestArticles = [
         });
 
         /* ------------------------------------------------
-           次回予告カード → 新着記事パネル クロスフェード
-           GSAPタイムラインで直接制御
+           次回予告 → 新着記事 コンテンツクロスフェード
+           カードの枠はそのまま、中身だけが切り替わる
            ------------------------------------------------ */
         // 初期状態を設定
-        gsap.set(mainCard, { opacity: 1 });
+        gsap.set(yokokuContent, { opacity: 1 });
         gsap.set(articlesContent, { opacity: 0, pointerEvents: 'none' });
 
-        // 1. 次回予告カードをしばらく表示（余韻）
-        tl.to(mainCard, {
+        // 1. 次回予告コンテンツをしばらく表示（余韻）
+        tl.to(yokokuContent, {
             opacity: 1,
             duration: 0.5,
             ease: "none"
         });
 
         // 2. クロスフェード：次回予告 → 新着記事（同時にフェード）
-        tl.to(mainCard, {
+        tl.to(yokokuContent, {
             opacity: 0,
             pointerEvents: 'none',
             duration: 0.8,
@@ -1243,7 +1232,7 @@ const latestArticles = [
             ease: "none"
         });
 
-        // 4. 新着記事パネルをフェードアウト（横スクロールへ移行）
+        // 4. 新着記事コンテンツをフェードアウト（横スクロールへ移行）
         tl.to(articlesContent, {
             opacity: 0,
             pointerEvents: 'none',
