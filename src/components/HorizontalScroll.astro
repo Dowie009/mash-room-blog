@@ -1071,27 +1071,27 @@ const latestArticles = [
         /* ------------------------------------------------
            クロスフェード制御（次回予告 ↔ 新着記事）
            カードサイズは絶対に変えない - 中身だけが切り替わる
+           GSAPタイムラインのprogressと連動
            ------------------------------------------------ */
         const mainCard = document.getElementById('main-card');
 
-        // スクロール位置を監視してクロスフェード
-        function updateCardState() {
-            const scrollY = window.scrollY;
-            // クロスフェード開始位置（調整可能）
-            const crossfadeStart = 1800;
-            // クロスフェード終了位置（横スクロールに入る前）
-            const crossfadeEnd = 3200;
+        // クロスフェードはGSAPのonUpdate内で制御するため、
+        // ここでは関数だけ定義しておく
+        function updateCrossfade(progress: number) {
+            // progress 0.05〜0.12 の間でクロスフェード発生
+            // （次回予告カードが定位置に来てから、横スクロールに入る前）
+            const crossfadeStart = 0.05;  // 5%で開始
+            const crossfadeEnd = 0.12;    // 12%で終了（横スクロール開始前）
 
-            // カード内容クロスフェード
-            if (scrollY > crossfadeStart && scrollY < crossfadeEnd) {
+            if (progress > crossfadeStart && progress < crossfadeEnd) {
+                mainCard?.classList.add('show-articles');
+            } else if (progress >= crossfadeEnd) {
+                // 横スクロールに入ったら新着記事を維持
                 mainCard?.classList.add('show-articles');
             } else {
                 mainCard?.classList.remove('show-articles');
             }
         }
-
-        window.addEventListener('scroll', updateCardState);
-        updateCardState(); // 初期状態を設定
 
         /* ------------------------------------------------
            GEAR Panel スクロール連動カラー化
@@ -1137,6 +1137,9 @@ const latestArticles = [
                     } else {
                         st.vars.scrub = scrubCh3toF2;
                     }
+
+                    // クロスフェード制御（次回予告 ↔ 新着記事）
+                    updateCrossfade(progress);
                 }
             }
         });
