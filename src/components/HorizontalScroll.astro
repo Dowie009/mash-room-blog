@@ -1,31 +1,85 @@
 ---
 // Horizontal Scroll Section: Story, Gear, Tech panels
+// 新着記事の動的取得（将来的にContent Collectionsから自動取得）
+import { getCollection } from 'astro:content';
+
+// 全カテゴリから最新記事を取得（各カテゴリ1件ずつ）
+const storyPosts = await getCollection('story');
+const dtmPosts = await getCollection('dtm');
+const techPosts = await getCollection('tech');
+
+// 日付順にソートして最新を取得
+const latestStory = storyPosts.sort((a, b) =>
+    new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+)[0];
+const latestDtm = dtmPosts.sort((a, b) =>
+    new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+)[0];
+const latestTech = techPosts.sort((a, b) =>
+    new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+)[0];
+
+// 新着記事リスト（最大3件）
+const latestArticles = [
+    latestStory && { ...latestStory, category: 'STORY', href: `/story/${latestStory.slug}` },
+    latestDtm && { ...latestDtm, category: 'DTM', href: `/dtm/${latestDtm.slug}` },
+    latestTech && { ...latestTech, category: 'TECH', href: `/tech/${latestTech.slug}` },
+].filter(Boolean).slice(0, 3);
 ---
 
 <!-- 3. HORIZONTAL READING -->
 <section class="horizontal-wrapper" id="horizontal-wrapper">
     <div class="horizontal-container">
-        
-        <!-- Spacer Panel -->
-        <div class="h-panel bg-transparent pointer-events-none">
-            <div class="skeleton-text-box p-16 max-w-2xl text-center pointer-events-auto">
-                <span class="text-[var(--accent-color)] font-mono text-lg mb-6 block">FLOOR 1</span>
-                <h3 class="font-mincho text-7xl md:text-8xl mb-8 leading-none">次回<br>予告</h3>
-                <p class="text-xl text-gray-400 leading-loose mb-8 font-bold">
-                    3種類のカテゴリから<br>
-                    行き先を選んでください
-                </p>
 
-                <!-- 平行四辺形ボタン -->
-                <div class="flex justify-center gap-3 mb-8">
-                    <a href="/story" class="skew-button"><span class="skew-text">STORY</span></a>
-                    <a href="/dtm" class="skew-button"><span class="skew-text">DTM</span></a>
-                    <a href="/tech" class="skew-button"><span class="skew-text">TECH</span></a>
+        <!-- Spacer Panel: 中央カード（次回予告 ↔ 新着記事 クロスフェード） -->
+        <div class="h-panel bg-transparent pointer-events-none" id="spacer-panel">
+            <!-- カードサイズ固定: p-16 max-w-2xl は絶対に変更しない -->
+            <div class="skeleton-text-box p-16 max-w-2xl text-center pointer-events-auto" id="main-card">
+
+                <!-- ===== 次回予告コンテンツ ===== -->
+                <div class="card-content yokoku-content" id="yokoku-content">
+                    <span class="text-[var(--accent-color)] font-mono text-lg mb-6 block">FLOOR 1</span>
+                    <h3 class="font-mincho text-7xl md:text-8xl mb-8 leading-none">次回<br>予告</h3>
+                    <p class="text-xl text-gray-400 leading-loose mb-8 font-bold">
+                        3種類のカテゴリから<br>
+                        行き先を選んでください
+                    </p>
+
+                    <!-- 平行四辺形ボタン -->
+                    <div class="flex justify-center gap-3 mb-8">
+                        <a href="/story" class="skew-button"><span class="skew-text">STORY</span></a>
+                        <a href="/dtm" class="skew-button"><span class="skew-text">DTM</span></a>
+                        <a href="/tech" class="skew-button"><span class="skew-text">TECH</span></a>
+                    </div>
+
+                    <div class="font-mono text-sm text-gray-500 animate-pulse">
+                        SCROLL DOWN TO DIVE &rarr;
+                    </div>
                 </div>
 
-                <div class="font-mono text-sm text-gray-500 animate-pulse">
-                    SCROLL DOWN TO DIVE &rarr;
+                <!-- ===== 新着記事コンテンツ（クロスフェード後）===== -->
+                <!-- 動的に取得した最新記事を表示 -->
+                <div class="card-content articles-content" id="articles-content">
+                    <span class="text-[var(--accent-color)] font-mono text-lg mb-6 block">NEW ARTICLES</span>
+                    <h3 class="font-mincho text-7xl md:text-8xl mb-8 leading-none">新着<br>記事</h3>
+
+                    <!-- 新着記事リスト（動的生成） -->
+                    <div class="new-articles-list">
+                        {latestArticles.map((article) => (
+                            <a href={article.href} class="new-article-item">
+                                <span class={`article-category ${article.category.toLowerCase()}`}>
+                                    {article.category}
+                                </span>
+                                <span class="article-title">{article.data.title}</span>
+                            </a>
+                        ))}
+                    </div>
+
+                    <div class="font-mono text-sm text-gray-500 animate-pulse mt-8">
+                        SCROLL TO EXPLORE &rarr;
+                    </div>
                 </div>
+
             </div>
         </div>
 
@@ -187,6 +241,107 @@
 </section>
 
 <style>
+    /* === メインカード（クロスフェード用） === */
+    /* カードサイズは絶対に変更しない: p-16 max-w-2xl */
+    #main-card {
+        position: relative;
+    }
+
+    .card-content {
+        transition: opacity 0.6s ease;
+    }
+
+    .yokoku-content {
+        opacity: 1;
+    }
+
+    .articles-content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 64px;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* クロスフェード状態 */
+    #main-card.show-articles .yokoku-content {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    #main-card.show-articles .articles-content {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    /* === 新着記事リスト（カード内） === */
+    .new-articles-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 16px;
+        width: 100%;
+        max-width: 320px;
+    }
+
+    .new-article-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        text-decoration: none;
+        color: #fff;
+        transition: all 0.3s ease;
+    }
+
+    .new-article-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--accent-color, #ff4d00);
+        transform: translateX(4px);
+    }
+
+    .article-category {
+        padding: 4px 8px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        border-radius: 4px;
+        flex-shrink: 0;
+    }
+
+    .article-category.story {
+        background: #fff;
+        color: #000;
+    }
+
+    .article-category.dtm {
+        background: var(--accent-color, #ff4d00);
+        color: #fff;
+    }
+
+    .article-category.tech {
+        background: #333;
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .article-title {
+        font-size: 14px;
+        font-weight: 600;
+        text-align: left;
+        line-height: 1.4;
+    }
+
     /* --- 平行四辺形スラッシュボタン --- */
     .skew-button {
         position: relative;
@@ -910,8 +1065,33 @@
         const wrapper = document.querySelector('.horizontal-wrapper');
         const container = document.querySelector('.horizontal-container');
         const panels = gsap.utils.toArray('.h-panel');
-        const spacerPanel = panels[0]; // 「重力と遊ぶ」パネル
+        const spacerPanel = panels[0]; // 「次回予告」パネル
         const skeletonBox = spacerPanel.querySelector('.skeleton-text-box');
+
+        /* ------------------------------------------------
+           クロスフェード制御（次回予告 ↔ 新着記事）
+           カードサイズは絶対に変えない - 中身だけが切り替わる
+           ------------------------------------------------ */
+        const mainCard = document.getElementById('main-card');
+
+        // スクロール位置を監視してクロスフェード
+        function updateCardState() {
+            const scrollY = window.scrollY;
+            // クロスフェード開始位置（調整可能）
+            const crossfadeStart = 1800;
+            // クロスフェード終了位置（横スクロールに入る前）
+            const crossfadeEnd = 3200;
+
+            // カード内容クロスフェード
+            if (scrollY > crossfadeStart && scrollY < crossfadeEnd) {
+                mainCard?.classList.add('show-articles');
+            } else {
+                mainCard?.classList.remove('show-articles');
+            }
+        }
+
+        window.addEventListener('scroll', updateCardState);
+        updateCardState(); // 初期状態を設定
 
         /* ------------------------------------------------
            GEAR Panel スクロール連動カラー化
