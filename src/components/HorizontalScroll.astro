@@ -248,7 +248,7 @@ const latestArticles = [
     }
 
     .card-content {
-        transition: opacity 0.6s ease;
+        /* JSでopacityを直接制御するのでtransitionは不要 */
     }
 
     .yokoku-content {
@@ -267,18 +267,6 @@ const latestArticles = [
         justify-content: center;
         padding: 64px;
         opacity: 0;
-        pointer-events: none;
-    }
-
-    /* クロスフェード状態 */
-    #main-card.show-articles .yokoku-content {
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    #main-card.show-articles .articles-content {
-        opacity: 1;
-        pointer-events: auto;
     }
 
     /* === 新着記事リスト（カード内） === */
@@ -1071,25 +1059,31 @@ const latestArticles = [
         /* ------------------------------------------------
            クロスフェード制御（次回予告 ↔ 新着記事）
            カードサイズは絶対に変えない - 中身だけが切り替わる
-           GSAPタイムラインのprogressと連動
+           スクロール量に応じた滑らかなopacity変化
            ------------------------------------------------ */
         const mainCard = document.getElementById('main-card');
+        const yokokuContent = document.getElementById('yokoku-content');
+        const articlesContent = document.getElementById('articles-content');
 
-        // クロスフェードはGSAPのonUpdate内で制御するため、
-        // ここでは関数だけ定義しておく
+        // スクロール量に応じて滑らかにopacityを変化させる
         function updateCrossfade(progress: number) {
-            // progress 0.05〜0.12 の間でクロスフェード発生
-            // （次回予告カードが定位置に来てから、横スクロールに入る前）
-            const crossfadeStart = 0.05;  // 5%で開始
-            const crossfadeEnd = 0.12;    // 12%で終了（横スクロール開始前）
+            // progress 0.03〜0.10 の間で滑らかにクロスフェード
+            const crossfadeStart = 0.03;  // 3%で開始
+            const crossfadeEnd = 0.10;    // 10%で完了
 
-            if (progress > crossfadeStart && progress < crossfadeEnd) {
-                mainCard?.classList.add('show-articles');
+            if (progress <= crossfadeStart) {
+                // 次回予告を表示
+                if (yokokuContent) yokokuContent.style.opacity = '1';
+                if (articlesContent) articlesContent.style.opacity = '0';
             } else if (progress >= crossfadeEnd) {
-                // 横スクロールに入ったら新着記事を維持
-                mainCard?.classList.add('show-articles');
+                // 新着記事を表示
+                if (yokokuContent) yokokuContent.style.opacity = '0';
+                if (articlesContent) articlesContent.style.opacity = '1';
             } else {
-                mainCard?.classList.remove('show-articles');
+                // 滑らかにクロスフェード（線形補間）
+                const fadeProgress = (progress - crossfadeStart) / (crossfadeEnd - crossfadeStart);
+                if (yokokuContent) yokokuContent.style.opacity = String(1 - fadeProgress);
+                if (articlesContent) articlesContent.style.opacity = String(fadeProgress);
             }
         }
 
@@ -1099,45 +1093,25 @@ const latestArticles = [
         const gearImage = document.getElementById('gear-panel-image');
 
         /* ------------------------------------------------
-           スクロール硬さの設定
-           scrub値が小さいほど硬い（反応が鈍い）
+           スクロール追従の設定
+           scrub値が大きいほどスクロールに即座に追従
+           scrub: true は完全に追従、数値は遅延秒数
            ------------------------------------------------ */
-        // 基準値 0.2 から計算
-        const scrubGravity = 0.2 * 0.65;    // 重力と遊ぶカード出現: 35%硬く = 0.13
-        const scrubCh1to2 = 0.2 * 0.55;     // Chapter1→2間: 45%硬く = 0.11
-        const scrubCh2to3 = 0.2 * 0.55;     // Chapter2→3間: 45%硬く = 0.11
-        const scrubCh3toF2 = 0.2 * 0.70;    // Chapter3→2階: 30%硬く = 0.14
+        // スクロールに滑らかに追従（0.3秒の遅延）
+        const scrubValue = 0.3;
 
         const tl = gsap.timeline({
             scrollTrigger: {
                 trigger: wrapper,
                 pin: true,
-                scrub: scrubGravity, // 初期値（重力と遊ぶカード用）
+                scrub: scrubValue, // スクロールに滑らかに追従
                 anticipatePin: 1,
                 invalidateOnRefresh: true,
                 // スクロール距離1.5
                 end: () => "+=" + (panels.length * window.innerWidth * 1.5),
-                // スクロール位置に応じてscrub値を動的に変更
+                // クロスフェード制御
                 onUpdate: (self) => {
                     const progress = self.progress;
-                    const st = self;
-
-                    // 進行度に応じてscrub値を変更
-                    // 0-20%: 重力と遊ぶカード (35%硬く)
-                    // 20-45%: Chapter1→2 (45%硬く)
-                    // 45-70%: Chapter2→3 (45%硬く)
-                    // 70-100%: Chapter3→2階 (30%硬く)
-
-                    if (progress < 0.20) {
-                        st.vars.scrub = scrubGravity;
-                    } else if (progress < 0.45) {
-                        st.vars.scrub = scrubCh1to2;
-                    } else if (progress < 0.70) {
-                        st.vars.scrub = scrubCh2to3;
-                    } else {
-                        st.vars.scrub = scrubCh3toF2;
-                    }
-
                     // クロスフェード制御（次回予告 ↔ 新着記事）
                     updateCrossfade(progress);
                 }
