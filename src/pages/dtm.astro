@@ -70,6 +70,12 @@ console.log('[DTM.ASTRO DEBUG] ==========================================');
   <div class="noise"></div>
   <div class="bg-grid"></div>
 
+  <!-- CUSTOM CURSOR - シンプルな丸 -->
+  <div id="dot-cursor">
+    <div id="dot-inner"></div>
+    <div id="dot-outer"></div>
+  </div>
+
   <!-- LOADER -->
   <div class="loader-wrap">
     <div class="loader-text-container font-tech text-5xl font-bold gap-2">
@@ -197,7 +203,7 @@ console.log('[DTM.ASTRO DEBUG] ==========================================');
   </div>
 
   <!-- MAIN CONTENT -->
-  <div class="container mx-auto px-6 md:px-12 md:pl-[140px] min-h-screen relative z-10 transition-all duration-500" id="main-content-area">
+  <div class="container mx-auto px-6 md:px-12 md:pl-[210px] min-h-screen relative z-10 transition-all duration-500" id="main-content-area">
     {/* GRID MODE: Museum Grid - Instagram風のMasonryレイアウト */}
     <div class="ig-grid" id="article-grid">
       {sortedPosts.slice(0, 6).map((post, index) => {
@@ -391,68 +397,77 @@ console.log('[DTM.ASTRO DEBUG] ==========================================');
       <div class="absolute bottom-0 left-0 w-full opacity-20"><canvas id="string-canvas-2" class="string-canvas"></canvas></div>
     </div>
 
-    <!-- PROFILE -->
-    <div class="profile-section" id="author-section">
-      <div class="max-w-4xl mx-auto flex flex-col md:flex-row gap-8 items-center">
-        <div class="w-24 h-24 flex-shrink-0 bg-gray-200 overflow-hidden rounded-full border-2 border-black">
-          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop" 
-               class="w-full h-full object-cover grayscale" alt="道ゐ">
-        </div>
-        <div class="text-center md:text-left flex-grow">
-          <div class="font-mono text-[var(--accent-color)] text-[10px] mb-2 tracking-widest">OWNER / ENGINEER</div>
-          <h2 class="font-mincho text-2xl font-bold mb-2">道ゐ (Dowie)</h2>
-          <p class="text-gray-500 text-xs leading-loose">
-            札幌を拠点とする音楽スタジオ「MASHROOM」オーナー。<br>
-            エンジニアリング、機材選定、そして経営の狭間で日々実験中。
-          </p>
-        </div>
-        <a href="#" class="tech-btn text-[10px] border border-gray-300 px-4 py-2 rounded-full hover:bg-black hover:text-white transition-colors">PROFILE &rarr;</a>
-      </div>
-    </div>
   </div>
 
-  <!-- 他のコンテンツへの誘導 -->
-  <section class="bg-gradient-to-b from-white to-gray-50 py-20 relative z-10 border-t border-gray-100">
-    <div class="container mx-auto px-6 md:px-12">
-      <p class="text-center text-xs text-gray-400 font-mono tracking-widest mb-8">EXPLORE MORE</p>
-      <div class="flex flex-col md:flex-row justify-center items-center gap-6">
-        <!-- STORY -->
-        <a href="/story" class="group flex items-center gap-4 px-6 py-4 bg-white rounded-xl border border-gray-200 hover:border-[#8c3a26] hover:shadow-lg transition-all duration-300 w-full md:w-auto">
-          <div class="w-12 h-12 rounded-full bg-[#f7f4eb] flex items-center justify-center group-hover:bg-[#8c3a26] transition-colors">
-            <svg class="w-5 h-5 text-[#8c3a26] group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+  <!-- 他のコンテンツへの誘導 - Bento Grid Style -->
+  <section class="explore-section relative z-10">
+    <div class="container mx-auto px-6 md:px-12 md:pl-[210px]">
+
+      <!-- Dive Deeper Header -->
+      <div class="dive-header">
+        <h2 class="dive-title">Who is Owner?</h2>
+        <p class="dive-subtitle">クリエイティブと経営の狭間で。</p>
+      </div>
+
+      <!-- Bento Grid -->
+      <div class="bento-grid">
+
+        <!-- 1. Author Profile -->
+        <div class="bento-item profile-card">
+          <div class="profile-avatar">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop" alt="道ゐ" />
+          </div>
+          <span class="profile-label">WRITTEN BY</span>
+          <h3 class="profile-name">道ゐ <span class="profile-name-en">/ Dowie</span></h3>
+          <p class="profile-desc">音楽スタジオ運営 / A-Sketch新人発掘担当。日々の業務やS氏とのやり取りの中で得た気づきを記録しています。</p>
+          <a href="https://mashroom-studio-web.vercel.app/#profile" target="_blank" rel="noopener" class="profile-link">プロフィール詳細</a>
+        </div>
+
+        <!-- 2. Story (ノケ物語) -->
+        <a href="/story" class="bento-item story-card">
+          <img src="/images/ノケ物語サムネ.png" alt="ノケ物語" class="story-thumbnail" />
+          <div class="story-overlay"></div>
+          <div class="story-content">
+            <span class="story-badge">My Story</span>
+            <h3 class="story-title">ノケ物語</h3>
+            <p class="story-hover-text">これまでの歩みと、これからの物語。</p>
+          </div>
+        </a>
+
+        <!-- 3. TECH LAB -->
+        <a href="/tech" class="bento-item tech-card">
+          <img src="/images/Blog_00.png" alt="TECH LAB" class="tech-thumbnail" />
+          <div class="tech-overlay"></div>
+          <div class="tech-content">
+            <span class="tech-label">AI / CODE</span>
+            <h3 class="tech-title">TECH<br/>LAB.</h3>
+            <p class="tech-desc">AI実験、コーディング、技術の探求。</p>
+            <span class="tech-link">Explore Tech →</span>
+          </div>
+        </a>
+
+        <!-- 4. Website / Portfolio -->
+        <a href="https://mashroom-studio-web.vercel.app/" target="_blank" rel="noopener" class="bento-item website-card">
+          <img src="/images/thumbnails/website-hero-thumb.png" alt="MASHROOM STUDIO" class="website-bg-image" />
+          <div class="website-overlay"></div>
+          <div class="website-content">
+            <span class="website-label">Official Website</span>
+            <h3 class="website-title">ポートフォリオ & スタジオ公式サイト</h3>
+          </div>
+          <div class="website-arrow">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 5l7 7m0 0l-7 7m7-7H3"/>
             </svg>
           </div>
-          <div>
-            <p class="text-sm font-bold text-gray-800 group-hover:text-[#8c3a26] transition-colors">ノケ物語を読む</p>
-            <p class="text-[10px] text-gray-400">エッセイ・自伝的ストーリー</p>
-          </div>
-          <svg class="w-4 h-4 text-gray-300 group-hover:text-[#8c3a26] group-hover:translate-x-1 transition-all ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-          </svg>
         </a>
-        <!-- TECH -->
-        <a href="/tech" class="group flex items-center gap-4 px-6 py-4 bg-white rounded-xl border border-gray-200 hover:border-[#00c896] hover:shadow-lg transition-all duration-300 w-full md:w-auto">
-          <div class="w-12 h-12 rounded-full bg-[#e8faf5] flex items-center justify-center group-hover:bg-[#00c896] transition-colors">
-            <svg class="w-5 h-5 text-[#00c896] group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-            </svg>
-          </div>
-          <div>
-            <p class="text-sm font-bold text-gray-800 group-hover:text-[#00c896] transition-colors">TECH LABを見る</p>
-            <p class="text-[10px] text-gray-400">AI・コード・技術の実験記録</p>
-          </div>
-          <svg class="w-4 h-4 text-gray-300 group-hover:text-[#00c896] group-hover:translate-x-1 transition-all ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-          </svg>
-        </a>
+
       </div>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer class="bg-white border-t border-gray-100 py-20 relative z-10">
-    <div class="container mx-auto px-6 md:pl-[120px] flex justify-between items-end">
+    <div class="container mx-auto px-6 md:pl-[210px] flex justify-between items-end">
       <span class="font-tech text-4xl font-bold text-[#111]">MASHROOM.DTM</span>
       <p class="text-[10px] text-gray-400 font-mono text-right">
         SAPPORO MUSIC STUDIO<br>DTM LAB <span id="footer-version">{DEBUG_VERSION}</span><br>EST. 2025
@@ -562,22 +577,25 @@ console.log('[DTM.ASTRO DEBUG] ==========================================');
         nav.style.transition = '';
       };
       
+      // ヒーローセクション（サンプラーUI含む）をトリガーにする
+      const heroSection = document.getElementById('hero-section');
+
       ScrollTrigger.create({
-        trigger: navTrigger, 
-        start: "top top", 
+        trigger: heroSection,
+        start: "bottom top+=100", // ヒーローセクションの下端が画面上端+100pxに達したら
         end: "bottom top",
         onEnter: () => {
-          console.log('[DEBUG] ScrollTrigger onEnter triggered');
+          console.log('[DEBUG] ScrollTrigger onEnter triggered - Hero section passed');
           // 上のメニューを静かに消す（アニメーションなし）
           disableTransition();
           gsap.set(nav, { opacity: 0, x: 0, y: 0 });
           nav.style.pointerEvents = 'none';
-          
+
           // 左側のメニューに切り替え
           requestAnimationFrame(() => {
             console.log('[DEBUG] Switching to pos-side');
-            nav.classList.remove("pos-top"); 
-            nav.classList.add("pos-side"); 
+            nav.classList.remove("pos-top");
+            nav.classList.add("pos-side");
             lucide.createIcons();
             // 左側でグリッチアニメーションで登場
             enableTransition();
@@ -586,16 +604,16 @@ console.log('[DTM.ASTRO DEBUG] ==========================================');
           });
         },
         onLeaveBack: () => {
-          console.log('[DEBUG] ScrollTrigger onLeaveBack triggered');
+          console.log('[DEBUG] ScrollTrigger onLeaveBack triggered - Back to hero');
           // 左側のメニューを静かに消す
           disableTransition();
           gsap.set(nav, { opacity: 0, x: 0, y: 0 });
           nav.style.pointerEvents = 'none';
-          
+
           // 上のメニューに戻す
           requestAnimationFrame(() => {
             console.log('[DEBUG] Switching to pos-top');
-            nav.classList.remove("pos-side"); 
+            nav.classList.remove("pos-side");
             nav.classList.add("pos-top");
             enableTransition();
             gsap.set(nav, { opacity: 1, x: 0, y: 0 });
@@ -980,9 +998,58 @@ console.log('[DTM.ASTRO DEBUG] ==========================================');
     new ElasticString('string-canvas-1');
     new ElasticString('string-canvas-2');
     };
-    
+
     // Start after window load event
     window.addEventListener('load', initGearScripts);
+
+    // --- CUSTOM CURSOR ANIMATION - シンプルな丸 ---
+    const dotCursor = document.getElementById('dot-cursor');
+    const dotOuter = document.getElementById('dot-outer');
+
+    if (dotCursor) {
+      const initialX = window.innerWidth / 2;
+      const initialY = window.innerHeight / 2;
+      dotCursor.style.transform = `translate(${initialX}px, ${initialY}px)`;
+      dotCursor.style.opacity = '1';
+
+      let cursorCurrentX = initialX;
+      let cursorCurrentY = initialY;
+      let currentMouseX = initialX;
+      let currentMouseY = initialY;
+
+      const updateCursor = () => {
+        if (!dotCursor) {
+          requestAnimationFrame(updateCursor);
+          return;
+        }
+
+        // 即座に追従
+        const lerp = 1.0;
+        const diffX = currentMouseX - cursorCurrentX;
+        const diffY = currentMouseY - cursorCurrentY;
+
+        if (Math.abs(diffX) > 0.1 || Math.abs(diffY) > 0.1) {
+          cursorCurrentX += diffX * lerp;
+          cursorCurrentY += diffY * lerp;
+          dotCursor.style.transform = `translate(${cursorCurrentX}px, ${cursorCurrentY}px)`;
+        }
+
+        requestAnimationFrame(updateCursor);
+      };
+
+      document.addEventListener('mousemove', (e) => {
+        currentMouseX = e.clientX;
+        currentMouseY = e.clientY;
+      });
+
+      // ホバー時にカーソルを大きくする
+      document.querySelectorAll('a, button, [role="button"], .post-card').forEach(el => {
+        el.addEventListener('mouseenter', () => dotCursor.classList.add('hovering'));
+        el.addEventListener('mouseleave', () => dotCursor.classList.remove('hovering'));
+      });
+
+      requestAnimationFrame(updateCursor);
+    }
   </script>
 </Layout>
 
@@ -1070,16 +1137,16 @@ console.log('[DTM.ASTRO DEBUG] ==========================================');
   }
 
   .filter-nav.pos-side {
-    position: fixed; top: 0; left: 0; width: 120px; height: 100vh;
-    flex-direction: column; justify-content: center; padding: 2rem 0.5rem;
+    position: fixed; top: 0; left: 0; width: 192px; height: 100vh;
+    flex-direction: column; justify-content: center; padding: 2.5rem 1rem;
     border-right: 1px solid rgba(0,0,0,0.1); background: rgba(255,255,255,0.98);
-    gap: 0.5rem; align-items: flex-start; box-shadow: 2px 0 20px rgba(0,0,0,0.08);
+    gap: 0.75rem; align-items: flex-start; box-shadow: 2px 0 20px rgba(0,0,0,0.08);
     backface-visibility: hidden;
     transform: translateZ(0);
   }
-  .filter-nav.pos-side .nav-grid-layout { display: flex; flex-direction: column; gap: 0.25rem; width: 100%; align-items: flex-start; padding: 0 0.5rem; }
-  .filter-nav.pos-side .nav-category-item { border: none; padding: 0.5rem 0; width: 100%; align-items: flex-start; gap: 0.25rem; }
-  .filter-nav.pos-side .nav-desc { display: block; font-size: 0.55rem; color: #94a3b8; line-height: 1.4; }
+  .filter-nav.pos-side .nav-grid-layout { display: flex; flex-direction: column; gap: 0.5rem; width: 100%; align-items: flex-start; padding: 0 0.75rem; }
+  .filter-nav.pos-side .nav-category-item { border: none; padding: 0.75rem 0; width: 100%; align-items: flex-start; gap: 0.4rem; }
+  .filter-nav.pos-side .nav-desc { display: block; font-size: 0.7rem; color: #94a3b8; line-height: 1.5; }
   .filter-nav.pos-side .sort-guide-area { display: none; }
   
   /* サイドメニュー用ビュー切り替えボタン */
@@ -1100,12 +1167,12 @@ console.log('[DTM.ASTRO DEBUG] ==========================================');
   }
   
   .side-view-btn {
-    width: 40px;
-    height: 40px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 6px;
+    border-radius: 8px;
     background: transparent;
     color: var(--text-sub);
     cursor: pointer;
@@ -1158,21 +1225,21 @@ console.log('[DTM.ASTRO DEBUG] ==========================================');
   }
   
   .filter-nav.pos-side .tech-btn {
-    flex-direction: row; gap: 0.5rem; padding: 0.25rem 0; width: 100%; height: auto; justify-content: flex-start;
-    font-size: 0.7rem; color: var(--text-sub);
+    flex-direction: row; gap: 0.75rem; padding: 0.5rem 0; width: 100%; height: auto; justify-content: flex-start;
+    font-size: 1rem; color: var(--text-sub);
   }
   .filter-nav.pos-side .tech-btn:hover, .filter-nav.pos-side .tech-btn.active {
     color: var(--accent-color);
   }
   .filter-nav.pos-side .tech-btn.active::before {
-     content: ''; position: absolute; left: -0.5rem; top: 50%; transform: translateY(-50%);
-     width: 3px; height: 100%; background: var(--accent-color);
+     content: ''; position: absolute; left: -0.75rem; top: 50%; transform: translateY(-50%);
+     width: 4px; height: 100%; background: var(--accent-color);
   }
 
   .btn-icon { display: none; }
-  .filter-nav.pos-side .btn-icon { display: block; width: 16px; height: 16px; flex-shrink: 0; }
+  .filter-nav.pos-side .btn-icon { display: block; width: 22px; height: 22px; flex-shrink: 0; }
   .btn-text { display: block; }
-  .filter-nav.pos-side .btn-text { display: block; font-size: 0.65rem; font-weight: 600; }
+  .filter-nav.pos-side .btn-text { display: block; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.05em; }
 
   /* ============================================
      MUSEUM GRID: Instagram風のMasonryレイアウト
@@ -1948,7 +2015,454 @@ console.log('[DTM.ASTRO DEBUG] ==========================================');
     opacity: 0.6; 
     pointer-events: auto;
   }
-  .string-canvas:active { 
-    cursor: grabbing; 
+  .string-canvas:active {
+    cursor: grabbing;
+  }
+
+  /* --- Macカーソルを非表示 --- */
+  * {
+    cursor: none !important;
+  }
+
+  /* --- CUSTOM CURSOR - シンプルな丸 --- */
+  #dot-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 99999;
+    opacity: 0;
+    will-change: transform;
+  }
+
+  /* 内側の小さな丸（ポインター） */
+  #dot-inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background: #007aff;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 122, 255, 0.5);
+  }
+
+  /* 外側のリング */
+  #dot-outer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 32px;
+    height: 32px;
+    border: 2px solid rgba(0, 122, 255, 0.4);
+    border-radius: 50%;
+    transition: transform 0.15s ease-out, border-color 0.15s ease-out;
+  }
+
+  /* ホバー時に外側リングが大きくなる */
+  #dot-cursor.hovering #dot-outer {
+    transform: translate(-50%, -50%) scale(1.3);
+    border-color: rgba(0, 122, 255, 0.8);
+  }
+
+  @media (hover: none) {
+    * {
+      cursor: auto !important;
+    }
+    #dot-cursor {
+      display: none !important;
+    }
+  }
+
+  /* ============================================
+     EXPLORE SECTION - Bento Grid Style (White Theme)
+     ============================================ */
+  .explore-section {
+    background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    padding: 5rem 0;
+    border-top: 1px solid var(--line-color);
+  }
+
+  .dive-header {
+    margin-bottom: 2rem;
+  }
+
+  .dive-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+  }
+
+  .dive-subtitle {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-top: 0.5rem;
+  }
+
+  .bento-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 1rem;
+  }
+
+  .bento-item {
+    border-radius: 24px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .bento-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Profile Card - White Theme */
+  .profile-card {
+    grid-row: span 2;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  }
+
+  .profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    border: 2px solid #e2e8f0;
+  }
+
+  .profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(30%);
+  }
+
+  .profile-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.65rem;
+    color: var(--accent-color);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.25rem;
+  }
+
+  .profile-name {
+    font-family: 'Zen Old Mincho', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .profile-name-en {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: #64748b;
+  }
+
+  .profile-desc {
+    font-size: 0.75rem;
+    color: #64748b;
+    line-height: 1.7;
+    flex: 1;
+    margin: 0;
+  }
+
+  .profile-link {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 0.75rem 1.25rem;
+    background: #0f172a;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 8px;
+    text-align: center;
+    transition: background 0.2s;
+  }
+
+  .profile-link:hover {
+    background: #1e293b;
+  }
+
+  /* Story Card - White Theme */
+  .story-card {
+    position: relative;
+    border-radius: 24px;
+    text-decoration: none;
+    display: block;
+    overflow: hidden;
+    min-height: 180px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  }
+
+  .story-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .story-card:hover .story-thumbnail {
+    transform: scale(1.08);
+  }
+
+  .story-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.5) 100%);
+    transition: opacity 0.3s;
+  }
+
+  .story-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+  }
+
+  .story-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: #8c3a26;
+    color: #fff;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+  }
+
+  .story-title {
+    font-family: 'Zen Old Mincho', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+  }
+
+  .story-hover-text {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .story-card:hover .story-hover-text {
+    opacity: 1;
+  }
+
+  /* Tech Card - White Theme */
+  .tech-card {
+    grid-row: span 2;
+    position: relative;
+    min-height: 280px;
+    border-radius: 24px;
+    border: 1px solid #e2e8f0;
+    text-decoration: none;
+    display: block;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  }
+
+  .tech-thumbnail {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .tech-card:hover .tech-thumbnail {
+    transform: scale(1.08);
+  }
+
+  .tech-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0, 200, 150, 0.2) 0%, rgba(0, 122, 255, 0.15) 50%, rgba(0, 0, 0, 0.6) 100%);
+    transition: opacity 0.3s;
+  }
+
+  .tech-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem;
+    z-index: 2;
+  }
+
+  .tech-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.65rem;
+    color: #00c896;
+    letter-spacing: 0.15em;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .tech-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+    margin: 0;
+  }
+
+  .tech-desc {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0.75rem 0;
+  }
+
+  .tech-link {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.75rem;
+    color: #00c896;
+    letter-spacing: 0.05em;
+  }
+
+  /* Website Card - White Theme */
+  .website-card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-radius: 24px;
+    text-decoration: none;
+    overflow: hidden;
+    min-height: 80px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  }
+
+  .website-bg-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+  }
+
+  .website-card:hover .website-bg-image {
+    transform: scale(1.05);
+  }
+
+  .website-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.25) 50%, rgba(0, 0, 0, 0.05) 100%);
+    transition: background 0.3s;
+  }
+
+  .website-card:hover .website-overlay {
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.15) 50%, rgba(0, 0, 0, 0.02) 100%);
+  }
+
+  .website-content {
+    flex: 1;
+    z-index: 2;
+  }
+
+  .website-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.6rem;
+    color: rgba(255, 255, 255, 0.8);
+    letter-spacing: 0.15em;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .website-title {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+  }
+
+  .website-arrow {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    z-index: 2;
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .website-card:hover .website-arrow {
+    background: var(--accent-color);
+    transform: scale(1.1);
+  }
+
+  .website-card:hover .website-arrow svg {
+    stroke: #fff;
+  }
+
+  /* Bento Grid Responsive */
+  @media (max-width: 1023px) {
+    .bento-grid {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto;
+    }
+
+    .profile-card {
+      grid-row: auto;
+    }
+
+    .tech-card {
+      grid-row: auto;
+      min-height: 200px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .bento-grid {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto;
+    }
+
+    .profile-card {
+      grid-row: auto;
+    }
+
+    .tech-card {
+      grid-row: auto;
+      min-height: 200px;
+    }
+
+    .story-card {
+      min-height: 140px;
+    }
+
+    .dive-title {
+      font-size: 1.5rem;
+    }
   }
 </style>

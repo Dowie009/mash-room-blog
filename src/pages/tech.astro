@@ -18,22 +18,16 @@ const formatDate = (date: Date) => {
   }).replace(/\//g, '.');
 };
 
-// カテゴリラベル
+// カテゴリラベル（2つだけ）
 const categoryLabels: Record<string, string> = {
-  'astro': 'ASTRO',
-  'react': 'REACT',
-  'css': 'CSS',
-  'ai': 'AI',
-  'devtips': 'DEV TIPS',
+  'ai-journey': 'AI JOURNEY',
+  'ai-tips': 'AI TIPS',
 };
 
 // カテゴリカラー
 const categoryColors: Record<string, string> = {
-  'astro': '#00ffff',
-  'react': '#ffaa00',
-  'css': '#ff00ff',
-  'ai': '#39ff14',
-  'devtips': '#ffff00',
+  'ai-journey': '#00ffff',
+  'ai-tips': '#ffaa00',
 };
 
 // 記事データをJavaScript形式に変換
@@ -49,14 +43,11 @@ const articlesData = sortedPosts.map((post, index) => ({
   tags: post.data.tags || [],
 }));
 
-// カテゴリ一覧（techコレクションのカテゴリ）
+// カテゴリ一覧（2つだけ）
 const categories = [
-  { id: 'ALL', color: '#00ffff' },
-  { id: 'astro', color: '#00ffff', label: 'ASTRO' },
-  { id: 'react', color: '#61dafb', label: 'REACT' },
-  { id: 'css', color: '#264de4', label: 'CSS' },
-  { id: 'ai', color: '#ffaa00', label: 'AI' },
-  { id: 'devtips', color: '#10b981', label: 'DEV TIPS' },
+  { id: 'ALL', color: '#00ffff', label: 'ALL' },
+  { id: 'ai-journey', color: '#00ffff', label: 'AI JOURNEY' },
+  { id: 'ai-tips', color: '#ffaa00', label: 'AI TIPS' },
 ];
 ---
 
@@ -357,6 +348,10 @@ const categories = [
     .floater:hover { transform: scale(1.1); filter: drop-shadow(0 0 10px white); z-index: 100; }
 
     /* --- 5. CURSOR --- */
+    * {
+      cursor: none !important;
+    }
+
     #fighter-cursor {
       position: fixed;
       top: 0;
@@ -364,33 +359,31 @@ const categories = [
       width: 50px;
       height: 50px;
       pointer-events: none;
-      z-index: 99999; /* 最前面に表示 */
+      z-index: 99999;
       transform: translate(-50%, -50%);
-      mix-blend-mode: screen; /* 明るく表示 */
-      filter: drop-shadow(0 0 4px cyan); /* 控えめなグロー */
+      mix-blend-mode: screen;
+      filter: drop-shadow(0 0 4px cyan);
       opacity: 0;
       will-change: transform;
     }
 
-    /* 戦闘機のSVG */
     #fighter-svg {
       width: 100%;
       height: 100%;
-      fill: none; /* 中央の光を削除 */
-      stroke: #00ffff; /* 明るいシアン */
-      stroke-width: 2.5; /* 太くして見やすく */
+      fill: none;
+      stroke: #00ffff;
+      stroke-width: 2.5;
       overflow: visible;
       transform-origin: center center;
     }
 
-    /* 回転する照準（レティクル） */
     #reticle {
       position: absolute;
       top: 50%;
       left: 50%;
       width: 70px;
       height: 70px;
-      border: 2px dashed rgba(255, 255, 255, 0.6); /* 白に戻す */
+      border: 2px dashed rgba(255, 255, 255, 0.6);
       border-radius: 50%;
       transform: translate(-50%, -50%);
       animation: spin 4s linear infinite;
@@ -402,16 +395,47 @@ const categories = [
       100% { transform: translate(-50%, -50%) rotate(360deg); }
     }
 
-    /* スマホなどタッチデバイスでは非表示 */
+    /* スマホなどタッチデバイスでは通常カーソル */
     @media (hover: none) {
+      * {
+        cursor: auto !important;
+      }
       #fighter-cursor {
         display: none !important;
       }
     }
 
-    body.list-mode #fighter-cursor {
+    /* ARCHIVE.GRIDモード時は丸カーソルを表示 */
+    body.archive-mode #fighter-cursor {
+      display: none !important;
+    }
+    body.archive-mode #archive-cursor {
       display: block !important;
-      opacity: 1 !important;
+    }
+
+    /* ARCHIVE.GRID用の丸カーソル（軽量版） */
+    #archive-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 99999;
+      display: none;
+      will-change: transform;
+    }
+
+    #archive-cursor-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #00ffff;
+      transform: translate(-50%, -50%);
+      /* box-shadow と transition 削除（重い） */
+    }
+
+    #archive-cursor.hovering #archive-cursor-dot {
+      transform: translate(-50%, -50%) scale(1.5);
+      background: #ff00ff;
     }
 
     /* --- 6. LIST VIEW --- */
@@ -423,11 +447,10 @@ const categories = [
       overflow-y: auto;
     }
     
-    /* --- 7. ARCHIVE GRID VIEW --- */
+    /* --- 7. ARCHIVE GRID VIEW (軽量化版) --- */
     #archive-grid-container {
       position: fixed; inset: 0; z-index: 200;
-      background: rgba(5, 2, 10, 0.95);
-      backdrop-filter: blur(10px);
+      background: rgba(5, 2, 10, 0.98); /* blur削除、不透明度を上げる */
       padding: 6rem 2rem;
       display: none; opacity: 0;
       overflow-y: auto;
@@ -441,20 +464,20 @@ const categories = [
       padding: 2rem 0;
     }
     .archive-card {
-      background: rgba(10, 10, 15, 0.8);
-      backdrop-filter: blur(8px);
+      background: rgba(10, 10, 15, 0.95); /* blur削除 */
       border: 0.5px solid rgba(255, 255, 255, 0.2);
       border-radius: 8px;
       overflow: hidden;
       cursor: pointer;
-      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+      transition: transform 0.2s ease-out, border-color 0.2s ease-out; /* 軽量化 */
       display: flex;
       flex-direction: column;
+      will-change: transform; /* GPU最適化 */
     }
     .archive-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0, 255, 255, 0.3);
       border-color: var(--accent-cyan);
+      /* box-shadow削除（重い） */
     }
     .archive-card-img {
       width: 100%;
@@ -871,6 +894,237 @@ const categories = [
       filter: blur(1px);
       box-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff;
     }
+
+    /* === SIMPLE MODE（シンプルブログ一覧） === */
+    #simple-mode-container {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: #0a0a0f;
+      display: none;
+      opacity: 0;
+      overflow-y: auto;
+      transition: opacity 0.3s ease;
+      cursor: auto !important;
+    }
+    #simple-mode-container.active {
+      display: block;
+      opacity: 1;
+    }
+    #simple-mode-container * {
+      cursor: auto !important;
+    }
+    /* シンプルモード時はカスタムカーソルを非表示 */
+    #simple-mode-container.active ~ #fighter-cursor,
+    #simple-mode-container.active ~ #archive-cursor {
+      display: none !important;
+    }
+    body:has(#simple-mode-container.active) #fighter-cursor,
+    body:has(#simple-mode-container.active) #archive-cursor {
+      display: none !important;
+    }
+    .simple-header {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 3rem 2rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .simple-logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.1em;
+    }
+    .simple-back-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      background: transparent;
+      border: 1px solid #00ffff;
+      border-radius: 25px;
+      color: #00ffff;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      letter-spacing: 0.1em;
+    }
+    .simple-back-btn:hover {
+      background: #00ffff;
+      color: #0a0a0f;
+    }
+    .simple-back-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+    .simple-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    .simple-filter {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .simple-filter-btn {
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      color: rgba(255, 255, 255, 0.7);
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .simple-filter-btn:hover {
+      border-color: rgba(255, 255, 255, 0.5);
+      color: #fff;
+    }
+    .simple-filter-btn.active {
+      background: #00ffff;
+      border-color: #00ffff;
+      color: #0a0a0f;
+      font-weight: 600;
+    }
+    .simple-filter-btn[data-cat="ai-journey"].active {
+      background: #00ffff;
+      border-color: #00ffff;
+    }
+    .simple-filter-btn[data-cat="ai-tips"].active {
+      background: #ffaa00;
+      border-color: #ffaa00;
+    }
+    .simple-sort {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      align-items: center;
+    }
+    .simple-sort-label {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.5);
+      margin-right: 0.5rem;
+    }
+    .simple-sort-btn {
+      padding: 0.4rem 0.8rem;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .simple-sort-btn:hover {
+      border-color: rgba(255, 255, 255, 0.3);
+      color: #fff;
+    }
+    .simple-sort-btn.active {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: #fff;
+    }
+    .simple-articles {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .simple-article {
+      display: flex;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      background: #0a0a0f;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .simple-article:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .simple-article-thumb {
+      width: 120px;
+      height: 80px;
+      border-radius: 6px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .simple-article-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .simple-article-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .simple-article-cat {
+      font-size: 0.65rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .simple-article-cat.ai-journey {
+      background: rgba(0, 255, 255, 0.15);
+      color: #00ffff;
+    }
+    .simple-article-cat.ai-tips {
+      background: rgba(255, 170, 0, 0.15);
+      color: #ffaa00;
+    }
+    .simple-article-date {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.4);
+    }
+    .simple-article-title {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.5;
+      margin-bottom: 0.3rem;
+    }
+    .simple-article-desc {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .simple-empty {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: rgba(255, 255, 255, 0.4);
+    }
+    @media (max-width: 640px) {
+      .simple-article {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .simple-article-thumb {
+        width: 100%;
+        height: 160px;
+      }
+    }
   </style>
 
   <!-- INTRO TITLE ANIMATION -->
@@ -912,30 +1166,18 @@ const categories = [
       </button>
       <div class="w-[1px] h-6 bg-gray-500"></div>
       
-      <!-- Category Buttons -->
+      <!-- Category Buttons (2つだけ: AI JOURNEY / AI TIPS) -->
       <button class="hud-btn active" data-cat="ALL" title="ALL">
         <i data-lucide="grid" class="w-4 h-4 hud-btn-icon"></i>
         <span class="hud-btn-label">ALL</span>
       </button>
-      <button class="hud-btn" data-cat="astro" title="ASTRO">
-        <i data-lucide="zap" class="w-4 h-4 hud-btn-icon"></i>
-        <span class="hud-btn-label">ASTRO</span>
+      <button class="hud-btn" data-cat="ai-journey" title="AI JOURNEY">
+        <i data-lucide="rocket" class="w-4 h-4 hud-btn-icon"></i>
+        <span class="hud-btn-label">AI JOURNEY</span>
       </button>
-      <button class="hud-btn" data-cat="react" title="REACT">
-        <i data-lucide="atom" class="w-4 h-4 hud-btn-icon"></i>
-        <span class="hud-btn-label">REACT</span>
-      </button>
-      <button class="hud-btn" data-cat="css" title="CSS">
-        <i data-lucide="palette" class="w-4 h-4 hud-btn-icon"></i>
-        <span class="hud-btn-label">CSS</span>
-      </button>
-      <button class="hud-btn" data-cat="ai" title="AI">
-        <i data-lucide="sparkles" class="w-4 h-4 hud-btn-icon"></i>
-        <span class="hud-btn-label">AI</span>
-      </button>
-      <button class="hud-btn" data-cat="devtips" title="DEV TIPS">
-        <i data-lucide="code" class="w-4 h-4 hud-btn-icon"></i>
-        <span class="hud-btn-label">DEV TIPS</span>
+      <button class="hud-btn" data-cat="ai-tips" title="AI TIPS">
+        <i data-lucide="lightbulb" class="w-4 h-4 hud-btn-icon"></i>
+        <span class="hud-btn-label">AI TIPS</span>
       </button>
     </div>
     
@@ -1014,6 +1256,34 @@ const categories = [
     <div id="archive-grid" class="archive-grid"></div>
   </div>
 
+  <!-- SIMPLE MODE（シンプルブログ一覧） -->
+  <div id="simple-mode-container">
+    <header class="simple-header">
+      <div class="simple-logo">TECH LAB</div>
+      <button class="simple-back-btn" id="simple-back-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 12l10 10M2 12h20"/>
+        </svg>
+        宇宙へ
+      </button>
+    </header>
+    <main class="simple-content">
+      <div class="simple-filter" id="simple-filter">
+        <button class="simple-filter-btn active" data-cat="ALL">すべて</button>
+        <button class="simple-filter-btn" data-cat="ai-journey">AI JOURNEY</button>
+        <button class="simple-filter-btn" data-cat="ai-tips">AI TIPS</button>
+      </div>
+      <div class="simple-sort">
+        <span class="simple-sort-label">並び順:</span>
+        <button class="simple-sort-btn active" data-sort="newest">新しい順</button>
+        <button class="simple-sort-btn" data-sort="oldest">古い順</button>
+      </div>
+      <div class="simple-articles" id="simple-articles">
+        <!-- JavaScriptで動的生成 -->
+      </div>
+    </main>
+  </div>
+
   <!-- LATEST ARTICLES WIDGET -->
   <div id="latest-widget">
     <div class="widget-header">
@@ -1038,6 +1308,11 @@ const categories = [
     <svg id="fighter-svg" viewBox="0 0 24 24" fill="none">
       <path d="M12 2L2 22L12 18L22 22L12 2Z" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
+  </div>
+
+  <!-- ARCHIVE GRID用の丸カーソル -->
+  <div id="archive-cursor">
+    <div id="archive-cursor-dot"></div>
   </div>
 
   <!-- Data injection -->
@@ -1274,8 +1549,8 @@ const categories = [
         articlesByCategory[article.cat].push(article);
       });
       
-      // 仮のカード用に、主要カテゴリー（astro, react, css, ai）を均等に振り分け
-      const mainCategories = ['astro', 'react', 'css', 'ai'];
+      // 仮のカード用に、主要カテゴリー（ai-journey, ai-tips）を均等に振り分け
+      const mainCategories = ['ai-journey', 'ai-tips'];
       const cardsPerMainCategory = Math.floor(targetCardCount / mainCategories.length);
       const remainingCards = targetCardCount % mainCategories.length;
       
@@ -1766,18 +2041,24 @@ const categories = [
         let cursorMaxUpdateTime = 0;
         
         const updateCursor = () => {
+          // ARCHIVE.GRIDモード時はスキップ（軽量化）
+          if (document.body.classList.contains('archive-mode')) {
+            cursorAnimationId = requestAnimationFrame(updateCursor);
+            return;
+          }
+
           // デバッグ情報表示時のみパフォーマンス測定（負荷軽減）
           const debugInfo = document.getElementById('debug-info');
           const isDebugVisible = debugInfo && debugInfo.classList.contains('show');
           const startTime = isDebugVisible ? performance.now() : 0;
-          
+
           if (!fighter) {
             cursorAnimationId = requestAnimationFrame(updateCursor);
             return;
           }
           
-          // 線形補間（lerp）で滑らかに追従（最適化：計算を簡略化）
-          const lerp = 0.2;
+          // 即座に追従（lerp不要）
+          const lerp = 1.0;
           const diffX = currentMouseX - cursorCurrentX;
           const diffY = currentMouseY - cursorCurrentY;
           
@@ -1931,6 +2212,7 @@ const categories = [
         isArchiveMode = show;
         if (show) {
           // アーカイブグリッドを表示
+          document.body.classList.add('archive-mode'); // 通常カーソルに切り替え
           gsap.to("#tunnel-scene", { opacity: 0, duration: 0.5 });
           gsap.to("#ui-layer", { opacity: 0.3, duration: 0.5 });
           if (archiveGridContainer) {
@@ -1941,7 +2223,7 @@ const categories = [
           if (modeDisplay) {
             modeDisplay.innerText = "MODE: ARCHIVE_GRID";
           }
-          
+
           // アニメーションループを停止（カーソルは動き続ける）
           if (animationFrameId) {
             cancelAnimationFrame(animationFrameId);
@@ -1949,6 +2231,7 @@ const categories = [
           }
         } else {
           // アーカイブグリッドを非表示
+          document.body.classList.remove('archive-mode'); // カスタムカーソルに戻す
           if (archiveGridContainer) {
             gsap.to(archiveGridContainer, { opacity: 0, y: 50, duration: 0.3, onComplete: () => {
               if (archiveGridContainer) archiveGridContainer.style.display = 'none';
@@ -1964,202 +2247,162 @@ const categories = [
         }
       };
       
-      // ランダム整列モード（3Dトンネル内でカードをランダムに整列）
-      const randomArrangeCards = () => {
-        // フィルターモードを解除してALLに戻す
-        isFiltered = false;
-        const allBtn = document.querySelector('.hud-btn[data-cat="ALL"]');
-        hudBtns.forEach(b => b.classList.remove('active'));
-        if (allBtn) allBtn.classList.add('active');
-        const modeDisplay = document.getElementById('mode-display');
-        if (modeDisplay) {
-          modeDisplay.innerText = "MODE: FREE_FLIGHT";
+      // === シンプルモード（軽量なブログ一覧） ===
+      const simpleModeContainer = document.getElementById('simple-mode-container');
+      const simpleArticlesContainer = document.getElementById('simple-articles');
+      const simpleBackBtn = document.getElementById('simple-back-btn');
+      const simpleFilterBtns = document.querySelectorAll('.simple-filter-btn');
+      const simpleSortBtns = document.querySelectorAll('.simple-sort-btn');
+
+      let simpleCurrentFilter = 'ALL';
+      let simpleCurrentSort = 'newest';
+
+      // シンプルモードに記事を表示
+      const renderSimpleArticles = () => {
+        if (!simpleArticlesContainer) return;
+
+        // フィルター適用
+        let filtered = uniqueArticles.filter(a => !a.slug.startsWith('temp-'));
+        if (simpleCurrentFilter !== 'ALL') {
+          filtered = filtered.filter(a => a.cat === simpleCurrentFilter);
         }
-        
-        // カードをランダムにシャッフル（先にシャッフル）
-        const shuffledCards = [...cardElements].sort(() => Math.random() - 0.5);
-        
-        // ワンちゃんモード：カードを大きく、見やすく（表示数を制限して軽量化）
-        const cardWidth = 400; // 260 → 400に拡大
-        const cardHeight = 520; // 高さも比例して拡大
-        const cardGap = 50;
-        const padding = 60;
-        const availableWidth = window.innerWidth - (padding * 2);
-        const cols = Math.max(1, Math.min(2, Math.floor((availableWidth + cardGap) / (cardWidth + cardGap)))); // 最大2列
-        const maxDisplayCards = 12; // 最初の12枚だけ表示（軽量化）
-        const displayCards = shuffledCards.slice(0, maxDisplayCards);
-        const rows = Math.ceil(displayCards.length / cols);
-        const spX = cardWidth + cardGap;
-        const spY = cardHeight + cardGap;
-        
-        // 中央配置のためのオフセット計算（左右の空白をなくす）
-        const totalWidth = (cols - 1) * spX;
-        const centerOffsetX = totalWidth / 2;
-        const centerOffsetY = (rows - 1) * spY / 2;
-        
-        // トンネルワールドとシーンの高さを調整（スクロール可能にする）
-        const tunnelWorld = document.getElementById('tunnel-world');
-        const tunnelScene = document.getElementById('tunnel-scene');
-        if (tunnelWorld && tunnelScene) {
-          const totalHeight = rows * spY + padding * 2;
-          tunnelWorld.style.minHeight = `${totalHeight}px`;
-          tunnelScene.classList.add('random-arrange-mode');
-          // スクロール位置をリセット
-          tunnelScene.scrollTop = 0;
+
+        // ソート適用
+        filtered.sort((a, b) => {
+          const dateA = new Date(a.date.replace(/\./g, '/'));
+          const dateB = new Date(b.date.replace(/\./g, '/'));
+          return simpleCurrentSort === 'newest' ? dateB - dateA : dateA - dateB;
+        });
+
+        // 記事がない場合
+        if (filtered.length === 0) {
+          simpleArticlesContainer.innerHTML = `
+            <div class="simple-empty">
+              <p>記事がありません</p>
+            </div>
+          `;
+          return;
         }
-        
-        // デバッグ情報を更新
-        const randomModeEl = document.getElementById('debug-random-mode');
-        if (randomModeEl) randomModeEl.textContent = 'ON';
-        const debug3dEl = document.getElementById('debug-3d-status');
-        if (debug3dEl) debug3dEl.textContent = '停止';
-        
-        // アニメーションループを完全に停止（確実に停止）
+
+        // 記事を表示
+        simpleArticlesContainer.innerHTML = filtered.map(article => `
+          <article class="simple-article" data-slug="${article.slug}">
+            <img src="${article.img}" alt="${article.title}" class="simple-article-thumb" loading="lazy">
+            <div class="simple-article-info">
+              <div class="simple-article-meta">
+                <span class="simple-article-cat ${article.cat}">${categoryLabels[article.cat] || article.cat.toUpperCase()}</span>
+                <span class="simple-article-date">${article.date}</span>
+              </div>
+              <h3 class="simple-article-title">${article.title}</h3>
+              <p class="simple-article-desc">${article.description || ''}</p>
+            </div>
+          </article>
+        `).join('');
+
+        // クリックイベントを追加
+        simpleArticlesContainer.querySelectorAll('.simple-article').forEach(el => {
+          el.addEventListener('click', () => {
+            const slug = el.dataset.slug;
+            if (slug) {
+              window.location.href = `/tech/${slug}`;
+            }
+          });
+        });
+      };
+
+      // シンプルモードを開く
+      const openSimpleMode = () => {
+        if (!simpleModeContainer) return;
+
+        // アニメーションを停止
         if (animationFrameId) {
           cancelAnimationFrame(animationFrameId);
           animationFrameId = null;
         }
-        
-        // すべてのカードを表示状態にリセット
-        cardElements.forEach(card => {
-          // 既存のアニメーションを停止
-          gsap.killTweensOf(card);
-          // 初期状態を設定（確実に表示されるように）
-          card.style.opacity = '1';
-          card.style.display = 'block';
-          card.style.pointerEvents = 'auto';
-          card.style.visibility = 'visible';
-          // GPUアクセラレーションを有効化（パフォーマンス最適化）
-          card.style.willChange = 'transform';
-          card.style.transformStyle = 'preserve-3d';
-          // ランダム整列モード時は不要なフィルター効果を無効化（パフォーマンス最適化）
-          card.style.filter = 'none';
-          card.style.boxShadow = 'none';
-        });
-        
-        // パフォーマンス最適化：表示するカードのみ処理（最大12枚）
-        displayCards.forEach((card, idx) => {
-          const r = Math.floor(idx / cols);
-          const c = idx % cols;
-          const tx = c * spX - centerOffsetX;
-          const ty = r * spY - centerOffsetY + padding; // 上部にパディングを追加
-          
-          // すべてのカードを表示（仮想スクロールは一旦無効化）
-          card.classList.add('formation-mode');
-          card.style.display = 'block';
-          card.style.opacity = '1';
-          card.style.visibility = 'visible';
-          
-          // ランダム整列モード時はSVGボーダーアニメーションを停止（パフォーマンス最適化）
-          const borderSvg = card.querySelector('.card-border-animated');
-          if (borderSvg) {
-            const borderRect = borderSvg.querySelector('.border-stroke');
-            if (borderRect) {
-              // アニメーションを停止
-              borderRect.style.animation = 'none';
-              // stroke-dashoffsetを固定（アニメーション停止）
-              borderRect.style.strokeDashoffset = '0';
-            }
-          }
-          
-          // 即座に位置を設定（アニメーション前に確実に表示、GPUアクセラレーション使用）
-          gsap.set(card, {
-            x: tx, 
-            y: ty, 
-            z: -200, 
-            rotationX: 0, 
-            rotationY: 0, 
-            rotationZ: 0,
-            opacity: 1,
-            force3D: true, // GPUアクセラレーションを強制
-            transformPerspective: 1000
-          });
-          
-          // その後、スムーズにアニメーション（必要に応じて、GPUアクセラレーション使用）
-          gsap.to(card, {
-            x: tx, 
-            y: ty, 
-            z: -200, 
-            rotationX: 0, 
-            rotationY: 0, 
-            rotationZ: 0,
-            opacity: 1, 
-            duration: 1.5, 
-            ease: "power3.out",
-            force3D: true, // GPUアクセラレーションを強制
-            transformPerspective: 1000
-          });
-        });
-        
-        // 仮想スクロールは一旦無効化（パフォーマンス問題が解決したら再検討）
-        // すべてのカードを表示するが、SVGアニメーションは停止しているのでパフォーマンスは改善されている
-        
-        // カテゴリー順に並べることを促すアナウンスを表示
+
+        // カスタムカーソルを非表示
+        const fighterCursor = document.getElementById('fighter-cursor');
+        const archiveCursor = document.getElementById('archive-cursor');
+        if (fighterCursor) fighterCursor.style.display = 'none';
+        if (archiveCursor) archiveCursor.style.display = 'none';
+
+        // 3Dシーンを非表示
+        gsap.to("#tunnel-scene", { opacity: 0, duration: 0.3 });
+        gsap.to("#ui-layer", { opacity: 0, duration: 0.3 });
+        gsap.to("#latest-widget", { opacity: 0, duration: 0.3 });
+
+        // シンプルモードを表示
+        simpleModeContainer.style.display = 'block';
         setTimeout(() => {
-          showCategoryHint();
-        }, 2000);
-      };
-      
-      // カテゴリー順に並べることを促すアナウンス
-      const showCategoryHint = () => {
-        const hint = document.createElement('div');
-        hint.id = 'category-hint';
-        hint.style.cssText = `
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: rgba(0, 0, 0, 0.95);
-          border: 2px solid var(--accent-cyan);
-          padding: 2rem 3rem;
-          border-radius: 12px;
-          z-index: 10000;
-          text-align: center;
-          font-family: 'Fira Code', monospace;
-          color: var(--accent-cyan);
-          box-shadow: 0 0 30px rgba(0, 255, 255, 0.5);
-          max-width: 600px;
-          opacity: 0;
-        `;
-        hint.innerHTML = `
-          <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: #ffff00;">ランダムに整列しました！</h3>
-          <p style="font-size: 1rem; line-height: 1.8; margin-bottom: 1.5rem;">
-            下のカテゴリーボタンを押すと、<br>
-            カテゴリー順に並べ替えられます。
-          </p>
-          <button id="close-hint-btn" style="
-            background: var(--accent-cyan);
-            color: #000;
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 6px;
-            font-family: 'Fira Code', monospace;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.9rem;
-          ">了解</button>
-        `;
-        document.body.appendChild(hint);
-        
-        gsap.to(hint, { opacity: 1, duration: 0.5 });
-        
-        const closeBtn = document.getElementById('close-hint-btn');
-        if (closeBtn) {
-          closeBtn.addEventListener('click', () => {
-            gsap.to(hint, { opacity: 0, duration: 0.3, onComplete: () => {
-              hint.remove();
-            }});
-          });
+          simpleModeContainer.classList.add('active');
+        }, 10);
+
+        // 記事をレンダリング
+        renderSimpleArticles();
+
+        // モード表示を更新
+        const modeDisplay = document.getElementById('mode-display');
+        if (modeDisplay) {
+          modeDisplay.innerText = "MODE: SIMPLE_VIEW";
         }
-        
-        // 5秒後に自動で閉じる
+      };
+
+      // シンプルモードを閉じる（宇宙へ戻る）
+      const closeSimpleMode = () => {
+        if (!simpleModeContainer) return;
+
+        simpleModeContainer.classList.remove('active');
         setTimeout(() => {
-          if (hint.parentNode) {
-            gsap.to(hint, { opacity: 0, duration: 0.3, onComplete: () => {
-              hint.remove();
-            }});
-          }
-        }, 5000);
+          simpleModeContainer.style.display = 'none';
+        }, 300);
+
+        // カスタムカーソルを再表示
+        const fighterCursor = document.getElementById('fighter-cursor');
+        if (fighterCursor) fighterCursor.style.display = 'block';
+
+        // 3Dシーンを表示
+        gsap.to("#tunnel-scene", { opacity: 1, duration: 0.5 });
+        gsap.to("#ui-layer", { opacity: 1, duration: 0.5 });
+        gsap.to("#latest-widget", { opacity: 1, duration: 0.5 });
+
+        // アニメーションを再開
+        requestAnimationFrame(updateTunnel);
+
+        // モード表示を更新
+        const modeDisplay = document.getElementById('mode-display');
+        if (modeDisplay) {
+          modeDisplay.innerText = "MODE: FREE_FLIGHT";
+        }
+      };
+
+      // 戻るボタン
+      if (simpleBackBtn) {
+        simpleBackBtn.addEventListener('click', closeSimpleMode);
+      }
+
+      // フィルターボタン
+      simpleFilterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          simpleFilterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          simpleCurrentFilter = btn.dataset.cat;
+          renderSimpleArticles();
+        });
+      });
+
+      // ソートボタン
+      simpleSortBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          simpleSortBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          simpleCurrentSort = btn.dataset.sort;
+          renderSimpleArticles();
+        });
+      });
+
+      // 旧randomArrangeCards → シンプルモードを開く
+      const randomArrangeCards = () => {
+        openSimpleMode();
       };
       
       // ツールチップとワンちゃんゾーンのクリックイベント（ランダム整列）
@@ -2217,10 +2460,11 @@ const categories = [
         });
       }
       
-      // アーカイブグリッドに記事を追加（時系列でソート）
+      // アーカイブグリッドに記事を追加（時系列でソート、最大8件に制限して軽量化）
       if (archiveGrid) {
-        // 重複を除去した記事リストを使用（既に時系列でソート済み）
-        uniqueArticles.forEach(article => {
+        // 重複を除去した記事リストを使用（既に時系列でソート済み）、最大8件
+        const archiveArticles = uniqueArticles.slice(0, 8);
+        archiveArticles.forEach(article => {
           const card = document.createElement('div');
           card.className = 'archive-card';
           const categoryColor = article.catColor || '#00ffff';
@@ -2381,6 +2625,54 @@ const categories = [
           latestWidget.classList.remove('collapsed');
           widgetToggle.classList.remove('show');
         });
+      }
+
+      // --- ARCHIVE.GRID用の丸カーソル ---
+      const archiveCursor = document.getElementById('archive-cursor');
+      if (archiveCursor) {
+        let arcCursorX = window.innerWidth / 2;
+        let arcCursorY = window.innerHeight / 2;
+        let arcMouseX = arcCursorX;
+        let arcMouseY = arcCursorY;
+
+        // 色のリスト（ホバー時に変わる）
+        const cursorColors = ['#00ffff', '#ff00ff', '#ffaa00', '#00ff88', '#ff6b6b'];
+        let colorIndex = 0;
+
+        const updateArchiveCursor = () => {
+          // ARCHIVE.GRIDモード時だけ動作（軽量化）
+          if (!document.body.classList.contains('archive-mode')) {
+            requestAnimationFrame(updateArchiveCursor);
+            return;
+          }
+          // 即座に追従
+          arcCursorX = arcMouseX;
+          arcCursorY = arcMouseY;
+          archiveCursor.style.transform = `translate(${arcCursorX}px, ${arcCursorY}px)`;
+          requestAnimationFrame(updateArchiveCursor);
+        };
+
+        document.addEventListener('mousemove', (e) => {
+          arcMouseX = e.clientX;
+          arcMouseY = e.clientY;
+        });
+
+        // カードにホバーした時に色を変える（軽量版）
+        document.querySelectorAll('.archive-card').forEach(el => {
+          el.addEventListener('mouseenter', () => {
+            archiveCursor.classList.add('hovering');
+            colorIndex = (colorIndex + 1) % cursorColors.length;
+            const dot = document.getElementById('archive-cursor-dot');
+            if (dot) {
+              dot.style.background = cursorColors[colorIndex];
+            }
+          });
+          el.addEventListener('mouseleave', () => {
+            archiveCursor.classList.remove('hovering');
+          });
+        });
+
+        updateArchiveCursor();
       }
     }
 

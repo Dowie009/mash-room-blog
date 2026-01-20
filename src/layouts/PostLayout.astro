@@ -17,6 +17,8 @@ interface Props {
     thumbnail?: string;
     learningLevel?: number;
     topic?: string;
+    learnings?: string[];
+    defaultPreset?: number;
   };
   collection?: 'tech' | 'gear' | 'story' | 'ai';
 }
@@ -34,15 +36,9 @@ const formatDate = (date: Date) => {
 
 // カテゴリ表示名とカラー
 const categoryConfig: Record<string, { label: string; color: string }> = {
-  // TECH
-  astro: { label: 'ASTRO', color: '#ff5d01' },
-  react: { label: 'REACT', color: '#61dafb' },
-  css: { label: 'CSS', color: '#264de4' },
-  ai: { label: 'AI / CLAUDE', color: '#d97706' },
-  devtips: { label: 'DEV TIPS', color: '#10b981' },
+  // TECH（2カテゴリのみ）
   'ai-journey': { label: 'AI JOURNEY', color: '#00ffff' },
-  'dtm-ai': { label: 'DTM × AI', color: '#ff6b9d' },
-  'ai-tools': { label: 'AI TOOLS', color: '#a855f7' },
+  'ai-tips': { label: 'AI TIPS', color: '#ffaa00' },
   // GEAR
   daw: { label: 'DAW', color: '#8b5cf6' },
   gear: { label: 'GEAR', color: '#ef4444' },
@@ -54,12 +50,6 @@ const categoryConfig: Record<string, { label: string; color: string }> = {
   story: { label: 'STORY', color: '#a855f7' },
   diary: { label: 'DIARY', color: '#f472b6' },
   review: { label: 'REVIEW', color: '#14b8a6' },
-  // AI LAB
-  chat: { label: 'CHAT', color: '#00ffff' },
-  dev: { label: 'DEV', color: '#ffaa00' },
-  art: { label: 'ART', color: '#ff00ff' },
-  music: { label: 'MUSIC', color: '#39ff14' },
-  hack: { label: 'HACK', color: '#ffff00' },
 };
 
 // コレクションごとの設定
@@ -82,12 +72,6 @@ const collectionConfig: Record<string, { href: string; label: string; gradient: 
     gradient: 'linear-gradient(135deg, #a855f7, #ec4899)',
     icon: '📖'
   },
-  ai: {
-    href: '/ai',
-    label: 'AI LAB',
-    gradient: 'linear-gradient(135deg, #00ffff, #ff00ff)',
-    icon: '🤖'
-  },
 };
 
 const config = collectionConfig[collection] || collectionConfig.tech;
@@ -108,7 +92,7 @@ const heroPattern = heroPatternConfig[frontmatter.category] || heroPatternConfig
 // A: ai-journey用フッター
 // B: その他TECH記事用フッター
 const footerPatternConfig: Record<string, string> = {
-  'ai-journey': '/images/tech/hero-patterns/Aパーンのフッター.mp4',
+  'ai-journey': '/images/tech/hero-patterns/Aパターンのフッター.mp4',
   'default': '/images/tech/hero-patterns/footer-pattern-b.V2.mp4',
 };
 const footerPattern = footerPatternConfig[frontmatter.category] || footerPatternConfig['default'];
@@ -151,10 +135,23 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
 ---
 
 <Layout title={`${frontmatter.title} | ${config.label}`}>
-  <div class="post-page">
+  <div class="post-page" data-category={frontmatter.category} data-default-preset={frontmatter.defaultPreset || 1}>
+    <!-- 裏モード用：動画背景（デフォルト非表示） -->
+    <div class="video-bg-container" id="video-bg-container" style="display: none;">
+      <video autoplay muted loop playsinline class="video-bg" id="video-bg">
+        <source src="/images/カオス背景.mp4" type="video/mp4" />
+      </video>
+      <div class="video-bg-overlay"></div>
+    </div>
+
     <!-- 3層サイバー背景 -->
     <div class="cyber-overlay"></div>
     <div class="cyber-particles"></div>
+
+    <!-- 背景エフェクトレイヤー -->
+    <div class="bg-effect-layer" id="bg-effect-grid"></div>
+    <div class="bg-effect-layer" id="bg-effect-dots"></div>
+    <div class="bg-effect-layer bg-effect-mesh" id="bg-effect-mesh"></div>
 
     <!-- ヒーローセクション（TECHページ用：動画バナー - カテゴリ別自動切り替え） -->
     {collection === 'tech' ? (
@@ -285,6 +282,24 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
       </header>
     )}
 
+    <!-- 今日学ぶことカード - Tech & Tips（Bパターン）のみ表示。AI Journey（Aパターン）では非表示 -->
+    {frontmatter.category !== 'ai-journey' && frontmatter.learnings && frontmatter.learnings.length > 0 && (
+      <div class="learnings-card">
+        <div class="learnings-header">
+          <span class="learnings-icon">📚</span>
+          <span class="learnings-title">今日学ぶこと</span>
+        </div>
+        <ul class="learnings-list">
+          {frontmatter.learnings.slice(0, 2).map(item => (
+            <li class="learnings-item">
+              <span class="learnings-check">✓</span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+
     <!-- 本文 -->
     <main class="article-main">
       <article class="article-content">
@@ -336,6 +351,114 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
             </button>
           </div>
         </div>
+
+        <!-- ===== STYLE SWITCHER パネル ===== -->
+        <div id="global-style-switcher" class="style-switcher-panel" style="display: none;">
+          <div class="switcher-header">
+            <span class="switcher-title">🎨 スタイル調整</span>
+            <button class="switcher-close" id="switcher-close">✕</button>
+          </div>
+
+          <!-- おすすめプリセット -->
+          <div class="switcher-section">
+            <div class="switcher-label">✨ おすすめプリセット</div>
+            <div class="preset-buttons">
+              <button class="preset-btn preset-1" data-preset="1" title="サイバーダーク">1</button>
+              <button class="preset-btn preset-2" data-preset="2" title="ギャラクシー">2</button>
+              <button class="preset-btn preset-3" data-preset="3" title="オーロラ">3</button>
+              <button class="preset-btn preset-4" data-preset="4" title="さくら">4</button>
+              <button class="preset-btn preset-5" data-preset="5" title="クリーンライト">5</button>
+            </div>
+            <div class="preset-scale">
+              <span>← 暗</span>
+              <span>明 →</span>
+            </div>
+          </div>
+
+          <!-- 裏モード（動画背景） -->
+          <div class="switcher-section">
+            <div class="switcher-label">🎬 裏モード</div>
+            <button class="ura-mode-btn" id="ura-mode-btn">動画背景 ON/OFF</button>
+          </div>
+
+          <!-- フォント切り替え -->
+          <div class="switcher-section">
+            <div class="switcher-label">🔤 フォント</div>
+            <div class="font-buttons">
+              <button class="font-btn" data-font="noto">ゴシック</button>
+              <button class="font-btn" data-font="maru">まるご</button>
+              <button class="font-btn" data-font="mincho">明朝</button>
+            </div>
+            <div class="font-buttons" style="margin-top: 0.25rem;">
+              <button class="font-btn" data-font="klee">手書き</button>
+              <button class="font-btn" data-font="sawarabi">さわらび</button>
+            </div>
+          </div>
+
+          <!-- ズーム -->
+          <div class="switcher-section">
+            <div class="switcher-label">🔍 ズーム</div>
+            <div class="zoom-controls">
+              <button class="zoom-btn" id="zoom-minus">−</button>
+              <span class="zoom-level" id="zoom-level">100%</span>
+              <button class="zoom-btn" id="zoom-plus">+</button>
+              <button class="zoom-reset" id="zoom-reset">リセット</button>
+            </div>
+          </div>
+
+          <!-- 背景ベース -->
+          <div class="switcher-section">
+            <div class="switcher-label">🌙 背景ベース</div>
+            <div class="bg-buttons">
+              <button class="bg-btn" data-bg="black">黒</button>
+              <button class="bg-btn" data-bg="navy">紺</button>
+              <button class="bg-btn" data-bg="gray">灰</button>
+              <button class="bg-btn" data-bg="lightgray">淡灰</button>
+              <button class="bg-btn" data-bg="white">白</button>
+            </div>
+          </div>
+
+          <!-- 背景エフェクト（網を選ぶとグロー+スクロール連動が自動ON） -->
+          <div class="switcher-section">
+            <div class="switcher-label">✨ 背景エフェクト</div>
+            <div class="effect-buttons">
+              <button class="effect-btn" data-effect="none" title="なし">×</button>
+              <button class="effect-btn" data-effect="grid" title="グリッド">格</button>
+              <button class="effect-btn" data-effect="dots" title="ドット">点</button>
+              <button class="effect-btn effect-mesh" data-effect="mesh" title="グロー+メッシュ（スクロール連動）">網</button>
+            </div>
+          </div>
+
+          <!-- 吹き出しスタイル -->
+          <div class="switcher-section">
+            <div class="switcher-label">💬 吹き出し</div>
+            <div class="bubble-buttons">
+              <button class="bubble-btn" data-bubble="glass">ガラス</button>
+              <button class="bubble-btn" data-bubble="solid">白</button>
+              <button class="bubble-btn" data-bubble="dark">黒</button>
+              <button class="bubble-btn" data-bubble="pastel">淡</button>
+              <button class="bubble-btn" data-bubble="neon">光</button>
+            </div>
+          </div>
+
+          <!-- マイプリセット -->
+          <div class="switcher-section switcher-mypreset">
+            <div class="switcher-label mypreset-label">⭐ マイプリセット</div>
+            <div class="mypreset-buttons">
+              <button class="mypreset-btn" data-slot="1">1</button>
+              <button class="mypreset-btn" data-slot="2">2</button>
+              <button class="mypreset-btn" data-slot="3">3</button>
+              <button class="mypreset-save" id="mypreset-save">保存</button>
+            </div>
+          </div>
+
+          <!-- リセット -->
+          <div class="switcher-section switcher-reset">
+            <button class="reset-btn" id="reset-all">🔄 リセット</button>
+          </div>
+        </div>
+        <!-- ===== /STYLE SWITCHER パネル ===== -->
+
       </aside>
     </main>
 
@@ -535,6 +658,53 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     background-attachment: fixed;
   }
 
+  /* 裏モード：動画背景 */
+  .video-bg-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+  }
+
+  .video-bg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .video-bg-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+  }
+
+  /* 裏モード時：全ての背景とグローを非表示 */
+  .post-page.ura-mode {
+    background: none !important;
+  }
+
+  .post-page.ura-mode::before,
+  .post-page.ura-mode::after {
+    display: none !important;
+  }
+
+  .post-page.ura-mode .cyber-overlay,
+  .post-page.ura-mode .cyber-particles {
+    display: none !important;
+  }
+
+  .post-page.ura-mode .article-main,
+  .post-page.ura-mode .article-content {
+    background: none !important;
+  }
+
   /* ネオングロー用の疑似要素 */
   .post-page::before {
     content: '';
@@ -550,12 +720,51 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
   }
 
   /* =====================================================
-     3層サイバー背景システム（Layer 2, 3用）
+     背景エフェクトレイヤー
      ===================================================== */
 
-  /* Layer 1は.post-pageに直接設定済み */
+  /* 背景エフェクト用のコンテナ */
+  .bg-effect-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
 
-  /* Layer 2: 中間層 - グリッド＆メッシュ（一時無効）
+  .bg-effect-layer.active {
+    opacity: 1;
+  }
+
+  /* グリッドエフェクト */
+  .bg-effect-grid {
+    background:
+      linear-gradient(rgba(0, 255, 255, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 255, 255, 0.08) 1px, transparent 1px),
+      linear-gradient(rgba(255, 0, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 0, 255, 0.04) 1px, transparent 1px);
+    background-size: 80px 80px, 80px 80px, 20px 20px, 20px 20px;
+  }
+
+  /* ドットエフェクト */
+  .bg-effect-dots {
+    background-image: radial-gradient(rgba(0, 255, 255, 0.3) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  /* メッシュグラデーションエフェクト */
+  .bg-effect-mesh {
+    background:
+      radial-gradient(at 40% 20%, rgba(0, 255, 255, 0.15) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, rgba(255, 0, 255, 0.1) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, rgba(0, 255, 136, 0.1) 0px, transparent 50%),
+      radial-gradient(at 80% 50%, rgba(138, 43, 226, 0.1) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(0, 191, 255, 0.15) 0px, transparent 50%),
+      radial-gradient(at 80% 100%, rgba(255, 105, 180, 0.1) 0px, transparent 50%);
+  }
+
+  /* Layer 2: 中間層 - グリッド＆メッシュ（旧実装・参考用）
   .post-page::after {
     content: '';
     position: fixed;
@@ -1244,7 +1453,8 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
     font-size: 1.1rem;
     line-height: 2.1;
-    color: #d0d0d0;
+    /* 濃いグレー - 白背景でも黒背景でも見える */
+    color: #333333;
   }
 
   .article-content :global(h2) {
@@ -1253,9 +1463,10 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     font-weight: 700;
     margin: 3rem 0 1.25rem;
     padding-bottom: 0.6rem;
-    color: #ffffff;
+    /* 濃い色 */
+    color: #111111;
     position: relative;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   }
 
   .article-content :global(h2)::after {
@@ -1596,6 +1807,26 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     font-weight: 700;
   }
 
+  /* CUSTOMIZEボタン開いた状態 */
+  .customize-btn.active {
+    background: rgba(255, 0, 255, 0.15);
+    border-color: rgba(255, 0, 255, 0.6);
+    color: #ff00ff;
+  }
+
+  .customize-btn.active svg {
+    transform: rotate(180deg);
+  }
+
+  .customize-card.active {
+    border-color: rgba(255, 0, 255, 0.4);
+  }
+
+  .customize-card.active .sidebar-card-dot {
+    background: #ff00ff;
+    box-shadow: 0 0 8px rgba(255, 0, 255, 0.6);
+  }
+
   /* TRANSMIT カード */
   .transmit-card {
     background: linear-gradient(135deg, rgba(10, 10, 20, 0.95), rgba(20, 20, 40, 0.95));
@@ -1670,6 +1901,578 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     border-color: rgba(0, 255, 255, 0.35);
     color: #00ffff;
     box-shadow: 0 6px 16px rgba(0, 255, 255, 0.25);
+  }
+
+  /* =====================================================
+     STYLE SWITCHER パネル
+     ===================================================== */
+
+  .style-switcher-panel {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    z-index: 9999;
+    width: 260px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 1rem;
+    font-size: 0.75rem;
+  }
+
+  .switcher-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .switcher-title {
+    color: #fff;
+    font-weight: bold;
+  }
+
+  .switcher-close {
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.25rem;
+    transition: color 0.2s;
+  }
+
+  .switcher-close:hover {
+    color: #fff;
+  }
+
+  .switcher-section {
+    margin-bottom: 1rem;
+  }
+
+  .switcher-label {
+    color: #888;
+    margin-bottom: 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  .switcher-section:first-of-type .switcher-label {
+    color: #00ffff;
+    font-weight: bold;
+  }
+
+  /* プリセットボタン */
+  .preset-buttons {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .preset-btn {
+    flex: 1;
+    padding: 0.5rem 0.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.65rem;
+    transition: all 0.2s;
+  }
+
+  /* 1: サイバーダーク（最も暗い） */
+  .preset-btn.preset-1 {
+    border: 2px solid #1a1a2e;
+    background: linear-gradient(135deg, #0a0a12, #1a1a2e);
+    color: #00ffff;
+    text-shadow: 0 0 5px #00ffff;
+  }
+
+  /* 2: ギャラクシー（暗め紫） */
+  .preset-btn.preset-2 {
+    border: 2px solid #2d1b4e;
+    background: linear-gradient(135deg, #1a1a2e, #2d1b4e);
+    color: #9b59b6;
+    text-shadow: 0 0 5px #9b59b6;
+  }
+
+  /* 3: オーロラ（暗め緑） */
+  .preset-btn.preset-3 {
+    border: 2px solid #1a3a3a;
+    background: linear-gradient(135deg, #0d2626, #1a3a3a);
+    color: #00ff88;
+    text-shadow: 0 0 5px #00ff88;
+  }
+
+  /* 4: さくら（明るめピンク） */
+  .preset-btn.preset-4 {
+    border: 2px solid #ffd0e0;
+    background: linear-gradient(135deg, #fff8fa, #fff0f5);
+    color: #d44a7a;
+  }
+
+  /* 5: クリーンライト（最も明るい） */
+  .preset-btn.preset-5 {
+    border: 2px solid #e0e0e0;
+    background: linear-gradient(145deg, #ffffff, #f8f8f8);
+    color: #333;
+  }
+
+  /* 裏モードボタン */
+  .ura-mode-btn {
+    width: 100%;
+    padding: 0.6rem;
+    border-radius: 8px;
+    border: 2px solid #ff00ff;
+    background: linear-gradient(135deg, #1a0020, #2d0040);
+    color: #ff00ff;
+    text-shadow: 0 0 5px #ff00ff;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: bold;
+    transition: all 0.2s;
+  }
+
+  .ura-mode-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.4);
+  }
+
+  .ura-mode-btn.active {
+    background: #ff00ff;
+    color: #000;
+    text-shadow: none;
+  }
+
+  .preset-btn:hover {
+    transform: scale(1.05);
+  }
+
+  .preset-btn.active {
+    box-shadow: 0 0 10px currentColor;
+    transform: scale(1.1);
+  }
+
+  .preset-scale {
+    display: flex;
+    justify-content: space-between;
+    color: #666;
+    font-size: 0.6rem;
+    margin-top: 0.25rem;
+  }
+
+  /* フォントボタン */
+  .font-buttons {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .font-btn {
+    flex: 1;
+    min-width: 45px;
+    padding: 0.4rem 0.2rem;
+    border-radius: 6px;
+    border: 1px solid #555;
+    background: rgba(255, 255, 255, 0.05);
+    color: #aaa;
+    cursor: pointer;
+    font-size: 0.6rem;
+    transition: all 0.2s;
+  }
+
+  .font-btn:hover, .font-btn.active {
+    border-color: #00ffff;
+    color: #00ffff;
+  }
+
+  .font-btn[data-font="noto"] { font-family: 'Noto Sans JP', sans-serif; }
+  .font-btn[data-font="maru"] { font-family: 'Zen Maru Gothic', sans-serif; }
+  .font-btn[data-font="mincho"] { font-family: 'Zen Old Mincho', serif; }
+  .font-btn[data-font="klee"] { font-family: 'Klee One', cursive; }
+  .font-btn[data-font="sawarabi"] { font-family: 'Sawarabi Gothic', sans-serif; }
+
+  /* ズームコントロール */
+  .zoom-controls {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+  }
+
+  .zoom-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 1px solid #555;
+    background: rgba(255, 255, 255, 0.05);
+    color: #aaa;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .zoom-btn:hover {
+    border-color: #00ffff;
+    color: #00ffff;
+  }
+
+  .zoom-level {
+    flex: 1;
+    text-align: center;
+    color: #aaa;
+    font-size: 0.7rem;
+  }
+
+  .zoom-reset {
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid #555;
+    background: rgba(255, 255, 255, 0.05);
+    color: #888;
+    cursor: pointer;
+    font-size: 0.6rem;
+    transition: all 0.2s;
+  }
+
+  .zoom-reset:hover {
+    border-color: #00ffff;
+    color: #00ffff;
+  }
+
+  /* 背景ベースボタン（5段階） */
+  .bg-buttons {
+    display: flex;
+    gap: 0.2rem;
+    flex-wrap: wrap;
+  }
+
+  .bg-btn {
+    flex: 1;
+    min-width: 36px;
+    padding: 0.3rem 0.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.6rem;
+    transition: all 0.2s;
+  }
+
+  .bg-btn[data-bg="black"] {
+    border: 1px solid #333;
+    background: #0a0a0a;
+    color: #888;
+  }
+
+  .bg-btn[data-bg="navy"] {
+    border: 1px solid #2a2a4e;
+    background: #1a1a2e;
+    color: #aaa;
+  }
+
+  .bg-btn[data-bg="gray"] {
+    border: 1px solid #555;
+    background: #3a3a3a;
+    color: #ccc;
+  }
+
+  .bg-btn[data-bg="lightgray"] {
+    border: 1px solid #999;
+    background: #888888;
+    color: #fff;
+  }
+
+  .bg-btn[data-bg="white"] {
+    border: 1px solid #ddd;
+    background: #ffffff;
+    color: #333;
+  }
+
+  .bg-btn:hover, .bg-btn.active {
+    transform: scale(1.02);
+    box-shadow: 0 0 8px currentColor;
+  }
+
+  /* グローボタン */
+  .glow-buttons {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .glow-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    border: 2px solid #555;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .glow-btn:hover, .glow-btn.active {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  .glow-cyber { background: linear-gradient(135deg, #00ffff, #ff00ff); }
+  .glow-sunset { background: linear-gradient(135deg, #ff6b35, #f7931e); }
+  .glow-aurora { background: linear-gradient(135deg, #00ff88, #00bfff); }
+  .glow-sakura { background: linear-gradient(135deg, #ffb7c5, #ff69b4); }
+  .glow-galaxy { background: linear-gradient(135deg, #9b59b6, #3498db); }
+  .glow-none { background: #333; color: #888; font-size: 0.6rem; display: flex; align-items: center; justify-content: center; }
+
+  /* 背景エフェクトボタン */
+  .effect-buttons {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .effect-btn {
+    width: 32px;
+    height: 26px;
+    border-radius: 6px;
+    border: 2px solid #555;
+    background: #222;
+    color: #aaa;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .effect-btn:hover, .effect-btn.active {
+    border-color: #00ffff;
+    color: #00ffff;
+    box-shadow: 0 0 8px rgba(0, 255, 255, 0.3);
+  }
+
+  /* グロー連動トグル */
+  .glow-sync-toggle {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .sync-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.75rem;
+    color: #888;
+  }
+
+  .sync-label input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: #00ffff;
+    cursor: pointer;
+  }
+
+  .sync-label:hover .sync-text {
+    color: #00ffff;
+  }
+
+  .sync-label input:checked + .sync-text {
+    color: #00ffff;
+  }
+
+  /* 吹き出しボタン */
+  .bubble-buttons {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .bubble-btn {
+    flex: 1;
+    min-width: 40px;
+    padding: 0.35rem 0.15rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.55rem;
+    transition: all 0.2s;
+  }
+
+  .bubble-btn[data-bubble="glass"] {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(4px);
+    color: #fff;
+  }
+
+  .bubble-btn[data-bubble="solid"] {
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #333;
+  }
+
+  .bubble-btn[data-bubble="dark"] {
+    border: 1px solid #444;
+    background: #1a1a1a;
+    color: #e0e0e0;
+  }
+
+  .bubble-btn[data-bubble="pastel"] {
+    border: 1px solid #e0c0d0;
+    background: linear-gradient(135deg, #ffe4ec, #e4f0ff);
+    color: #555;
+  }
+
+  .bubble-btn[data-bubble="neon"] {
+    border: 2px solid #00ffff;
+    background: rgba(0, 0, 0, 0.8);
+    color: #00ffff;
+    text-shadow: 0 0 5px #00ffff;
+  }
+
+  .bubble-btn:hover, .bubble-btn.active {
+    transform: scale(1.05);
+    box-shadow: 0 0 8px currentColor;
+  }
+
+  /* マイプリセット */
+  .switcher-mypreset {
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .mypreset-label {
+    color: #ffcc00 !important;
+    font-weight: bold !important;
+  }
+
+  .mypreset-buttons {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .mypreset-btn {
+    flex: 1;
+    padding: 0.4rem;
+    border-radius: 6px;
+    border: 1px solid #ffcc00;
+    background: rgba(255, 204, 0, 0.1);
+    color: #ffcc00;
+    cursor: pointer;
+    font-size: 0.65rem;
+    opacity: 0.5;
+    transition: all 0.2s;
+  }
+
+  .mypreset-btn.saved {
+    opacity: 1;
+  }
+
+  .mypreset-btn:hover {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+
+  .mypreset-save {
+    flex: 1;
+    padding: 0.4rem;
+    border-radius: 6px;
+    border: 1px solid #00ff88;
+    background: rgba(0, 255, 136, 0.1);
+    color: #00ff88;
+    cursor: pointer;
+    font-size: 0.65rem;
+    transition: all 0.2s;
+  }
+
+  .mypreset-save:hover {
+    background: rgba(0, 255, 136, 0.2);
+    transform: scale(1.05);
+  }
+
+  /* リセットボタン */
+  .switcher-reset {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 170, 0, 0.3);
+  }
+
+  .reset-btn {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #ffaa00;
+    background: rgba(255, 170, 0, 0.1);
+    color: #ffaa00;
+    cursor: pointer;
+    font-size: 0.65rem;
+    transition: all 0.2s;
+  }
+
+  .reset-btn:hover {
+    background: rgba(255, 170, 0, 0.2);
+  }
+
+  /* =====================================================
+     今日学ぶことカード - 文字とラインのみ（枠なし・背景なし）
+     ===================================================== */
+
+  .learnings-card {
+    /* post-page(relative)の子要素としてabsolute配置 - ページと一緒にスクロール */
+    position: absolute;
+    top: 460px;
+    left: 699px;
+    z-index: 10;
+    padding: 1rem 1.25rem;
+    max-width: 420px;
+    background: none;
+    border: none;
+  }
+
+  .learnings-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #00ffff;
+  }
+
+  .learnings-icon {
+    font-size: 1.3rem;
+  }
+
+  .learnings-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #00ffff;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+  }
+
+  .learnings-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .learnings-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    color: #ffffff;
+    line-height: 1.5;
+  }
+
+  .learnings-check {
+    color: #00ff88;
+    font-weight: bold;
+    flex-shrink: 0;
+    font-size: 0.8rem;
+    margin-top: 0.1rem;
+    text-shadow: 0 0 8px rgba(0, 255, 136, 0.8);
   }
 
   /* =====================================================
@@ -3365,3 +4168,704 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     }
   });
 </script>
+
+<!-- ===== GLOBAL STYLE SWITCHER JavaScript ===== -->
+<script>
+(function() {
+  // ================================
+  // 状態管理
+  // ================================
+  const STORAGE_KEY = 'global-style-switcher';
+  let currentState = {
+    baseBg: 'black',
+    glowTheme: 'cyber',
+    bubbleStyle: 'neon',
+    font: 'noto',
+    zoom: 100,
+    activePreset: 1,
+    glowSyncEnabled: false,
+    videoBg: false,
+    bgEffect: 'none'  // 背景エフェクト: none, grid, dots, mesh
+  };
+  let myPresets = { 1: null, 2: null, 3: null };
+
+  // スクロール連動用テーマ配列
+  const scrollGlowThemes = ['cyber', 'sunset', 'aurora', 'sakura', 'galaxy'];
+
+  // ================================
+  // プリセット定義
+  // ================================
+  // おすすめプリセット（暗→明の5段階）
+  const recommendedPresets = {
+    // 1: 黒背景 → 白文字・ネオン枠
+    1: { baseBg: 'black', glowTheme: 'cyber', bubbleStyle: 'neon', font: 'noto', bgEffect: 'none' },
+    // 2: ネイビー背景 → 白文字・ガラス風
+    2: { baseBg: 'navy', glowTheme: 'galaxy', bubbleStyle: 'glass', font: 'noto', bgEffect: 'none' },
+    // 3: グレー背景 → 白文字・ダーク
+    3: { baseBg: 'gray', glowTheme: 'aurora', bubbleStyle: 'dark', font: 'maru', bgEffect: 'none' },
+    // 4: 明るいグレー背景 → 黒文字・パステル
+    4: { baseBg: 'lightgray', glowTheme: 'sakura', bubbleStyle: 'pastel', font: 'maru', bgEffect: 'none' },
+    // 5: ホワイト背景 → 黒文字・ソリッド・グリッド・さわらびフォント
+    5: { baseBg: 'white', glowTheme: 'none', bubbleStyle: 'solid', font: 'sawarabi', bgEffect: 'grid' }
+  };
+
+  // ================================
+  // 背景スタイル（5段階：暗→明）
+  // ================================
+  const baseBgStyles = {
+    black: { bg: '#0a0a0a', textColor: '#ffffff' },      // 1: 黒め → 白文字
+    navy: { bg: '#1a1a2e', textColor: '#ffffff' },       // 2: ネイビー → 白文字
+    gray: { bg: '#3a3a3a', textColor: '#e0e0e0' },       // 3: グレー → 明るいグレー文字
+    lightgray: { bg: '#888888', textColor: '#1a1a1a' },  // 4: 明るいグレー → 濃い文字
+    white: { bg: '#ffffff', textColor: '#333333' }       // 5: ホワイト → 黒文字
+  };
+  // TODO: 将来追加予定
+  // - あいぼーモード（ピンク系 #ff69b4）
+  // - 道ゐモード（水色系 #00bfff）
+
+  // ================================
+  // グローテーマ
+  // ================================
+  const glowThemes = {
+    cyber: { glow1: '#00ffff', glow2: '#ff00ff', glow3: '#00ff88' },
+    sunset: { glow1: '#ff6b35', glow2: '#f7931e', glow3: '#ff4500' },
+    aurora: { glow1: '#00ff88', glow2: '#00bfff', glow3: '#00ffaa' },
+    sakura: { glow1: '#ffb7c5', glow2: '#ff69b4', glow3: '#ffc0cb' },
+    galaxy: { glow1: '#9b59b6', glow2: '#3498db', glow3: '#8e44ad' },
+    none: { glow1: 'transparent', glow2: 'transparent', glow3: 'transparent' }
+  };
+
+  // ================================
+  // フォント定義
+  // ================================
+  const fontStyles = {
+    noto: "'Noto Sans JP', sans-serif",
+    maru: "'Zen Maru Gothic', sans-serif",
+    mincho: "'Zen Old Mincho', serif",
+    klee: "'Klee One', cursive",
+    sawarabi: "'Sawarabi Gothic', sans-serif"
+  };
+
+  // ================================
+  // 吹き出しスタイル（あいぼー/道ゐ別・暗→明に対応）
+  // ================================
+  const bubbleStyles = {
+    // 暗い背景用（プリセット1〜3）
+    glass: {
+      aibou: { bg: 'rgba(255,107,157,0.1)', border: 'rgba(255,107,157,0.3)', text: '#ffffff', nameColor: '#ff6b9d' },
+      michi: { bg: 'rgba(0,191,255,0.1)', border: 'rgba(0,191,255,0.3)', text: '#ffffff', nameColor: '#00bfff' }
+    },
+    dark: {
+      aibou: { bg: 'rgba(0,0,0,0.7)', border: '#ff6b9d', text: '#ffffff', nameColor: '#ff6b9d' },
+      michi: { bg: 'rgba(0,0,0,0.7)', border: '#00bfff', text: '#ffffff', nameColor: '#00bfff' }
+    },
+    neon: {
+      aibou: { bg: 'rgba(0,0,0,0.8)', border: '#ff6b9d', text: '#ffffff', nameColor: '#ff6b9d', borderWidth: '2px', shadow: '0 0 15px rgba(255,107,157,0.3)' },
+      michi: { bg: 'rgba(0,0,0,0.8)', border: '#00ffff', text: '#ffffff', nameColor: '#00ffff', borderWidth: '2px', shadow: '0 0 15px rgba(0,255,255,0.3)' }
+    },
+    // 明るい背景用（プリセット4〜5）
+    pastel: {
+      aibou: { bg: 'rgba(255,240,245,0.9)', border: '#f0c0d0', text: '#333333', nameColor: '#d44a7a' },
+      michi: { bg: 'rgba(240,248,255,0.9)', border: '#c0d0f0', text: '#333333', nameColor: '#0077aa' }
+    },
+    solid: {
+      aibou: { bg: '#ffffff', border: '#e8e8e8', text: '#333333', nameColor: '#d44a7a' },
+      michi: { bg: '#ffffff', border: '#e8e8e8', text: '#333333', nameColor: '#0088cc' }
+    }
+  };
+
+  // ================================
+  // スタイル適用関数
+  // ================================
+  function applyStyles() {
+    const page = document.querySelector('.post-page');
+    const content = document.querySelector('.article-content');
+    const videoBgContainer = document.getElementById('video-bg-container');
+    if (!page) return;
+
+    // 動画背景（裏モード）
+    const articleMain = document.querySelector('.article-main');
+    const cyberOverlay = document.querySelector('.cyber-overlay');
+    const cyberParticles = document.querySelector('.cyber-particles');
+
+    if (videoBgContainer) {
+      if (currentState.videoBg) {
+        videoBgContainer.style.display = 'block';
+        // 裏モード：全ての背景を完全に透明に
+        page.style.background = 'none';
+        page.classList.add('ura-mode');
+        if (articleMain) articleMain.style.background = 'none';
+        if (content) content.style.background = 'none';
+        if (cyberOverlay) cyberOverlay.style.display = 'none';
+        if (cyberParticles) cyberParticles.style.display = 'none';
+      } else {
+        videoBgContainer.style.display = 'none';
+        page.classList.remove('ura-mode');
+        if (cyberOverlay) cyberOverlay.style.display = '';
+        if (cyberParticles) cyberParticles.style.display = '';
+      }
+    }
+
+    // 背景（動画背景でない場合のみ適用）
+    if (!currentState.videoBg) {
+      const bgStyle = baseBgStyles[currentState.baseBg];
+      if (bgStyle) {
+        page.style.background = bgStyle.bg;
+        page.style.backgroundAttachment = 'fixed';
+        if (content) {
+          content.style.color = bgStyle.textColor;
+          content.style.background = ''; // 背景をリセット
+        }
+        if (articleMain) articleMain.style.background = ''; // 背景をリセット
+      }
+    } else {
+      // 動画背景時は文字色を白に
+      if (content) {
+        content.style.color = '#ffffff';
+      }
+    }
+
+    // 背景エフェクト（網の場合はグロー+スクロール連動を自動ON）
+    const effectTypes = ['grid', 'dots', 'mesh'];
+    const isMeshEffect = currentState.bgEffect === 'mesh';
+
+    effectTypes.forEach(type => {
+      const layer = document.getElementById(`bg-effect-${type}`);
+      if (layer) {
+        if (currentState.bgEffect === type) {
+          layer.classList.add('active', `bg-effect-${type}`);
+        } else {
+          layer.classList.remove('active');
+        }
+      }
+    });
+
+    // グロー（網エフェクト時のみ有効、それ以外は透明）
+    if (isMeshEffect) {
+      // 網の場合：グローを表示、スクロール連動を有効化
+      const glow = glowThemes[currentState.glowTheme];
+      if (glow) {
+        page.style.setProperty('--glow-1', glow.glow1);
+        page.style.setProperty('--glow-2', glow.glow2);
+        page.style.setProperty('--glow-3', glow.glow3);
+      }
+      // スクロール連動を自動ON
+      if (!currentState.glowSyncEnabled) {
+        currentState.glowSyncEnabled = true;
+        startGlowSync();
+      }
+    } else {
+      // 網以外：グローを非表示
+      page.style.setProperty('--glow-1', 'transparent');
+      page.style.setProperty('--glow-2', 'transparent');
+      page.style.setProperty('--glow-3', 'transparent');
+      // スクロール連動を停止
+      if (currentState.glowSyncEnabled) {
+        currentState.glowSyncEnabled = false;
+        stopGlowSync();
+      }
+    }
+
+    // フォント
+    const font = fontStyles[currentState.font];
+    if (font) {
+      // article-contentに適用
+      if (content) {
+        content.style.fontFamily = font;
+      }
+      // AI Journey用：吹き出しにもフォントを適用
+      document.querySelectorAll('.aibou-bubble, .michi-bubble').forEach(el => {
+        el.style.fontFamily = font;
+      });
+    }
+
+    // ズーム（transform: scaleで枠も含めて全体を拡大縮小）
+    // 表示100% = 実際のscale 1.3（130%相当）をベースに
+    // 表示50%〜150% = 実際のscale 0.8〜1.8
+    const articleContainer = document.getElementById('article-container');
+    if (articleContainer) {
+      const scale = (currentState.zoom + 30) / 100;
+      articleContainer.style.transform = `scale(${scale})`;
+      articleContainer.style.transformOrigin = 'top center';
+    }
+
+    // ズーム表示を直接更新（確実に反映させるため）
+    const zoomLevelDisplay = document.getElementById('zoom-level');
+    if (zoomLevelDisplay) {
+      zoomLevelDisplay.textContent = `${currentState.zoom}%`;
+    }
+
+    // 吹き出しスタイル（AI Journey記事用：あいぼー/道ゐ別）
+    const bubbleStyle = bubbleStyles[currentState.bubbleStyle];
+    if (bubbleStyle) {
+      // あいぼーの吹き出し
+      document.querySelectorAll('.aibou-bubble').forEach(el => {
+        const style = bubbleStyle.aibou;
+        el.style.background = style.bg;
+        el.style.borderColor = style.border;
+        el.style.borderWidth = style.borderWidth || '1px';
+        el.style.color = style.text;
+        el.style.boxShadow = style.shadow || 'none';
+      });
+      document.querySelectorAll('.aibou-name').forEach(el => {
+        el.style.color = bubbleStyle.aibou.nameColor;
+      });
+      // 道ゐの吹き出し
+      document.querySelectorAll('.michi-bubble').forEach(el => {
+        const style = bubbleStyle.michi;
+        el.style.background = style.bg;
+        el.style.borderColor = style.border;
+        el.style.borderWidth = style.borderWidth || '1px';
+        el.style.color = style.text;
+        el.style.boxShadow = style.shadow || 'none';
+      });
+      document.querySelectorAll('.michi-name').forEach(el => {
+        el.style.color = bubbleStyle.michi.nameColor;
+      });
+    }
+
+    // ネオンテキストのスタイル切り替え（重要な部分のみ目立たせる）
+    // 暗い背景（1-3）: ネオン効果ON、明るい背景（4-5）: 太字のみ
+    const isDarkMode = ['black', 'navy', 'gray'].includes(currentState.baseBg);
+
+    // シアン系の重要テキスト
+    document.querySelectorAll('.neon-cyan').forEach(el => {
+      if (isDarkMode) {
+        el.style.color = '#00ffff';
+        el.style.textShadow = '0 0 8px #00ffff';
+        el.style.fontWeight = '500';
+      } else {
+        el.style.color = '#007799';
+        el.style.textShadow = 'none';
+        el.style.fontWeight = 'bold';
+      }
+    });
+
+    // ピンク系の重要テキスト
+    document.querySelectorAll('.neon-pink').forEach(el => {
+      if (isDarkMode) {
+        el.style.color = '#ff6b9d';
+        el.style.textShadow = '0 0 8px #ff6b9d';
+        el.style.fontWeight = '500';
+      } else {
+        el.style.color = '#d44a7a';
+        el.style.textShadow = 'none';
+        el.style.fontWeight = 'bold';
+      }
+    });
+
+    // イエロー系の重要テキスト
+    document.querySelectorAll('.neon-yellow').forEach(el => {
+      if (isDarkMode) {
+        el.style.color = '#ffff00';
+        el.style.textShadow = '0 0 8px #ffff00';
+        el.style.fontWeight = '500';
+      } else {
+        el.style.color = '#cc8800';
+        el.style.textShadow = 'none';
+        el.style.fontWeight = 'bold';
+      }
+    });
+
+    // マーカー（蛍光ペン風）の調整
+    document.querySelectorAll('.marker-yellow, .marker-pink, .marker-blue, .marker-green').forEach(el => {
+      if (isDarkMode) {
+        el.style.opacity = '0.9';
+      } else {
+        el.style.opacity = '1';
+      }
+    });
+
+    // ボタンのアクティブ状態を更新
+    updateButtonStates();
+  }
+
+  function updateButtonStates() {
+    // プリセットボタン
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      const preset = btn.dataset.preset;
+      btn.classList.toggle('active', parseInt(preset) === currentState.activePreset);
+    });
+
+    // フォントボタン
+    document.querySelectorAll('.font-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.font === currentState.font);
+    });
+
+    // 背景ボタン
+    document.querySelectorAll('.bg-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.bg === currentState.baseBg);
+    });
+
+    // グローボタン
+    document.querySelectorAll('.glow-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.glow === currentState.glowTheme);
+    });
+
+    // 吹き出しボタン
+    document.querySelectorAll('.bubble-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.bubble === currentState.bubbleStyle);
+    });
+
+    // エフェクトボタン
+    document.querySelectorAll('.effect-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.effect === currentState.bgEffect);
+    });
+
+    // ズーム表示
+    const zoomLevel = document.getElementById('zoom-level');
+    if (zoomLevel) {
+      zoomLevel.textContent = `${currentState.zoom}%`;
+    }
+
+    // マイプリセット
+    document.querySelectorAll('.mypreset-btn').forEach(btn => {
+      const slot = btn.dataset.slot;
+      btn.classList.toggle('saved', myPresets[slot] !== null);
+    });
+
+    // 裏モードボタン
+    const uraModeBtn = document.getElementById('ura-mode-btn');
+    if (uraModeBtn) {
+      uraModeBtn.classList.toggle('active', currentState.videoBg);
+      uraModeBtn.textContent = currentState.videoBg ? '動画背景 ON' : '動画背景 OFF';
+    }
+  }
+
+  // ================================
+  // 保存・復元
+  // ================================
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(currentState));
+    localStorage.setItem(STORAGE_KEY + '-my', JSON.stringify(myPresets));
+  }
+
+  function loadState() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        currentState = { ...currentState, ...JSON.parse(saved) };
+      } catch (e) {}
+    }
+    const savedMy = localStorage.getItem(STORAGE_KEY + '-my');
+    if (savedMy) {
+      try {
+        myPresets = JSON.parse(savedMy);
+      } catch (e) {}
+    }
+  }
+
+  // ================================
+  // イベントリスナー設定
+  // ================================
+  function setupEventListeners() {
+    // CUSTOMIZEボタン（開閉トグル）
+    const customizeBtn = document.getElementById('customize-btn');
+    const customizeCard = document.querySelector('.customize-card');
+    const customizeLabel = customizeBtn?.querySelector('.customize-label');
+    const switcher = document.getElementById('global-style-switcher');
+    const closeBtn = document.getElementById('switcher-close');
+
+    function openSwitcher() {
+      if (switcher) switcher.style.display = 'block';
+      if (customizeBtn) customizeBtn.classList.add('active');
+      if (customizeCard) customizeCard.classList.add('active');
+      if (customizeLabel) customizeLabel.textContent = 'CLOSE';
+    }
+
+    function closeSwitcher() {
+      if (switcher) switcher.style.display = 'none';
+      if (customizeBtn) customizeBtn.classList.remove('active');
+      if (customizeCard) customizeCard.classList.remove('active');
+      if (customizeLabel) customizeLabel.textContent = 'OPEN';
+    }
+
+    if (customizeBtn && switcher) {
+      customizeBtn.addEventListener('click', () => {
+        const isOpen = switcher.style.display === 'block';
+        if (isOpen) {
+          closeSwitcher();
+        } else {
+          openSwitcher();
+        }
+      });
+    }
+
+    if (closeBtn && switcher) {
+      closeBtn.addEventListener('click', () => {
+        closeSwitcher();
+      });
+    }
+
+    // プリセットボタン
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const num = parseInt(btn.dataset.preset);
+        const preset = recommendedPresets[num];
+        if (preset) {
+          // 裏モードをOFFにする
+          currentState.videoBg = false;
+          currentState = { ...currentState, ...preset, activePreset: num };
+          applyStyles();
+          saveState();
+        }
+      });
+    });
+
+    // 裏モードボタン
+    const uraModeBtn = document.getElementById('ura-mode-btn');
+    if (uraModeBtn) {
+      uraModeBtn.addEventListener('click', () => {
+        currentState.videoBg = !currentState.videoBg;
+        applyStyles();
+        saveState();
+      });
+    }
+
+    // フォントボタン
+    document.querySelectorAll('.font-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentState.font = btn.dataset.font;
+        applyStyles();
+        saveState();
+      });
+    });
+
+    // 背景ボタン
+    document.querySelectorAll('.bg-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentState.baseBg = btn.dataset.bg;
+        applyStyles();
+        saveState();
+      });
+    });
+
+    // グローボタン
+    document.querySelectorAll('.glow-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentState.glowTheme = btn.dataset.glow;
+        applyStyles();
+        saveState();
+      });
+    });
+
+    // 吹き出しボタン
+    document.querySelectorAll('.bubble-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentState.bubbleStyle = btn.dataset.bubble;
+        applyStyles();
+        saveState();
+      });
+    });
+
+    // エフェクトボタン
+    document.querySelectorAll('.effect-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        currentState.bgEffect = btn.dataset.effect;
+        applyStyles();
+        saveState();
+        // ボタンのactive状態を更新
+        document.querySelectorAll('.effect-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.effect === currentState.bgEffect);
+        });
+      });
+    });
+
+    // ズームボタン
+    const zoomMinus = document.getElementById('zoom-minus');
+    const zoomPlus = document.getElementById('zoom-plus');
+    const zoomReset = document.getElementById('zoom-reset');
+
+    if (zoomMinus) {
+      zoomMinus.addEventListener('click', () => {
+        currentState.zoom = Math.max(50, currentState.zoom - 10);  // 最小50%（実際scale 0.8）
+        applyStyles();
+        saveState();
+      });
+    }
+
+    if (zoomPlus) {
+      zoomPlus.addEventListener('click', () => {
+        currentState.zoom = Math.min(150, currentState.zoom + 10);  // 最大150%（実際scale 1.8）
+        applyStyles();
+        saveState();
+      });
+    }
+
+    if (zoomReset) {
+      zoomReset.addEventListener('click', () => {
+        currentState.zoom = 100;
+        applyStyles();
+        saveState();
+      });
+    }
+
+    // マイプリセットボタン
+    document.querySelectorAll('.mypreset-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const slot = btn.dataset.slot;
+        if (myPresets[slot]) {
+          currentState = { ...currentState, ...myPresets[slot] };
+          applyStyles();
+          saveState();
+        } else {
+          alert(`マイプリセット ${slot} は未設定です。\n「保存」ボタンで現在の設定を保存できます。`);
+        }
+      });
+    });
+
+    // マイプリセット保存
+    const mypresetSave = document.getElementById('mypreset-save');
+    if (mypresetSave) {
+      mypresetSave.addEventListener('click', () => {
+        const slot = prompt('保存先を選んでください (1, 2, 3):');
+        if (slot && ['1', '2', '3'].includes(slot)) {
+          myPresets[slot] = { ...currentState };
+          saveState();
+          updateButtonStates();
+          alert(`マイプリセット ${slot} に保存しました！`);
+        }
+      });
+    }
+
+    // リセットボタン
+    const resetAll = document.getElementById('reset-all');
+    if (resetAll) {
+      resetAll.addEventListener('click', () => {
+        if (confirm('設定をリセットしますか？\n（プリセット1に戻ります）')) {
+          localStorage.removeItem(STORAGE_KEY);
+          localStorage.removeItem(STORAGE_KEY + '-my');
+          location.reload();
+        }
+      });
+    }
+
+    // グロウ連動チェックボックス
+    const glowSyncCheckbox = document.getElementById('glow-sync-checkbox');
+    if (glowSyncCheckbox) {
+      // 初期状態を設定
+      glowSyncCheckbox.checked = currentState.glowSyncEnabled;
+
+      glowSyncCheckbox.addEventListener('change', (e) => {
+        currentState.glowSyncEnabled = e.target.checked;
+        saveState();
+
+        if (currentState.glowSyncEnabled) {
+          startGlowSync();
+        } else {
+          stopGlowSync();
+        }
+      });
+    }
+  }
+
+  // ================================
+  // スクロール連動機能
+  // ================================
+  let glowSyncRAF = null;
+
+  function startGlowSync() {
+    if (glowSyncRAF) return;
+
+    const page = document.querySelector('.post-page');
+    if (!page) return;
+
+    function updateGlowOnScroll() {
+      const scrollY = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollProgress = Math.min(scrollY / Math.max(docHeight, 1), 1);
+
+      // スクロール位置に応じてテーマをブレンド（ゆっくり変化：5倍遅く）
+      const themeCount = scrollGlowThemes.length;
+      // 0.2倍速にすることで、ページ全体スクロールで約1テーマ分だけ変化
+      const exactIndex = (scrollProgress * (themeCount - 1)) * 0.2;
+      const lowerIndex = Math.floor(exactIndex);
+      const upperIndex = Math.min(lowerIndex + 1, themeCount - 1);
+      const blend = exactIndex - lowerIndex;
+
+      const lowerTheme = glowThemes[scrollGlowThemes[lowerIndex]];
+      const upperTheme = glowThemes[scrollGlowThemes[upperIndex]];
+
+      if (lowerTheme && upperTheme) {
+        // 2つのテーマ間で色を補間
+        function blendColor(c1, c2, t) {
+          const r1 = parseInt(c1.slice(1, 3), 16);
+          const g1 = parseInt(c1.slice(3, 5), 16);
+          const b1 = parseInt(c1.slice(5, 7), 16);
+          const r2 = parseInt(c2.slice(1, 3), 16);
+          const g2 = parseInt(c2.slice(3, 5), 16);
+          const b2 = parseInt(c2.slice(5, 7), 16);
+          const r = Math.round(r1 + (r2 - r1) * t);
+          const g = Math.round(g1 + (g2 - g1) * t);
+          const b = Math.round(b1 + (b2 - b1) * t);
+          return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
+        }
+
+        page.style.setProperty('--glow-1', blendColor(lowerTheme.glow1, upperTheme.glow1, blend));
+        page.style.setProperty('--glow-2', blendColor(lowerTheme.glow2, upperTheme.glow2, blend));
+        page.style.setProperty('--glow-3', blendColor(lowerTheme.glow3, upperTheme.glow3, blend));
+      }
+
+      if (currentState.glowSyncEnabled) {
+        glowSyncRAF = requestAnimationFrame(updateGlowOnScroll);
+      }
+    }
+
+    glowSyncRAF = requestAnimationFrame(updateGlowOnScroll);
+  }
+
+  function stopGlowSync() {
+    if (glowSyncRAF) {
+      cancelAnimationFrame(glowSyncRAF);
+      glowSyncRAF = null;
+    }
+    // 現在選択されているグローテーマに戻す
+    applyStyles();
+  }
+
+  // ================================
+  // デフォルトプリセット取得（frontmatterのdefaultPreset優先）
+  // ================================
+  function getDefaultPreset() {
+    // frontmatterで指定されたdefaultPresetを優先
+    const page = document.querySelector('[data-default-preset]');
+    if (page && page.dataset.defaultPreset) {
+      const preset = parseInt(page.dataset.defaultPreset, 10);
+      if (preset >= 1 && preset <= 5) {
+        return preset;
+      }
+    }
+    // フォールバック：カテゴリ別デフォルト
+    const category = document.querySelector('[data-category]')?.dataset.category;
+    if (category === 'ai-journey') {
+      return 1;
+    }
+    return 4;
+  }
+
+  // ================================
+  // 初期化
+  // ================================
+  document.addEventListener('DOMContentLoaded', () => {
+    loadState();
+
+    // 初回訪問者はカテゴリ別デフォルトプリセットを適用
+    if (!localStorage.getItem(STORAGE_KEY)) {
+      const defaultPreset = getDefaultPreset();
+      const preset = recommendedPresets[defaultPreset];
+      if (preset) {
+        currentState = { ...currentState, ...preset, activePreset: defaultPreset };
+      }
+    }
+
+    applyStyles();
+    setupEventListeners();
+
+    // グロウ連動が有効だった場合は開始
+    if (currentState.glowSyncEnabled) {
+      startGlowSync();
+    }
+  });
+})();
+</script>
+

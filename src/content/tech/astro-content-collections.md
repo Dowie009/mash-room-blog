@@ -1,11 +1,16 @@
 ---
 title: Astro Content Collectionsで記事管理システムを構築した話
 date: 2026-01-10
-category: astro
+category: ai-tips
 thumbnail: /images/Blog_00.png
-description: Astro Content AstroのContent Collectionsを使って、型安全な記事管理システムを構築した実装メモで記事管理システムを構築した話
+description: AstroのContent Collectionsを使って、型安全な記事管理システムを構築した実装メモ
 tags: ['Astro', 'Content Collections', 'TypeScript', 'ブログ構築']
 draft: false
+defaultPreset: 5
+learnings:
+  - Content Collectionsの基本的な設定方法
+  - Zodを使った型安全なスキーマ定義
+  - 動的ルーティングによる記事ページの自動生成
 ---
 
 ## はじめに

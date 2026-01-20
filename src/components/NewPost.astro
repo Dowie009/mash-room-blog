@@ -1,5 +1,56 @@
 ---
 // New Post Section: Card Dealer & Energy Charge
+// Content Collectionsから最新記事を動的に取得
+import { getCollection } from 'astro:content';
+
+// 全コレクションから記事を取得（下書き除外）
+const techPosts = await getCollection('tech', ({ data }) => !data.draft);
+const dtmPosts = await getCollection('dtm');
+
+// 全記事をまとめて日付でソート（新しい順）
+const allPosts = [...techPosts, ...dtmPosts].sort((a, b) =>
+  new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+// 最新6件を取得
+const latestPosts = allPosts.slice(0, 6);
+
+// 日付フォーマット
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).replace(/\//g, '.');
+};
+
+// カテゴリラベル
+const categoryLabels: Record<string, string> = {
+  // TECH系
+  'astro': 'ASTRO',
+  'react': 'REACT',
+  'css': 'CSS',
+  'ai': 'AI',
+  'devtips': 'DEV TIPS',
+  'ai-journey': 'AI JOURNEY',
+  'dtm-ai': 'DTM × AI',
+  'ai-tools': 'AI TOOLS',
+  // DTM系
+  'daw': 'DAW',
+  'gear': 'GEAR',
+  'plugin': 'PLUGIN',
+  'biz': 'BIZ',
+  'tips': 'TIPS',
+  'essay': 'ESSAY',
+};
+
+// コレクション名からURLプレフィックスを取得
+const getUrlPrefix = (post: any) => {
+  // collection.idがtechかdtmか判定
+  if (techPosts.includes(post)) return '/tech';
+  if (dtmPosts.includes(post)) return '/dtm';
+  return '/tech';
+};
 ---
 
 <!-- 4. NEW POSTS (Card Dealer & Energy Charge) -->
@@ -19,76 +70,28 @@
 
         <!-- 6 Grid Layout -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="card-grid">
-            
-            <!-- Row 1: Smaller Cards (height constrained) -->
-            <!-- Post 1 -->
-            <a href="#" class="h-[35vh] card-dealer group cursor-pointer relative post-card">
-                <div class="card-border-line"></div>
-                <img src="/images/Blog_00.png" class="w-full h-full object-cover grayscale transition-all duration-700 relative z-0 card-img">
-                <div class="absolute top-4 left-4 bg-black text-white font-mono text-[10px] px-2 py-1 z-20">DIY</div>
-                <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent z-20">
-                    <span class="font-mono text-[10px] text-gray-400 block mb-1">2025.12.01</span>
-                    <h3 class="font-mincho text-base font-bold text-white group-hover:text-[var(--accent-color)]">玄関の壁を撤去してZONE Aと繋げた話</h3>
-                </div>
-                <div class="go-button">GO →</div>
-            </a>
-            <!-- Post 2 -->
-            <a href="#" class="h-[35vh] card-dealer group cursor-pointer relative post-card">
-                <div class="card-border-line"></div>
-                <img src="/images/カテゴリサムネ　ノケ物語.png" class="w-full h-full object-cover grayscale transition-all duration-700 relative z-0 card-img">
-                <div class="absolute top-4 left-4 bg-black text-white font-mono text-[10px] px-2 py-1 z-20">GEAR</div>
-                <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent z-20">
-                    <span class="font-mono text-[10px] text-gray-400 block mb-1">2025.11.28</span>
-                    <h3 class="font-mincho text-base font-bold text-white group-hover:text-[var(--accent-color)]">37.5型湾曲モニター導入で見えた世界</h3>
-                </div>
-                <div class="go-button">GO →</div>
-            </a>
-            <!-- Post 3 -->
-            <a href="#" class="h-[35vh] card-dealer group cursor-pointer relative post-card">
-                <div class="card-border-line"></div>
-                <img src="/images/ノケ物語イラスト.png" class="w-full h-full object-cover grayscale transition-all duration-700 relative z-0 card-img">
-                <div class="absolute top-4 left-4 bg-black text-white font-mono text-[10px] px-2 py-1 z-20">BIZ</div>
-                <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent z-20">
-                    <span class="font-mono text-[10px] text-gray-400 block mb-1">2025.11.15</span>
-                    <h3 class="font-mincho text-base font-bold text-white group-hover:text-[var(--accent-color)]">補助金と新人発掘とスタジオ経営</h3>
-                </div>
-                <div class="go-button">GO →</div>
-            </a>
 
-            <!-- Row 2: Even Smaller Cards -->
-            <!-- Post 4 -->
-            <a href="#" class="h-[25vh] card-dealer group cursor-pointer relative post-card">
-                <div class="card-border-line"></div>
-                <img src="/images/ノケ物語サムネ.png" class="w-full h-full object-cover grayscale transition-all duration-700 relative z-0 card-img">
-                <div class="absolute top-4 left-4 bg-black text-white font-mono text-[10px] px-2 py-1 z-20">TECH</div>
-                <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent z-20">
-                    <span class="font-mono text-[10px] text-gray-400 block mb-1">2025.10.30</span>
-                    <h3 class="font-mincho text-sm font-bold text-white group-hover:text-[var(--accent-color)]">音の粒を可視化する技術</h3>
-                </div>
-                <div class="go-button">GO →</div>
-            </a>
-            <!-- Post 5 -->
-            <a href="#" class="h-[25vh] card-dealer group cursor-pointer relative post-card">
-                <div class="card-border-line"></div>
-                <img src="/images/幼少期編　サムネ.png" class="w-full h-full object-cover grayscale transition-all duration-700 relative z-0 card-img">
-                <div class="absolute top-4 left-4 bg-black text-white font-mono text-[10px] px-2 py-1 z-20">LOCAL</div>
-                <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent z-20">
-                    <span class="font-mono text-[10px] text-gray-400 block mb-1">2025.10.15</span>
-                    <h3 class="font-mincho text-sm font-bold text-white group-hover:text-[var(--accent-color)]">札幌の夜と音楽と</h3>
-                </div>
-                <div class="go-button">GO →</div>
-            </a>
-            <!-- Post 6 -->
-            <a href="#" class="h-[25vh] card-dealer group cursor-pointer relative post-card">
-                <div class="card-border-line"></div>
-                <img src="/images/少年期編サムネ.png" class="w-full h-full object-cover grayscale transition-all duration-700 relative z-0 card-img">
-                <div class="absolute top-4 left-4 bg-black text-white font-mono text-[10px] px-2 py-1 z-20">STORY</div>
-                <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent z-20">
-                    <span class="font-mono text-[10px] text-gray-400 block mb-1">2025.10.01</span>
-                    <h3 class="font-mincho text-sm font-bold text-white group-hover:text-[var(--accent-color)]">スタジオ設立の裏話</h3>
-                </div>
-                <div class="go-button">GO →</div>
-            </a>
+            {latestPosts.map((post, index) => {
+              const isLargeCard = index < 3; // 最初の3枚は大きいカード
+              const cardHeight = isLargeCard ? 'h-[35vh]' : 'h-[25vh]';
+              const titleSize = isLargeCard ? 'text-base' : 'text-sm';
+              const urlPrefix = getUrlPrefix(post);
+              const thumbnail = post.data.thumbnail || '/images/Blog_00.png';
+              const category = categoryLabels[post.data.category] || post.data.category.toUpperCase();
+
+              return (
+                <a href={`${urlPrefix}/${post.slug}`} class={`${cardHeight} card-dealer group cursor-pointer relative post-card`}>
+                  <div class="card-border-line"></div>
+                  <img src={thumbnail} class="w-full h-full object-cover grayscale transition-all duration-700 relative z-0 card-img" alt={post.data.title} />
+                  <div class="absolute top-4 left-4 bg-black text-white font-mono text-[10px] px-2 py-1 z-20">{category}</div>
+                  <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent z-20">
+                    <span class="font-mono text-[10px] text-gray-400 block mb-1">{formatDate(post.data.date)}</span>
+                    <h3 class={`font-mincho ${titleSize} font-bold text-white group-hover:text-[var(--accent-color)]`}>{post.data.title}</h3>
+                  </div>
+                  <div class="go-button">GO →</div>
+                </a>
+              );
+            })}
 
         </div>
     </div>
@@ -237,12 +240,12 @@
                 const newPostSection = document.getElementById('new-post-section');
                 const energyBar = document.getElementById('energy-bar');
                 const energyFill = document.getElementById('energy-fill');
-                
+
                 if (!newPostSection || !energyBar || !energyFill) {
                     console.log('NewPost elements not found');
                     return;
                 }
-                
+
                 // Show Energy Bar only in this section
                 ScrollTrigger.create({
                     trigger: newPostSection,
@@ -304,7 +307,7 @@
                 dealerTl.to({}, { duration: 0.5 }); // 0.5秒の余韻
             }
         };
-        
+
         // DOMが準備できたら実行
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initNewPost);

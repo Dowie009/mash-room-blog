@@ -14,6 +14,11 @@ topic: ai-journey
 
 <!-- セリフ装飾用CSS -->
 <style>
+/* 記事独自のスタイルスイッチャーを非表示（共通のCUSTOMIZEボタンを使用） */
+#style-switcher {
+  display: none !important;
+}
+
 /* 大きい文字 */
 .big { font-size: 1.2em; font-weight: bold; }
 /* マーカー（ダークモード対応：線の透明度を下げて文字を見やすく） */
@@ -722,8 +727,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 ## 次に読む記事
 
-- **続き** → [AIは壁打ち相手として最強だった](/tech/ai-as-sparring-partner)（準備中）
-- **実践編** → [SunoとChatGPTで200曲作った方法](/tech/suno-chatgpt-200songs)（準備中）
+- **続き** → [AIは壁打ち相手として最強だった](/tech/ai-as-sparring-partner)
+- **実践編** → SunoとChatGPTで200曲作った方法（Coming Soon）
 
 ---
 

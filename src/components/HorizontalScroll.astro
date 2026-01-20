@@ -7,18 +7,38 @@
 <section class="horizontal-wrapper" id="horizontal-wrapper">
     <div class="horizontal-container">
         
-        <!-- Spacer Panel -->
-        <div class="h-panel bg-transparent pointer-events-none">
-            <div class="skeleton-text-box p-16 max-w-2xl text-center pointer-events-auto">
-                <span class="text-[var(--accent-color)] font-mono text-lg mb-6 block">FLOOR 1</span>
-                <h3 class="font-mincho text-7xl md:text-8xl mb-8 leading-none">重力と<br>遊ぶ</h3>
-                <p class="text-xl text-gray-400 leading-loose mb-12 font-bold">
-                    扉が開くと、<br>
-                    ガラスの向こうでアイデアが降り注ぐ。<br>
-                    (今、裏でブロックが落ちてます！)
-                </p>
-                <div class="font-mono text-sm text-gray-500 animate-pulse">
-                    SCROLL DOWN TO DIVE &rarr;
+        <!-- Spacer Panel: 統一カード（次回予告↔新着記事クロスフェード） -->
+        <div class="h-panel bg-transparent pointer-events-none" id="unified-panel">
+            <div class="unified-card p-16 max-w-2xl text-center pointer-events-auto">
+                <!-- 次回予告コンテンツ -->
+                <div class="yokoku-content">
+                    <span class="text-[var(--accent-color)] font-mono text-lg mb-6 block">NEXT PREVIEW</span>
+                    <h3 class="font-mincho text-6xl md:text-7xl mb-8 leading-tight">次回予告</h3>
+                    <p class="text-xl text-gray-400 leading-loose mb-12 font-bold">
+                        扉が開くと、<br>
+                        新しい物語が始まる。<br>
+                        スクロールして先へ進もう。
+                    </p>
+                    <div class="font-mono text-sm text-gray-500 animate-pulse">
+                        SCROLL TO DISCOVER &rarr;
+                    </div>
+                </div>
+                <!-- 新着記事コンテンツ（クロスフェード後に表示） -->
+                <div class="articles-content">
+                    <span class="text-[var(--accent-color)] font-mono text-lg mb-6 block">NEW ARTICLES</span>
+                    <h3 class="font-mincho text-6xl md:text-7xl mb-8 leading-tight">新着記事</h3>
+                    <p class="text-xl text-gray-400 leading-loose mb-8 font-bold">
+                        最新の記事をチェック
+                    </p>
+                    <!-- 3つのカテゴリボタン -->
+                    <div class="flex gap-4 justify-center mb-8">
+                        <a href="/story" class="category-btn">STORY</a>
+                        <a href="/dtm" class="category-btn">DTM</a>
+                        <a href="/tech" class="category-btn">TECH</a>
+                    </div>
+                    <div class="font-mono text-sm text-gray-500 animate-pulse">
+                        SCROLL TO EXPLORE &rarr;
+                    </div>
                 </div>
             </div>
         </div>
@@ -522,6 +542,65 @@
         box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
     }
 
+    /* --- 統一カード（次回予告↔新着記事クロスフェード） --- */
+    .unified-card {
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* 次回予告コンテンツ（初期表示） */
+    .yokoku-content {
+        position: relative;
+        z-index: 2;
+        opacity: 1;
+        transition: opacity 0.1s ease;
+    }
+
+    /* 新着記事コンテンツ（初期非表示、クロスフェード後に表示） */
+    .articles-content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1;
+        opacity: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 4rem;
+        transition: opacity 0.1s ease;
+    }
+
+    /* カテゴリボタン */
+    .category-btn {
+        display: inline-block;
+        padding: 12px 28px;
+        background: transparent;
+        border: 2px solid var(--accent-color, #ff4d00);
+        color: var(--accent-color, #ff4d00);
+        font-family: 'Space Grotesk', monospace;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .category-btn:hover {
+        background: var(--accent-color, #ff4d00);
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(255, 77, 0, 0.4);
+    }
+
     /* --- GEAR Panel 専用スタイル --- */
     /* 文字エリアを2cm（約20px）左にずらす */
     .gear-text-area {
@@ -821,8 +900,10 @@
         const wrapper = document.querySelector('.horizontal-wrapper');
         const container = document.querySelector('.horizontal-container');
         const panels = gsap.utils.toArray('.h-panel');
-        const gravityPanel = panels[0]; // 「重力と遊ぶ」パネル
-        const skeletonBox = gravityPanel?.querySelector('.skeleton-text-box');
+        const unifiedPanel = panels[0]; // 統一パネル（次回予告↔新着記事）
+        const unifiedCard = unifiedPanel?.querySelector('.unified-card');
+        const yokokuContent = unifiedPanel?.querySelector('.yokoku-content');
+        const articlesContent = unifiedPanel?.querySelector('.articles-content');
         const chapterPanels = panels.slice(1); // Chapter 1, 2, 3
 
         /* ------------------------------------------------
@@ -860,21 +941,46 @@
         });
 
         /* ================================================
-           SCENE 0: "Gravity & Gate" - Opening
-           重力と遊ぶカードは最初から表示。
-           1940pxでフェードアウト開始。
+           SCENE 0: 統一カード（次回予告↔新着記事クロスフェード）
            ================================================ */
 
         // 初期状態設定
-        if (skeletonBox) {
-            gsap.set(skeletonBox, { y: '0%', opacity: 1, scale: 1 });
+        if (unifiedCard) {
+            gsap.set(unifiedCard, { y: '0%', opacity: 1, scale: 1 });
         }
-        gsap.set(gravityPanel, { opacity: 1 });
+        if (yokokuContent) {
+            gsap.set(yokokuContent, { opacity: 1 });
+        }
+        if (articlesContent) {
+            gsap.set(articlesContent, { opacity: 0 });
+        }
+        gsap.set(unifiedPanel, { opacity: 1 });
 
-        // 1940pxでフェードアウト用の独立したScrollTrigger
+        // クロスフェード開始位置（次回予告→新着記事）
+        const CROSSFADE_START = 1500;
+        const CROSSFADE_END = 2100;
+
+        // パネルフェードアウト開始位置
         const FADE_OUT_SCROLL = 1940;
-        const wrapperTop = wrapper.getBoundingClientRect().top + window.scrollY;
 
+        // クロスフェード用ScrollTrigger（次回予告→新着記事）
+        ScrollTrigger.create({
+            trigger: wrapper,
+            start: () => `top+=${CROSSFADE_START} top`,
+            end: () => `top+=${CROSSFADE_END} top`,
+            scrub: true,
+            onUpdate: (self) => {
+                const progress = self.progress;
+                if (yokokuContent) {
+                    gsap.set(yokokuContent, { opacity: 1 - progress });
+                }
+                if (articlesContent) {
+                    gsap.set(articlesContent, { opacity: progress });
+                }
+            }
+        });
+
+        // パネル全体のフェードアウト用ScrollTrigger
         ScrollTrigger.create({
             trigger: wrapper,
             start: () => `top+=${FADE_OUT_SCROLL} top`,
@@ -882,13 +988,13 @@
             scrub: true,
             onUpdate: (self) => {
                 const progress = self.progress;
-                if (skeletonBox) {
-                    gsap.set(skeletonBox, {
+                if (unifiedCard) {
+                    gsap.set(unifiedCard, {
                         opacity: 1 - progress,
                         scale: 1 - (progress * 0.05)
                     });
                 }
-                gsap.set(gravityPanel, {
+                gsap.set(unifiedPanel, {
                     opacity: 1 - progress
                 });
             }

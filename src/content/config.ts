@@ -24,7 +24,7 @@ const techCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
-    category: z.enum(['astro', 'react', 'css', 'ai', 'devtips', 'ai-journey', 'dtm-ai', 'ai-tools']),
+    category: z.enum(['ai-journey', 'ai-tips']),
     thumbnail: z.string().optional(),
     description: z.string().optional(),
     tags: z.array(z.string()).default([]),
@@ -35,6 +35,10 @@ const techCollection = defineCollection({
     topic: z.string().optional(),
     prerequisites: z.array(z.string()).optional(),
     unlocks: z.array(z.string()).optional(),
+    // 「今日学ぶこと」カード用（Tech & Tips Bパターン）
+    learnings: z.array(z.string()).optional(),
+    // デフォルトプリセット（1-5）
+    defaultPreset: z.number().min(1).max(5).optional(),
   }),
 });
 

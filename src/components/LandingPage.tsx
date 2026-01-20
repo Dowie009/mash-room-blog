@@ -57,7 +57,7 @@ const slides = [
     category: 'Story'
   },
   {
-    image: '/images/カテゴリサムネ　ノケ物語.png',
+    image: '/images/dtm-category-thumb.png',
     title: '機材と音楽、\n創造する。',
     description: 'PLUGINS、DAW、TIPS。最新の機材情報と音楽制作のノウハウを共有します。技術と感性が融合する瞬間を、一緒に探求していきましょう。',
     category: 'Gear'
