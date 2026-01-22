@@ -61,21 +61,25 @@ const latestArticles = [
                 <div class="card-content" id="articles-content">
                     <span class="text-[var(--accent-color)] font-mono text-lg mb-6 block">NEW ARTICLES</span>
                     <h3 class="font-mincho text-7xl md:text-8xl mb-8 leading-none">新着<br>記事</h3>
+                    <p class="text-xl text-gray-400 leading-loose mb-8 font-bold">
+                        最新の投稿を<br>
+                        チェックしてください
+                    </p>
 
-                    <!-- 記事リスト -->
-                    <div class="new-articles-list">
+                    <!-- 平行四辺形の記事カード -->
+                    <div class="flex flex-col gap-3 mb-8">
                         {latestArticles.map((article) => (
-                            <a href={article.href} class="new-article-item">
-                                <span class={`article-category ${article.category.toLowerCase()}`}>
+                            <a href={article.href} class="article-skew-card">
+                                <span class={`article-category-badge ${article.category.toLowerCase()}`}>
                                     {article.category}
                                 </span>
-                                <span class="article-title">{article.data.title}</span>
+                                <span class="article-card-title">{article.data.title}</span>
                             </a>
                         ))}
                     </div>
 
-                    <div class="font-mono text-sm text-gray-500 animate-pulse mt-8">
-                        SCROLL TO EXPLORE &rarr;
+                    <div class="font-mono text-sm text-gray-500 animate-pulse">
+                        CLICK TO READ &rarr;
                     </div>
                 </div>
 
@@ -96,24 +100,24 @@ const latestArticles = [
                 <!-- 中央: 巨大縦長ボタン（下から突き出る、横幅2倍） -->
                 <a href="#" class="giant-vertical-button glitch-button bottom-popup-btn">
                     <div class="button-text-column">
-                        <span class="btn-line">STORY →</span>
-                        <span class="btn-line">STORY →</span>
-                        <span class="btn-line">STORY →</span>
-                        <span class="btn-line">STORY →</span>
-                        <span class="btn-line">STORY →</span>
-                        <span class="btn-line">STORY →</span>
-                        <span class="btn-line">STORY →</span>
-                        <span class="btn-line">STORY →</span>
-                        <span class="btn-line">STORY →</span>
-                        <span class="btn-line">STORY →</span>
-                        <span class="btn-line">STORY →</span>
-                        <span class="btn-line">STORY →</span>
-                        <span class="btn-line">STORY →</span>
-                        <span class="btn-line">STORY →</span>
-                        <span class="btn-line">STORY →</span>
-                        <span class="btn-line">STORY →</span>
-                        <span class="btn-line">STORY →</span>
-                        <span class="btn-line">STORY →</span>
+                        <span class="btn-line">読んでみる →</span>
+                        <span class="btn-line">読んでみる →</span>
+                        <span class="btn-line">読んでみる →</span>
+                        <span class="btn-line">読んでみる →</span>
+                        <span class="btn-line">読んでみる →</span>
+                        <span class="btn-line">読んでみる →</span>
+                        <span class="btn-line">読んでみる →</span>
+                        <span class="btn-line">読んでみる →</span>
+                        <span class="btn-line">読んでみる →</span>
+                        <span class="btn-line">読んでみる →</span>
+                        <span class="btn-line">読んでみる →</span>
+                        <span class="btn-line">読んでみる →</span>
+                        <span class="btn-line">読んでみる →</span>
+                        <span class="btn-line">読んでみる →</span>
+                        <span class="btn-line">読んでみる →</span>
+                        <span class="btn-line">読んでみる →</span>
+                        <span class="btn-line">読んでみる →</span>
+                        <span class="btn-line">読んでみる →</span>
                     </div>
                 </a>
                 <!-- 右: 縦書き文字（右側に配置、隙間を作る） -->
@@ -121,13 +125,13 @@ const latestArticles = [
                     <div class="tategaki-box flex flex-col justify-start chapter1-text-group" style="--text-scale: 1.8; --text-offset-x: 0px; --text-offset-y: 30px;">
                         <span class="text-[var(--accent-color)] font-mono text-xs font-bold tracking-widest mb-8 block tategaki-char" style="writing-mode: horizontal-tb;">CHAPTER 01</span>
                         <h3 class="font-mincho text-3xl md:text-4xl font-black mb-12 leading-relaxed">
-                            <span class="tategaki-char">物</span><span class="tategaki-char">語</span><span class="tategaki-char">の</span><br>
-                            <span class="tategaki-char">積</span><span class="tategaki-char">み</span><span class="tategaki-char">重</span><span class="tategaki-char">ね</span>
+                            <span class="tategaki-char">物</span><span class="tategaki-char">語</span><span class="tategaki-char">は</span><span class="tategaki-char">い</span><span class="tategaki-char">つ</span><span class="tategaki-char">も</span><br>
+                            <span class="tategaki-char">夕</span><span class="tategaki-char">暮</span><span class="tategaki-char">れ</span>
                         </h3>
                         <p class="text-gray-400 font-medium text-sm md:text-base leading-loose">
-                            <span class="tategaki-char">ブ</span><span class="tategaki-char">ロ</span><span class="tategaki-char">グ</span><span class="tategaki-char">は</span><span class="tategaki-char">地</span><span class="tategaki-char">層</span><span class="tategaki-char">の</span><span class="tategaki-char">よ</span><span class="tategaki-char">う</span><span class="tategaki-char">に</span><span class="tategaki-char">。</span><br>
-                            <span class="tategaki-char">玄</span><span class="tategaki-char">関</span><span class="tategaki-char">の</span><span class="tategaki-char">壁</span><span class="tategaki-char">を</span><span class="tategaki-char">撤</span><span class="tategaki-char">去</span><span class="tategaki-char">し</span><span class="tategaki-char">、</span><br>
-                            <span class="tategaki-char">新</span><span class="tategaki-char">し</span><span class="tategaki-char">い</span><span class="tategaki-char">風</span><span class="tategaki-char">を</span><span class="tategaki-char">通</span><span class="tategaki-char">す</span><span class="tategaki-char">。</span>
+                            <span class="tategaki-char">ゆ</span><span class="tategaki-char">う</span><span class="tategaki-char">き</span><span class="tategaki-char">少</span><span class="tategaki-char">年</span><span class="tategaki-char">の</span><span class="tategaki-char">勇</span><span class="tategaki-char">気</span><span class="tategaki-char">。</span><br>
+                            <span class="tategaki-char">夢</span><span class="tategaki-char">と</span><span class="tategaki-char">希</span><span class="tategaki-char">望</span><span class="tategaki-char">に</span><span class="tategaki-char">満</span><span class="tategaki-char">ち</span><span class="tategaki-char">溢</span><span class="tategaki-char">れ</span><span class="tategaki-char">て</span><span class="tategaki-char">た</span><span class="tategaki-char">高</span><span class="tategaki-char">校</span><span class="tategaki-char">生</span><span class="tategaki-char">活</span><br>
+                            <span class="tategaki-char">待</span><span class="tategaki-char">ち</span><span class="tategaki-char">受</span><span class="tategaki-char">け</span><span class="tategaki-char">て</span><span class="tategaki-char">い</span><span class="tategaki-char">た</span><span class="tategaki-char">の</span><span class="tategaki-char">は</span><span class="tategaki-char">神</span><span class="tategaki-char">様</span><span class="tategaki-char">の</span><span class="tategaki-char">意</span><span class="tategaki-char">地</span><span class="tategaki-char">悪</span><span class="tategaki-char">だ</span><span class="tategaki-char">っ</span><span class="tategaki-char">た</span><span class="tategaki-char">。</span>
                         </p>
                     </div>
                 </div>
@@ -141,7 +145,7 @@ const latestArticles = [
                 <!-- 左: サムネイル画像（4cm左にずらす） -->
                 <div class="gear-panel-wrapper thumbnail-left relative" style="--img-height: 60vh;">
                     <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl gear-image-wrapper">
-                        <img src="/images/カテゴリサムネ　ノケ物語.png" id="gear-panel-image"
+                        <img src="/images/chapter02-dtm.png" id="gear-panel-image"
                             class="w-full h-full object-cover rounded-sm transition-all duration-700 gear-colorize-img" alt="Gear">
                     </div>
                 </div>
@@ -192,7 +196,7 @@ const latestArticles = [
                 <!-- 左: サムネイル画像（4cm左にずらす） -->
                 <div class="chapter-panel-wrapper thumbnail-left relative" style="--img-height: 60vh;">
                     <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl">
-                        <img src="/images/ノケ物語イラスト.png"
+                        <img src="/images/chapter03-tech.png"
                             class="w-full h-full object-cover grayscale group-hover:grayscale-0 rounded-sm transition-all duration-700" alt="Tech">
                     </div>
                 </div>
@@ -255,188 +259,137 @@ const latestArticles = [
         opacity: 1;
     }
 
-    /* 新着記事コンテンツ */
+    /* 新着記事コンテンツ：次回予告と同じ位置に重ねる */
     #articles-content {
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        padding: 64px; /* p-16 と同じ */
-        opacity: 0;
-        pointer-events: none;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        opacity: 0;
+        pointer-events: none;
     }
 
-    /* 新着記事リスト */
-    .new-articles-list {
+    /* ===== 新着記事カード（平行四辺形スタイル） ===== */
+    .article-skew-card {
+        position: relative;
         display: flex;
-        flex-direction: column;
+        align-items: center;
         gap: 12px;
-        width: 100%;
+        padding: 14px 24px;
+        background: rgba(80, 80, 80, 0.6);
+        color: #fff;
+        font-family: 'Space Grotesk', sans-serif;
+        text-decoration: none;
+        transform: skewX(-12deg);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        overflow: hidden;
         max-width: 400px;
     }
 
-    .magazine-header {
-        text-align: left;
-        min-width: 280px;
+    .article-skew-card:hover {
+        background: var(--accent-color, #ff4d00);
+        border-color: var(--accent-color, #ff4d00);
+        transform: skewX(-12deg) scale(1.02);
     }
 
-    .magazine-articles {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-    }
-
-    .magazine-article-card {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        padding: 20px 28px;
-        background: rgba(0, 0, 0, 0.6);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
-        text-decoration: none;
-        color: #fff;
-        transition: all 0.3s ease;
-        min-width: 400px;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .magazine-article-card::before {
+    /* 光沢アニメーション */
+    .article-skew-card::before {
         content: '';
         position: absolute;
         top: 0;
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-        transition: left 0.5s ease;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+        );
+        animation: cardShimmer 4s infinite;
     }
 
-    .magazine-article-card:hover::before {
-        left: 100%;
+    .article-skew-card:nth-child(1)::before { animation-delay: 0s; }
+    .article-skew-card:nth-child(2)::before { animation-delay: 1.3s; }
+    .article-skew-card:nth-child(3)::before { animation-delay: 2.6s; }
+
+    @keyframes cardShimmer {
+        0% { left: -100%; }
+        25% { left: 100%; }
+        100% { left: 100%; }
     }
 
-    .magazine-article-card:hover {
-        background: rgba(0, 0, 0, 0.8);
-        border-color: var(--accent-color, #ff4d00);
-        transform: translateX(8px);
-    }
-
-    .article-number {
-        font-family: monospace;
-        font-size: 2rem;
-        font-weight: bold;
-        color: var(--accent-color, #ff4d00);
-        opacity: 0.6;
-    }
-
-    .article-info {
-        flex: 1;
-    }
-
-    .magazine-category {
-        display: inline-block;
-        padding: 4px 12px;
-        font-size: 0.7rem;
-        font-weight: bold;
-        letter-spacing: 0.1em;
-        border-radius: 4px;
-        margin-bottom: 8px;
-        text-transform: uppercase;
-    }
-
-    .magazine-category.story {
-        background: rgba(255, 107, 107, 0.2);
-        color: #ff6b6b;
-        border: 1px solid rgba(255, 107, 107, 0.3);
-    }
-
-    .magazine-category.dtm {
-        background: rgba(78, 205, 196, 0.2);
-        color: #4ecdc4;
-        border: 1px solid rgba(78, 205, 196, 0.3);
-    }
-
-    .magazine-category.tech {
-        background: rgba(69, 183, 209, 0.2);
-        color: #45b7d1;
-        border: 1px solid rgba(69, 183, 209, 0.3);
-    }
-
-    .magazine-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        line-height: 1.4;
-    }
-
-    .article-arrow {
-        font-size: 1.5rem;
-        color: var(--accent-color, #ff4d00);
+    /* オレンジ点線ボーダーアニメーション */
+    .article-skew-card::after {
+        content: '';
+        position: absolute;
+        inset: -3px;
+        border: 2px dashed var(--accent-color, #ff4d00);
         opacity: 0;
-        transform: translateX(-10px);
-        transition: all 0.3s ease;
+        transform: skewX(0deg);
+        animation: cardBorderPulse 3s infinite;
     }
 
-    .magazine-article-card:hover .article-arrow {
+    .article-skew-card:nth-child(1)::after { animation-delay: 0s; }
+    .article-skew-card:nth-child(2)::after { animation-delay: 1s; }
+    .article-skew-card:nth-child(3)::after { animation-delay: 2s; }
+
+    @keyframes cardBorderPulse {
+        0%, 100% { opacity: 0; }
+        50% { opacity: 0.5; }
+    }
+
+    .article-skew-card:hover::before,
+    .article-skew-card:hover::after {
+        animation: none;
+    }
+
+    .article-skew-card:hover::after {
         opacity: 1;
-        transform: translateX(0);
+        border-style: solid;
     }
 
-    .new-article-item {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 12px 16px;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        text-decoration: none;
-        color: #fff;
-        transition: all 0.3s ease;
-    }
-
-    .new-article-item:hover {
-        background: rgba(255, 255, 255, 0.1);
-        border-color: var(--accent-color, #ff4d00);
-        transform: translateX(4px);
-    }
-
-    .article-category {
-        padding: 4px 8px;
+    /* カテゴリバッジ */
+    .article-category-badge {
+        display: inline-block;
+        padding: 4px 10px;
         font-size: 10px;
         font-weight: 700;
         letter-spacing: 0.1em;
-        border-radius: 4px;
+        border-radius: 3px;
+        transform: skewX(12deg); /* 文字は正立に戻す */
         flex-shrink: 0;
     }
 
-    .article-category.story {
+    .article-category-badge.story {
         background: #fff;
         color: #000;
     }
 
-    .article-category.dtm {
+    .article-category-badge.dtm {
         background: var(--accent-color, #ff4d00);
         color: #fff;
     }
 
-    .article-category.tech {
+    .article-category-badge.tech {
         background: #333;
         color: #fff;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
-    .article-title {
-        font-size: 14px;
+    /* 記事タイトル */
+    .article-card-title {
+        font-size: 13px;
         font-weight: 600;
-        text-align: left;
         line-height: 1.4;
+        transform: skewX(12deg); /* 文字は正立に戻す */
+        text-align: left;
     }
 
     /* --- 平行四辺形スラッシュボタン --- */
@@ -626,6 +579,38 @@ const latestArticles = [
         transform: scale(var(--text-scale, 1)) translate(var(--text-offset-x, 0px), var(--text-offset-y, 0px));
         transform-origin: top left;
     }
+
+    /* Chapter 01専用: 文字数が多いのでバランス調整 */
+    /* 縦書きでは line-height = 列間（横方向）、letter-spacing = 字間（縦方向） */
+    #panel-story .tategaki-box {
+        line-height: 2.5; /* 列間 */
+    }
+
+    #panel-story .tategaki-box h3 {
+        letter-spacing: 10px; /* タイトルの字間 */
+        line-height: 1.5; /* タイトルの列間（物語はいつも↔夕暮れ の間隔） */
+    }
+
+    #panel-story .tategaki-box p.text-gray-400 {
+        letter-spacing: 5.5px; /* 説明文の字間 */
+        line-height: 2.2; /* 説明文の列間 */
+    }
+
+    /* Chapter 02専用: Chapter 01と同じ間隔設定 */
+    #panel-gear .tategaki-box {
+        line-height: 2.5; /* 列間 */
+    }
+
+    #panel-gear .tategaki-box h3 {
+        letter-spacing: 10px; /* タイトルの字間 */
+        line-height: 1.5; /* タイトルの列間 */
+    }
+
+    #panel-gear .tategaki-box p.text-gray-400 {
+        letter-spacing: 5.5px; /* 説明文の字間 */
+        line-height: 2.2; /* 説明文の列間 */
+    }
+
     .tategaki-char {
         display: inline-block;
         opacity: 0;
@@ -1200,7 +1185,7 @@ const latestArticles = [
            次回予告 → 新着記事 コンテンツクロスフェード
            カードの枠はそのまま、中身だけが切り替わる
            ------------------------------------------------ */
-        // 初期状態を設定
+        // 初期状態を設定（opacityのみで制御）
         gsap.set(yokokuContent, { opacity: 1 });
         gsap.set(articlesContent, { opacity: 0, pointerEvents: 'none' });
 
@@ -1223,7 +1208,7 @@ const latestArticles = [
             pointerEvents: 'auto',
             duration: 0.8,
             ease: "power1.inOut"
-        }, "<"); // 同時に実行
+        }, "<");
 
         // 3. 新着記事を表示する余韻
         tl.to(articlesContent, {
