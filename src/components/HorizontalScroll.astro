@@ -91,34 +91,16 @@ const latestArticles = [
             <!-- 3カラムレイアウト: サムネイル(左端) | ボタン(下から突出) | 縦書き文字(右側) -->
             <div class="panel-layout-container">
                 <!-- 左: サムネイル画像（4cm左にずらす） -->
-                <div class="chapter-panel-wrapper thumbnail-left relative" style="--img-height: 60vh;">
+                <a href="/story" class="chapter-panel-wrapper thumbnail-left relative" style="--img-height: 60vh;">
                     <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl">
                         <img src="/images/Blog_00.png"
                             class="w-full h-full object-cover grayscale group-hover:grayscale-0 rounded-sm transition-all duration-700" alt="Story">
                     </div>
-                </div>
-                <!-- 中央: 巨大縦長ボタン（下から突き出る、横幅2倍） -->
-                <a href="#" class="giant-vertical-button glitch-button bottom-popup-btn">
-                    <div class="button-text-column">
-                        <span class="btn-line">読んでみる →</span>
-                        <span class="btn-line">読んでみる →</span>
-                        <span class="btn-line">読んでみる →</span>
-                        <span class="btn-line">読んでみる →</span>
-                        <span class="btn-line">読んでみる →</span>
-                        <span class="btn-line">読んでみる →</span>
-                        <span class="btn-line">読んでみる →</span>
-                        <span class="btn-line">読んでみる →</span>
-                        <span class="btn-line">読んでみる →</span>
-                        <span class="btn-line">読んでみる →</span>
-                        <span class="btn-line">読んでみる →</span>
-                        <span class="btn-line">読んでみる →</span>
-                        <span class="btn-line">読んでみる →</span>
-                        <span class="btn-line">読んでみる →</span>
-                        <span class="btn-line">読んでみる →</span>
-                        <span class="btn-line">読んでみる →</span>
-                        <span class="btn-line">読んでみる →</span>
-                        <span class="btn-line">読んでみる →</span>
-                    </div>
+                </a>
+                <!-- 中央: 巨大縦長ボタン（下から突き出る、縦書きスタイル） -->
+                <a href="/story" class="giant-vertical-button glitch-button bottom-popup-btn story-btn-vertical">
+                    <span class="btn-vertical-text">読んでみる</span>
+                    <span class="btn-vertical-arrow">↓</span>
                 </a>
                 <!-- 右: 縦書き文字（右側に配置、隙間を作る） -->
                 <div class="merge-text-wrapper text-area-right h-[60vh] md:h-[70vh] flex items-start justify-start">
@@ -143,46 +125,29 @@ const latestArticles = [
             <!-- 3カラムレイアウト: サムネイル(左端) | ボタン(下から突出) | 縦書き文字(右側) -->
             <div class="panel-layout-container">
                 <!-- 左: サムネイル画像（4cm左にずらす） -->
-                <div class="gear-panel-wrapper thumbnail-left relative" style="--img-height: 60vh;">
+                <a href="/dtm" class="gear-panel-wrapper thumbnail-left relative" style="--img-height: 60vh;">
                     <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl gear-image-wrapper">
                         <img src="/images/chapter02-dtm.png" id="gear-panel-image"
                             class="w-full h-full object-cover rounded-sm transition-all duration-700 gear-colorize-img" alt="Gear">
                     </div>
-                </div>
-                <!-- 中央: 巨大縦長ボタン（下から突き出る、横幅2倍） -->
-                <a href="/gear" class="giant-vertical-button glitch-button bottom-popup-btn gear-lab-btn">
-                    <div class="button-text-column">
-                        <span class="btn-line">GEAR LAB →</span>
-                        <span class="btn-line">GEAR LAB →</span>
-                        <span class="btn-line">GEAR LAB →</span>
-                        <span class="btn-line">GEAR LAB →</span>
-                        <span class="btn-line">GEAR LAB →</span>
-                        <span class="btn-line">GEAR LAB →</span>
-                        <span class="btn-line">GEAR LAB →</span>
-                        <span class="btn-line">GEAR LAB →</span>
-                        <span class="btn-line">GEAR LAB →</span>
-                        <span class="btn-line">GEAR LAB →</span>
-                        <span class="btn-line">GEAR LAB →</span>
-                        <span class="btn-line">GEAR LAB →</span>
-                        <span class="btn-line">GEAR LAB →</span>
-                        <span class="btn-line">GEAR LAB →</span>
-                        <span class="btn-line">GEAR LAB →</span>
-                        <span class="btn-line">GEAR LAB →</span>
-                        <span class="btn-line">GEAR LAB →</span>
-                        <span class="btn-line">GEAR LAB →</span>
-                    </div>
+                </a>
+                <!-- 中央: 巨大縦長ボタン（下から突き出る、縦書きスタイル） -->
+                <a href="/dtm" class="giant-vertical-button glitch-button bottom-popup-btn story-btn-vertical">
+                    <span class="btn-vertical-text">Let's go!</span>
+                    <span class="btn-vertical-arrow">↓</span>
                 </a>
                 <!-- 右: 縦書き文字（右側に配置、隙間を作る） -->
                 <div class="merge-text-wrapper text-area-right h-[60vh] md:h-[70vh] flex items-start justify-start">
                     <div class="tategaki-box flex flex-col justify-start chapter1-text-group" style="--text-scale: 1.8; --text-offset-x: 0px; --text-offset-y: 30px;">
                         <span class="text-[var(--accent-color)] font-mono text-xs font-bold tracking-widest mb-8 block tategaki-char" style="writing-mode: horizontal-tb;">CHAPTER 02</span>
                         <h3 class="font-mincho text-3xl md:text-4xl font-black mb-12 leading-relaxed">
-                            <span class="tategaki-char">没</span><span class="tategaki-char">入</span><span class="tategaki-char">す</span><span class="tategaki-char">る</span><br>
-                            <span class="tategaki-char">機</span><span class="tategaki-char">材</span><span class="tategaki-char">た</span><span class="tategaki-char">ち</span>
+                            <span class="tategaki-char">特</span><span class="tategaki-char">別</span><span class="tategaki-char">だ</span><span class="tategaki-char">ぜ</span><span class="tategaki-char">？</span><br>
+                            <span class="tategaki-char">伝</span><span class="tategaki-char">授</span><span class="tategaki-char">し</span><span class="tategaki-char">た</span><span class="tategaki-char">る</span>
                         </h3>
                         <p class="text-gray-400 font-medium text-sm md:text-base leading-loose">
-                            <span class="tategaki-char">3</span><span class="tategaki-char">7</span><span class="tategaki-char">.</span><span class="tategaki-char">5</span><span class="tategaki-char">イ</span><span class="tategaki-char">ン</span><span class="tategaki-char">チ</span><span class="tategaki-char">の</span><span class="tategaki-char">湾</span><span class="tategaki-char">曲</span><span class="tategaki-char">。</span><br>
-                            <span class="tategaki-char">視</span><span class="tategaki-char">界</span><span class="tategaki-char">を</span><span class="tategaki-char">覆</span><span class="tategaki-char">う</span><span class="tategaki-char">情</span><span class="tategaki-char">報</span><span class="tategaki-char">の</span><span class="tategaki-char">海</span><span class="tategaki-char">。</span>
+                            <span class="tategaki-char">古</span><span class="tategaki-char">い</span><span class="tategaki-char">情</span><span class="tategaki-char">報</span><span class="tategaki-char">は</span><span class="tategaki-char">不</span><span class="tategaki-char">要</span><span class="tategaki-char">。</span><br>
+                            <span class="tategaki-char">今</span><span class="tategaki-char">っ</span><span class="tategaki-char">ぽ</span><span class="tategaki-char">い</span><span class="tategaki-char">D</span><span class="tategaki-char">T</span><span class="tategaki-char">M</span><span class="tategaki-char">の</span><span class="tategaki-char">ノ</span><span class="tategaki-char">ウ</span><span class="tategaki-char">ハ</span><span class="tategaki-char">ウ</span><span class="tategaki-char">を</span><span class="tategaki-char">伝</span><span class="tategaki-char">授</span><span class="tategaki-char">す</span><span class="tategaki-char">る</span><span class="tategaki-char">ぜ</span><br>
+                            <span class="tategaki-char">本</span><span class="tategaki-char">当</span><span class="tategaki-char">は</span><span class="tategaki-char">お</span><span class="tategaki-char">金</span><span class="tategaki-char">と</span><span class="tategaki-char">り</span><span class="tategaki-char">た</span><span class="tategaki-char">い</span><span class="tategaki-char">く</span><span class="tategaki-char">ら</span><span class="tategaki-char">い</span><span class="tategaki-char">…</span><span class="tategaki-char">笑</span>
                         </p>
                     </div>
                 </div>
@@ -194,46 +159,29 @@ const latestArticles = [
             <!-- 3カラムレイアウト: サムネイル(左端) | ボタン(下から突出) | 縦書き文字(右側) -->
             <div class="panel-layout-container">
                 <!-- 左: サムネイル画像（4cm左にずらす） -->
-                <div class="chapter-panel-wrapper thumbnail-left relative" style="--img-height: 60vh;">
+                <a href="/tech" class="chapter-panel-wrapper thumbnail-left relative" style="--img-height: 60vh;">
                     <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl">
                         <img src="/images/chapter03-tech.png"
                             class="w-full h-full object-cover grayscale group-hover:grayscale-0 rounded-sm transition-all duration-700" alt="Tech">
                     </div>
-                </div>
-                <!-- 中央: 巨大縦長ボタン（下から突き出る、横幅2倍） -->
-                <a href="#" class="giant-vertical-button glitch-button bottom-popup-btn tech-lab-btn">
-                    <div class="button-text-column">
-                        <span class="btn-line">TECH LAB →</span>
-                        <span class="btn-line">TECH LAB →</span>
-                        <span class="btn-line">TECH LAB →</span>
-                        <span class="btn-line">TECH LAB →</span>
-                        <span class="btn-line">TECH LAB →</span>
-                        <span class="btn-line">TECH LAB →</span>
-                        <span class="btn-line">TECH LAB →</span>
-                        <span class="btn-line">TECH LAB →</span>
-                        <span class="btn-line">TECH LAB →</span>
-                        <span class="btn-line">TECH LAB →</span>
-                        <span class="btn-line">TECH LAB →</span>
-                        <span class="btn-line">TECH LAB →</span>
-                        <span class="btn-line">TECH LAB →</span>
-                        <span class="btn-line">TECH LAB →</span>
-                        <span class="btn-line">TECH LAB →</span>
-                        <span class="btn-line">TECH LAB →</span>
-                        <span class="btn-line">TECH LAB →</span>
-                        <span class="btn-line">TECH LAB →</span>
-                    </div>
+                </a>
+                <!-- 中央: 巨大縦長ボタン（下から突き出る、縦書きスタイル） -->
+                <a href="/tech" class="giant-vertical-button glitch-button bottom-popup-btn story-btn-vertical">
+                    <span class="btn-vertical-text">突入する</span>
+                    <span class="btn-vertical-arrow">↓</span>
                 </a>
                 <!-- 右: 縦書き文字（右側に配置、隙間を作る） -->
                 <div class="merge-text-wrapper text-area-right h-[60vh] md:h-[70vh] flex items-start justify-start">
                     <div class="tategaki-box flex flex-col justify-start chapter1-text-group" style="--text-scale: 1.8; --text-offset-x: 0px; --text-offset-y: 30px;">
                         <span class="text-[var(--accent-color)] font-mono text-xs font-bold tracking-widest mb-8 block tategaki-char" style="writing-mode: horizontal-tb;">CHAPTER 03</span>
                         <h3 class="font-mincho text-3xl md:text-4xl font-black mb-12 leading-relaxed">
-                            <span class="tategaki-char">技</span><span class="tategaki-char">術</span><span class="tategaki-char">と</span><br>
-                            <span class="tategaki-char">そ</span><span class="tategaki-char">の</span><span class="tategaki-char">先</span><span class="tategaki-char">へ</span>
+                            <span class="tategaki-char">A</span><span class="tategaki-char">I</span><br>
+                            <span class="tategaki-char">戦</span><span class="tategaki-char">国</span><span class="tategaki-char">時</span><span class="tategaki-char">代</span>
                         </h3>
                         <p class="text-gray-400 font-medium text-sm md:text-base leading-loose">
-                            <span class="tategaki-char">人</span><span class="tategaki-char">工</span><span class="tategaki-char">知</span><span class="tategaki-char">能</span><span class="tategaki-char">と</span><span class="tategaki-char">共</span><span class="tategaki-char">創</span><span class="tategaki-char">す</span><span class="tategaki-char">る</span><span class="tategaki-char">。</span><br>
-                            <span class="tategaki-char">コ</span><span class="tategaki-char">ー</span><span class="tategaki-char">ド</span><span class="tategaki-char">は</span><span class="tategaki-char">詩</span><span class="tategaki-char">に</span><span class="tategaki-char">な</span><span class="tategaki-char">る</span><span class="tategaki-char">。</span>
+                            <span class="tategaki-char">ア</span><span class="tategaki-char">プ</span><span class="tategaki-char">リ</span><span class="tategaki-char">・</span><span class="tategaki-char">ホ</span><span class="tategaki-char">ー</span><span class="tategaki-char">ム</span><span class="tategaki-char">ペ</span><span class="tategaki-char">ー</span><span class="tategaki-char">ジ</span><span class="tategaki-char">、</span><br>
+                            <span class="tategaki-char">ブ</span><span class="tategaki-char">ロ</span><span class="tategaki-char">グ</span><span class="tategaki-char">開</span><span class="tategaki-char">設</span><span class="tategaki-char">ま</span><span class="tategaki-char">で</span><br>
+                            <span class="tategaki-char">超</span><span class="tategaki-char">実</span><span class="tategaki-char">践</span><span class="tategaki-char">的</span><span class="tategaki-char">な</span><span class="tategaki-char">A</span><span class="tategaki-char">I</span><span class="tategaki-char">活</span><span class="tategaki-char">用</span><span class="tategaki-char">術</span><span class="tategaki-char">！</span>
                         </p>
                     </div>
                 </div>
@@ -584,6 +532,7 @@ const latestArticles = [
     /* 縦書きでは line-height = 列間（横方向）、letter-spacing = 字間（縦方向） */
     #panel-story .tategaki-box {
         line-height: 2.5; /* 列間 */
+        gap: 20px; /* タイトルと説明文の間隔 */
     }
 
     #panel-story .tategaki-box h3 {
@@ -599,6 +548,7 @@ const latestArticles = [
     /* Chapter 02専用: Chapter 01と同じ間隔設定 */
     #panel-gear .tategaki-box {
         line-height: 2.5; /* 列間 */
+        gap: 20px; /* タイトルと説明文の間隔 */
     }
 
     #panel-gear .tategaki-box h3 {
@@ -607,6 +557,22 @@ const latestArticles = [
     }
 
     #panel-gear .tategaki-box p.text-gray-400 {
+        letter-spacing: 5.5px; /* 説明文の字間 */
+        line-height: 2.2; /* 説明文の列間 */
+    }
+
+    /* Chapter 03専用: Chapter 01/02と同じ間隔設定 */
+    #panel-tech .tategaki-box {
+        line-height: 2.5; /* 列間 */
+        gap: 20px; /* タイトルと説明文の間隔 */
+    }
+
+    #panel-tech .tategaki-box h3 {
+        letter-spacing: 10px; /* タイトルの字間 */
+        line-height: 1.5; /* タイトルの列間 */
+    }
+
+    #panel-tech .tategaki-box p.text-gray-400 {
         letter-spacing: 5.5px; /* 説明文の字間 */
         line-height: 2.2; /* 説明文の列間 */
     }
@@ -1018,6 +984,68 @@ const latestArticles = [
 
     .giant-vertical-button:hover {
         box-shadow: 0 -6px 40px rgba(255, 77, 0, 0.7);
+    }
+
+    /* ===== Chapter 1専用: 縦書き大文字スタイル ===== */
+    .story-btn-vertical {
+        justify-content: center;
+        padding: 30px 20px;
+        padding-bottom: 310px;
+    }
+
+    .btn-vertical-text {
+        writing-mode: vertical-rl;
+        text-orientation: mixed;
+        font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        letter-spacing: 0.3em;
+        color: #fff;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-vertical-arrow {
+        font-size: 1.8rem;
+        color: #fff;
+        margin-top: 20px;
+        animation: arrowBounce 1.5s ease-in-out infinite;
+    }
+
+    @keyframes arrowBounce {
+        0%, 100% { transform: translateY(0); opacity: 1; }
+        50% { transform: translateY(8px); opacity: 0.7; }
+    }
+
+    /* 縦書きボタン出現時のアニメーション */
+    .story-btn-vertical.glitch-active .btn-vertical-text,
+    .story-btn-vertical.glitch-active .btn-vertical-arrow {
+        opacity: 0;
+        animation: verticalTextFadeIn 0.6s ease-out forwards;
+    }
+
+    .story-btn-vertical.glitch-active .btn-vertical-arrow {
+        animation-delay: 0.4s;
+    }
+
+    @keyframes verticalTextFadeIn {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* 縦書きボタン完了後の状態 */
+    .story-btn-vertical.glitch-done .btn-vertical-text {
+        opacity: 1;
+    }
+
+    .story-btn-vertical.glitch-done .btn-vertical-arrow {
+        opacity: 1;
+        animation: arrowBounce 1.5s ease-in-out infinite;
     }
 
     /* ボタン内の縦並び文字列 */
