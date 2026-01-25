@@ -1,0 +1,21 @@
+{
+  "name": "きのこ式AI栽培日記 | MASHROOM STUDIO",
+  "short_name": "MASHROOM",
+  "description": "クリエイターのためのAI活用術。TECH LAB・DTM LAB・STORY LABの3つの研究室から、AI時代のものづくりを発信します。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#ff4d00",
+  "icons": [
+    {
+      "src": "/favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

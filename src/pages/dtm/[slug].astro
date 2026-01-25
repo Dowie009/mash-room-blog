@@ -48,6 +48,13 @@ const readTime = Math.max(1, Math.ceil(wordCount / 500));
     <!-- 方眼紙背景 -->
     <div class="grid-background"></div>
 
+    <!-- 兄貴背景 -->
+    <div class="aniki-bg-wrapper">
+      <img src="/images/dtm/common/aniki-bg.png" alt="" class="aniki-bg-img" />
+      <!-- フィルターオーバーレイ -->
+      <div class="manga-filter"></div>
+    </div>
+
     <!-- ヘッダー -->
     <header class="header">
       <div class="header-content">
@@ -140,7 +147,7 @@ const readTime = Math.max(1, Math.ceil(wordCount / 500));
 
   .dtm-article {
     min-height: 100vh;
-    background: #ffffff;
+    background: transparent;
     position: relative;
     font-family: 'Noto Sans JP', sans-serif;
   }
@@ -149,18 +156,13 @@ const readTime = Math.max(1, Math.ceil(wordCount / 500));
   .font-tech { font-family: 'Space Grotesk', sans-serif; }
   .font-code { font-family: 'Fira Code', monospace; }
 
-  /* 方眼紙背景 */
+  /* 方眼紙背景（無効化）
   .grid-background {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    background-color: #ffffff;
-    background-image:
-      linear-gradient(#e8f0fe 1px, transparent 1px),
-      linear-gradient(90deg, #e8f0fe 1px, transparent 1px);
-    background-size: 20px 20px;
-    opacity: 0.7;
+    display: none;
+  }
+  */
+  .grid-background {
+    display: none;
   }
 
   /* ヘッダー */
@@ -222,6 +224,9 @@ const readTime = Math.max(1, Math.ceil(wordCount / 500));
     max-width: 800px;
     margin: 0 auto;
     padding: 3rem 2rem;
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 0;
+    box-shadow: 0 0 60px rgba(255, 255, 255, 0.5);
   }
 
   /* ヒーロー */
@@ -562,6 +567,66 @@ const readTime = Math.max(1, Math.ceil(wordCount / 500));
     letter-spacing: 0.05em;
   }
 
+  /* 兄貴背景（画面全体） */
+  .aniki-bg-wrapper {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .aniki-bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center bottom;
+  }
+
+  /* ===== 漫画フィルター ===== */
+
+  /* 案A: ドットトーン（漫画の網点風）
+  .manga-filter {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(0, 0, 0, 0.15) 1px, transparent 1px);
+    background-size: 4px 4px;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+  */
+
+  /* 案B: 斜線ハッチング（スケッチ風）
+  .manga-filter {
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.04) 2px,
+      rgba(0, 0, 0, 0.04) 4px
+    );
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+  */
+
+  /* 案C: ハーフトーン + グラデーション（新聞印刷風） */
+  .manga-filter {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle, rgba(0, 0, 0, 0.1) 1.5px, transparent 1.5px),
+      linear-gradient(to bottom, transparent 0%, rgba(255, 245, 230, 0.2) 100%);
+    background-size: 6px 6px, 100% 100%;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
   /* レスポンシブ */
   @media (max-width: 768px) {
     .article-wrapper {
@@ -581,6 +646,10 @@ const readTime = Math.max(1, Math.ceil(wordCount / 500));
     .article-footer {
       flex-direction: column;
       text-align: center;
+    }
+
+    .aniki-bg-wrapper {
+      opacity: 1;
     }
   }
 </style>

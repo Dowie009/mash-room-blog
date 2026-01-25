@@ -29,8 +29,15 @@ const ogImageUrl = ogImage.startsWith('http') ? ogImage : `${SITE_URL}${ogImage}
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {/* favicon.svgが存在しない場合はコメントアウト */}
-    {/* <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> */}
+
+    {/* Favicon */}
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#ff4d00" />
+
     <meta name="generator" content={Astro.generator} />
 
     {/* OGP (Open Graph Protocol) */}
@@ -49,11 +56,11 @@ const ogImageUrl = ogImage.startsWith('http') ? ogImage : `${SITE_URL}${ogImage}
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
     
-    {/* キャッシュ制御: 検索エンジンに最新版を取得させる */}
-    <meta name="robots" content="noarchive, noimageindex" />
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
+    {/* SEO: 検索エンジンにインデックスを許可 */}
+    <meta name="robots" content="index, follow" />
+
+    {/* Google Search Console 所有権確認 */}
+    <meta name="google-site-verification" content="CP_OxlFTyh0dbJ_dGCijthvvJGZ2di0Xoo95hs72xfY" />
     
     {/* バージョン情報（指定がある場合のみ） */}
     {version && (
