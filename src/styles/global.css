@@ -907,6 +907,11 @@
   padding: 1rem 1.25rem;
   margin: 1.5rem 0;
   font-size: 0.95rem;
+  color: #374151 !important;
+}
+
+.tip-box strong {
+  color: #059669 !important;
 }
 
 /* 警告ボックス */
@@ -917,6 +922,11 @@
   padding: 1rem 1.25rem;
   margin: 1.5rem 0;
   font-size: 0.95rem;
+  color: #374151 !important;
+}
+
+.warning-box strong {
+  color: #dc2626 !important;
 }
 
 /* 成功ボックス */
@@ -927,6 +937,11 @@
   padding: 1rem 1.25rem;
   margin: 1.5rem 0;
   font-size: 0.95rem;
+  color: #374151 !important;
+}
+
+.success-box strong {
+  color: #2563eb !important;
 }
 
 /* 結論ボックス */
@@ -947,13 +962,13 @@
 
 /* 心の声（引用風） */
 blockquote.voice {
-  background: rgba(255, 255, 255, 0.05);
-  border-left: 3px solid rgba(255, 255, 255, 0.3);
+  background: rgba(100, 116, 139, 0.08);
+  border-left: 3px solid rgba(100, 116, 139, 0.4);
   border-radius: 0 8px 8px 0;
   padding: 1rem 1.5rem;
   margin: 1.5rem 0;
   font-style: italic;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(71, 85, 105, 0.9);
 }
 
 /* チェックリスト */
@@ -1054,4 +1069,251 @@ article td {
 
 article tr:last-child td {
   border-bottom: none;
+}
+
+/* ===== 漫画的演出スタイル ===== */
+
+/* 超デカ文字（叫び系） */
+.shout {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #f97316;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+  letter-spacing: 0.05em;
+  line-height: 1.3;
+  display: block;
+  margin: 1.5rem 0;
+}
+
+.shout-xl {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #ef4444;
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.4);
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  display: block;
+  margin: 2rem 0;
+  text-align: center;
+}
+
+/* 兄貴の一言（冒頭・中間のインパクト） */
+.aniki-quote {
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.15) 0%, rgba(234, 88, 12, 0.1) 100%);
+  border: 2px solid rgba(251, 146, 60, 0.4);
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  margin: 2rem 0;
+  position: relative;
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+.aniki-quote::before {
+  content: '💬';
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  font-size: 1.5rem;
+  background: #1a0f0a;
+  padding: 0 8px;
+}
+
+/* 優しい締めの言葉 */
+.gentle-close {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(147, 197, 253, 0.12) 100%);
+  border-left: 4px solid rgba(59, 130, 246, 0.5);
+  border-radius: 0 16px 16px 0;
+  padding: 1.5rem 2rem;
+  margin: 2.5rem 0;
+  font-size: 1.05rem;
+  line-height: 2;
+  color: rgba(30, 64, 175, 0.9);
+}
+
+.gentle-close p {
+  margin: 0.5rem 0;
+}
+
+/* 漫画風の強調（ドーン！バーン！系） */
+.impact {
+  display: inline-block;
+  font-weight: 900;
+  color: #fbbf24;
+  font-size: 1.3em;
+  transform: rotate(-2deg);
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+}
+
+/* 小声・ボソッと */
+.whisper {
+  font-size: 0.85rem;
+  color: rgba(100, 116, 139, 0.7);
+  font-style: italic;
+}
+
+/* ツッコミ風 */
+.tsukkomi {
+  font-size: 0.9rem;
+  color: rgba(71, 85, 105, 0.7);
+  margin-left: 1rem;
+}
+
+.tsukkomi::before {
+  content: '（';
+}
+
+.tsukkomi::after {
+  content: '）';
+}
+
+/* 兄貴背景（DTM LAB記事用） */
+.aniki-bg {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 400px;
+  height: auto;
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 1;
+  background-image: url('/images/dtm/common/aniki-bg.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  aspect-ratio: 16 / 9;
+}
+
+/* スマホ用 */
+@media (max-width: 768px) {
+  .aniki-bg {
+    width: 200px;
+    opacity: 0.1;
+  }
+}
+
+/* ============================================
+   TECH LAB 専用装飾（ラボノート風）
+   ============================================ */
+
+/* 発見・ひらめきボックス */
+.eureka-box {
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-left: 4px solid #f59e0b;
+  padding: 1rem 1.5rem;
+  border-radius: 0 0.75rem 0.75rem 0;
+  margin: 1.5rem 0;
+  font-weight: 600;
+  color: #92400e;
+}
+
+.eureka-box strong {
+  color: #b45309 !important;
+}
+
+/* 実験ログ風ボックス */
+.lab-log {
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.5rem;
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+  font-size: 0.9rem;
+  color: #374151 !important;
+}
+
+.lab-log strong {
+  color: #1f2937 !important;
+}
+
+.lab-log p {
+  margin: 0.5rem 0;
+  color: #374151 !important;
+}
+
+/* ターミナル風エラー表示 */
+.terminal-error {
+  background: #1e1e1e;
+  color: #ef4444;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+  font-size: 0.85rem;
+  margin: 1rem 0;
+}
+
+/* ターミナル風成功表示 */
+.terminal-success {
+  background: #1e1e1e;
+  color: #22c55e;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+  font-size: 0.85rem;
+  margin: 1rem 0;
+}
+
+/* 独り言・心の声 */
+.inner-voice {
+  color: #6b7280;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+/* コード発見時の強調 */
+.code-highlight {
+  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  font-weight: 700;
+}
+
+/* Before/After 比較ボックス */
+.compare-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.compare-before,
+.compare-after {
+  padding: 1rem;
+  border-radius: 0.75rem;
+}
+
+.compare-before {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.compare-after {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.compare-label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.compare-before .compare-label {
+  color: #ef4444;
+}
+
+.compare-after .compare-label {
+  color: #22c55e;
+}
+
+/* スマホ用 */
+@media (max-width: 768px) {
+  .compare-box {
+    grid-template-columns: 1fr;
+  }
 }
