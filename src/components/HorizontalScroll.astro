@@ -1225,8 +1225,8 @@ const latestArticles = [
                 pin: true,
                 scrub: scrubValue, // スクロールに滑らかに追従
                 invalidateOnRefresh: true,
-                // スクロール距離1.5
-                end: () => "+=" + (panels.length * window.innerWidth * 1.5),
+                // スクロール距離2.5（ゆっくり）
+                end: () => "+=" + (panels.length * window.innerWidth * 2.5),
                 // スクロール進行状況を監視してボタン状態をリセット
                 onUpdate: (self) => {
                     // 進行率が5%以下になったらボタンをリセット
@@ -1246,10 +1246,10 @@ const latestArticles = [
         // 次回予告を表示したまま維持
         gsap.set(yokokuContent, { opacity: 1 });
 
-        // 次回予告をしばらく表示してから横スクロールへ
+        // 次回予告をしばらく表示してから横スクロールへ（余裕を持たせる）
         tl.to(yokokuContent, {
             opacity: 1,
-            duration: 1.5,
+            duration: 8,
             ease: "none"
         });
 
@@ -1257,7 +1257,7 @@ const latestArticles = [
         tl.to(yokokuContent, {
             opacity: 0,
             pointerEvents: 'none',
-            duration: 0.4,
+            duration: 5,
             ease: "power1.inOut"
         });
 
@@ -1266,13 +1266,13 @@ const latestArticles = [
         tl.to(yokokuContent, {
             opacity: 0,
             pointerEvents: 'none',
-            duration: 0.8,
+            duration: 5,
             ease: "power1.inOut"
         });
         tl.to(articlesContent, {
             opacity: 1,
             pointerEvents: 'auto',
-            duration: 0.8,
+            duration: 5,
             ease: "power1.inOut"
         }, "<");
         tl.to(articlesContent, {
@@ -1283,7 +1283,7 @@ const latestArticles = [
         tl.to(articlesContent, {
             opacity: 0,
             pointerEvents: 'none',
-            duration: 0.4,
+            duration: 5,
             ease: "power1.inOut"
         });
         */
@@ -1307,31 +1307,31 @@ const latestArticles = [
                 // パネル自体を初期状態で少し透明に
                 gsap.set(panel, { opacity: 0.7 });
 
-                // 1. パネル移動 + フェードイン（60%カット後の隙間）
+                // 1. パネル移動 + フェードイン
                 tl.to(container, {
                     x: - (i * 100) + "vw",
-                    ease: "power1.inOut",
-                    duration: 0.32 // 0.8 * 0.4 = 0.32 (60%カット)
+                    ease: "none",
+                    duration: 5
                 });
 
                 // パネル自体をフェードイン
                 tl.to(panel, {
                     opacity: 1,
-                    duration: 0.2, // 0.5 * 0.4
+                    duration: 5,
                     ease: "power2.out"
-                }, "<+=0.04");
+                }, "<+=0.1");
 
                 // Spacer Panelを完全に消す
                 tl.to(spacerPanel, {
                     opacity: 0,
-                    duration: 0.12 // 0.3 * 0.4
+                    duration: 5
                 }, "<");
             } else {
                 // 通常のパネル移動
                 tl.to(container, {
                     x: - (i * 100) + "vw",
                     ease: "none",
-                    duration: 0.8
+                    duration: 5
                 });
             }
 
@@ -1341,21 +1341,21 @@ const latestArticles = [
                 // 1. サムネイルが左にガチャッとはまる
                 tl.fromTo(img,
                     { x: -80, opacity: 0 },
-                    { x: 0, opacity: 1, duration: 0.8, ease: "power2.out" },
+                    { x: 0, opacity: 1, duration: 5, ease: "power2.out" },
                     "<+=0.1"
                 );
 
                 // 2. サムネイルがはまったら → 文字が出現開始
                 tl.fromTo(txt,
                     { x: 50, opacity: 0 },
-                    { x: 0, opacity: 1, duration: 0.6, ease: "power1.out" },
+                    { x: 0, opacity: 1, duration: 5, ease: "power1.out" },
                     ">" // 画像の後
                 );
 
                 // 3. 文字が一文字ずつ出現（シネマライク）
                 tl.fromTo(chars,
                     { y: 30, opacity: 0 },
-                    { y: 0, opacity: 1, stagger: 0.02, duration: 0.8, ease: "power1.out" },
+                    { y: 0, opacity: 1, stagger: 0.02, duration: 5, ease: "power1.out" },
                     "<+=0.1"
                 );
 
@@ -1363,7 +1363,7 @@ const latestArticles = [
                 if (panelImage) {
                     tl.to(panelImage, {
                         filter: 'grayscale(0%)',
-                        duration: 0.6,
+                        duration: 5,
                         ease: "power1.out"
                     }, "<+=0.2");
                 }
@@ -1371,7 +1371,7 @@ const latestArticles = [
                 // 5. 文字が完全に終わった後、ボタンをグリッチアニメーションで下から出現
                 if (verticalButton) {
                     // 文字完了後に間を置く
-                    tl.to({}, { duration: 0.3 }, ">");
+                    tl.to({}, { duration: 5 }, ">");
 
                     // グリッチアニメーションでボタンが下から出現（クラス追加のみ）
                     tl.add(() => {
@@ -1379,7 +1379,7 @@ const latestArticles = [
                     });
 
                     // アニメーション時間分待つ
-                    tl.to({}, { duration: 0.8 });
+                    tl.to({}, { duration: 5 });
 
                     // グリッチアニメーション終了後、通常状態に（点滅継続）
                     tl.add(() => {
@@ -1387,8 +1387,8 @@ const latestArticles = [
                         verticalButton.classList.add('glitch-done');
                     });
 
-                    // 余韻（短め）
-                    tl.to({}, { duration: 0.2 });
+                    // 余韻
+                    tl.to({}, { duration: 5 });
                 }
             }
         });
