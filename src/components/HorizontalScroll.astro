@@ -57,7 +57,8 @@ const latestArticles = [
                     </div>
                 </div>
 
-                <!-- ===== 新着記事コンテンツ ===== -->
+                <!-- ===== 新着記事コンテンツ（一時非表示） ===== -->
+                <!--
                 <div class="card-content" id="articles-content">
                     <span class="text-[var(--accent-color)] font-mono text-lg mb-6 block">NEW ARTICLES</span>
                     <h3 class="font-mincho text-7xl md:text-8xl mb-8 leading-none">新着<br>記事</h3>
@@ -66,7 +67,6 @@ const latestArticles = [
                         チェックしてください
                     </p>
 
-                    <!-- 平行四辺形の記事カード -->
                     <div class="flex flex-col gap-3 mb-8">
                         {latestArticles.map((article) => (
                             <a href={article.href} class="article-skew-card">
@@ -82,6 +82,7 @@ const latestArticles = [
                         CLICK TO READ &rarr;
                     </div>
                 </div>
+                -->
 
             </div>
         </div>
@@ -1241,20 +1242,28 @@ const latestArticles = [
 
         /* ------------------------------------------------
            次回予告 → 新着記事 コンテンツクロスフェード
-           カードの枠はそのまま、中身だけが切り替わる
+           ※ 新着記事セクションを一時非表示のためコメントアウト
            ------------------------------------------------ */
-        // 初期状態を設定（opacityのみで制御）
+        // 次回予告を表示したまま維持
         gsap.set(yokokuContent, { opacity: 1 });
-        gsap.set(articlesContent, { opacity: 0, pointerEvents: 'none' });
 
-        // 1. 次回予告コンテンツをしばらく表示（余韻）
+        // 次回予告をしばらく表示してから横スクロールへ
         tl.to(yokokuContent, {
             opacity: 1,
-            duration: 0.5,
+            duration: 1.5,
             ease: "none"
         });
 
-        // 2. クロスフェード：次回予告 → 新着記事（同時にフェード）
+        // 次回予告をフェードアウト（横スクロールへ移行）
+        tl.to(yokokuContent, {
+            opacity: 0,
+            pointerEvents: 'none',
+            duration: 0.4,
+            ease: "power1.inOut"
+        });
+
+        /* 新着記事クロスフェード（一時非表示）
+        gsap.set(articlesContent, { opacity: 0, pointerEvents: 'none' });
         tl.to(yokokuContent, {
             opacity: 0,
             pointerEvents: 'none',
@@ -1267,21 +1276,18 @@ const latestArticles = [
             duration: 0.8,
             ease: "power1.inOut"
         }, "<");
-
-        // 3. 新着記事を表示する余韻
         tl.to(articlesContent, {
             opacity: 1,
             duration: 0.6,
             ease: "none"
         });
-
-        // 4. 新着記事コンテンツをフェードアウト（横スクロールへ移行）
         tl.to(articlesContent, {
             opacity: 0,
             pointerEvents: 'none',
             duration: 0.4,
             ease: "power1.inOut"
         });
+        */
 
         panels.forEach((panel, i) => {
             if (i === 0) return;

@@ -54,11 +54,11 @@ const getUrlPrefix = (post: any) => {
 ---
 
 <!-- 4. NEW POSTS (Card Dealer & Energy Charge) -->
-<section class="py-24 px-6 bg-[#080808] relative z-[70] min-h-screen flex flex-col justify-center" id="new-post-section">
-    <div class="container mx-auto h-full flex flex-col justify-center">
-        <div class="flex items-end justify-between mb-10 border-b border-white/10 pb-6">
+<section class="pt-20 pb-6 px-6 bg-[#080808] relative z-[70] min-h-screen flex flex-col justify-start" id="new-post-section">
+    <div class="container mx-auto">
+        <div class="flex items-end justify-between mb-3 border-b border-white/10 pb-2">
             <div class="glitch-text cursor-default">
-                <h2 class="font-tech text-6xl md:text-8xl font-bold text-white/90">
+                <h2 class="font-tech text-5xl md:text-7xl font-bold text-white/90">
                     <span class="inline-block">N</span><span class="inline-block">E</span><span class="inline-block">W</span><span class="inline-block">_</span><span class="inline-block">P</span><span class="inline-block">O</span><span class="inline-block">S</span><span class="inline-block">T</span>
                 </h2>
             </div>
@@ -69,11 +69,11 @@ const getUrlPrefix = (post: any) => {
         </div>
 
         <!-- 6 Grid Layout -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="card-grid">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="card-grid">
 
             {latestPosts.map((post, index) => {
               const isLargeCard = index < 3; // 最初の3枚は大きいカード
-              const cardHeight = isLargeCard ? 'h-[35vh]' : 'h-[25vh]';
+              const cardHeight = isLargeCard ? 'h-[23vh]' : 'h-[17vh]';
               const titleSize = isLargeCard ? 'text-base' : 'text-sm';
               const urlPrefix = getUrlPrefix(post);
               const thumbnail = post.data.thumbnail || '/images/Blog_00.png';
