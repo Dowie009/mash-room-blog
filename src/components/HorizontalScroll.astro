@@ -1216,15 +1216,14 @@ const latestArticles = [
            scrub値が大きいほどスクロールに即座に追従
            scrub: true は完全に追従、数値は遅延秒数
            ------------------------------------------------ */
-        // スクロールに滑らかに追従（0.3秒の遅延）
-        const scrubValue = 0.3;
+        // スクロールに滑らかに追従（1.0秒の遅延）
+        const scrubValue = 1.0;
 
         const tl = gsap.timeline({
             scrollTrigger: {
                 trigger: wrapper,
                 pin: true,
                 scrub: scrubValue, // スクロールに滑らかに追従
-                anticipatePin: 1,
                 invalidateOnRefresh: true,
                 // スクロール距離1.5
                 end: () => "+=" + (panels.length * window.innerWidth * 1.5),
