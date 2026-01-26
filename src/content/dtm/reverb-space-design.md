@@ -111,6 +111,26 @@ Mix: 40-60%
 | Soundtoys Little Plate | プレート一択 | ボーカル |
 | UAD Capitol Chambers | 実機モデリング | 雰囲気重視 |
 
+## 🎧 Before / After で聴き比べ
+
+実際にリバーブをかける前と後でどう変わるか、聴いてみよう。
+
+<div class="audio-compare">
+  <div class="audio-compare-title">🎵 REVERB COMPARISON</div>
+  <div class="audio-before">
+    <span class="audio-label">🔴 BEFORE（ドライ）</span>
+    <audio controls src="/audio/reverb-before.mp3"></audio>
+    <p class="audio-description">リバーブなし。音が「点」として存在している状態。</p>
+  </div>
+  <div class="audio-after">
+    <span class="audio-label">🟢 AFTER（ウェット）</span>
+    <audio controls src="/audio/reverb-after.mp3"></audio>
+    <p class="audio-description">Valhalla Roomで空間を追加。音に「居場所」ができた。</p>
+  </div>
+</div>
+
+※ 音声ファイルは準備中です
+
 ## まとめ
 
 リバーブは「空間を創造する」ツール。
