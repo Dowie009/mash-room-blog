@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a1628"/>
+      <stop offset="100%" style="stop-color:#162447"/>
+    </linearGradient>
+    <linearGradient id="accent3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#60a5fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg3)"/>
+  <rect x="0" y="580" width="1200" height="50" fill="url(#accent3)"/>
+  <text x="600" y="280" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="#ffffff" text-anchor="middle">Notion 活用術</text>
+  <text x="600" y="380" font-family="Arial, sans-serif" font-size="36" fill="#888888" text-anchor="middle">仕事効率が3倍になる設定方法</text>
+  <polygon points="150,200 200,120 250,200" fill="none" stroke="#3b82f6" stroke-width="2" opacity="0.3"/>
+  <polygon points="1000,500 1050,420 1100,500" fill="none" stroke="#3b82f6" stroke-width="2" opacity="0.2"/>
+</svg>

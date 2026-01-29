@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a1a2e"/>
+      <stop offset="100%" style="stop-color:#1b2d4e"/>
+    </linearGradient>
+    <linearGradient id="accent6" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#06b6d4"/>
+      <stop offset="100%" style="stop-color:#22d3ee"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg6)"/>
+  <rect x="0" y="580" width="1200" height="50" fill="url(#accent6)"/>
+  <text x="600" y="280" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="#ffffff" text-anchor="middle">生産性アップ</text>
+  <text x="600" y="380" font-family="Arial, sans-serif" font-size="36" fill="#888888" text-anchor="middle">無料で使える神アプリ10選</text>
+  <circle cx="1050" cy="150" r="50" fill="none" stroke="#06b6d4" stroke-width="2" opacity="0.3"/>
+  <circle cx="1020" cy="180" r="30" fill="none" stroke="#06b6d4" stroke-width="2" opacity="0.2"/>
+</svg>

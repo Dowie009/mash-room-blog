@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg9" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#1e293b"/>
+    </linearGradient>
+    <linearGradient id="accent9" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#64748b"/>
+      <stop offset="100%" style="stop-color:#94a3b8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg9)"/>
+  <rect x="0" y="580" width="1200" height="50" fill="url(#accent9)"/>
+  <text x="600" y="280" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="#ffffff" text-anchor="middle">Markdown 入門</text>
+  <text x="600" y="380" font-family="Arial, sans-serif" font-size="36" fill="#888888" text-anchor="middle">5分で覚える基本記法</text>
+  <text x="100" y="160" font-family="monospace" font-size="28" fill="#64748b" opacity="0.5"># 見出し</text>
+  <text x="100" y="200" font-family="monospace" font-size="28" fill="#64748b" opacity="0.4">**太字**</text>
+  <text x="100" y="240" font-family="monospace" font-size="28" fill="#64748b" opacity="0.3">- リスト</text>
+</svg>

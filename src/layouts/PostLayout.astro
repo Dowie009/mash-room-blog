@@ -551,7 +551,10 @@ if (collection === 'tech') {
                 {recentPosts.map((post, index) => (
                   <li class="posts-item">
                     <a href={`/tech/${post.slug}`} class="posts-link">
-                      <span class="posts-rank">{index + 1}</span>
+                      <div class="posts-thumbnail">
+                        <img src={post.thumbnail || '/images/tech/thumbnails/ai-writing-tips.svg'} alt="" loading="lazy" />
+                        <span class="posts-rank">{index + 1}</span>
+                      </div>
                       <div class="posts-info">
                         <span class="posts-title">{post.title}</span>
                         <span class="posts-date">{post.date.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })}</span>
@@ -566,7 +569,10 @@ if (collection === 'tech') {
                 {popularPosts.map((post, index) => (
                   <li class="posts-item">
                     <a href={`/tech/${post.slug}`} class="posts-link">
-                      <span class="posts-rank popular">{index + 1}</span>
+                      <div class="posts-thumbnail">
+                        <img src={post.thumbnail || '/images/tech/thumbnails/ai-writing-tips.svg'} alt="" loading="lazy" />
+                        <span class="posts-rank popular">{index + 1}</span>
+                      </div>
                       <div class="posts-info">
                         <span class="posts-title">{post.title}</span>
                         <span class="posts-date">{post.date.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })}</span>
@@ -828,8 +834,34 @@ if (collection === 'tech') {
     <!-- フッターナビ -->
     <footer class="article-footer">
       <div class="footer-content">
-        <div class="footer-brand">
-          <img src="/images/tech/hero-patterns/MASHROOM_LOGO_ORANGE.png" alt="MASHROOM STUDIO" class="brand-logo" />
+        <div class="footer-main">
+          <div class="footer-brand">
+            <img src="/images/tech/hero-patterns/MASHROOM_LOGO_ORANGE.png" alt="MASHROOM STUDIO" class="brand-logo" />
+            <p class="footer-tagline">Tech Notes & Digital Creation</p>
+          </div>
+          <div class="footer-links">
+            <div class="footer-link-group">
+              <h4 class="footer-link-title">カテゴリ</h4>
+              <ul class="footer-link-list">
+                <li><a href="/tech">AI活用術</a></li>
+                <li><a href="/tech">プログラミング</a></li>
+                <li><a href="/tech">ツール紹介</a></li>
+                <li><a href="/tech">ライフハック</a></li>
+              </ul>
+            </div>
+            <div class="footer-link-group">
+              <h4 class="footer-link-title">リンク</h4>
+              <ul class="footer-link-list">
+                <li><a href="/">ホーム</a></li>
+                <li><a href="/tech">Tech Notes</a></li>
+                <li><a href="/dtm">DTM</a></li>
+                <li><a href="https://xn--3-sj5c.jp/" target="_blank" rel="noopener">スタジオ</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p class="footer-copyright">© 2026 MASHROOM STUDIO. All rights reserved.</p>
         </div>
       </div>
     </footer>
@@ -3319,22 +3351,42 @@ if (collection === 'tech') {
     background: #f9fafb;
   }
 
+  /* サムネイル画像 */
+  .posts-thumbnail {
+    position: relative;
+    width: 72px;
+    height: 48px;
+    border-radius: 6px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #f3f4f6;
+  }
+
+  .posts-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
   .posts-rank {
+    position: absolute;
+    bottom: 4px;
+    left: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
-    border-radius: 6px;
-    background: #22c55e;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    background: rgba(34, 197, 94, 0.9);
     color: #fff;
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     font-weight: 700;
     flex-shrink: 0;
   }
 
   .posts-rank.popular {
-    background: #ec4899;
+    background: rgba(236, 72, 153, 0.9);
   }
 
   .posts-info {
@@ -4475,9 +4527,116 @@ if (collection === 'tech') {
     position: relative;
     z-index: 1;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 2rem;
+    padding: 3rem 2rem;
     margin-top: 0;
-    background: linear-gradient(180deg, rgba(10, 10, 20, 0.95), rgba(5, 5, 12, 1));
+    /* 黒い画面を減らし、グラデーションで緩やかに遷移 */
+    background: linear-gradient(180deg,
+      rgba(15, 15, 30, 0.98) 0%,
+      rgba(20, 25, 35, 0.95) 50%,
+      rgba(25, 30, 40, 0.9) 100%
+    );
+    /* 装飾的なグラデーションオーバーレイ */
+    background-image:
+      radial-gradient(ellipse 80% 50% at 20% 100%, rgba(34, 197, 94, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
+      linear-gradient(180deg, rgba(15, 15, 30, 0.98) 0%, rgba(25, 30, 40, 0.9) 100%);
+  }
+
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .footer-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-wrap: wrap;
+  }
+
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .brand-logo {
+    height: 40px;
+    width: auto;
+  }
+
+  .footer-tagline {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 4rem;
+  }
+
+  .footer-link-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .footer-link-title {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .footer-link-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .footer-link-list a {
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+  }
+
+  .footer-link-list a:hover {
+    color: #22c55e;
+  }
+
+  .footer-bottom {
+    padding-top: 1.5rem;
+    text-align: center;
+  }
+
+  .footer-copyright {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.8rem;
+    margin: 0;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  @media (max-width: 768px) {
+    .footer-main {
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .footer-links {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
   }
 
   /* =====================================================

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg10" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2e1a0a"/>
+      <stop offset="100%" style="stop-color:#4e2d1b"/>
+    </linearGradient>
+    <linearGradient id="accent10" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f97316"/>
+      <stop offset="100%" style="stop-color:#fb923c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg10)"/>
+  <rect x="0" y="580" width="1200" height="50" fill="url(#accent10)"/>
+  <text x="600" y="280" font-family="Arial, sans-serif" font-size="72" font-weight="bold" fill="#ffffff" text-anchor="middle">副業の始め方</text>
+  <text x="600" y="380" font-family="Arial, sans-serif" font-size="36" fill="#888888" text-anchor="middle">会社員でも月5万円稼ぐ方法</text>
+  <text x="1000" y="180" font-family="Arial, sans-serif" font-size="48" fill="#f97316" opacity="0.4">¥</text>
+  <text x="1050" y="220" font-family="Arial, sans-serif" font-size="36" fill="#f97316" opacity="0.3">¥</text>
+  <text x="1080" y="160" font-family="Arial, sans-serif" font-size="28" fill="#f97316" opacity="0.2">¥</text>
+</svg>
