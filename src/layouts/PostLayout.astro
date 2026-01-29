@@ -19,6 +19,7 @@ interface Props {
     topic?: string;
     learnings?: string[];
     defaultPreset?: number;
+    defaultBgEffect?: 'none' | 'grid' | 'dots' | 'mesh';
   };
   collection?: 'tech' | 'gear' | 'story' | 'ai';
 }
@@ -132,10 +133,27 @@ const readTime = '5 min read';
 // Learning Level表示
 const levelLabels = ['', '入門', '基礎', '実践', '応用', '発展'];
 const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningLevel] : null;
+
+// 関連記事用：最新記事リスト（現在の記事を除く、最大5件）
+let recentPosts: Array<{ slug: string; title: string; date: Date; thumbnail?: string }> = [];
+if (collection === 'tech') {
+  const allPosts = await getCollection('tech', ({ data }) => !data.draft);
+  const currentSlug = Astro.url.pathname.split('/').pop();
+  recentPosts = allPosts
+    .filter(post => post.slug !== currentSlug)
+    .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+    .slice(0, 5)
+    .map(post => ({
+      slug: post.slug,
+      title: post.data.title,
+      date: post.data.date,
+      thumbnail: post.data.thumbnail
+    }));
+}
 ---
 
 <Layout title={`${frontmatter.title} | ${config.label}`}>
-  <div class="post-page" data-category={frontmatter.category} data-default-preset={frontmatter.defaultPreset || 1}>
+  <div class="post-page" data-category={frontmatter.category} data-default-preset={frontmatter.defaultPreset || 1} data-default-bg-effect={frontmatter.defaultBgEffect || 'none'}>
     <!-- 裏モード用：動画背景（デフォルト非表示） -->
     <div class="video-bg-container" id="video-bg-container" style="display: none;">
       <video autoplay muted loop playsinline class="video-bg" id="video-bg">
@@ -143,6 +161,11 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
       </video>
       <div class="video-bg-overlay"></div>
     </div>
+
+    <!-- Tech記事用テクスチャ背景 -->
+    {collection === 'tech' && (
+      <div class="tech-texture-bg"></div>
+    )}
 
     <!-- 3層サイバー背景 -->
     <div class="cyber-overlay"></div>
@@ -152,6 +175,25 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     <div class="bg-effect-layer" id="bg-effect-grid"></div>
     <div class="bg-effect-layer" id="bg-effect-dots"></div>
     <div class="bg-effect-layer bg-effect-mesh" id="bg-effect-mesh"></div>
+
+    <!-- パンくずリストバー（PANDORA風・ヘッダー下固定） -->
+    <nav class="breadcrumb-bar">
+      <div class="breadcrumb-bar-inner">
+        <a href="/" class="breadcrumb-bar-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span>HOME</span>
+        </a>
+        <span class="breadcrumb-bar-sep">›</span>
+        <a href={config.href} class="breadcrumb-bar-link">{config.label}</a>
+        <span class="breadcrumb-bar-sep">›</span>
+        <span class="breadcrumb-bar-current" style={`--cat-color: ${catConfig.color}`}>{catConfig.label}</span>
+        <span class="breadcrumb-bar-sep">›</span>
+        <span class="breadcrumb-bar-title">{frontmatter.title}</span>
+      </div>
+    </nav>
 
     <!-- ヒーローセクション（TECHページ用：動画バナー - カテゴリ別自動切り替え） -->
     {collection === 'tech' ? (
@@ -282,76 +324,82 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
       </header>
     )}
 
-    <!-- 今日学ぶことカード - Tech & Tips（Bパターン）のみ表示。AI Journey（Aパターン）では非表示 -->
-    {frontmatter.category !== 'ai-journey' && frontmatter.learnings && frontmatter.learnings.length > 0 && (
-      <div class="learnings-card">
-        <div class="learnings-header">
-          <span class="learnings-icon">📚</span>
-          <span class="learnings-title">今日学ぶこと</span>
-        </div>
-        <ul class="learnings-list">
-          {frontmatter.learnings.slice(0, 2).map(item => (
-            <li class="learnings-item">
-              <span class="learnings-check">✓</span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    )}
-
     <!-- 本文 -->
     <main class="article-main">
-      <article class="article-content">
+      <!-- モバイル/狭い画面用のボタンバー -->
+      <div class="mobile-toolbar" id="mobile-toolbar">
+        <button class="mobile-btn customize-mobile" id="customize-btn-mobile">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span>CUSTOMIZE</span>
+        </button>
+        {frontmatter.learnings && frontmatter.learnings.length > 0 && (
+          <button class="mobile-btn learnings-mobile" id="learnings-btn-mobile">
+            <span>📚</span>
+            <span>LEARNINGS</span>
+          </button>
+        )}
+        <button class="mobile-btn transmit-mobile" id="transmit-btn-mobile">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+          <span>TRANSMIT</span>
+        </button>
+      </div>
+
+      <!-- モバイル用LEARNINGSドロップダウン -->
+      {frontmatter.learnings && frontmatter.learnings.length > 0 && (
+        <div class="mobile-learnings-dropdown" id="mobile-learnings-dropdown" style="display: none;">
+          <ul class="mobile-learnings-list">
+            {frontmatter.learnings.map((item, index) => (
+              <li>
+                <a href={`#learning-${index + 1}`} class="mobile-learnings-link">
+                  <span class="mobile-learnings-number">{index + 1}</span>
+                  <span>{item}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <!-- モバイル用TRANSMITドロップダウン -->
+      <div class="mobile-transmit-dropdown" id="mobile-transmit-dropdown" style="display: none;">
+        <div class="mobile-transmit-buttons">
+          <a href="#" class="mobile-transmit-btn" id="share-x-mobile">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+            <span>POST</span>
+          </a>
+          <a href="#" class="mobile-transmit-btn" id="share-fb-mobile">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+            <span>SHARE</span>
+          </a>
+          <button class="mobile-transmit-btn" id="copy-link-mobile">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            <span>COPY</span>
+          </button>
+        </div>
+      </div>
+
+      <article id="article-container" class="article-content">
         <slot />
       </article>
 
-      <!-- 右サイドバー（CUSTOMIZE / TRANSMIT） -->
-      <aside class="article-sidebar">
-        <!-- CUSTOMIZE カード -->
-        <div class="sidebar-card customize-card">
-          <div class="sidebar-card-header">
-            <span class="sidebar-card-title">CUSTOMIZE</span>
-            <span class="sidebar-card-dot"></span>
-          </div>
-          <button class="customize-btn" id="customize-btn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="3"></circle>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-            <span class="customize-label">OPEN</span>
-          </button>
-        </div>
-
-        <!-- TRANSMIT カード -->
-        <div class="sidebar-card transmit-card">
-          <div class="sidebar-card-header">
-            <span class="sidebar-card-title">TRANSMIT</span>
-            <span class="sidebar-card-dot"></span>
-          </div>
-          <div class="transmit-buttons">
-            <a href="#" class="transmit-btn post" aria-label="Post on X" id="share-x">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-              </svg>
-              <span>POST</span>
-            </a>
-            <a href="#" class="transmit-btn share" aria-label="Share on Facebook" id="share-fb">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-              </svg>
-              <span>SHARE</span>
-            </a>
-            <button class="transmit-btn copy" aria-label="Copy link" id="copy-link">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-              </svg>
-              <span>COPY</span>
-            </button>
-          </div>
-        </div>
-
+      <!-- 中央スペース（スタイル編集パネル用） -->
+      <div class="style-panel-space">
         <!-- ===== STYLE SWITCHER パネル ===== -->
         <div id="global-style-switcher" class="style-switcher-panel" style="display: none;">
           <div class="switcher-header">
@@ -458,7 +506,101 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
           </div>
         </div>
         <!-- ===== /STYLE SWITCHER パネル ===== -->
+      </div>
 
+      <!-- 右サイドバー（CUSTOMIZE / TRANSMIT） -->
+      <aside class="article-sidebar" id="article-sidebar">
+        <!-- リサイズハンドル（左下の斜め点々） -->
+        <div class="sidebar-resize-handle" id="sidebar-resize-handle">
+          <span class="resize-dots">⋮⋮</span>
+        </div>
+        <!-- サイズ確定ボタン -->
+        <button class="sidebar-size-confirm" id="sidebar-size-confirm" style="display: none;">
+          ✓ OK
+        </button>
+        <!-- CUSTOMIZE カード -->
+        <div class="sidebar-card customize-card">
+          <div class="sidebar-card-header">
+            <span class="sidebar-card-title">CUSTOMIZE</span>
+            <span class="sidebar-card-dot"></span>
+          </div>
+          <button class="customize-btn" id="customize-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            <span class="customize-label">OPEN</span>
+          </button>
+        </div>
+
+        <!-- TODAY'S LEARNINGS カード（目次機能） -->
+        {frontmatter.learnings && frontmatter.learnings.length > 0 && (
+          <div class="sidebar-card learnings-card">
+            <div class="sidebar-card-header">
+              <span class="sidebar-card-title">📚 LEARNINGS</span>
+              <span class="sidebar-card-dot learnings-dot"></span>
+            </div>
+            <ul class="learnings-toc">
+              {frontmatter.learnings.map((item, index) => (
+                <li class="learnings-toc-item">
+                  <a href={`#learning-${index + 1}`} class="learnings-toc-link">
+                    <span class="learnings-toc-number">{index + 1}</span>
+                    <span class="learnings-toc-text">{item}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <!-- TRANSMIT カード -->
+        <div class="sidebar-card transmit-card">
+          <div class="sidebar-card-header">
+            <span class="sidebar-card-title">TRANSMIT</span>
+            <span class="sidebar-card-dot"></span>
+          </div>
+          <div class="transmit-buttons">
+            <a href="#" class="transmit-btn post" aria-label="Post on X" id="share-x">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+              <span>POST</span>
+            </a>
+            <a href="#" class="transmit-btn share" aria-label="Share on Facebook" id="share-fb">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 18.062 24 12.073z"/>
+              </svg>
+              <span>SHARE</span>
+            </a>
+            <button class="transmit-btn copy" aria-label="Copy link" id="copy-link">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+              </svg>
+              <span>COPY</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 関連記事カード（PANDORA風） -->
+        {recentPosts.length > 0 && (
+          <div class="sidebar-card related-card">
+            <div class="sidebar-card-header">
+              <span class="sidebar-card-title">📰 NEW POSTS</span>
+              <span class="sidebar-card-dot related-dot"></span>
+            </div>
+            <ul class="related-posts-list">
+              {recentPosts.map((post, index) => (
+                <li class="related-post-item">
+                  <a href={`/tech/${post.slug}`} class="related-post-link">
+                    <span class="related-post-number">{index + 1}</span>
+                    <span class="related-post-title">{post.title}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </aside>
     </main>
 
@@ -495,24 +637,24 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
                 </div>
                 <ul class="article-list">
                   <li>
-                    <a href="/tech/ai-as-sparring-partner" class="article-item">
+                    <a href="/tech/vibe-coding-philosophy" class="article-item">
                       <div class="article-meta">
                         <span class="article-badge new">NEW</span>
                         <span class="article-date">2026.01.12</span>
                       </div>
-                      <h4 class="article-title">AIは壁打ち相手として最強だった</h4>
+                      <h4 class="article-title">Vibe Codingという新しい開発スタイル</h4>
                     </a>
                   </li>
                   <li>
                     <a href="/tech/astro-content-collections" class="article-item">
-                      <span class="article-date">2026.01.05</span>
-                      <h4 class="article-title">Astro Content Collectionsで記事管理を効率化</h4>
+                      <span class="article-date">2026.01.10</span>
+                      <h4 class="article-title">Astro Content Collectionsで記事管理システムを構築した話</h4>
                     </a>
                   </li>
                   <li>
-                    <a href="/tech/chatgpt-searched-myself" class="article-item">
-                      <span class="article-date">2025.12.20</span>
-                      <h4 class="article-title">ChatGPTに自分のことを調べさせたら感動した話</h4>
+                    <a href="/tech/first-tech-post" class="article-item">
+                      <span class="article-date">2026.01.10</span>
+                      <h4 class="article-title">TECH LAB システム構築開始</h4>
                     </a>
                   </li>
                 </ul>
@@ -539,21 +681,21 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
                     <a href="/tech/ai-as-sparring-partner" class="article-item journey-item">
                       <div class="article-meta">
                         <span class="article-badge new journey-badge">NEW</span>
-                        <span class="article-date">2026.01.10</span>
+                        <span class="article-date">2026.01.14</span>
                       </div>
-                      <h4 class="article-title">補助金の申請書を書くのが辛すぎてAIに相談した結果</h4>
+                      <h4 class="article-title">AIは壁打ち相手として最強だった</h4>
                     </a>
                   </li>
                   <li>
                     <a href="/tech/chatgpt-searched-myself" class="article-item journey-item">
-                      <span class="article-date">2026.01.02</span>
-                      <h4 class="article-title">S氏との会議前に壁打ちをして気づいた、経営の視点</h4>
+                      <span class="article-date">2026.01.14</span>
+                      <h4 class="article-title">ChatGPTに自分のことを調べさせたら感動した話</h4>
                     </a>
                   </li>
                   <li>
-                    <a href="/tech/chatgpt-searched-myself" class="article-item journey-item">
-                      <span class="article-date">2025.12.28</span>
-                      <h4 class="article-title">なぜ僕は「ジェミー」と呼びたいのか？AIとの距離感の話</h4>
+                    <a href="/tech/claude-code-first-week" class="article-item journey-item">
+                      <span class="article-date">2026.01.14</span>
+                      <h4 class="article-title">Claude Codeを1週間使ってわかったこと</h4>
                     </a>
                   </li>
                 </ul>
@@ -640,6 +782,21 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
         </div>
       </div>
     </footer>
+
+    <!-- フローティングCTAバナー（PANDORA風） -->
+    <div class="floating-cta" id="floating-cta">
+      <button class="floating-cta-close" id="floating-cta-close" aria-label="閉じる">×</button>
+      <div class="floating-cta-content">
+        <div class="floating-cta-icon">🎵</div>
+        <div class="floating-cta-text">
+          <span class="floating-cta-title">MASHROOM STUDIO</span>
+          <span class="floating-cta-desc">札幌のレコーディング＆音楽制作スタジオ</span>
+        </div>
+      </div>
+      <a href="https://xn--3-sj5c.jp/" class="floating-cta-btn" target="_blank" rel="noopener">
+        公式サイトへ
+      </a>
+    </div>
   </div>
 </Layout>
 
@@ -656,6 +813,99 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     /* ベース背景 */
     background: linear-gradient(180deg, #0a0a12 0%, #0d0d18 50%, #08080f 100%);
     background-attachment: fixed;
+    /* パンくずリストバーの高さ分のパディング */
+    padding-top: 44px;
+  }
+
+  /* =====================================================
+     パンくずリストバー（PANDORA風）
+     ===================================================== */
+  .breadcrumb-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(15, 15, 25, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 0.75rem 0;
+  }
+
+  .breadcrumb-bar-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+  }
+
+  .breadcrumb-bar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color 0.2s;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.03em;
+  }
+
+  .breadcrumb-bar-link:hover {
+    color: #00ffff;
+  }
+
+  .breadcrumb-bar-link svg {
+    opacity: 0.7;
+  }
+
+  .breadcrumb-bar-sep {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 1rem;
+  }
+
+  .breadcrumb-bar-current {
+    color: var(--cat-color, #00ffff);
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.03em;
+    padding: 0.2rem 0.6rem;
+    background: rgba(var(--cat-color-rgb, 0, 255, 255), 0.15);
+    border-radius: 4px;
+  }
+
+  .breadcrumb-bar-title {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (max-width: 768px) {
+    .breadcrumb-bar-inner {
+      padding: 0 1rem;
+      font-size: 0.75rem;
+    }
+    .breadcrumb-bar-title {
+      display: none;
+    }
+  }
+
+  /* Tech記事用：テクスチャ背景レイヤー（スクロール連動） */
+  .tech-texture-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 300%; /* ページ全体をカバーする縦長サイズ */
+    z-index: 0;
+    background: url('/images/tech-bg-texture.png') top center/100% auto no-repeat;
+    pointer-events: none;
   }
 
   /* 裏モード：動画背景 */
@@ -742,8 +992,8 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     background:
       linear-gradient(rgba(0, 255, 255, 0.08) 1px, transparent 1px),
       linear-gradient(90deg, rgba(0, 255, 255, 0.08) 1px, transparent 1px),
-      linear-gradient(rgba(255, 0, 255, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 0, 255, 0.04) 1px, transparent 1px);
+      linear-gradient(rgba(255, 0, 255, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 0, 255, 0.05) 1px, transparent 1px);
     background-size: 80px 80px, 80px 80px, 20px 20px, 20px 20px;
   }
 
@@ -850,7 +1100,7 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
      ===================================================== */
   .hero-banner-top {
     position: absolute;
-    top: 16.5%;
+    top: 13%;
     left: 20.7%;
     transform: scale(1.15);
     transform-origin: top left;
@@ -1136,18 +1386,19 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
      ===================================================== */
   .hero-title-banner {
     position: absolute;
-    top: 43.5%;
-    left: 25.0%;
-    transform: scale(1.5);
-    transform-origin: top left;
+    top: 40%;
+    left: 25%;
+    transform: none;
     font-family: 'Zen Maru Gothic', 'Noto Sans JP', sans-serif;
-    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-size: clamp(1.8rem, 2.5vw, 2.8rem);
     font-weight: 700;
-    line-height: 1.4;
+    line-height: 1.35;
     color: #ffffff;
     margin: 0;
-    max-width: 60%;
+    max-width: 50%;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 0, 0, 0.5);
+    overflow-wrap: break-word;
+    word-break: keep-all;
   }
 
   /* パターンB用：黒文字・影なし */
@@ -1161,29 +1412,30 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
      ===================================================== */
   .hero-banner-bottom {
     position: absolute;
-    top: 56.9%;
-    left: 25.1%;
-    transform: scale(1.37);
-    transform-origin: top left;
+    top: 58%;
+    left: 25%;
+    transform: none;
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
   .hero-tags-banner {
     display: flex;
     gap: 0.75rem;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    white-space: nowrap;
     margin: 0;
+    width: max-content;
   }
 
   .tag-banner {
     color: #00ffff !important;
     background: rgba(0, 212, 255, 0.2) !important;
     border: 1px solid rgba(0, 212, 255, 0.6) !important;
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 600;
-    padding: 0.4rem 0.9rem;
+    padding: 0.5rem 1rem;
     border-radius: 6px;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
     transition: all 0.3s ease;
@@ -1441,10 +1693,20 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     padding: 3rem 2rem;
   }
 
-  @media (min-width: 1400px) {
+  @media (min-width: 1300px) {
     .article-main {
-      max-width: 1400px;
-      grid-template-columns: 1fr 200px;
+      /* 本文 | スタイル編集スペース | サイドバーボタン */
+      grid-template-columns: 1fr 280px 140px;
+      gap: 1rem;
+      padding: 3rem 2rem;
+    }
+  }
+
+  @media (min-width: 1500px) {
+    .article-main {
+      max-width: 1600px;
+      grid-template-columns: 1fr 280px 160px;
+      padding: 3rem 2rem;
     }
   }
 
@@ -1455,6 +1717,11 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     line-height: 2.1;
     /* 濃いグレー - 白背景でも黒背景でも見える */
     color: #333333;
+    /* グリッド内でオーバーフローを防ぐ */
+    min-width: 0;
+    overflow-x: hidden;
+    /* 左パディングを滑らかに変化 (1100pxで0.5rem、1400pxで1.5rem) */
+    padding-left: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.00333), 1.5rem);
   }
 
   .article-content :global(h2) {
@@ -1502,8 +1769,8 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
   }
 
   .article-content :global(strong) {
-    color: #ffffff;
-    font-weight: 600;
+    color: inherit;
+    font-weight: 700;
   }
 
   .article-content :global(code) {
@@ -1656,6 +1923,156 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
   }
 
   /* =====================================================
+     モバイル/狭い画面用ツールバー
+     ===================================================== */
+
+  .mobile-toolbar {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: rgba(20, 25, 35, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+  }
+
+  .mobile-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #aaa;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .mobile-btn:hover {
+    background: rgba(0, 255, 255, 0.1);
+    border-color: rgba(0, 255, 255, 0.3);
+    color: #00ffff;
+  }
+
+  .mobile-btn.active {
+    background: rgba(0, 255, 255, 0.15);
+    border-color: #00ffff;
+    color: #00ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+  }
+
+  .mobile-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* モバイルLEARNINGSドロップダウン */
+  .mobile-learnings-dropdown {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: rgba(20, 25, 35, 0.95);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+  }
+
+  .mobile-learnings-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .mobile-learnings-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    text-decoration: none;
+    color: #ccc;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+
+  .mobile-learnings-link:hover {
+    background: rgba(0, 255, 255, 0.1);
+    color: #00ffff;
+  }
+
+  .mobile-learnings-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: rgba(0, 255, 255, 0.2);
+    border-radius: 50%;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: bold;
+    color: #00ffff;
+  }
+
+  /* モバイルTRANSMITドロップダウン */
+  .mobile-transmit-dropdown {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: rgba(20, 25, 35, 0.95);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+  }
+
+  .mobile-transmit-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .mobile-transmit-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.6rem 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #aaa;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .mobile-transmit-btn:hover {
+    background: rgba(0, 255, 255, 0.1);
+    border-color: rgba(0, 255, 255, 0.3);
+    color: #00ffff;
+  }
+
+  /* 1300px以上ではモバイルツールバーを非表示 */
+  @media (min-width: 1300px) {
+    .mobile-toolbar,
+    .mobile-learnings-dropdown,
+    .mobile-transmit-dropdown {
+      display: none !important;
+    }
+  }
+
+  /* =====================================================
      サイドバー
      ===================================================== */
 
@@ -1663,25 +2080,96 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     display: none;
   }
 
-  @media (min-width: 1100px) {
+  @media (min-width: 1300px) {
     .article-sidebar {
       display: block;
       position: sticky;
       top: 2rem;
       align-self: start;
+      max-height: calc(100vh - 4rem);
+      overflow-y: auto;
+      /* 1300pxで0px、1500pxで-100px、滑らかに変化 */
+      transform: translateX(clamp(-100px, calc((1300px - 100vw) * 0.5), 0px));
     }
   }
 
+  /* リサイズハンドル（左上の斜め点々） */
+  .sidebar-resize-handle {
+    position: absolute;
+    left: -30px;
+    top: 0;
+    width: 28px;
+    height: 28px;
+    background: rgba(0, 255, 255, 0.3);
+    border: 2px solid rgba(0, 255, 255, 0.6);
+    border-radius: 6px;
+    cursor: nwse-resize;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    z-index: 100;
+  }
+
+  .sidebar-resize-handle:hover {
+    background: rgba(0, 255, 255, 0.5);
+    border-color: #00ffff;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
+    transform: scale(1.1);
+  }
+
+  .sidebar-resize-handle.resizing {
+    background: rgba(255, 0, 255, 0.5);
+    border-color: #ff00ff;
+    box-shadow: 0 0 20px rgba(255, 0, 255, 0.7);
+  }
+
+  .resize-dots {
+    color: #00ffff;
+    font-size: 14px;
+    line-height: 1;
+    font-weight: bold;
+  }
+
+  .sidebar-resize-handle.resizing .resize-dots {
+    color: #ff00ff;
+  }
+
+  /* サイズ確定ボタン */
+  .sidebar-size-confirm {
+    position: absolute;
+    left: -70px;
+    top: 35px;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #00ff88, #00ffff);
+    border: none;
+    border-radius: 6px;
+    color: #000;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 100;
+    transition: all 0.2s;
+  }
+
+  .sidebar-size-confirm:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+  }
+
   .sidebar-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(20, 25, 35, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 12px;
     padding: 1.25rem;
+    backdrop-filter: blur(10px);
+    width: 100%;
   }
 
   .sidebar-card h3 {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     letter-spacing: 0.1em;
     color: #666;
     margin-bottom: 0.75rem;
@@ -1742,9 +2230,9 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
 
   .sidebar-card-title {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     letter-spacing: 0.15em;
-    color: #666;
+    color: #888;
     text-transform: uppercase;
   }
 
@@ -1774,16 +2262,21 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     justify-content: center;
     gap: 0.5rem;
     width: 100%;
-    padding: 0.7rem 1rem;
+    padding: 0.75rem 1rem;
     background: rgba(8, 12, 18, 0.95);
     border: 1.5px solid rgba(0, 255, 255, 0.4);
     border-radius: 10px;
     color: #00ffff;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     letter-spacing: 0.1em;
     cursor: pointer;
     transition: all 0.3s ease;
+  }
+
+  .customize-btn svg {
+    width: 22px;
+    height: 22px;
   }
 
   .customize-btn:hover {
@@ -1840,7 +2333,7 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
 
   .transmit-buttons {
     display: flex;
-    gap: 0.4rem;
+    gap: 0.5rem;
   }
 
   .transmit-btn {
@@ -1850,13 +2343,13 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     align-items: center;
     justify-content: center;
     gap: 0.35rem;
-    padding: 0.7rem 0.4rem;
+    padding: 0.75rem 0.5rem;
     background: rgba(30, 30, 40, 0.9);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 10px;
-    color: #777;
+    color: #888;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.5rem;
+    font-size: 0.6rem;
     letter-spacing: 0.08em;
     text-decoration: none;
     cursor: pointer;
@@ -1904,15 +2397,30 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
   }
 
   /* =====================================================
+     中央スペース（スタイル編集パネル用）
+     ===================================================== */
+
+  .style-panel-space {
+    display: none;
+  }
+
+  @media (min-width: 1100px) {
+    .style-panel-space {
+      display: block;
+      position: sticky;
+      top: 2rem;
+      align-self: start;
+      /* サイドバーと同じ滑らかな変化 */
+      transform: translateX(clamp(-100px, calc((1100px - 100vw) * 0.333), 0px));
+    }
+  }
+
+  /* =====================================================
      STYLE SWITCHER パネル
      ===================================================== */
 
   .style-switcher-panel {
-    position: fixed;
-    top: 60px;
-    right: 20px;
-    z-index: 9999;
-    width: 260px;
+    width: 100%;
     max-height: 80vh;
     overflow-y: auto;
     background: rgba(0, 0, 0, 0.95);
@@ -1920,6 +2428,20 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     border-radius: 12px;
     padding: 1rem;
     font-size: 0.75rem;
+  }
+
+  /* モバイル表示時はパネルを固定位置で表示 */
+  @media (max-width: 1299px) {
+    .style-switcher-panel {
+      position: fixed !important;
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) !important;
+      width: 90% !important;
+      max-width: 400px !important;
+      z-index: 1000 !important;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    }
   }
 
   .switcher-header {
@@ -2411,44 +2933,92 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
   }
 
   /* =====================================================
-     今日学ぶことカード - 文字とラインのみ（枠なし・背景なし）
+     TODAY'S LEARNINGS - サイドバー目次カード
      ===================================================== */
 
   .learnings-card {
-    /* post-page(relative)の子要素としてabsolute配置 - ページと一緒にスクロール */
-    position: absolute;
-    top: 460px;
-    left: 699px;
-    z-index: 10;
-    padding: 1rem 1.25rem;
-    max-width: 420px;
-    background: none;
-    border: none;
+    padding: 1.25rem;
   }
 
-  .learnings-header {
+  .learnings-card .sidebar-card-title {
+    font-size: 0.7rem;
+  }
+
+  .learnings-dot {
+    background: #00ffff !important;
+    box-shadow: 0 0 8px #00ffff;
+  }
+
+  .learnings-toc {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .learnings-toc-item {
+    margin: 0;
+  }
+
+  .learnings-toc-link {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    transition: all 0.2s ease;
+    background: rgba(0, 255, 255, 0.05);
+    border: 1px solid rgba(0, 255, 255, 0.1);
+  }
+
+  .learnings-toc-link:hover {
+    background: rgba(0, 255, 255, 0.15);
+    border-color: rgba(0, 255, 255, 0.3);
+    color: #00ffff;
+  }
+
+  .learnings-toc-number {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #00ffff;
-  }
-
-  .learnings-icon {
-    font-size: 1.3rem;
-  }
-
-  .learnings-title {
-    font-size: 0.85rem;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00ffff 0%, #00cccc 100%);
+    color: #000;
+    font-size: 0.75rem;
     font-weight: 700;
-    color: #00ffff;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    flex-shrink: 0;
+    margin-top: 0.15rem;
   }
 
-  .learnings-list {
+  .learnings-toc-text {
+    flex: 1;
+  }
+
+  /* =====================================================
+     関連記事カード（PANDORA風）
+     ===================================================== */
+  .related-card {
+    padding: 1.25rem;
+  }
+
+  .related-card .sidebar-card-title {
+    font-size: 0.7rem;
+  }
+
+  .related-dot {
+    background: #ff6b9d !important;
+    box-shadow: 0 0 8px #ff6b9d;
+  }
+
+  .related-posts-list {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -2457,22 +3027,52 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     gap: 0.5rem;
   }
 
-  .learnings-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-    font-size: 1.2rem;
-    color: #ffffff;
-    line-height: 1.5;
+  .related-post-item {
+    margin: 0;
   }
 
-  .learnings-check {
-    color: #00ff88;
-    font-weight: bold;
-    flex-shrink: 0;
+  .related-post-link {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 6px;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.85);
     font-size: 0.8rem;
+    line-height: 1.4;
+    transition: all 0.2s ease;
+    background: rgba(255, 107, 157, 0.05);
+    border: 1px solid rgba(255, 107, 157, 0.1);
+  }
+
+  .related-post-link:hover {
+    background: rgba(255, 107, 157, 0.15);
+    border-color: rgba(255, 107, 157, 0.3);
+    color: #ff6b9d;
+  }
+
+  .related-post-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    background: linear-gradient(135deg, #ff6b9d 0%, #ff3d7f 100%);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
     margin-top: 0.1rem;
-    text-shadow: 0 0 8px rgba(0, 255, 136, 0.8);
+  }
+
+  .related-post-title {
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   /* =====================================================
@@ -3523,6 +4123,121 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     background: linear-gradient(180deg, rgba(10, 10, 20, 0.95), rgba(5, 5, 12, 1));
   }
 
+  /* =====================================================
+     フローティングCTAバナー（PANDORA風）
+     ===================================================== */
+  .floating-cta {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999;
+    background: rgba(255, 255, 255, 0.98);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    padding: 1rem;
+    max-width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    animation: floatIn 0.4s ease-out;
+  }
+
+  @keyframes floatIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .floating-cta.hidden {
+    display: none;
+  }
+
+  .floating-cta-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    color: #666;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .floating-cta-close:hover {
+    background: rgba(0, 0, 0, 0.2);
+    color: #333;
+  }
+
+  .floating-cta-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .floating-cta-icon {
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .floating-cta-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .floating-cta-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .floating-cta-desc {
+    font-size: 0.7rem;
+    color: #666;
+    line-height: 1.3;
+  }
+
+  .floating-cta-btn {
+    display: block;
+    text-align: center;
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    color: #fff;
+    text-decoration: none;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+  }
+
+  .floating-cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+  }
+
+  @media (max-width: 480px) {
+    .floating-cta {
+      right: 10px;
+      bottom: 10px;
+      left: 10px;
+      max-width: none;
+    }
+  }
+
   .footer-content {
     max-width: 1300px;
     margin: 0 auto;
@@ -3569,6 +4284,29 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
      レスポンシブ
      ===================================================== */
 
+  /* タブレット（768px〜1024px） */
+  @media (max-width: 1024px) and (min-width: 769px) {
+    /* AI Tipsテンプレート：タイトル（タブレット） */
+    .hero-title-banner {
+      top: 38%;
+      left: 18%;
+      font-size: clamp(1.4rem, 2.8vw, 2rem);
+      max-width: 60%;
+    }
+
+    /* AI Tipsテンプレート：ハッシュタグ（タブレット） */
+    .hero-banner-bottom {
+      top: 56%;
+      left: 18%;
+      gap: 0.5rem;
+    }
+
+    .tag-banner {
+      font-size: 0.85rem;
+      padding: 0.4rem 0.8rem;
+    }
+  }
+
   @media (max-width: 768px) {
     /* バナー付きヒーロー（スマホ） */
     .hero-banner-top {
@@ -3580,15 +4318,34 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
       font-size: 0.8rem;
     }
 
+    /* AI Tipsテンプレート：タイトル（スマホ） */
+    .hero-title-banner {
+      top: 32%;
+      left: 5%;
+      font-size: clamp(1.1rem, 5vw, 1.5rem);
+      max-width: 90%;
+      line-height: 1.3;
+    }
+
+    /* AI Tipsテンプレート：ハッシュタグ（スマホ） */
     .hero-banner-bottom {
-      bottom: 12%;
-      left: 2%;
-      right: 2%;
+      top: auto;
+      bottom: 10%;
+      left: 5%;
+      gap: 0.4rem;
+    }
+
+    .hero-tags-banner {
+      gap: 0.35rem;
+      flex-wrap: wrap;
+      white-space: normal;
+      width: auto;
+      max-width: 90vw;
     }
 
     .tag-banner {
       font-size: 0.7rem;
-      padding: 0.25rem 0.5rem;
+      padding: 0.3rem 0.6rem;
     }
 
     .hero-meta-banner {
@@ -3630,6 +4387,8 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     .character-x-banner {
       font-size: 1rem;
     }
+
+    /* モバイルではサイドバー全体が非表示なのでlearnings-cardも消える */
 
     .hero {
       padding: 1.5rem 1.5rem 2rem;
@@ -3773,9 +4532,225 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
       width: 100%;
     }
   }
+
+  /* 小さいスマホ（480px以下） */
+  @media (max-width: 480px) {
+    /* AI Tipsテンプレート：タイトル（小さいスマホ） */
+    .hero-title-banner {
+      top: 28%;
+      left: 3%;
+      font-size: clamp(0.95rem, 4.5vw, 1.2rem);
+      max-width: 94%;
+      line-height: 1.25;
+    }
+
+    /* AI Tipsテンプレート：ハッシュタグ（小さいスマホ） */
+    .hero-banner-bottom {
+      top: auto;
+      bottom: 8%;
+      left: 3%;
+      gap: 0.25rem;
+    }
+
+    .hero-tags-banner {
+      gap: 0.25rem;
+      flex-wrap: wrap;
+    }
+
+    .tag-banner {
+      font-size: 0.6rem;
+      padding: 0.2rem 0.45rem;
+    }
+  }
+
+  /* =====================================================
+     記事コンテンツ用レスポンシブ（グリッド・フローなど）
+     ===================================================== */
+
+  /* 2カラムグリッド → モバイルで1カラム */
+  .article-content :global(.responsive-grid-2) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .article-content :global(.responsive-grid-2) {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+
+  /* フローチャート用（横並び → 縦並び） */
+  .article-content :global(.responsive-flow) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 768px) {
+    .article-content :global(.responsive-flow) {
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .article-content :global(.responsive-flow .flow-arrow) {
+      transform: rotate(90deg);
+    }
+  }
+
+  /* ステップフロー（番号付き） */
+  .article-content :global(.step-flow) {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .article-content :global(.step-item) {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .article-content :global(.step-number) {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: bold;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+
+  .article-content :global(.step-content) {
+    flex: 1;
+  }
+
+  @media (max-width: 768px) {
+    .article-content :global(.step-item) {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+      text-align: center;
+    }
+
+    .article-content :global(.step-number) {
+      width: 60px;
+      height: 60px;
+      font-size: 1.5rem;
+    }
+
+    .article-content :global(.step-content) {
+      width: 100%;
+    }
+
+    .article-content :global(.step-content h3) {
+      justify-content: center;
+    }
+  }
+
+  /* 3カラムグリッド → モバイルで1カラム */
+  .article-content :global(.responsive-grid-3) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .article-content :global(.responsive-grid-3) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  /* 4カラムグリッド → タブレットで2カラム → モバイルで1カラム */
+  .article-content :global(.responsive-grid-4) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .article-content :global(.responsive-grid-4) {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
 
 <script>
+  // ================================
+  // サイドバー リサイズ機能
+  // ================================
+  document.addEventListener('DOMContentLoaded', () => {
+    const sidebar = document.getElementById('article-sidebar');
+    const resizeHandle = document.getElementById('sidebar-resize-handle');
+    const confirmBtn = document.getElementById('sidebar-size-confirm');
+
+    if (!sidebar || !resizeHandle || !confirmBtn) return;
+
+    let isResizing = false;
+    let startX, startY, startWidth;
+
+    // ドラッグ開始
+    resizeHandle.addEventListener('mousedown', (e) => {
+      isResizing = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      startWidth = sidebar.offsetWidth;
+      resizeHandle.classList.add('resizing');
+      confirmBtn.style.display = 'block';
+      e.preventDefault();
+    });
+
+    // ドラッグ中
+    document.addEventListener('mousemove', (e) => {
+      if (!isResizing) return;
+
+      // 左下にドラッグすると大きくなる（斜め方向）
+      const deltaX = startX - e.clientX;
+      const deltaY = e.clientY - startY;
+      const delta = (deltaX + deltaY) / 2;
+
+      const newWidth = Math.max(120, Math.min(400, startWidth + delta));
+      sidebar.style.width = newWidth + 'px';
+    });
+
+    // ドラッグ終了
+    document.addEventListener('mouseup', () => {
+      if (isResizing) {
+        isResizing = false;
+        resizeHandle.classList.remove('resizing');
+      }
+    });
+
+    // OKボタンでサイズを確定
+    confirmBtn.addEventListener('click', () => {
+      const currentWidth = sidebar.offsetWidth;
+      localStorage.setItem('sidebarWidth', currentWidth);
+      confirmBtn.style.display = 'none';
+
+      // 確定アニメーション
+      sidebar.style.transition = 'box-shadow 0.3s';
+      sidebar.style.boxShadow = '0 0 20px rgba(0, 255, 136, 0.5)';
+      setTimeout(() => {
+        sidebar.style.boxShadow = '';
+        sidebar.style.transition = '';
+      }, 500);
+
+      console.log('サイドバー幅を確定:', currentWidth + 'px');
+    });
+
+    // 保存された幅を復元
+    const savedWidth = localStorage.getItem('sidebarWidth');
+    if (savedWidth) {
+      sidebar.style.width = savedWidth + 'px';
+    }
+  });
+
   // 著者カード ポップアップ
   document.addEventListener('DOMContentLoaded', () => {
     const authorCard = document.getElementById('author-card');
@@ -4169,6 +5144,31 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
   });
 </script>
 
+<!-- ===== フローティングCTAバナー JavaScript ===== -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const floatingCta = document.getElementById('floating-cta');
+    const closeBtn = document.getElementById('floating-cta-close');
+
+    if (!floatingCta || !closeBtn) return;
+
+    // セッション中に閉じたかどうかを確認
+    const isClosed = sessionStorage.getItem('floating-cta-closed');
+    if (isClosed) {
+      floatingCta.classList.add('hidden');
+    }
+
+    // 閉じるボタンのクリック
+    closeBtn.addEventListener('click', () => {
+      floatingCta.classList.add('hidden');
+      sessionStorage.setItem('floating-cta-closed', 'true');
+    });
+
+    // スクロールで一定位置まで行ったら表示（オプション）
+    // 最初から表示されているので、特に追加処理なし
+  });
+</script>
+
 <!-- ===== GLOBAL STYLE SWITCHER JavaScript ===== -->
 <script>
 (function() {
@@ -4380,11 +5380,10 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     }
 
     // ズーム（transform: scaleで枠も含めて全体を拡大縮小）
-    // 表示100% = 実際のscale 1.3（130%相当）をベースに
-    // 表示50%〜150% = 実際のscale 0.8〜1.8
+    // 表示100% = scale(1.0)、50%〜150% = scale(0.5)〜scale(1.5)
     const articleContainer = document.getElementById('article-container');
     if (articleContainer) {
-      const scale = (currentState.zoom + 30) / 100;
+      const scale = currentState.zoom / 100;
       articleContainer.style.transform = `scale(${scale})`;
       articleContainer.style.transformOrigin = 'top center';
     }
@@ -4678,7 +5677,7 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
 
     if (zoomMinus) {
       zoomMinus.addEventListener('click', () => {
-        currentState.zoom = Math.max(50, currentState.zoom - 10);  // 最小50%（実際scale 0.8）
+        currentState.zoom = Math.max(50, currentState.zoom - 10);  // 最小50% = scale(0.5)
         applyStyles();
         saveState();
       });
@@ -4686,7 +5685,7 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
 
     if (zoomPlus) {
       zoomPlus.addEventListener('click', () => {
-        currentState.zoom = Math.min(150, currentState.zoom + 10);  // 最大150%（実際scale 1.8）
+        currentState.zoom = Math.min(150, currentState.zoom + 10);  // 最大150% = scale(1.5)
         applyStyles();
         saveState();
       });
@@ -4754,6 +5753,129 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
           startGlowSync();
         } else {
           stopGlowSync();
+        }
+      });
+    }
+
+    // ================================
+    // モバイル用ボタンのイベントリスナー
+    // ================================
+
+    // モバイルCUSTOMIZEボタン
+    const customizeBtnMobile = document.getElementById('customize-btn-mobile');
+    if (customizeBtnMobile && switcher) {
+      customizeBtnMobile.addEventListener('click', () => {
+        const isOpen = switcher.style.display === 'block';
+        if (isOpen) {
+          closeSwitcher();
+          customizeBtnMobile.classList.remove('active');
+        } else {
+          openSwitcher();
+          customizeBtnMobile.classList.add('active');
+          // 他のドロップダウンを閉じる
+          const learningsDropdown = document.getElementById('mobile-learnings-dropdown');
+          const transmitDropdown = document.getElementById('mobile-transmit-dropdown');
+          if (learningsDropdown) learningsDropdown.style.display = 'none';
+          if (transmitDropdown) transmitDropdown.style.display = 'none';
+          document.getElementById('learnings-btn-mobile')?.classList.remove('active');
+          document.getElementById('transmit-btn-mobile')?.classList.remove('active');
+        }
+      });
+    }
+
+    // モバイルLEARNINGSボタン
+    const learningsBtnMobile = document.getElementById('learnings-btn-mobile');
+    const learningsDropdown = document.getElementById('mobile-learnings-dropdown');
+    if (learningsBtnMobile && learningsDropdown) {
+      learningsBtnMobile.addEventListener('click', () => {
+        const isOpen = learningsDropdown.style.display === 'block';
+        if (isOpen) {
+          learningsDropdown.style.display = 'none';
+          learningsBtnMobile.classList.remove('active');
+        } else {
+          learningsDropdown.style.display = 'block';
+          learningsBtnMobile.classList.add('active');
+          // 他のドロップダウンを閉じる
+          const transmitDropdown = document.getElementById('mobile-transmit-dropdown');
+          if (transmitDropdown) transmitDropdown.style.display = 'none';
+          if (switcher) switcher.style.display = 'none';
+          document.getElementById('transmit-btn-mobile')?.classList.remove('active');
+          customizeBtnMobile?.classList.remove('active');
+          if (customizeBtn) customizeBtn.classList.remove('active');
+          if (customizeCard) customizeCard.classList.remove('active');
+          if (customizeLabel) customizeLabel.textContent = 'OPEN';
+        }
+      });
+
+      // リンククリックでドロップダウンを閉じる
+      learningsDropdown.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          learningsDropdown.style.display = 'none';
+          learningsBtnMobile.classList.remove('active');
+        });
+      });
+    }
+
+    // モバイルTRANSMITボタン
+    const transmitBtnMobile = document.getElementById('transmit-btn-mobile');
+    const transmitDropdown = document.getElementById('mobile-transmit-dropdown');
+    if (transmitBtnMobile && transmitDropdown) {
+      transmitBtnMobile.addEventListener('click', () => {
+        const isOpen = transmitDropdown.style.display === 'block';
+        if (isOpen) {
+          transmitDropdown.style.display = 'none';
+          transmitBtnMobile.classList.remove('active');
+        } else {
+          transmitDropdown.style.display = 'block';
+          transmitBtnMobile.classList.add('active');
+          // 他のドロップダウンを閉じる
+          if (learningsDropdown) learningsDropdown.style.display = 'none';
+          if (switcher) switcher.style.display = 'none';
+          learningsBtnMobile?.classList.remove('active');
+          customizeBtnMobile?.classList.remove('active');
+          if (customizeBtn) customizeBtn.classList.remove('active');
+          if (customizeCard) customizeCard.classList.remove('active');
+          if (customizeLabel) customizeLabel.textContent = 'OPEN';
+        }
+      });
+    }
+
+    // モバイルシェアボタン（X）
+    const shareXMobile = document.getElementById('share-x-mobile');
+    if (shareXMobile) {
+      shareXMobile.addEventListener('click', (e) => {
+        e.preventDefault();
+        const url = encodeURIComponent(window.location.href);
+        const text = encodeURIComponent(document.title);
+        window.open(`https://twitter.com/intent/tweet?url=${url}&text=${text}`, '_blank');
+      });
+    }
+
+    // モバイルシェアボタン（Facebook）
+    const shareFbMobile = document.getElementById('share-fb-mobile');
+    if (shareFbMobile) {
+      shareFbMobile.addEventListener('click', (e) => {
+        e.preventDefault();
+        const url = encodeURIComponent(window.location.href);
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+      });
+    }
+
+    // モバイルコピーリンクボタン
+    const copyLinkMobile = document.getElementById('copy-link-mobile');
+    if (copyLinkMobile) {
+      copyLinkMobile.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          const originalText = copyLinkMobile.querySelector('span:last-child').textContent;
+          copyLinkMobile.querySelector('span:last-child').textContent = 'COPIED!';
+          copyLinkMobile.style.color = '#00ff88';
+          setTimeout(() => {
+            copyLinkMobile.querySelector('span:last-child').textContent = originalText;
+            copyLinkMobile.style.color = '';
+          }, 2000);
+        } catch (err) {
+          console.error('Failed to copy:', err);
         }
       });
     }
@@ -4840,6 +5962,9 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
     if (category === 'ai-journey') {
       return 1;
     }
+    if (category === 'ai-tips') {
+      return 5;
+    }
     return 4;
   }
 
@@ -4856,15 +5981,153 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
       if (preset) {
         currentState = { ...currentState, ...preset, activePreset: defaultPreset };
       }
+
+      // frontmatterで指定されたdefaultBgEffectを適用
+      const page = document.querySelector('[data-default-bg-effect]');
+      if (page && page.dataset.defaultBgEffect) {
+        const effect = page.dataset.defaultBgEffect;
+        if (['none', 'grid', 'dots', 'mesh'].includes(effect)) {
+          currentState.bgEffect = effect;
+        }
+      }
     }
 
     applyStyles();
     setupEventListeners();
 
+    // モバイル表示時（1300px未満）はスタイルパネルをbodyに移動
+    // （親要素のtransformがあるとposition:fixedが機能しないため）
+    function handlePanelPosition() {
+      const switcher = document.getElementById('global-style-switcher');
+      if (!switcher) return;
+
+      const isMobile = window.innerWidth < 1300;
+      const isInBody = switcher.parentElement === document.body;
+
+      if (isMobile && !isInBody) {
+        // モバイル：bodyに移動
+        document.body.appendChild(switcher);
+      } else if (!isMobile && isInBody) {
+        // デスクトップ：元の場所に戻す
+        const stylePanelSpace = document.querySelector('.style-panel-space');
+        if (stylePanelSpace) {
+          stylePanelSpace.appendChild(switcher);
+        }
+      }
+    }
+
+    handlePanelPosition();
+    window.addEventListener('resize', handlePanelPosition);
+
     // グロウ連動が有効だった場合は開始
     if (currentState.glowSyncEnabled) {
       startGlowSync();
     }
+  });
+})();
+</script>
+
+<!-- デバッグモード：要素をドラッグして位置調整 -->
+<script>
+(function() {
+  // デバッグモードON/OFF（URLに?debug=1があれば有効）
+  const debugMode = window.location.search.includes('debug=1');
+  if (!debugMode) return;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // 位置表示用のパネルを作成
+    const panel = document.createElement('div');
+    panel.id = 'debug-panel';
+    panel.innerHTML = `
+      <div style="position:fixed;top:10px;left:10px;z-index:99999;background:rgba(0,0,0,0.9);color:#0f0;padding:15px;border-radius:8px;font-family:monospace;font-size:12px;border:2px solid #0f0;min-width:280px;">
+        <div style="font-size:14px;font-weight:bold;margin-bottom:10px;color:#0ff;">🔧 DEBUG MODE</div>
+        <div style="margin-bottom:8px;">ドラッグして位置を調整できます</div>
+        <hr style="border-color:#333;margin:10px 0;">
+        <div id="debug-tags-pos">📍 Tags: --</div>
+        <hr style="border-color:#333;margin:10px 0;">
+        <div style="font-size:10px;color:#888;">※ 位置が決まったらCSSに反映してください</div>
+        <button id="debug-copy-css" style="margin-top:10px;padding:8px 12px;background:#0f0;color:#000;border:none;border-radius:4px;cursor:pointer;font-weight:bold;">📋 CSS をコピー</button>
+      </div>
+    `;
+    document.body.appendChild(panel);
+
+    // ドラッグ対象の要素
+    const tagsEl = document.querySelector('.hero-tags-banner');
+
+    // 要素をドラッグ可能にする関数
+    function makeDraggable(el, name, displayId) {
+      if (!el) return;
+
+      // スタイルを調整
+      el.style.position = 'absolute';
+      el.style.cursor = 'move';
+      el.style.outline = '3px dashed #0f0';
+      el.style.outlineOffset = '2px';
+      el.style.zIndex = '9999';
+
+      let isDragging = false;
+      let startX, startY, startLeft, startTop;
+
+      el.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        const rect = el.getBoundingClientRect();
+        const parentRect = el.offsetParent.getBoundingClientRect();
+        startLeft = rect.left - parentRect.left;
+        startTop = rect.top - parentRect.top;
+        e.preventDefault();
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        const newLeft = startLeft + dx;
+        const newTop = startTop + dy;
+        el.style.left = newLeft + 'px';
+        el.style.top = newTop + 'px';
+        document.getElementById(displayId).textContent =
+          `📍 ${name}: top: ${Math.round(newTop)}px; left: ${Math.round(newLeft)}px;`;
+      });
+
+      document.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+
+      // 初期位置を表示
+      setTimeout(() => {
+        const rect = el.getBoundingClientRect();
+        const parentRect = el.offsetParent ? el.offsetParent.getBoundingClientRect() : { left: 0, top: 0 };
+        const left = rect.left - parentRect.left;
+        const top = rect.top - parentRect.top;
+        document.getElementById(displayId).textContent =
+          `📍 ${name}: top: ${Math.round(top)}px; left: ${Math.round(left)}px;`;
+      }, 500);
+    }
+
+    // タグは幅を固定して1行に保つ
+    if (tagsEl) {
+      tagsEl.style.width = 'max-content';
+      tagsEl.style.minWidth = '600px';
+    }
+    makeDraggable(tagsEl, 'Tags', 'debug-tags-pos');
+
+    // CSSコピーボタン
+    document.getElementById('debug-copy-css').addEventListener('click', () => {
+      const tagsText = document.getElementById('debug-tags-pos').textContent;
+
+      const tagsMatch = tagsText.match(/top: (-?\d+)px; left: (-?\d+)px/);
+
+      let css = '/* 調整後の位置 */\n\n';
+      if (tagsMatch) {
+        css += `.hero-tags-banner {\n  position: absolute;\n  top: ${tagsMatch[1]}px;\n  left: ${tagsMatch[2]}px;\n}\n`;
+      }
+
+      navigator.clipboard.writeText(css).then(() => {
+        alert('CSSをクリップボードにコピーしました！');
+      });
+    });
   });
 })();
 </script>
