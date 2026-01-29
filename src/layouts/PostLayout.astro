@@ -136,12 +136,28 @@ const levelLabel = frontmatter.learningLevel ? levelLabels[frontmatter.learningL
 
 // 関連記事用：最新記事リスト（現在の記事を除く、最大5件）
 let recentPosts: Array<{ slug: string; title: string; date: Date; thumbnail?: string }> = [];
+// 人気記事用：仮でランダムに5件選出（将来的にはアクセス数等で並び替え）
+let popularPosts: Array<{ slug: string; title: string; date: Date; thumbnail?: string }> = [];
+
 if (collection === 'tech') {
   const allPosts = await getCollection('tech', ({ data }) => !data.draft);
   const currentSlug = Astro.url.pathname.split('/').pop();
-  recentPosts = allPosts
-    .filter(post => post.slug !== currentSlug)
+  const filteredPosts = allPosts.filter(post => post.slug !== currentSlug);
+
+  // 新着記事（日付順）
+  recentPosts = filteredPosts
     .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+    .slice(0, 5)
+    .map(post => ({
+      slug: post.slug,
+      title: post.data.title,
+      date: post.data.date,
+      thumbnail: post.data.thumbnail
+    }));
+
+  // 人気記事（仮：日付逆順で違う記事を表示）
+  popularPosts = filteredPosts
+    .sort((a, b) => new Date(a.data.date).getTime() - new Date(b.data.date).getTime())
     .slice(0, 5)
     .map(post => ({
       slug: post.slug,
@@ -508,7 +524,7 @@ if (collection === 'tech') {
         <!-- ===== /STYLE SWITCHER パネル ===== -->
       </div>
 
-      <!-- 右サイドバー（CUSTOMIZE / TRANSMIT） -->
+      <!-- 右サイドバー（PANDORA風レイアウト） -->
       <aside class="article-sidebar" id="article-sidebar">
         <!-- リサイズハンドル（左下の斜め点々） -->
         <div class="sidebar-resize-handle" id="sidebar-resize-handle">
@@ -518,89 +534,124 @@ if (collection === 'tech') {
         <button class="sidebar-size-confirm" id="sidebar-size-confirm" style="display: none;">
           ✓ OK
         </button>
-        <!-- CUSTOMIZE カード -->
-        <div class="sidebar-card customize-card">
-          <div class="sidebar-card-header">
-            <span class="sidebar-card-title">CUSTOMIZE</span>
-            <span class="sidebar-card-dot"></span>
+
+        <!-- ===== 1. 新着記事/人気記事タブ（PANDORA風） ===== -->
+        {recentPosts.length > 0 && (
+          <div class="sidebar-card posts-tabs-card">
+            <div class="posts-tabs-header">
+              <button class="posts-tab active" data-tab="recent">
+                <span class="posts-tab-text">新着記事</span>
+              </button>
+              <button class="posts-tab" data-tab="popular">
+                <span class="posts-tab-text">人気記事</span>
+              </button>
+            </div>
+            <div class="posts-tab-content active" id="tab-recent">
+              <ul class="posts-list">
+                {recentPosts.map((post, index) => (
+                  <li class="posts-item">
+                    <a href={`/tech/${post.slug}`} class="posts-link">
+                      <span class="posts-rank">{index + 1}</span>
+                      <div class="posts-info">
+                        <span class="posts-title">{post.title}</span>
+                        <span class="posts-date">{post.date.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })}</span>
+                      </div>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div class="posts-tab-content" id="tab-popular">
+              <ul class="posts-list">
+                {popularPosts.map((post, index) => (
+                  <li class="posts-item">
+                    <a href={`/tech/${post.slug}`} class="posts-link">
+                      <span class="posts-rank popular">{index + 1}</span>
+                      <div class="posts-info">
+                        <span class="posts-title">{post.title}</span>
+                        <span class="posts-date">{post.date.toLocaleDateString('ja-JP', { year: 'numeric', month: '2-digit', day: '2-digit' })}</span>
+                      </div>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <button class="customize-btn" id="customize-btn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="3"></circle>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-            <span class="customize-label">OPEN</span>
-          </button>
+        )}
+
+        <!-- ===== 2. カテゴリー（PANDORA風） ===== -->
+        <div class="sidebar-card category-card">
+          <div class="sidebar-section-title">カテゴリー</div>
+          <ul class="category-menu">
+            <li><a href="/tech">AI活用術</a></li>
+            <li><a href="/tech">プログラミング</a></li>
+            <li><a href="/tech">Web制作</a></li>
+            <li><a href="/tech">ライフハック</a></li>
+            <li><a href="/tech">ツール紹介</a></li>
+          </ul>
         </div>
 
-        <!-- TODAY'S LEARNINGS カード（目次機能） -->
+        <!-- ===== 3. 目次（LEARNINGS） ===== -->
         {frontmatter.learnings && frontmatter.learnings.length > 0 && (
-          <div class="sidebar-card learnings-card">
-            <div class="sidebar-card-header">
-              <span class="sidebar-card-title">📚 LEARNINGS</span>
-              <span class="sidebar-card-dot learnings-dot"></span>
-            </div>
-            <ul class="learnings-toc">
+          <div class="sidebar-card toc-card">
+            <div class="sidebar-section-title">目次</div>
+            <ul class="sidebar-toc-list">
               {frontmatter.learnings.map((item, index) => (
-                <li class="learnings-toc-item">
-                  <a href={`#learning-${index + 1}`} class="learnings-toc-link">
-                    <span class="learnings-toc-number">{index + 1}</span>
-                    <span class="learnings-toc-text">{item}</span>
-                  </a>
+                <li>
+                  <a href={`#learning-${index + 1}`}>{item}</a>
                 </li>
               ))}
             </ul>
           </div>
         )}
 
-        <!-- TRANSMIT カード -->
-        <div class="sidebar-card transmit-card">
-          <div class="sidebar-card-header">
-            <span class="sidebar-card-title">TRANSMIT</span>
-            <span class="sidebar-card-dot"></span>
-          </div>
-          <div class="transmit-buttons">
-            <a href="#" class="transmit-btn post" aria-label="Post on X" id="share-x">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        <!-- ===== 4 & 5. スティッキーエリア（CUSTOMIZE + TRANSMIT） ===== -->
+        <div class="sidebar-sticky-wrapper" id="sidebar-sticky-wrapper">
+          <!-- CUSTOMIZE カード -->
+          <div class="sidebar-card customize-card">
+            <div class="sidebar-card-header">
+              <span class="sidebar-card-title">CUSTOMIZE</span>
+              <span class="sidebar-card-dot"></span>
+            </div>
+            <button class="customize-btn" id="customize-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
               </svg>
-              <span>POST</span>
-            </a>
-            <a href="#" class="transmit-btn share" aria-label="Share on Facebook" id="share-fb">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 18.062 24 12.073z"/>
-              </svg>
-              <span>SHARE</span>
-            </a>
-            <button class="transmit-btn copy" aria-label="Copy link" id="copy-link">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-              </svg>
-              <span>COPY</span>
+              <span>OPEN</span>
             </button>
           </div>
+
+          <!-- TRANSMIT カード -->
+          <div class="sidebar-card transmit-card">
+            <div class="sidebar-card-header">
+              <span class="sidebar-card-title">TRANSMIT</span>
+              <span class="sidebar-card-dot"></span>
+            </div>
+            <div class="transmit-buttons">
+              <a href="#" class="transmit-btn post" aria-label="Post on X" id="share-x">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+                <span>POST</span>
+              </a>
+              <a href="#" class="transmit-btn share" aria-label="Share on Facebook" id="share-fb">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+                <span>SHARE</span>
+              </a>
+              <button class="transmit-btn copy" aria-label="Copy link" id="copy-link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+                <span>COPY</span>
+              </button>
+            </div>
+          </div>
         </div>
 
-        <!-- 関連記事カード（PANDORA風） -->
-        {recentPosts.length > 0 && (
-          <div class="sidebar-card related-card">
-            <div class="sidebar-card-header">
-              <span class="sidebar-card-title">📰 NEW POSTS</span>
-              <span class="sidebar-card-dot related-dot"></span>
-            </div>
-            <ul class="related-posts-list">
-              {recentPosts.map((post, index) => (
-                <li class="related-post-item">
-                  <a href={`/tech/${post.slug}`} class="related-post-link">
-                    <span class="related-post-number">{index + 1}</span>
-                    <span class="related-post-title">{post.title}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
       </aside>
     </main>
 
@@ -809,7 +860,10 @@ if (collection === 'tech') {
     position: relative;
     min-height: 100vh;
     color: #e0e0e0;
-    overflow: hidden;
+    /* overflow: hiddenはposition: stickyを無効にするため、clipを使用 */
+    /* clipは視覚的なクリッピングを行いつつstickyを許可 */
+    overflow-x: clip;
+    overflow-y: visible;
     /* ベース背景 */
     background: linear-gradient(180deg, #0a0a12 0%, #0d0d18 50%, #08080f 100%);
     background-attachment: fixed;
@@ -1722,6 +1776,17 @@ if (collection === 'tech') {
     overflow-x: hidden;
     /* 左パディングを滑らかに変化 (1100pxで0.5rem、1400pxで1.5rem) */
     padding-left: clamp(0.5rem, calc(0.5rem + (100vw - 1100px) * 0.00333), 1.5rem);
+    /* 透明なシートで立体感を追加 */
+    position: relative;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 16px;
+    padding: 2rem;
+    padding-left: clamp(1.5rem, calc(1.5rem + (100vw - 1100px) * 0.00333), 2.5rem);
+    box-shadow:
+      0 4px 24px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(8px);
   }
 
   .article-content :global(h2) {
@@ -2082,14 +2147,13 @@ if (collection === 'tech') {
 
   @media (min-width: 1300px) {
     .article-sidebar {
-      display: block;
-      position: sticky;
-      top: 2rem;
-      align-self: start;
-      max-height: calc(100vh - 4rem);
-      overflow-y: auto;
-      /* 1300pxで0px、1500pxで-100px、滑らかに変化 */
-      transform: translateX(clamp(-100px, calc((1300px - 100vw) * 0.5), 0px));
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      /* サイドバーを本文と同じ高さに伸ばす（その中でstickyが機能する） */
+      align-self: stretch;
+      /* transformはstickyに干渉するため、marginで調整 */
+      margin-left: clamp(-100px, calc((1300px - 100vw) * 0.5), 0px);
     }
   }
 
@@ -2248,6 +2312,123 @@ if (collection === 'tech') {
   @keyframes dot-pulse {
     0%, 100% { opacity: 1; }
     50% { opacity: 0.4; }
+  }
+
+  /* =====================================================
+     カテゴリーカード（PANDORA風）
+     ===================================================== */
+  .category-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+  }
+
+  .sidebar-section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #333;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .category-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .category-menu li {
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .category-menu li:last-child {
+    border-bottom: none;
+  }
+
+  .category-menu a {
+    display: block;
+    padding: 0.7rem 0;
+    color: #555;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+  }
+
+  .category-menu a:hover {
+    color: #22c55e;
+    padding-left: 0.5rem;
+  }
+
+  /* =====================================================
+     目次カード（PANDORA風）
+     ===================================================== */
+  .toc-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+  }
+
+  .sidebar-toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: toc-counter;
+  }
+
+  .sidebar-toc-list li {
+    counter-increment: toc-counter;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .sidebar-toc-list li:last-child {
+    border-bottom: none;
+  }
+
+  .sidebar-toc-list a {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.7rem 0;
+    color: #555;
+    text-decoration: none;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    transition: all 0.2s ease;
+  }
+
+  .sidebar-toc-list a::before {
+    content: counter(toc-counter);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 22px;
+    height: 22px;
+    background: #22c55e;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-toc-list a:hover {
+    color: #22c55e;
+  }
+
+  /* =====================================================
+     スティッキーラッパー（CUSTOMIZE + TRANSMIT）
+     サイドバー全体がstickyになるため、ラッパーは通常フロー
+     ===================================================== */
+  .sidebar-sticky-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 10;
+    /* CUSTOMIZE/TRANSMITだけが上部に固定される */
+    position: sticky;
+    top: 2rem;
+    /* CUSTOMIZEの上に余白を追加 */
+    margin-top: 1rem;
+    padding-top: 1rem;
   }
 
   /* CUSTOMIZE カード */
@@ -2938,6 +3119,31 @@ if (collection === 'tech') {
 
   .learnings-card {
     padding: 1.25rem;
+    transition: all 0.3s ease;
+  }
+
+  /* スクロール時にLEARNINGSカードがsticky固定される状態 */
+  @media (min-width: 1300px) {
+    .learnings-card.is-sticky {
+      position: fixed;
+      top: 60px;
+      right: calc((100vw - 1200px) / 2);
+      width: 280px;
+      z-index: 100;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      animation: learnings-sticky-in 0.3s ease;
+    }
+
+    @keyframes learnings-sticky-in {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   }
 
   .learnings-card .sidebar-card-title {
@@ -3003,8 +3209,159 @@ if (collection === 'tech') {
   }
 
   /* =====================================================
-     関連記事カード（PANDORA風）
+     記事タブカード（PANDORA風タブ切り替え）
      ===================================================== */
+  .posts-tabs-card {
+    padding: 0;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+  }
+
+  /* タブヘッダー（PANDORA風） */
+  .posts-tabs-header {
+    display: flex;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .posts-tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.9rem 0.5rem;
+    background: #fff;
+    border: none;
+    color: #666;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .posts-tab:first-child {
+    border-right: 1px solid #e5e7eb;
+  }
+
+  .posts-tab:hover {
+    background: #f9fafb;
+    color: #22c55e;
+  }
+
+  .posts-tab.active {
+    background: #fff;
+    color: #22c55e;
+  }
+
+  .posts-tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #22c55e;
+  }
+
+  .posts-tab-icon {
+    font-size: 0.9rem;
+    display: none; /* PANDORAスタイルではアイコン非表示 */
+  }
+
+  .posts-tab-text {
+    letter-spacing: 0.05em;
+  }
+
+  /* タブコンテンツ */
+  .posts-tab-content {
+    display: none;
+    padding: 0;
+  }
+
+  .posts-tab-content.active {
+    display: block;
+  }
+
+  .posts-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .posts-item {
+    margin: 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .posts-item:last-child {
+    border-bottom: none;
+  }
+
+  .posts-link {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    text-decoration: none;
+    color: #333;
+    transition: all 0.2s ease;
+    background: #fff;
+    border: none;
+    border-radius: 0;
+  }
+
+  .posts-link:hover {
+    background: #f9fafb;
+  }
+
+  .posts-rank {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: #22c55e;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .posts-rank.popular {
+    background: #ec4899;
+  }
+
+  .posts-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+  }
+
+  .posts-title {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: #333;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .posts-date {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* レガシー（後方互換性のため残す） */
   .related-card {
     padding: 1.25rem;
   }
@@ -5169,6 +5526,89 @@ if (collection === 'tech') {
   });
 </script>
 
+<!-- ===== PANDORA風タブ切り替え JavaScript ===== -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const tabs = document.querySelectorAll('.posts-tab');
+    const tabContents = document.querySelectorAll('.posts-tab-content');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const targetTab = tab.dataset.tab;
+
+        // 全タブから active を削除
+        tabs.forEach(t => t.classList.remove('active'));
+        tabContents.forEach(c => c.classList.remove('active'));
+
+        // クリックしたタブに active を追加
+        tab.classList.add('active');
+        const targetContent = document.getElementById(`tab-${targetTab}`);
+        if (targetContent) {
+          targetContent.classList.add('active');
+        }
+      });
+    });
+  });
+</script>
+
+<!-- ===== PANDORA風スクロール時LEARNINGS固定 JavaScript ===== -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const learningsCard = document.querySelector('.learnings-card');
+    const sidebar = document.querySelector('.article-sidebar');
+    const postsTabsCard = document.querySelector('.posts-tabs-card');
+
+    if (!learningsCard || !sidebar) return;
+
+    // 1300px以上の時のみ動作
+    const checkWidth = () => window.innerWidth >= 1300;
+
+    // スクロール位置でLEARNINGSカードのsticky状態を切り替え
+    let isSticky = false;
+    let stickyThreshold = 0;
+
+    const updateStickyThreshold = () => {
+      if (!checkWidth()) return;
+      // タブカードの下端を基準にする
+      if (postsTabsCard) {
+        const rect = postsTabsCard.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        stickyThreshold = rect.bottom + scrollTop - 60; // 60px = ヘッダー分
+      } else {
+        // タブカードがない場合はサイドバーの上端
+        const sidebarRect = sidebar.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        stickyThreshold = sidebarRect.top + scrollTop + 200;
+      }
+    };
+
+    const handleScroll = () => {
+      if (!checkWidth()) {
+        learningsCard.classList.remove('is-sticky');
+        return;
+      }
+
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+      if (scrollTop > stickyThreshold && !isSticky) {
+        isSticky = true;
+        learningsCard.classList.add('is-sticky');
+      } else if (scrollTop <= stickyThreshold && isSticky) {
+        isSticky = false;
+        learningsCard.classList.remove('is-sticky');
+      }
+    };
+
+    // 初期化
+    updateStickyThreshold();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', () => {
+      updateStickyThreshold();
+      handleScroll();
+    });
+  });
+</script>
+
 <!-- ===== GLOBAL STYLE SWITCHER JavaScript ===== -->
 <script>
 (function() {
@@ -6131,4 +6571,5 @@ if (collection === 'tech') {
   });
 })();
 </script>
+
 

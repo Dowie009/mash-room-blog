@@ -899,65 +899,152 @@
   font-weight: 700;
 }
 
-/* Tipsボックス */
+/* Tipsボックス（PANDORA風） */
 .tip-box {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(16, 185, 129, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.12) 0%, rgba(16, 185, 129, 0.06) 100%);
+  border: 1px solid rgba(34, 197, 94, 0.3);
   border-left: 4px solid #22c55e;
   border-radius: 0 12px 12px 0;
-  padding: 1rem 1.25rem;
+  padding: 1.25rem 1.5rem;
   margin: 1.5rem 0;
   font-size: 0.95rem;
   color: #374151 !important;
+  position: relative;
+}
+
+.tip-box::before {
+  content: '💡';
+  position: absolute;
+  top: -12px;
+  left: 12px;
+  background: #f8fafc;
+  padding: 0 0.5rem;
+  font-size: 1.2rem;
 }
 
 .tip-box strong {
   color: #059669 !important;
 }
 
-/* 警告ボックス */
+/* 警告ボックス（PANDORA風） */
 .warning-box {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(220, 38, 38, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(220, 38, 38, 0.06) 100%);
+  border: 1px solid rgba(239, 68, 68, 0.3);
   border-left: 4px solid #ef4444;
   border-radius: 0 12px 12px 0;
-  padding: 1rem 1.25rem;
+  padding: 1.25rem 1.5rem;
   margin: 1.5rem 0;
   font-size: 0.95rem;
   color: #374151 !important;
+  position: relative;
+}
+
+.warning-box::before {
+  content: '⚠️';
+  position: absolute;
+  top: -12px;
+  left: 12px;
+  background: #f8fafc;
+  padding: 0 0.5rem;
+  font-size: 1.2rem;
 }
 
 .warning-box strong {
   color: #dc2626 !important;
 }
 
-/* 成功ボックス */
+/* 成功ボックス（PANDORA風） */
 .success-box {
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(37, 99, 235, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(37, 99, 235, 0.06) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.3);
   border-left: 4px solid #3b82f6;
   border-radius: 0 12px 12px 0;
-  padding: 1rem 1.25rem;
+  padding: 1.25rem 1.5rem;
   margin: 1.5rem 0;
   font-size: 0.95rem;
   color: #374151 !important;
+  position: relative;
+}
+
+.success-box::before {
+  content: '✅';
+  position: absolute;
+  top: -12px;
+  left: 12px;
+  background: #f8fafc;
+  padding: 0 0.5rem;
+  font-size: 1.2rem;
 }
 
 .success-box strong {
   color: #2563eb !important;
 }
 
-/* 結論ボックス */
+/* 結論ボックス（PANDORA風） */
 .conclusion-box {
-  background: linear-gradient(135deg, rgba(251, 146, 60, 0.2) 0%, rgba(249, 115, 22, 0.15) 100%);
-  border: 2px solid rgba(251, 146, 60, 0.5);
-  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.15) 0%, rgba(249, 115, 22, 0.08) 100%);
+  border: 2px solid rgba(251, 146, 60, 0.4);
+  border-radius: 12px;
   padding: 1.5rem;
   margin: 2rem 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.conclusion-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #fb923c, #f97316, #ea580c);
 }
 
 .conclusion-title {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
-  color: #fb923c;
+  color: #f97316;
   margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* PANDORA風ポイントボックス */
+.point-box {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(124, 58, 237, 0.08) 100%);
+  border: 2px solid rgba(139, 92, 246, 0.4);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.point-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+}
+
+.point-box strong {
+  color: #8b5cf6 !important;
+}
+
+/* 優しいクローズ（gentle-close）- 記事の締めくくり */
+.gentle-close {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2.5rem 0 1rem;
+  text-align: center;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* 心の声（引用風） */
@@ -1349,37 +1436,16 @@ article tr:last-child td {
   color: #00bfff !important;
 }
 
-/* あいぼー（左側・ピンク系） */
+/* あいぼー（左側・ピンク系） - 吹き出しコンテンツのみ */
 .aibou-bubble {
-  display: flex;
-  gap: 0.75rem;
-  align-items: flex-start;
-  max-width: 85%;
-}
-
-.aibou-bubble::before {
-  content: '';
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 100%);
-  border-radius: 50%;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-image: url('/images/tech/aibou-icon.png');
-  background-size: cover;
-  background-position: center;
-}
-
-.aibou-bubble .bubble-content {
   background: linear-gradient(135deg, rgba(255, 107, 157, 0.15) 0%, rgba(255, 143, 171, 0.1) 100%);
   border: 1px solid rgba(255, 107, 157, 0.3);
   border-radius: 0 16px 16px 16px;
   padding: 1rem 1.25rem;
-  color: #374151 !important;
+  color: inherit;
 }
 
+/* あいぼー - 吹き出し内の名前ラベル */
 .aibou-bubble .bubble-name {
   font-size: 0.75rem;
   color: #ff6b9d !important;
@@ -1387,35 +1453,16 @@ article tr:last-child td {
   margin-bottom: 0.3rem;
 }
 
-/* 道ゐちゃん（右側・シアン系） */
+/* 道ゐちゃん（右側・シアン系） - 吹き出しコンテンツのみ */
 .michi-bubble {
-  display: flex;
-  flex-direction: row-reverse;
-  gap: 0.75rem;
-  align-items: flex-start;
-  max-width: 85%;
-  align-self: flex-end;
-}
-
-.michi-bubble::before {
-  content: '';
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  background-image: url('/images/tech/mashiba-profile.jpg');
-  background-size: cover;
-  background-position: center;
-}
-
-.michi-bubble .bubble-content {
   background: linear-gradient(135deg, rgba(0, 191, 255, 0.15) 0%, rgba(0, 150, 200, 0.1) 100%);
   border: 1px solid rgba(0, 191, 255, 0.3);
   border-radius: 16px 0 16px 16px;
   padding: 1rem 1.25rem;
-  color: #374151 !important;
+  color: inherit;
 }
 
+/* 道ゐちゃん - 吹き出し内の名前ラベル */
 .michi-bubble .bubble-name {
   font-size: 0.75rem;
   color: #00bfff !important;
@@ -1445,17 +1492,11 @@ article tr:last-child td {
   color: #0088cc !important;
 }
 
-/* スマホ用 */
+/* スマホ用 - チャット吹き出し */
 @media (max-width: 768px) {
   .aibou-bubble,
   .michi-bubble {
-    max-width: 95%;
-  }
-
-  .aibou-bubble::before,
-  .michi-bubble::before {
-    width: 40px;
-    height: 40px;
+    padding: 0.75rem 1rem;
   }
 }
 
@@ -1551,5 +1592,336 @@ article tr:last-child td {
   .audio-compare {
     grid-template-columns: 1fr;
     padding: 1rem;
+  }
+}
+
+/* ============================================
+   PANDORA風 記事スタイル
+   シンプル・クリーン・白背景ベース
+   ============================================ */
+
+/* PANDORA風 目次 */
+.pandora-toc {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.5rem 2rem;
+  margin: 2rem 0;
+}
+
+.pandora-toc h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 1rem 0;
+  padding: 0;
+  border: none;
+}
+
+.pandora-toc h2::after {
+  display: none;
+}
+
+.pandora-toc ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+  margin: 0;
+}
+
+.pandora-toc li {
+  padding: 0.4rem 0;
+  color: #555;
+}
+
+.pandora-toc a {
+  color: #333;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.pandora-toc a:hover {
+  color: #22c55e;
+}
+
+/* PANDORA風 ポイントボックス（緑） */
+.pandora-point-box {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-left: 4px solid #22c55e;
+  border-radius: 0 8px 8px 0;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.pandora-point-box h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #166534;
+  margin: 0 0 1rem 0;
+}
+
+.pandora-point-box ol,
+.pandora-point-box ul {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.pandora-point-box li {
+  padding: 0.3rem 0;
+  color: #333;
+}
+
+/* PANDORA風 Tipボックス */
+.pandora-tip-box {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 4px solid #f59e0b;
+  border-radius: 0 8px 8px 0;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.pandora-tip-box strong {
+  color: #b45309;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+/* PANDORA風 例ボックス */
+.pandora-example-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.pandora-example-box strong {
+  color: #475569;
+  display: block;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+}
+
+/* PANDORA風 比較テーブル */
+.pandora-compare-table {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+}
+
+.pandora-compare-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.pandora-compare-table th,
+.pandora-compare-table td {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+.pandora-compare-table th {
+  background: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+}
+
+.pandora-compare-table tr:nth-child(even) td {
+  background: #f9fafb;
+}
+
+/* PANDORA風 チェックリスト */
+.pandora-checklist {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  margin: 1rem 0;
+  list-style: none;
+}
+
+.pandora-checklist li {
+  position: relative;
+  padding: 0.4rem 0 0.4rem 1.75rem;
+  color: #374151;
+}
+
+.pandora-checklist li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #22c55e;
+  font-weight: bold;
+}
+
+/* PANDORA風 結論ボックス */
+.pandora-conclusion-box {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  border: 2px solid #10b981;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.pandora-conclusion-box strong {
+  color: #065f46;
+  font-size: 1.1rem;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+/* PANDORA風 ステップフロー */
+.pandora-step-flow {
+  margin: 2rem 0;
+}
+
+.pandora-step {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.pandora-step:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.pandora-step-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: 700;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pandora-step-content {
+  flex: 1;
+}
+
+.pandora-step-content h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.75rem 0;
+}
+
+.pandora-step-content p {
+  margin: 0.5rem 0;
+  color: #4b5563;
+}
+
+.pandora-step-content ul,
+.pandora-step-content ol {
+  margin: 0.75rem 0;
+  padding-left: 1.5rem;
+}
+
+/* PANDORA風 警告ボックス */
+.pandora-warning-box {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-left: 4px solid #ef4444;
+  border-radius: 0 8px 8px 0;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.pandora-warning-box strong {
+  color: #b91c1c;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+/* PANDORA風 まとめボックス */
+.pandora-summary-box {
+  background: #f8fafc;
+  border: 2px solid #64748b;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+}
+
+.pandora-summary-box h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #334155;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.pandora-summary-box ol {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.pandora-summary-box li {
+  padding: 0.4rem 0;
+  color: #475569;
+}
+
+/* PANDORA風 著者ボックス */
+.pandora-author-box {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 3rem 0 1rem;
+}
+
+.pandora-author-box h3 {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #9ca3af;
+  margin: 0 0 0.75rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pandora-author-box strong {
+  color: #1f2937;
+  font-size: 1rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.pandora-author-box p {
+  color: #6b7280;
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* PANDORA風 レスポンシブ */
+@media (max-width: 768px) {
+  .pandora-step {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .pandora-step-number {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .pandora-compare-table {
+    font-size: 0.85rem;
+  }
+
+  .pandora-compare-table th,
+  .pandora-compare-table td {
+    padding: 0.5rem;
   }
 }

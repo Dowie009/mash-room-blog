@@ -8,6 +8,8 @@ tags: ['ChatGPT', 'AI', '体験談', 'AI活用入門']
 draft: false
 learningLevel: 1
 topic: ai-journey
+defaultPreset: 1
+defaultBgEffect: dots
 ---
 
 <!-- 会話形式 Bパターン：関西弁AI君「あいぼー」との対話 -->
@@ -492,7 +494,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<div style="max-width: 640px; margin: 0 auto;">
+<div style="max-width: 800px; margin: 0 auto;">
 
 <!-- イントロ -->
 <div style="text-align: center; margin: 2rem 0 3rem; padding: 1.5rem; background: linear-gradient(135deg, rgba(0,255,255,0.05), rgba(255,0,255,0.05)); border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);">

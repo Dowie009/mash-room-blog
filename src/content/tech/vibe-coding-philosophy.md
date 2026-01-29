@@ -6,14 +6,14 @@ thumbnail: /images/Blog_00.png
 description: AIと一緒にコードを書く時代の開発哲学について考える
 tags: ['Vibe Coding', 'AI', '開発哲学', 'プログラミング']
 draft: false
-defaultPreset: 4
+defaultPreset: 5
 learnings:
   - Vibe Codingの概念と背景
   - 従来の開発との違い
   - 実践するためのマインドセット
 ---
 
-## Vibe Codingとは
+<h2 id="learning-1">Vibe Codingとは</h2>
 
 **「動けばいい」じゃない。「いい感じ」を追求する開発スタイル。**
 
@@ -21,7 +21,7 @@ AIがコードを書いてくれる時代、人間の役割は変わりつつあ
 
 細かい実装はAIに任せ、人間は**全体の「ノリ」や「雰囲気」**をディレクションする。これがVibe Coding。
 
-## 従来の開発との違い
+<h2 id="learning-2">従来の開発との違い</h2>
 
 ### Before: 細部から積み上げ
 
@@ -70,7 +70,7 @@ AIがコードを書いてくれる時代、人間の役割は変わりつつあ
 
 4. **繰り返す**
 
-## 必要なスキル
+<h2 id="learning-3">実践するためのマインドセット</h2>
 
 ### 言語化する力
 

@@ -39,6 +39,8 @@ const techCollection = defineCollection({
     learnings: z.array(z.string()).optional(),
     // デフォルトプリセット（1-5）
     defaultPreset: z.number().min(1).max(5).optional(),
+    // デフォルト背景エフェクト
+    defaultBgEffect: z.enum(['none', 'grid', 'dots', 'mesh']).optional(),
   }),
 });
 

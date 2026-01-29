@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIを使ってブログ記事を効率的に書く方法｜初心者向け完全ガイド</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 16px;
+      line-height: 1.8;
+      color: #333;
+      background: #fff;
+    }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background: #fff;
+      border-bottom: 1px solid #eee;
+      z-index: 100;
+      padding: 16px 0;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #22c55e;
+      text-decoration: none;
+      letter-spacing: 2px;
+    }
+
+    .nav-toggle {
+      width: 30px;
+      height: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .nav-toggle span {
+      display: block;
+      height: 2px;
+      background: #333;
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+      background: #fafafa;
+      padding: 12px 0;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .breadcrumb-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .breadcrumb a {
+      color: #666;
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .breadcrumb-separator {
+      color: #ccc;
+    }
+
+    /* Main Layout */
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 60px;
+    }
+
+    @media (max-width: 900px) {
+      .main-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Article */
+    .article {
+      min-width: 0;
+    }
+
+    .article-header {
+      margin-bottom: 32px;
+    }
+
+    .article-title {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 14px;
+      color: #888;
+    }
+
+    .article-meta svg {
+      width: 16px;
+      height: 16px;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+
+    /* Featured Image */
+    .featured-image {
+      position: relative;
+      margin-bottom: 32px;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .featured-image img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .featured-image-tag {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: #22c55e;
+      color: #fff;
+      font-size: 13px;
+      padding: 8px 16px;
+    }
+
+    /* Article Content */
+    .article-content {
+      font-size: 16px;
+      line-height: 2;
+    }
+
+    .article-content p {
+      margin-bottom: 24px;
+    }
+
+    .article-content a {
+      color: #22c55e;
+      text-decoration: underline;
+    }
+
+    /* Hint Box (Yellow) */
+    .hint-box {
+      background: #fffbeb;
+      border-left: 4px solid #fbbf24;
+      padding: 24px 28px;
+      margin: 32px 0;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .hint-box::before {
+      content: '💡';
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .hint-box p {
+      margin-bottom: 0;
+    }
+
+    /* Table of Contents */
+    .toc-box {
+      background: #f5f5f5;
+      padding: 32px;
+      margin: 40px 0;
+      border-radius: 4px;
+    }
+
+    .toc-title {
+      font-size: 18px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .toc-subtitle {
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 12px;
+      color: #555;
+    }
+
+    .toc-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .toc-list li {
+      margin-bottom: 8px;
+      padding-left: 24px;
+      position: relative;
+    }
+
+    .toc-list li::before {
+      content: counter(toc-counter) ".";
+      counter-increment: toc-counter;
+      position: absolute;
+      left: 0;
+      color: #666;
+    }
+
+    .toc-box ol {
+      counter-reset: toc-counter;
+    }
+
+    .toc-list a {
+      color: #333;
+      text-decoration: none;
+    }
+
+    .toc-list a:hover {
+      color: #22c55e;
+    }
+
+    /* Section Heading */
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 22px;
+      font-weight: 700;
+      margin: 56px 0 32px;
+      color: #333;
+    }
+
+    .section-heading::before {
+      content: '';
+      width: 40px;
+      height: 3px;
+      background: #22c55e;
+      flex-shrink: 0;
+    }
+
+    /* Sub Heading */
+    .sub-heading {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 40px 0 20px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #eee;
+    }
+
+    /* Blog Card */
+    .blog-card {
+      display: flex;
+      gap: 20px;
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      padding: 20px;
+      margin: 24px 0;
+      text-decoration: none;
+      color: inherit;
+      transition: box-shadow 0.3s;
+    }
+
+    .blog-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .blog-card-image {
+      width: 160px;
+      height: 100px;
+      flex-shrink: 0;
+      background: #f0f0f0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .blog-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .blog-card-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .blog-card-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .blog-card-desc {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.6;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    /* Point List */
+    .point-list {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 4px;
+      padding: 24px 28px;
+      margin: 24px 0;
+    }
+
+    .point-list-title {
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: #166534;
+    }
+
+    .point-list ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .point-list li {
+      padding: 8px 0;
+      padding-left: 28px;
+      position: relative;
+    }
+
+    .point-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #22c55e;
+      font-weight: 700;
+    }
+
+    /* Warning Box */
+    .warning-box {
+      background: #fef2f2;
+      border-left: 4px solid #ef4444;
+      padding: 24px 28px;
+      margin: 32px 0;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .warning-box-title {
+      font-weight: 700;
+      color: #dc2626;
+      margin-bottom: 8px;
+    }
+
+    /* Step Flow */
+    .step-flow {
+      margin: 32px 0;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .step-number {
+      width: 40px;
+      height: 40px;
+      background: #22c55e;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .step-content {
+      flex: 1;
+      padding-top: 8px;
+    }
+
+    .step-content h4 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    /* Image with Caption */
+    .image-block {
+      margin: 32px 0;
+    }
+
+    .image-block img {
+      width: 100%;
+      border-radius: 4px;
+      border: 1px solid #eee;
+    }
+
+    .image-caption {
+      text-align: center;
+      font-size: 14px;
+      color: #888;
+      margin-top: 12px;
+    }
+
+    /* Summary Box */
+    .summary-box {
+      background: linear-gradient(135deg, #f0fdf4 0%, #ecfeff 100%);
+      border: 2px solid #22c55e;
+      border-radius: 8px;
+      padding: 32px;
+      margin: 48px 0 32px;
+    }
+
+    .summary-title {
+      font-size: 18px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 20px;
+      color: #166534;
+    }
+
+    .summary-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .summary-list li {
+      padding: 12px 0;
+      padding-left: 32px;
+      position: relative;
+      border-bottom: 1px dashed #ccc;
+    }
+
+    .summary-list li:last-child {
+      border-bottom: none;
+    }
+
+    .summary-list li::before {
+      content: '✔';
+      position: absolute;
+      left: 0;
+      color: #22c55e;
+      font-size: 18px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: sticky;
+      top: 80px;
+      align-self: start;
+    }
+
+    @media (max-width: 900px) {
+      .sidebar {
+        display: none;
+      }
+    }
+
+    /* Sidebar Tab */
+    .sidebar-tabs {
+      display: flex;
+      border: 1px solid #eee;
+      border-bottom: none;
+    }
+
+    .sidebar-tab {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 500;
+      background: #fff;
+      cursor: pointer;
+      border: none;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .sidebar-tab.active {
+      border-bottom-color: #22c55e;
+      color: #22c55e;
+    }
+
+    .sidebar-tab:hover {
+      background: #f9f9f9;
+    }
+
+    /* Sidebar Post List */
+    .sidebar-posts {
+      border: 1px solid #eee;
+      border-top: none;
+    }
+
+    .sidebar-post {
+      display: flex;
+      gap: 12px;
+      padding: 16px;
+      border-bottom: 1px solid #eee;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.3s;
+    }
+
+    .sidebar-post:last-child {
+      border-bottom: none;
+    }
+
+    .sidebar-post:hover {
+      background: #f9f9f9;
+    }
+
+    .sidebar-post-image {
+      width: 80px;
+      height: 60px;
+      background: #f0f0f0;
+      border-radius: 4px;
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .sidebar-post-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .sidebar-post-lock {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+
+    .sidebar-post-title {
+      font-size: 14px;
+      line-height: 1.5;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    /* Sidebar Section */
+    .sidebar-section {
+      margin-top: 32px;
+      border: 1px solid #eee;
+    }
+
+    .sidebar-section-title {
+      font-size: 14px;
+      font-weight: 700;
+      padding: 16px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+    }
+
+    .sidebar-menu li {
+      border-bottom: 1px solid #eee;
+    }
+
+    .sidebar-menu li:last-child {
+      border-bottom: none;
+    }
+
+    .sidebar-menu a {
+      display: block;
+      padding: 12px 16px;
+      color: #333;
+      text-decoration: none;
+      font-size: 14px;
+      transition: background 0.3s;
+    }
+
+    .sidebar-menu a:hover {
+      background: #f9f9f9;
+      color: #22c55e;
+    }
+
+    /* Sidebar TOC */
+    .sidebar-toc {
+      margin-top: 32px;
+      padding: 20px;
+      background: #fafafa;
+      border-radius: 4px;
+    }
+
+    .sidebar-toc-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .sidebar-toc-list {
+      list-style: none;
+      font-size: 13px;
+    }
+
+    .sidebar-toc-list li {
+      margin-bottom: 8px;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .sidebar-toc-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 6px;
+      height: 6px;
+      background: #ccc;
+      border-radius: 50%;
+    }
+
+    .sidebar-toc-list a {
+      color: #666;
+      text-decoration: none;
+    }
+
+    .sidebar-toc-list a:hover {
+      color: #22c55e;
+    }
+
+    /* =====================================================
+       CUSTOMIZE / TRANSMIT カード（PANDORA風）
+       ===================================================== */
+
+    .sidebar-card {
+      background: #1a1a2e;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .sidebar-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .sidebar-card-title {
+      font-family: 'JetBrains Mono', 'Consolas', monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: #888;
+      text-transform: uppercase;
+    }
+
+    .sidebar-card-dot {
+      width: 6px;
+      height: 6px;
+      background: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+      animation: dot-pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes dot-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* CUSTOMIZE カード */
+    .customize-card {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      border: 1px solid rgba(34, 197, 94, 0.2);
+    }
+
+    .customize-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(10, 15, 25, 0.9);
+      border: 1.5px solid rgba(34, 197, 94, 0.4);
+      border-radius: 10px;
+      color: #22c55e;
+      font-family: 'JetBrains Mono', 'Consolas', monospace;
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .customize-btn svg {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.4s ease;
+    }
+
+    .customize-btn:hover {
+      background: rgba(34, 197, 94, 0.08);
+      border-color: rgba(34, 197, 94, 0.6);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3);
+    }
+
+    .customize-btn:hover svg {
+      transform: rotate(90deg);
+    }
+
+    /* TRANSMIT カード */
+    .transmit-card {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      border: 1px solid rgba(236, 72, 153, 0.2);
+    }
+
+    .transmit-card .sidebar-card-dot {
+      background: #ec4899;
+      box-shadow: 0 0 8px rgba(236, 72, 153, 0.6);
+    }
+
+    .transmit-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .transmit-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 12px 8px;
+      background: rgba(30, 30, 45, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      color: #888;
+      font-family: 'JetBrains Mono', 'Consolas', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .transmit-btn svg {
+      width: 18px;
+      height: 18px;
+      opacity: 0.7;
+      transition: opacity 0.25s ease;
+    }
+
+    .transmit-btn span {
+      font-weight: 700;
+    }
+
+    .transmit-btn:hover {
+      transform: translateY(-3px);
+    }
+
+    .transmit-btn:hover svg {
+      opacity: 1;
+    }
+
+    .transmit-btn.post:hover {
+      background: rgba(29, 161, 242, 0.15);
+      border-color: rgba(29, 161, 242, 0.4);
+      color: #1da1f2;
+    }
+
+    .transmit-btn.share:hover {
+      background: rgba(24, 119, 242, 0.15);
+      border-color: rgba(24, 119, 242, 0.4);
+      color: #1877f2;
+    }
+
+    .transmit-btn.copy:hover {
+      background: rgba(34, 197, 94, 0.15);
+      border-color: rgba(34, 197, 94, 0.4);
+      color: #22c55e;
+    }
+
+    .transmit-btn.copy.copied {
+      background: rgba(34, 197, 94, 0.2);
+      border-color: rgba(34, 197, 94, 0.6);
+      color: #22c55e;
+    }
+
+    .transmit-btn.copy.copied span {
+      animation: copy-flash 0.3s ease;
+    }
+
+    @keyframes copy-flash {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
+    /* Footer */
+    .footer {
+      background: #1a1a1a;
+      color: #999;
+      padding: 60px 20px;
+      margin-top: 80px;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .footer-logo {
+      font-size: 24px;
+      font-weight: 700;
+      color: #22c55e;
+      margin-bottom: 20px;
+    }
+
+    .footer-copy {
+      font-size: 13px;
+    }
+
+    /* Code Block */
+    code {
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 14px;
+    }
+
+    pre {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 20px;
+      border-radius: 4px;
+      overflow-x: auto;
+      margin: 24px 0;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <a href="#" class="logo">TECH NOTES</a>
+      <div class="nav-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb">
+    <div class="breadcrumb-inner">
+      <a href="#">🏠</a>
+      <span class="breadcrumb-separator">›</span>
+      <a href="#">AI活用術</a>
+      <span class="breadcrumb-separator">›</span>
+      <a href="#">ライティング</a>
+      <span class="breadcrumb-separator">›</span>
+      <span>AIを使ってブログ記事を効率的に書く方法</span>
+    </div>
+  </nav>
+
+  <div class="main-container">
+    <!-- Article -->
+    <article class="article">
+      <header class="article-header">
+        <h1 class="article-title">AIを使ってブログ記事を効率的に書く方法｜初心者向け完全ガイド</h1>
+        <div class="article-meta">
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8zm.5-13H11v6l5.2 3.2.8-1.3-4.5-2.7V7z"/></svg>
+            2026.01.30
+          </span>
+          <span>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+            128
+          </span>
+        </div>
+      </header>
+
+      <!-- Featured Image -->
+      <div class="featured-image">
+        <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&h=450&fit=crop" alt="AI Writing">
+        <span class="featured-image-tag">AI活用術</span>
+      </div>
+
+      <!-- Content -->
+      <div class="article-content">
+        <p>ブログ記事を書きたいけど、なかなか筆が進まない。そんな悩みを抱えている方は多いのではないでしょうか。</p>
+
+        <p>実は、AIツールを上手に活用すれば、<strong>記事の執筆時間を大幅に短縮</strong>できます。ただし、AIに丸投げするのではなく、あくまで「補助ツール」として使うのがポイントです。</p>
+
+        <p>当記事では、AIを使って効率的にブログ記事を書く方法を、初心者の方にもわかりやすく解説します。</p>
+
+        <!-- Hint Box -->
+        <div class="hint-box">
+          <p>AIツールは「下書き作成」や「アイデア出し」に特に力を発揮します。最終的な仕上げは必ず自分の言葉で行うことで、オリジナリティのある記事になります。</p>
+        </div>
+
+        <!-- Table of Contents -->
+        <div class="toc-box">
+          <h2 class="toc-title">目次</h2>
+          <p class="toc-subtitle">この記事でわかること</p>
+          <ol class="toc-list">
+            <li><a href="#section1">AIライティングツールの選び方</a></li>
+            <li><a href="#section2">効率的な記事作成の5ステップ</a></li>
+            <li><a href="#section3">AIが苦手なこと・注意点</a></li>
+          </ol>
+        </div>
+
+        <!-- Section 1 -->
+        <h2 class="section-heading" id="section1">1. AIライティングツールの選び方</h2>
+
+        <p>AIライティングツールは多数ありますが、目的に応じて選ぶことが大切です。</p>
+
+        <h3 class="sub-heading">代表的なAIツール</h3>
+
+        <p>現在、ブログ執筆に使えるAIツールは主に以下の3種類があります。</p>
+
+        <div class="point-list">
+          <p class="point-list-title">主要なAIライティングツール</p>
+          <ul>
+            <li><strong>ChatGPT</strong> - 汎用性が高く、対話形式で使いやすい</li>
+            <li><strong>Claude</strong> - 長文に強く、論理的な文章が得意</li>
+            <li><strong>Gemini</strong> - Google検索との連携が便利</li>
+          </ul>
+        </div>
+
+        <p>それぞれのツールには特徴があるため、実際に試して自分に合ったものを選びましょう。</p>
+
+        <!-- Blog Card -->
+        <a href="#" class="blog-card">
+          <div class="blog-card-image">
+            <img src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=200&h=120&fit=crop" alt="">
+          </div>
+          <div class="blog-card-content">
+            <h4 class="blog-card-title">ChatGPT vs Claude 徹底比較｜どちらを選ぶべき？</h4>
+            <p class="blog-card-desc">人気のAIツール「ChatGPT」と「Claude」を徹底比較。それぞれの特徴や使い分けのポイントを解説します。</p>
+          </div>
+        </a>
+
+        <!-- Section 2 -->
+        <h2 class="section-heading" id="section2">2. 効率的な記事作成の5ステップ</h2>
+
+        <p>AIを活用した効率的な記事作成には、以下の5つのステップが効果的です。</p>
+
+        <div class="step-flow">
+          <div class="step-item">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h4>テーマと構成を決める</h4>
+              <p>まず自分で記事のテーマとおおまかな構成を決めます。AIに「〇〇についての記事構成を考えて」と依頼すると、見出しの案を出してくれます。</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h4>各セクションの下書きを生成</h4>
+              <p>構成が決まったら、各見出しごとにAIで下書きを生成します。「〇〇について、初心者向けに300字程度で説明して」のように具体的に指示するのがコツです。</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h4>自分の言葉でリライト</h4>
+              <p>AIが生成した文章をそのまま使うのではなく、自分の経験や視点を加えてリライトします。これが記事の「オリジナリティ」になります。</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h4>事実確認を行う</h4>
+              <p>AIは誤った情報を生成することがあります。特に数字や固有名詞は必ず自分で確認しましょう。</p>
+            </div>
+          </div>
+
+          <div class="step-item">
+            <div class="step-number">5</div>
+            <div class="step-content">
+              <h4>最終チェック・公開</h4>
+              <p>誤字脱字のチェック、読みやすさの確認を行い、問題なければ公開します。</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3 -->
+        <h2 class="section-heading" id="section3">3. AIが苦手なこと・注意点</h2>
+
+        <p>便利なAIツールですが、苦手な分野もあります。以下の点には注意が必要です。</p>
+
+        <div class="warning-box">
+          <p class="warning-box-title">⚠️ 注意点</p>
+          <p>AIは「最新情報」を知りません。学習データには期限があるため、2023年以降の出来事やサービスの最新状況については、必ず自分で確認してください。</p>
+        </div>
+
+        <h3 class="sub-heading">AIに任せてはいけないこと</h3>
+
+        <div class="point-list">
+          <p class="point-list-title">自分でやるべきこと</p>
+          <ul>
+            <li>体験談・感想（あなた自身の経験が価値になる）</li>
+            <li>最新情報の確認（AIの知識には期限がある）</li>
+            <li>独自の視点・意見（AIは無難な回答をしがち）</li>
+            <li>専門的な内容のファクトチェック</li>
+          </ul>
+        </div>
+
+        <p>AIはあくまで「アシスタント」です。最終的な判断と責任は、記事を書く自分自身にあることを忘れないようにしましょう。</p>
+
+        <!-- Summary -->
+        <div class="summary-box">
+          <h3 class="summary-title">まとめ</h3>
+          <ul class="summary-list">
+            <li>AIツールは「下書き作成」「構成案出し」に活用する</li>
+            <li>生成された文章は必ず自分の言葉でリライトする</li>
+            <li>事実確認は必ず自分で行う</li>
+            <li>体験談や独自の視点を加えてオリジナリティを出す</li>
+          </ul>
+        </div>
+
+        <p>AIを上手に活用すれば、ブログ記事の執筆時間を大幅に短縮できます。ぜひ今日から試してみてください。</p>
+      </div>
+    </article>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <!-- CUSTOMIZE カード -->
+      <div class="sidebar-card customize-card">
+        <div class="sidebar-card-header">
+          <span class="sidebar-card-title">CUSTOMIZE</span>
+          <span class="sidebar-card-dot"></span>
+        </div>
+        <button class="customize-btn" id="customize-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span>OPEN</span>
+        </button>
+      </div>
+
+      <!-- TRANSMIT カード -->
+      <div class="sidebar-card transmit-card">
+        <div class="sidebar-card-header">
+          <span class="sidebar-card-title">TRANSMIT</span>
+          <span class="sidebar-card-dot"></span>
+        </div>
+        <div class="transmit-buttons">
+          <a href="#" class="transmit-btn post" aria-label="Post on X" id="share-x">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+            <span>POST</span>
+          </a>
+          <a href="#" class="transmit-btn share" aria-label="Share on Facebook" id="share-fb">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+            <span>SHARE</span>
+          </a>
+          <button class="transmit-btn copy" aria-label="Copy link" id="copy-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            <span>COPY</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab Posts -->
+      <div class="sidebar-tabs">
+        <button class="sidebar-tab active">新着記事</button>
+        <button class="sidebar-tab">人気記事</button>
+      </div>
+      <div class="sidebar-posts">
+        <a href="#" class="sidebar-post">
+          <div class="sidebar-post-image">
+            <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=100&h=80&fit=crop" alt="">
+          </div>
+          <div class="sidebar-post-title">プログラミング初心者がまず覚えるべきこと</div>
+        </a>
+        <a href="#" class="sidebar-post">
+          <div class="sidebar-post-image">
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=100&h=80&fit=crop" alt="">
+            <span class="sidebar-post-lock">🔒</span>
+          </div>
+          <div class="sidebar-post-title">Webサイトを無料で公開する方法</div>
+        </a>
+        <a href="#" class="sidebar-post">
+          <div class="sidebar-post-image">
+            <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=100&h=80&fit=crop" alt="">
+          </div>
+          <div class="sidebar-post-title">効率的なメモの取り方</div>
+        </a>
+      </div>
+
+      <!-- Category Menu -->
+      <div class="sidebar-section">
+        <h3 class="sidebar-section-title">カテゴリー</h3>
+        <ul class="sidebar-menu">
+          <li><a href="#">AI活用術</a></li>
+          <li><a href="#">プログラミング</a></li>
+          <li><a href="#">Web制作</a></li>
+          <li><a href="#">ライフハック</a></li>
+          <li><a href="#">ツール紹介</a></li>
+        </ul>
+      </div>
+
+      <!-- Sticky TOC -->
+      <div class="sidebar-toc">
+        <h4 class="sidebar-toc-title">目次</h4>
+        <ul class="sidebar-toc-list">
+          <li><a href="#section1">AIライティングツールの選び方</a></li>
+          <li><a href="#section2">効率的な記事作成の5ステップ</a></li>
+          <li><a href="#section3">AIが苦手なこと・注意点</a></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">TECH NOTES</div>
+      <p class="footer-copy">© 2026 TECH NOTES. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Tab switching
+    const tabs = document.querySelectorAll('.sidebar-tab');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+
+    // Smooth scroll for TOC links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
