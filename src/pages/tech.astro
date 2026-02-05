@@ -145,90 +145,90 @@ const categories = [
 
     /* HUD Buttons */
     .hud-container {
-      position: absolute; bottom: 1.2rem; left: 50%; transform: translateX(-50%);
+      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
       z-index: 110; pointer-events: auto;
-      display: flex; gap: 4px; align-items: center;
+      display: flex; gap: 0; align-items: flex-end;
     }
 
-    /* === 平行四辺形ベース === */
+    /* === 平行四辺形ベース（縦長） === */
     .hud-btn {
       position: relative;
-      width: 130px; height: 52px;
+      width: 130px; height: 260px;
       border: none;
-      background: rgba(255,255,255,0.08);
+      background: #333;
       color: #fff;
-      display: flex; flex-direction: row; justify-content: center; align-items: center;
+      display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
       cursor: pointer;
-      transition: background 0.2s, transform 0.2s;
-      padding: 0 14px;
+      transition: filter 0.2s, transform 0.2s;
+      padding: 0 10px 28px;
       gap: 8px;
-      transform: skewX(-12deg);
-      clip-path: polygon(14% 0%, 100% 0%, 86% 100%, 0% 100%);
-      -webkit-clip-path: polygon(14% 0%, 100% 0%, 86% 100%, 0% 100%);
+      clip-path: polygon(18% 0%, 100% 0%, 82% 100%, 0% 100%);
+      -webkit-clip-path: polygon(18% 0%, 100% 0%, 82% 100%, 0% 100%);
+      margin-left: -28px;
     }
-    .hud-btn > * {
-      transform: skewX(12deg);
+    .hud-btn:first-child {
+      margin-left: 0;
     }
     .hud-btn-icon {
-      font-size: 1rem;
+      font-size: 1.4rem;
       flex-shrink: 0;
+      opacity: 0.9;
     }
     .hud-btn-label {
       font-family: 'Fira Code', monospace;
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       font-weight: 700;
       letter-spacing: 0.04em;
       white-space: nowrap;
     }
     .hud-btn-count {
-      display: none;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.5rem;
+      opacity: 0.6;
     }
     .hud-btn:hover {
-      background: rgba(255,255,255,0.18);
+      filter: brightness(1.25);
+      transform: translateY(-8px);
     }
     .hud-btn:active {
-      transform: skewX(-12deg) scale(0.97);
+      transform: translateY(-2px);
     }
     .hud-btn.active {
-      color: #fff;
+      filter: brightness(1.1);
     }
 
     /* --- LIST ボタン --- */
     #btn-list {
-      width: 52px;
-      background: rgba(255,255,255,0.05);
+      width: 70px; height: 260px;
+      background: #1a1a2e;
+      justify-content: flex-end;
+      padding-bottom: 32px;
     }
-    #btn-list:hover { background: rgba(255,255,255,0.14); }
+    #btn-list:hover { filter: brightness(1.5); }
 
-    /* --- ALL --- */
-    .hud-btn[data-cat="ALL"]           { background: rgba(0,212,255,0.18); }
-    .hud-btn[data-cat="ALL"]:hover     { background: rgba(0,212,255,0.32); }
-    .hud-btn[data-cat="ALL"].active    { background: rgba(0,212,255,0.45); }
+    /* --- ALL --- シアン */
+    .hud-btn[data-cat="ALL"]           { background: #0891b2; }
+    .hud-btn[data-cat="ALL"].active    { background: #06b6d4; }
 
-    /* --- AI体験談 --- */
-    .hud-btn[data-cat="ai-experience"]           { background: rgba(236,72,153,0.18); }
-    .hud-btn[data-cat="ai-experience"]:hover     { background: rgba(236,72,153,0.32); }
-    .hud-btn[data-cat="ai-experience"].active    { background: rgba(236,72,153,0.45); }
+    /* --- AI体験談 --- ピンク */
+    .hud-btn[data-cat="ai-experience"]           { background: #be185d; }
+    .hud-btn[data-cat="ai-experience"].active    { background: #db2777; }
 
-    /* --- AI TIPS --- */
-    .hud-btn[data-cat="ai-tips"]           { background: rgba(250,204,21,0.18); }
-    .hud-btn[data-cat="ai-tips"]:hover     { background: rgba(250,204,21,0.32); }
-    .hud-btn[data-cat="ai-tips"].active    { background: rgba(250,204,21,0.45); }
+    /* --- AI TIPS --- アンバー */
+    .hud-btn[data-cat="ai-tips"]           { background: #b45309; }
+    .hud-btn[data-cat="ai-tips"].active    { background: #d97706; }
 
-    /* --- 開発ツール --- */
-    .hud-btn[data-cat="dev-tools"]           { background: rgba(168,85,247,0.18); }
-    .hud-btn[data-cat="dev-tools"]:hover     { background: rgba(168,85,247,0.32); }
-    .hud-btn[data-cat="dev-tools"].active    { background: rgba(168,85,247,0.45); }
+    /* --- 開発ツール --- パープル */
+    .hud-btn[data-cat="dev-tools"]           { background: #7c3aed; }
+    .hud-btn[data-cat="dev-tools"].active    { background: #8b5cf6; }
 
-    /* --- 便利ツール --- */
-    .hud-btn[data-cat="useful-tools"]           { background: rgba(34,197,94,0.18); }
-    .hud-btn[data-cat="useful-tools"]:hover     { background: rgba(34,197,94,0.32); }
-    .hud-btn[data-cat="useful-tools"].active    { background: rgba(34,197,94,0.45); }
+    /* --- 便利ツール --- グリーン */
+    .hud-btn[data-cat="useful-tools"]           { background: #059669; }
+    .hud-btn[data-cat="useful-tools"].active    { background: #10b981; }
 
-    /* --- ブログ運営 --- */
-    .hud-btn[data-cat="blog-writing"]           { background: rgba(249,115,22,0.18); }
-    .hud-btn[data-cat="blog-writing"]:hover     { background: rgba(249,115,22,0.32); }
-    .hud-btn[data-cat="blog-writing"].active    { background: rgba(249,115,22,0.45); }
+    /* --- ブログ運営 --- オレンジ */
+    .hud-btn[data-cat="blog-writing"]           { background: #c2410c; }
+    .hud-btn[data-cat="blog-writing"].active    { background: #ea580c; }
 
     /* --- 3. 3D & CARD STYLES --- */
     #tunnel-scene {
