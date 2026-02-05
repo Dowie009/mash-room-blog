@@ -2029,83 +2029,14 @@ const categories = [
       // マウス位置の初期化（updateTunnelより前に定義）
       let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
       
-      // 密度の増量：記事データを複製して50枚のカードを生成（カテゴリーを平等に分配）
-      const targetCardCount = 50;
-      const duplicatedArticles = [];
-      
-      // カテゴリーごとに記事を分類
-      const articlesByCategory = {};
-      articlesData.forEach(article => {
-        if (!articlesByCategory[article.cat]) {
-          articlesByCategory[article.cat] = [];
-        }
-        articlesByCategory[article.cat].push(article);
+      // 実記事のみ表示（複製・ダミーなし）
+      const duplicatedArticles = [...articlesData];
+
+      console.log('[CATEGORY DEBUG] Total articles:', duplicatedArticles.length);
+      const categoryDistribution = {};
+      duplicatedArticles.forEach(a => {
+        categoryDistribution[a.cat] = (categoryDistribution[a.cat] || 0) + 1;
       });
-      
-      // 仮のカード用に、主要カテゴリー（ai-journey, ai-tips）を均等に振り分け
-      const mainCategories = ['ai-journey', 'ai-tips'];
-      const cardsPerMainCategory = Math.floor(targetCardCount / mainCategories.length);
-      const remainingCards = targetCardCount % mainCategories.length;
-      
-      console.log('[CATEGORY DEBUG] Main categories distribution:', {
-        categories: mainCategories,
-        cardsPerCategory: cardsPerMainCategory,
-        remaining: remainingCards
-      });
-      
-      // 各主要カテゴリーから均等にカードを生成（まず配列に追加）
-      const categoryCards = [];
-      mainCategories.forEach((category, catIndex) => {
-        const cardsForThisCategory = cardsPerMainCategory + (catIndex < remainingCards ? 1 : 0);
-        const categoryArticles = articlesByCategory[category] || [];
-        
-        // カテゴリーに記事がない場合は、仮の記事データを作成
-        for (let i = 0; i < cardsForThisCategory; i++) {
-          if (categoryArticles.length > 0) {
-            // 既存の記事を循環して使用
-            const articleIndex = i % categoryArticles.length;
-            categoryCards.push(categoryArticles[articleIndex]);
-          } else {
-            // 仮の記事データを作成
-            categoryCards.push({
-              id: `temp-${category}-${i}`,
-              slug: `temp-${category}-${i}`,
-              title: `${categoryLabels[category] || category.toUpperCase()} Article ${i + 1}`,
-              cat: category,
-              catColor: categoryColors[category] || '#00ffff',
-              date: new Date().toLocaleDateString('ja-JP').replace(/\//g, '.'),
-              img: `https://images.unsplash.com/photo-${1500000000000 + (catIndex * 1000) + (i * 10)}?q=80&w=600&auto=format&fit=crop`,
-              description: `Sample ${categoryLabels[category] || category} article`,
-              tags: [category],
-            });
-          }
-        }
-      });
-      
-      // カードをランダムにシャッフル（Fisher-Yatesアルゴリズム）
-      for (let i = categoryCards.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [categoryCards[i], categoryCards[j]] = [categoryCards[j], categoryCards[i]];
-      }
-      
-      // シャッフルしたカードを追加
-      duplicatedArticles.push(...categoryCards);
-      
-      // 既存のカテゴリー（devtipsなど）の記事も追加
-      Object.keys(articlesByCategory).forEach(cat => {
-        if (!mainCategories.includes(cat)) {
-          articlesByCategory[cat].forEach(article => {
-            duplicatedArticles.push(article);
-          });
-        }
-      });
-      
-      console.log('[CATEGORY DEBUG] Total duplicated articles:', duplicatedArticles.length);
-      const allCategoryKeys = [...mainCategories, ...Object.keys(articlesByCategory).filter(cat => !mainCategories.includes(cat))];
-      const categoryDistribution = allCategoryKeys.map(cat => ({
-        category: cat,
-        count: duplicatedArticles.filter(a => a.cat === cat).length
-      }));
       console.log('[CATEGORY DEBUG] Category distribution:', categoryDistribution);
       
       const totalDepth = duplicatedArticles.length * cardInterval;
@@ -2292,17 +2223,8 @@ const categories = [
       const listView = document.getElementById('list-view-container');
       const listGrid = document.getElementById('list-grid');
 
-      // Populate List（実際の記事 + 仮のカードも含める）
-      const allArticlesForList = [...articlesData, ...duplicatedArticles];
-      // 重複を除去（slugで判定）
-      const uniqueArticles = [];
-      const seenSlugs = new Set();
-      allArticlesForList.forEach(a => {
-        if (!seenSlugs.has(a.slug)) {
-          seenSlugs.add(a.slug);
-          uniqueArticles.push(a);
-        }
-      });
+      // Populate List（実記事のみ）
+      const uniqueArticles = [...articlesData];
       
       // 日付でソート（新しい順）
       uniqueArticles.sort((a, b) => {
@@ -2790,7 +2712,7 @@ const categories = [
         if (!simpleArticlesContainer) return;
 
         // フィルター適用
-        let filtered = uniqueArticles.filter(a => !a.slug.startsWith('temp-'));
+        let filtered = [...uniqueArticles];
         if (simpleCurrentFilter !== 'ALL') {
           filtered = filtered.filter(a => a.cat === simpleCurrentFilter);
         }
@@ -2990,8 +2912,8 @@ const categories = [
       
       // アーカイブグリッドに記事を追加（時系列でソート、全記事表示）
       if (archiveGrid) {
-        // 重複を除去した記事リストを使用（既に時系列でソート済み）、仮記事を除外
-        const archiveArticles = uniqueArticles.filter(a => !a.slug.startsWith('temp-'));
+        // 実記事のみ表示（時系列でソート済み）
+        const archiveArticles = [...uniqueArticles];
         archiveArticles.forEach(article => {
           const card = document.createElement('div');
           card.className = 'archive-card';
