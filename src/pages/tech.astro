@@ -1292,13 +1292,25 @@ const categories = [
       color: #0a0a0f;
       font-weight: 600;
     }
-    .simple-filter-btn[data-cat="ai-journey"].active {
-      background: #00ffff;
-      border-color: #00ffff;
+    .simple-filter-btn[data-cat="ai-experience"].active {
+      background: #00d4ff;
+      border-color: #00d4ff;
     }
     .simple-filter-btn[data-cat="ai-tips"].active {
       background: #ffaa00;
       border-color: #ffaa00;
+    }
+    .simple-filter-btn[data-cat="dev-tools"].active {
+      background: #a855f7;
+      border-color: #a855f7;
+    }
+    .simple-filter-btn[data-cat="useful-tools"].active {
+      background: #22c55e;
+      border-color: #22c55e;
+    }
+    .simple-filter-btn[data-cat="blog-writing"].active {
+      background: #f97316;
+      border-color: #f97316;
     }
     .simple-sort {
       display: flex;
@@ -1463,7 +1475,7 @@ const categories = [
       </button>
       <div class="w-[1px] h-6 bg-gray-500"></div>
       
-      <!-- Category Buttons (2つだけ: AI JOURNEY / AI TIPS) -->
+      <!-- Category Buttons (全5カテゴリ) -->
       <button class="hud-btn active" data-cat="ALL" title="ALL">
         <i data-lucide="grid" class="w-4 h-4 hud-btn-icon"></i>
         <span class="hud-btn-label">ALL</span>
@@ -1475,6 +1487,18 @@ const categories = [
       <button class="hud-btn" data-cat="ai-tips" title="AI TIPS">
         <i data-lucide="lightbulb" class="w-4 h-4 hud-btn-icon"></i>
         <span class="hud-btn-label">AI TIPS</span>
+      </button>
+      <button class="hud-btn" data-cat="dev-tools" title="開発ツール">
+        <i data-lucide="wrench" class="w-4 h-4 hud-btn-icon"></i>
+        <span class="hud-btn-label">開発ツール</span>
+      </button>
+      <button class="hud-btn" data-cat="useful-tools" title="便利ツール">
+        <i data-lucide="smartphone" class="w-4 h-4 hud-btn-icon"></i>
+        <span class="hud-btn-label">便利ツール</span>
+      </button>
+      <button class="hud-btn" data-cat="blog-writing" title="ブログ運営">
+        <i data-lucide="pen-tool" class="w-4 h-4 hud-btn-icon"></i>
+        <span class="hud-btn-label">ブログ運営</span>
       </button>
     </div>
 
@@ -1654,6 +1678,9 @@ const categories = [
         <button class="simple-filter-btn active" data-cat="ALL">すべて</button>
         <button class="simple-filter-btn" data-cat="ai-experience">AI体験談</button>
         <button class="simple-filter-btn" data-cat="ai-tips">AI TIPS</button>
+        <button class="simple-filter-btn" data-cat="dev-tools">開発ツール</button>
+        <button class="simple-filter-btn" data-cat="useful-tools">便利ツール</button>
+        <button class="simple-filter-btn" data-cat="blog-writing">ブログ運営</button>
       </div>
       <div class="simple-sort">
         <span class="simple-sort-label">並び順:</span>
