@@ -1136,7 +1136,8 @@ const categories = [
       align-items: center;
       justify-content: center;
       z-index: 200;
-      pointer-events: none;
+      pointer-events: auto;
+      cursor: pointer;
       opacity: 1;
     }
     #intro-title-container.hidden {
@@ -2016,6 +2017,29 @@ const categories = [
           ease: "power2.out"
         }, 1.5);
 
+      // --- イントロスキップ：クリックでアニメーションを即完了 ---
+      let introSkipped = false;
+      const skipIntro = () => {
+        if (introSkipped) return;
+        introSkipped = true;
+        // 両タイムラインを即座に完了（onCompleteコールバックも実行される）
+        titleTimeline.progress(1);
+        introTimeline.progress(1);
+        if (introTitleContainer) {
+          introTitleContainer.classList.add('hidden');
+          introTitleContainer.style.pointerEvents = 'none';
+        }
+      };
+      if (introTitleContainer) {
+        introTitleContainer.addEventListener('click', skipIntro, { once: true });
+      }
+      // イントロ終了後にクリック領域を無効化
+      titleTimeline.eventCallback('onComplete', () => {
+        if (introTitleContainer) {
+          introTitleContainer.style.pointerEvents = 'none';
+        }
+      });
+
       // --- 3D Tunnel Engine ---
       const tunnelWorld = document.getElementById('tunnel-world');
       if (!tunnelWorld) {
@@ -2204,10 +2228,16 @@ const categories = [
       }
       
       // ローディングアニメーション完了後にアニメーションループを開始
-      // イントロアニメーションのタイムラインが完了してから開始
-      setTimeout(() => {
+      let tunnelStarted = false;
+      const startTunnelOnce = () => {
+        if (tunnelStarted) return;
+        tunnelStarted = true;
         updateTunnel();
-      }, 2500); // ローディングアニメーションの時間（2秒 + 0.5秒のマージン）
+      };
+      // イントロ完了 or スキップ時にトンネル開始
+      introTimeline.eventCallback('onComplete', startTunnelOnce);
+      // 通常時のフォールバック（2.5秒後）
+      setTimeout(startTunnelOnce, 2500);
 
       // Scroll Input
       window.addEventListener('wheel', (e) => {
