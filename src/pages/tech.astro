@@ -147,13 +147,13 @@ const categories = [
     .hud-container {
       position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
       z-index: 110; pointer-events: auto;
-      display: flex; gap: 0; align-items: flex-end;
+      display: flex; gap: 6px; align-items: flex-end;
     }
 
-    /* === 平行四辺形ベース（縦長） === */
+    /* === 平行四辺形ベース（縦長・強めの傾き） === */
     .hud-btn {
       position: relative;
-      width: 130px; height: 260px;
+      width: 120px; height: 260px;
       border: none;
       background: #333;
       color: #fff;
@@ -162,12 +162,8 @@ const categories = [
       transition: filter 0.2s, transform 0.2s;
       padding: 0 10px 28px;
       gap: 8px;
-      clip-path: polygon(18% 0%, 100% 0%, 82% 100%, 0% 100%);
-      -webkit-clip-path: polygon(18% 0%, 100% 0%, 82% 100%, 0% 100%);
-      margin-left: -28px;
-    }
-    .hud-btn:first-child {
-      margin-left: 0;
+      clip-path: polygon(30% 0%, 100% 0%, 70% 100%, 0% 100%);
+      -webkit-clip-path: polygon(30% 0%, 100% 0%, 70% 100%, 0% 100%);
     }
     .hud-btn-icon {
       font-size: 1.4rem;
