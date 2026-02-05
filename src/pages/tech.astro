@@ -2175,7 +2175,7 @@ const categories = [
         `;
         
         el.addEventListener('click', () => {
-          if(!isListMode && !isFiltered && !isArchiveMode) {
+          if(!isListMode && !isArchiveMode) {
             // 仮の記事の場合は遷移しない
             if (article.slug.startsWith('temp-')) {
               return;
