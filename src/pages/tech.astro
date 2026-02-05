@@ -145,86 +145,69 @@ const categories = [
 
     /* HUD Buttons */
     .hud-container {
-      position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
       z-index: 110; pointer-events: auto;
-      display: flex; gap: 6px; align-items: flex-end;
+      display: flex; gap: 8px; align-items: center;
+      background: rgba(10,10,20,0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 6px 8px;
+      border-radius: 50px;
+      border: 1px solid rgba(255,255,255,0.08);
     }
 
-    /* === 平行四辺形ベース（縦長・強めの傾き） === */
+    /* === ピル型タブ === */
     .hud-btn {
       position: relative;
-      width: 120px; height: 260px;
+      height: 44px;
       border: none;
-      background: #333;
-      color: #fff;
-      display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
+      background: transparent;
+      color: rgba(255,255,255,0.55);
+      display: flex; flex-direction: row; align-items: center;
       cursor: pointer;
-      transition: filter 0.2s, transform 0.2s;
-      padding: 0 10px 28px;
+      transition: color 0.2s, background 0.2s;
+      padding: 0 18px;
       gap: 8px;
-      clip-path: polygon(30% 0%, 100% 0%, 70% 100%, 0% 100%);
-      -webkit-clip-path: polygon(30% 0%, 100% 0%, 70% 100%, 0% 100%);
+      border-radius: 50px;
+      white-space: nowrap;
     }
     .hud-btn-icon {
-      font-size: 1.4rem;
       flex-shrink: 0;
-      opacity: 0.9;
     }
     .hud-btn-label {
       font-family: 'Fira Code', monospace;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      white-space: nowrap;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
     }
     .hud-btn-count {
       font-family: 'Fira Code', monospace;
-      font-size: 0.5rem;
-      opacity: 0.6;
+      font-size: 0.6rem;
+      opacity: 0.5;
+      margin-left: -2px;
     }
     .hud-btn:hover {
-      filter: brightness(1.25);
-      transform: translateY(-8px);
+      color: #fff;
+      background: rgba(255,255,255,0.08);
     }
     .hud-btn:active {
-      transform: translateY(-2px);
-    }
-    .hud-btn.active {
-      filter: brightness(1.1);
+      transform: scale(0.97);
     }
 
     /* --- LIST ボタン --- */
     #btn-list {
-      width: 70px; height: 260px;
-      background: #1a1a2e;
-      justify-content: flex-end;
-      padding-bottom: 32px;
+      padding: 0 12px;
+      color: rgba(255,255,255,0.4);
     }
-    #btn-list:hover { filter: brightness(1.5); }
+    #btn-list:hover { color: #fff; background: rgba(255,255,255,0.08); }
 
-    /* --- ALL --- シアン */
-    .hud-btn[data-cat="ALL"]           { background: #0891b2; }
-    .hud-btn[data-cat="ALL"].active    { background: #06b6d4; }
-
-    /* --- AI体験談 --- ピンク */
-    .hud-btn[data-cat="ai-experience"]           { background: #be185d; }
-    .hud-btn[data-cat="ai-experience"].active    { background: #db2777; }
-
-    /* --- AI TIPS --- アンバー */
-    .hud-btn[data-cat="ai-tips"]           { background: #b45309; }
-    .hud-btn[data-cat="ai-tips"].active    { background: #d97706; }
-
-    /* --- 開発ツール --- パープル */
-    .hud-btn[data-cat="dev-tools"]           { background: #7c3aed; }
-    .hud-btn[data-cat="dev-tools"].active    { background: #8b5cf6; }
-
-    /* --- 便利ツール --- グリーン */
-    .hud-btn[data-cat="useful-tools"]           { background: #059669; }
-    .hud-btn[data-cat="useful-tools"].active    { background: #10b981; }
-
-    /* --- ブログ運営 --- オレンジ */
-    .hud-btn[data-cat="blog-writing"]           { background: #c2410c; }
-    .hud-btn[data-cat="blog-writing"].active    { background: #ea580c; }
+    /* === Active 状態：カテゴリ色のソリッド背景 === */
+    .hud-btn[data-cat="ALL"].active           { background: #0891b2; color: #fff; }
+    .hud-btn[data-cat="ai-experience"].active  { background: #be185d; color: #fff; }
+    .hud-btn[data-cat="ai-tips"].active        { background: #b45309; color: #fff; }
+    .hud-btn[data-cat="dev-tools"].active      { background: #7c3aed; color: #fff; }
+    .hud-btn[data-cat="useful-tools"].active   { background: #059669; color: #fff; }
+    .hud-btn[data-cat="blog-writing"].active   { background: #c2410c; color: #fff; }
 
     /* --- 3. 3D & CARD STYLES --- */
     #tunnel-scene {
@@ -1565,39 +1548,39 @@ const categories = [
     <!-- HUD -->
     <div class="hud-container">
       <button class="hud-btn" id="btn-list" title="DATABASE">
-        <i data-lucide="layout-list" class="w-7 h-7"></i>
+        <i data-lucide="layout-list" class="w-5 h-5"></i>
       </button>
 
       <!-- Category Buttons (全5カテゴリ) -->
       <button class="hud-btn active" data-cat="ALL" title="ALL">
-        <i data-lucide="layers" class="w-7 h-7 hud-btn-icon"></i>
+        <i data-lucide="layers" class="w-4 h-4 hud-btn-icon"></i>
         <span class="hud-btn-label">ALL</span>
-        <span class="hud-btn-count">20 posts</span>
+        <span class="hud-btn-count">20</span>
       </button>
       <button class="hud-btn" data-cat="ai-experience" title="AI体験談">
-        <i data-lucide="sparkles" class="w-7 h-7 hud-btn-icon"></i>
+        <i data-lucide="sparkles" class="w-4 h-4 hud-btn-icon"></i>
         <span class="hud-btn-label">AI体験談</span>
-        <span class="hud-btn-count">6 posts</span>
+        <span class="hud-btn-count">6</span>
       </button>
       <button class="hud-btn" data-cat="ai-tips" title="AI TIPS">
-        <i data-lucide="lightbulb" class="w-7 h-7 hud-btn-icon"></i>
+        <i data-lucide="lightbulb" class="w-4 h-4 hud-btn-icon"></i>
         <span class="hud-btn-label">AI TIPS</span>
-        <span class="hud-btn-count">3 posts</span>
+        <span class="hud-btn-count">3</span>
       </button>
       <button class="hud-btn" data-cat="dev-tools" title="開発ツール">
-        <i data-lucide="terminal" class="w-7 h-7 hud-btn-icon"></i>
+        <i data-lucide="terminal" class="w-4 h-4 hud-btn-icon"></i>
         <span class="hud-btn-label">開発ツール</span>
-        <span class="hud-btn-count">3 posts</span>
+        <span class="hud-btn-count">3</span>
       </button>
       <button class="hud-btn" data-cat="useful-tools" title="便利ツール">
-        <i data-lucide="zap" class="w-7 h-7 hud-btn-icon"></i>
+        <i data-lucide="zap" class="w-4 h-4 hud-btn-icon"></i>
         <span class="hud-btn-label">便利ツール</span>
-        <span class="hud-btn-count">4 posts</span>
+        <span class="hud-btn-count">4</span>
       </button>
       <button class="hud-btn" data-cat="blog-writing" title="ブログ運営">
-        <i data-lucide="feather" class="w-7 h-7 hud-btn-icon"></i>
+        <i data-lucide="feather" class="w-4 h-4 hud-btn-icon"></i>
         <span class="hud-btn-label">ブログ運営</span>
-        <span class="hud-btn-count">6 posts</span>
+        <span class="hud-btn-count">6</span>
       </button>
     </div>
 
