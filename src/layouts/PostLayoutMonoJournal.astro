@@ -35,8 +35,11 @@ const formatDate = (date: Date) => {
 
 // カテゴリ表示名
 const categoryConfig: Record<string, { label: string }> = {
-  'ai-journey': { label: 'AI JOURNEY' },
+  'ai-experience': { label: 'AI EXPERIENCE' },
   'ai-tips': { label: 'AI TIPS' },
+  'dev-tools': { label: 'DEV TOOLS' },
+  'useful-tools': { label: 'USEFUL TOOLS' },
+  'blog-writing': { label: 'BLOG WRITING' },
 };
 
 // コレクションごとの設定
@@ -89,7 +92,7 @@ if (collection === 'tech') {
     slug: post.slug,
     title: post.data.title,
     date: post.data.date,
-    thumbnail: post.data.thumbnail,
+    thumbnail: post.data.heroImage || post.data.thumbnail,
     category: post.data.category
   }));
 }
@@ -98,7 +101,7 @@ if (collection === 'tech') {
 <Layout title={`${frontmatter.title} | ${config.label}`}>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Inter:wght@300;400;500&family=Noto+Serif+JP:wght@400;500;600&display=swap" rel="stylesheet">
 
   <div class="mono-journal">
     <!-- Progress Indicator -->
@@ -138,12 +141,10 @@ if (collection === 'tech') {
       </div>
     </section>
 
-    <!-- Article Content -->
-    <article class="article-container" data-section="1">
-      <div class="article-inner">
-        <slot />
-      </div>
-    </article>
+    <!-- Article Content (slot is outside article-inner for full-width sections) -->
+    <div class="content-wrapper" data-section="1">
+      <slot />
+    </div>
 
     <!-- Author Box -->
     <section class="author-section">
@@ -457,7 +458,17 @@ if (collection === 'tech') {
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* === Article Content === */
+    /* === Content Wrapper (for full-width sections) === */
+    .content-wrapper {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1rem;
+      line-height: 2;
+      color: var(--gray-800);
+      font-weight: 500;
+      letter-spacing: 0.03em;
+    }
+
+    /* === Article Content (narrow sections) === */
     .article-container {
       max-width: 800px;
       margin: 0 auto;
@@ -654,12 +665,14 @@ if (collection === 'tech') {
       cursor: pointer;
       text-decoration: none;
       color: inherit;
+      display: block;
     }
 
     .related-item-image {
       aspect-ratio: 4/3;
       overflow: hidden;
       margin-bottom: 1.2rem;
+      background: var(--gray-100);
     }
 
     .related-item-image img {
@@ -667,6 +680,12 @@ if (collection === 'tech') {
       height: 100%;
       object-fit: cover;
       transition: transform 0.6s ease;
+    }
+
+    .related-item-image img[src$=".svg"] {
+      object-fit: contain;
+      padding: 1rem;
+      background: var(--white);
     }
 
     .related-item:hover .related-item-image img {
@@ -795,6 +814,411 @@ if (collection === 'tech') {
       transform: translateY(0);
     }
 
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-60px);
+      transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .reveal-left.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(60px);
+      transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .reveal-right.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* === Photo-Heavy Components === */
+
+    /* Intro Section (2 columns) */
+    .intro-section {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 8rem 2rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .intro-text {
+      padding-right: 3rem;
+    }
+
+    .intro-lead {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.4rem;
+      line-height: 2.2;
+      color: var(--gray-700);
+      margin-bottom: 2rem;
+    }
+
+    .intro-body {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1rem;
+      color: var(--gray-800);
+      line-height: 2;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+    }
+
+    .intro-image {
+      position: relative;
+    }
+
+    .intro-image img {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+    }
+
+    .image-caption {
+      position: absolute;
+      bottom: -2.5rem;
+      left: 0;
+      font-size: 0.75rem;
+      color: var(--gray-500);
+      font-style: italic;
+    }
+
+    /* Full Width Image with Overlay */
+    .full-image {
+      position: relative;
+      height: 70vh;
+      overflow: hidden;
+    }
+
+    .full-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .full-image-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .full-image-text {
+      color: var(--white);
+      text-align: center;
+      max-width: 600px;
+      padding: 2rem;
+    }
+
+    .full-image-text h2 {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 2.2rem;
+      font-weight: 400;
+      margin-bottom: 1rem;
+    }
+
+    /* Split Section (left-right) */
+    .split-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 80vh;
+    }
+
+    .split-image {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .split-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .split-section:hover .split-image img {
+      transform: scale(1.03);
+    }
+
+    .split-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5rem;
+      background: var(--white);
+    }
+
+    .split-number {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 4rem;
+      color: var(--gray-100);
+      line-height: 1;
+      margin-bottom: 1.5rem;
+    }
+
+    .split-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.8rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      color: var(--gray-700);
+    }
+
+    .split-text {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 1rem;
+      color: var(--gray-800);
+      line-height: 2;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+    }
+
+    /* Quote Section (dark background) */
+    .quote-section {
+      padding: 8rem 0;
+      background: var(--black);
+      color: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quote-bg-text {
+      position: absolute;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 20vw;
+      color: rgba(255,255,255,0.03);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+    }
+
+    .quote-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      padding: 0 2rem;
+    }
+
+    .quote-mark {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 5rem;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 1.5rem;
+    }
+
+    .quote-text {
+      font-family: 'Shippori Mincho', serif;
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      font-weight: 400;
+      line-height: 1.9;
+      margin-bottom: 2rem;
+    }
+
+    .quote-author {
+      font-size: 0.85rem;
+      color: var(--gray-500);
+      letter-spacing: 0.1em;
+    }
+
+    /* Timeline Section */
+    .timeline-section {
+      padding: 8rem 0;
+      background: var(--white);
+    }
+
+    .timeline-header {
+      text-align: center;
+      margin-bottom: 5rem;
+    }
+
+    .timeline-header h2 {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 2.2rem;
+      font-weight: 500;
+    }
+
+    .timeline {
+      position: relative;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: var(--gray-200);
+      transform: translateX(-50%);
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 5rem;
+      position: relative;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 1.5rem;
+      width: 12px;
+      height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+
+    .timeline-item:nth-child(even) {
+      direction: rtl;
+    }
+
+    .timeline-item:nth-child(even) > * {
+      direction: ltr;
+    }
+
+    .timeline-year {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 2.5rem;
+      color: var(--gray-200);
+      text-align: right;
+      padding-right: 2.5rem;
+    }
+
+    .timeline-item:nth-child(even) .timeline-year {
+      text-align: left;
+      padding-right: 0;
+      padding-left: 2.5rem;
+    }
+
+    .timeline-content {
+      padding-left: 2.5rem;
+    }
+
+    .timeline-item:nth-child(even) .timeline-content {
+      padding-left: 0;
+      padding-right: 2.5rem;
+    }
+
+    .timeline-content h4 {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.2rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .timeline-content p {
+      font-family: 'Noto Serif JP', serif;
+      font-size: 0.95rem;
+      color: var(--gray-800);
+      line-height: 2;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+    }
+
+    /* Stats Section */
+    .stats-section {
+      padding: 6rem 0;
+      background: var(--accent);
+      color: var(--white);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      text-align: center;
+    }
+
+    .stat-item {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+    }
+
+    .stat-item.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .stat-number {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 3.5rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+
+    /* Tips Box */
+    .tips-box {
+      background: var(--cream);
+      padding: 2.5rem;
+      margin: 3rem 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .tips-box h3 {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.2rem;
+      margin-bottom: 1.2rem;
+      color: var(--gray-700);
+    }
+
+    .tips-list {
+      list-style: none;
+    }
+
+    .tips-list li {
+      font-family: 'Noto Serif JP', serif;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid var(--gray-200);
+      font-size: 0.95rem;
+      color: var(--gray-800);
+      line-height: 2;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .tips-list li:last-child {
+      border-bottom: none;
+    }
+
+    .tips-number {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.1rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
     /* === Responsive === */
     @media (max-width: 1024px) {
       .chapter-indicator,
@@ -819,6 +1243,59 @@ if (collection === 'tech') {
 
       .author-avatar {
         margin: 0 auto;
+      }
+
+      /* Photo-Heavy responsive */
+      .intro-section {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+        padding: 5rem 2rem;
+      }
+
+      .intro-text {
+        padding-right: 0;
+      }
+
+      .split-section {
+        grid-template-columns: 1fr;
+      }
+
+      .split-content {
+        padding: 3rem 2rem;
+      }
+
+      .timeline-item {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .timeline::before {
+        left: 0;
+      }
+
+      .timeline-item::before {
+        left: 0;
+      }
+
+      .timeline-year,
+      .timeline-item:nth-child(even) .timeline-year {
+        text-align: left;
+        padding: 0;
+        font-size: 2rem;
+      }
+
+      .timeline-content,
+      .timeline-item:nth-child(even) .timeline-content {
+        padding: 0;
+        padding-left: 1.5rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .full-image {
+        height: 50vh;
       }
     }
 
@@ -911,8 +1388,8 @@ if (collection === 'tech') {
       });
     }
 
-    // Scroll Reveal
-    const revealElements = document.querySelectorAll('.reveal');
+    // Scroll Reveal (including reveal-left, reveal-right, stat-item)
+    const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .stat-item');
     const revealObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {

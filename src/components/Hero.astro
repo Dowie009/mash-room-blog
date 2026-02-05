@@ -42,17 +42,17 @@
             <div class="floor-group">
                 <a data-target="#horizontal-wrapper" class="floor-link hover:text-[var(--accent-color)] transition-colors cursor-pointer">  1F: READING</a>
                 <div class="floor-submenu flex flex-col gap-1 mt-1 ml-6 text-[10px] text-white/60">
-                    <a data-scroll="3565" class="chapter-link hover:text-[var(--accent-color)] transition-colors cursor-pointer">Chapter 01</a>
-                    <a data-scroll="7000" class="chapter-link hover:text-[var(--accent-color)] transition-colors cursor-pointer">Chapter 02</a>
-                    <a data-scroll="9962" class="chapter-link hover:text-[var(--accent-color)] transition-colors cursor-pointer">Chapter 03</a>
+                    <a data-panel="1" class="chapter-link hover:text-[var(--accent-color)] transition-colors cursor-pointer">Chapter 01</a>
+                    <a data-panel="2" class="chapter-link hover:text-[var(--accent-color)] transition-colors cursor-pointer">Chapter 02</a>
+                    <a data-panel="3" class="chapter-link hover:text-[var(--accent-color)] transition-colors cursor-pointer">Chapter 03</a>
                 </div>
             </div>
             <a data-target="#new-post-section" class="floor-link hover:text-[var(--accent-color)] transition-colors cursor-pointer">  2F: NEW POST</a>
             <a data-target="#footer-physics-wrapper" class="floor-link hover:text-[var(--accent-color)] transition-colors cursor-pointer">  3F: DEPART</a>
             <div class="border-t border-white/20 pt-2 mt-2 flex flex-col gap-2">
-                <a href="#" class="floor-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-white/50">STORY LAB →</a>
+                <a href="/story" class="floor-link hover:text-[var(--accent-color)] transition-colors cursor-pointer">STORY LAB →</a>
                 <a href="/dtm" class="floor-link hover:text-[var(--accent-color)] transition-colors cursor-pointer">DTM LAB →</a>
-                <a href="#" class="floor-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-white/50">TECH LAB →</a>
+                <a href="/tech" class="floor-link hover:text-[var(--accent-color)] transition-colors cursor-pointer">TECH LAB →</a>
                 <a href="https://xn--3-sj5c.jp/" target="_blank" rel="noopener noreferrer" class="floor-link hover:text-[var(--accent-color)] transition-colors cursor-pointer border-t border-white/20 pt-2 mt-1">STUDIO HP →</a>
             </div>
         </nav>
@@ -68,9 +68,9 @@
         <span class="cyber-separator">|</span>
         <a data-target="#footer-physics-wrapper" class="horizontal-nav-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">3F</a>
         <span class="cyber-separator">|</span>
-        <a href="#" class="horizontal-nav-link text-white/40 hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">STORY</a>
+        <a href="/story" class="horizontal-nav-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">STORY</a>
         <a href="/dtm" class="horizontal-nav-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">DTM</a>
-        <a href="#" class="horizontal-nav-link text-white/40 hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">TECH</a>
+        <a href="/tech" class="horizontal-nav-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">TECH</a>
     </div>
 </nav>
 
@@ -83,9 +83,9 @@
         <span class="cyber-separator">|</span>
         <a data-target="#footer-physics-wrapper" class="horizontal-nav-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">3F</a>
         <span class="cyber-separator">|</span>
-        <a href="#" class="horizontal-nav-link text-white/40 hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">STORY</a>
+        <a href="/story" class="horizontal-nav-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">STORY</a>
         <a href="/dtm" class="horizontal-nav-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">DTM</a>
-        <a href="#" class="horizontal-nav-link text-white/40 hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">TECH</a>
+        <a href="/tech" class="horizontal-nav-link hover:text-[var(--accent-color)] transition-colors cursor-pointer text-[10px] tracking-widest">TECH</a>
     </div>
 </nav>
 
@@ -443,15 +443,15 @@
 
                             if (scrollProgress >= 0.66) {
                                 // Chapter03
-                                const chapter3 = document.querySelector('.chapter-link[data-scroll="9962"]');
+                                const chapter3 = document.querySelector('.chapter-link[data-panel="3"]');
                                 if (chapter3) chapter3.classList.add('active');
                             } else if (scrollProgress >= 0.33) {
                                 // Chapter02
-                                const chapter2 = document.querySelector('.chapter-link[data-scroll="7000"]');
+                                const chapter2 = document.querySelector('.chapter-link[data-panel="2"]');
                                 if (chapter2) chapter2.classList.add('active');
                             } else if (scrollProgress >= 0) {
                                 // Chapter01
-                                const chapter1 = document.querySelector('.chapter-link[data-scroll="3565"]');
+                                const chapter1 = document.querySelector('.chapter-link[data-panel="1"]');
                                 if (chapter1) chapter1.classList.add('active');
                             }
                         } else {
@@ -523,13 +523,27 @@
                         }
                     });
                     
-                    // Click scroll (Chapterリンク)
+                    // Click scroll (Chapterリンク - ScrollTriggerから動的計算)
                     chapterLinks.forEach(link => {
-                        const scrollValue = link.getAttribute('data-scroll');
-                        if(scrollValue) {
+                        const panelIndex = link.getAttribute('data-panel');
+                        if(panelIndex) {
                             link.addEventListener('click', (e) => {
-                                if (lenis) {
-                                    lenis.scrollTo(parseInt(scrollValue), { duration: 1.5 });
+                                if (!lenis) return;
+                                // ScrollTriggerのtimelineからパネル移動位置を取得
+                                const st = ScrollTrigger.getAll().find(t => t.trigger && t.trigger.id === 'horizontal-wrapper');
+                                if (!st || !st.animation) return;
+                                const tl = st.animation;
+                                const totalDuration = tl.duration();
+                                const totalRange = st.end - st.start;
+                                // パネル移動tween（x: -100vw, -200vw, -300vw）を探す
+                                const targetX = '-' + (parseInt(panelIndex) * 100) + 'vw';
+                                const children = tl.getChildren(false, true, true);
+                                const moveTween = children.find(c => c.vars && c.vars.x === targetX);
+                                if (moveTween) {
+                                    // tweenのend位置をスクロール位置に変換
+                                    const tweenEnd = moveTween.startTime() + moveTween.duration();
+                                    const targetScroll = st.start + (tweenEnd / totalDuration) * totalRange;
+                                    lenis.scrollTo(targetScroll, { duration: 3 });
                                 }
                             });
                         }

@@ -46,7 +46,7 @@ const latestArticles = [
                     </p>
 
                     <!-- 平行四辺形ボタン -->
-                    <div class="flex justify-center gap-3 mb-8">
+                    <div class="flex justify-center gap-3 mb-8 relative" style="z-index: 2; pointer-events: auto;">
                         <a href="/story" class="skew-button"><span class="skew-text">STORY</span></a>
                         <a href="/dtm" class="skew-button"><span class="skew-text">DTM</span></a>
                         <a href="/tech" class="skew-button"><span class="skew-text">TECH</span></a>
@@ -357,6 +357,8 @@ const latestArticles = [
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         border: 1px solid rgba(255, 255, 255, 0.2);
         overflow: hidden;
+        pointer-events: auto;
+        z-index: 2;
     }
 
     .skew-button:hover {

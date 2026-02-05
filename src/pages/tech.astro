@@ -77,12 +77,12 @@ const categories = [
       --accent-cyan: #00ffff;
       --accent-hot: #ff00ff;
       
-      /* Category Colors (Neon) */
-      --col-astro: #00ffff; 
-      --col-react: #ffaa00;
-      --col-css: #ff00ff;
-      --col-ai: #39ff14;  
-      --col-devtips: #ffff00;
+      /* Category Colors (Neon) - 新カテゴリー対応 */
+      --col-ai-experience: #00d4ff;  /* AI体験談 - シアン */
+      --col-ai-tips: #ffaa00;        /* AI TIPS - オレンジ */
+      --col-dev-tools: #a855f7;      /* 開発ツール - パープル */
+      --col-useful-tools: #22c55e;   /* 便利ツール - グリーン */
+      --col-blog-writing: #f97316;   /* ブログ運営 - オレンジレッド */
     }
 
     body {
@@ -189,11 +189,11 @@ const categories = [
     }
 
     /* Category Color Activations */
-    .hud-btn[data-cat="astro"].active { border-color: var(--col-astro); color: var(--col-astro); box-shadow: 0 0 15px var(--col-astro); }
-    .hud-btn[data-cat="react"].active { border-color: var(--col-react); color: var(--col-react); box-shadow: 0 0 15px var(--col-react); }
-    .hud-btn[data-cat="css"].active { border-color: var(--col-css); color: var(--col-css); box-shadow: 0 0 15px var(--col-css); }
-    .hud-btn[data-cat="ai"].active { border-color: var(--col-ai); color: var(--col-ai); box-shadow: 0 0 15px var(--col-ai); }
-    .hud-btn[data-cat="devtips"].active { border-color: var(--col-devtips); color: var(--col-devtips); box-shadow: 0 0 15px var(--col-devtips); }
+    .hud-btn[data-cat="ai-experience"].active { border-color: var(--col-ai-experience); color: var(--col-ai-experience); box-shadow: 0 0 15px var(--col-ai-experience); }
+    .hud-btn[data-cat="ai-tips"].active { border-color: var(--col-ai-tips); color: var(--col-ai-tips); box-shadow: 0 0 15px var(--col-ai-tips); }
+    .hud-btn[data-cat="dev-tools"].active { border-color: var(--col-dev-tools); color: var(--col-dev-tools); box-shadow: 0 0 15px var(--col-dev-tools); }
+    .hud-btn[data-cat="useful-tools"].active { border-color: var(--col-useful-tools); color: var(--col-useful-tools); box-shadow: 0 0 15px var(--col-useful-tools); }
+    .hud-btn[data-cat="blog-writing"].active { border-color: var(--col-blog-writing); color: var(--col-blog-writing); box-shadow: 0 0 15px var(--col-blog-writing); }
 
     /* --- 3. 3D & CARD STYLES --- */
     #tunnel-scene {
@@ -212,11 +212,11 @@ const categories = [
     }
     
     /* Category Neon Colors */
-    .ai-card-3d[data-cat="astro"] { --neon: var(--col-astro); }
-    .ai-card-3d[data-cat="react"] { --neon: var(--col-react); }
-    .ai-card-3d[data-cat="css"] { --neon: var(--col-css); }
-    .ai-card-3d[data-cat="ai"] { --neon: var(--col-ai); }
-    .ai-card-3d[data-cat="devtips"] { --neon: var(--col-devtips); }
+    .ai-card-3d[data-cat="ai-experience"] { --neon: var(--col-ai-experience); }
+    .ai-card-3d[data-cat="ai-tips"] { --neon: var(--col-ai-tips); }
+    .ai-card-3d[data-cat="dev-tools"] { --neon: var(--col-dev-tools); }
+    .ai-card-3d[data-cat="useful-tools"] { --neon: var(--col-useful-tools); }
+    .ai-card-3d[data-cat="blog-writing"] { --neon: var(--col-blog-writing); }
     
     .ai-card-3d {
       position: absolute;
@@ -978,11 +978,11 @@ const categories = [
     .list-row:hover {
       background: #111; color: white;
     }
-    .list-row[data-cat="astro"]:hover { border-left: 4px solid var(--col-astro); }
-    .list-row[data-cat="react"]:hover { border-left: 4px solid var(--col-react); }
-    .list-row[data-cat="css"]:hover { border-left: 4px solid var(--col-css); }
-    .list-row[data-cat="ai"]:hover { border-left: 4px solid var(--col-ai); }
-    .list-row[data-cat="devtips"]:hover { border-left: 4px solid var(--col-devtips); }
+    .list-row[data-cat="ai-experience"]:hover { border-left: 4px solid var(--col-ai-experience); }
+    .list-row[data-cat="ai-tips"]:hover { border-left: 4px solid var(--col-ai-tips); }
+    .list-row[data-cat="dev-tools"]:hover { border-left: 4px solid var(--col-dev-tools); }
+    .list-row[data-cat="useful-tools"]:hover { border-left: 4px solid var(--col-useful-tools); }
+    .list-row[data-cat="blog-writing"]:hover { border-left: 4px solid var(--col-blog-writing); }
     .list-date { font-family: 'Fira Code', monospace; font-size: 0.8rem; }
     .list-title { font-family: 'Zen Old Mincho', serif; font-size: 1.2rem; font-weight: 700; }
     .list-cat { 
@@ -1468,9 +1468,9 @@ const categories = [
         <i data-lucide="grid" class="w-4 h-4 hud-btn-icon"></i>
         <span class="hud-btn-label">ALL</span>
       </button>
-      <button class="hud-btn" data-cat="ai-journey" title="AI JOURNEY">
+      <button class="hud-btn" data-cat="ai-experience" title="AI体験談">
         <i data-lucide="rocket" class="w-4 h-4 hud-btn-icon"></i>
-        <span class="hud-btn-label">AI JOURNEY</span>
+        <span class="hud-btn-label">AI体験談</span>
       </button>
       <button class="hud-btn" data-cat="ai-tips" title="AI TIPS">
         <i data-lucide="lightbulb" class="w-4 h-4 hud-btn-icon"></i>
@@ -1486,7 +1486,7 @@ const categories = [
           <i data-lucide="home" class="w-4 h-4"></i>
           <span>ホームページへ</span>
         </a>
-        <a href="/about" class="sidebar-nav-link">
+        <a href="https://xn--3-sj5c.jp/profile" target="_blank" rel="noopener noreferrer" class="sidebar-nav-link">
           <i data-lucide="user" class="w-4 h-4"></i>
           <span>プロフィール</span>
         </a>
@@ -1571,7 +1571,7 @@ const categories = [
     <div id="coordinate-display">
       <div class="coord-label">MOUSE POSITION</div>
       <div class="coord-value">X: <span id="coord-x">0</span> | Y: <span id="coord-y">0</span></div>
-      <div class="version-info">v2.7.0</div>
+      <div class="version-info">v2.7.3</div>
     </div>
     
     <!-- デバッグ情報表示 -->
@@ -1652,7 +1652,7 @@ const categories = [
     <main class="simple-content">
       <div class="simple-filter" id="simple-filter">
         <button class="simple-filter-btn active" data-cat="ALL">すべて</button>
-        <button class="simple-filter-btn" data-cat="ai-journey">AI JOURNEY</button>
+        <button class="simple-filter-btn" data-cat="ai-experience">AI体験談</button>
         <button class="simple-filter-btn" data-cat="ai-tips">AI TIPS</button>
       </div>
       <div class="simple-sort">
@@ -2961,10 +2961,10 @@ const categories = [
         });
       }
       
-      // アーカイブグリッドに記事を追加（時系列でソート、最大8件に制限して軽量化）
+      // アーカイブグリッドに記事を追加（時系列でソート、全記事表示）
       if (archiveGrid) {
-        // 重複を除去した記事リストを使用（既に時系列でソート済み）、最大8件
-        const archiveArticles = uniqueArticles.slice(0, 8);
+        // 重複を除去した記事リストを使用（既に時系列でソート済み）、仮記事を除外
+        const archiveArticles = uniqueArticles.filter(a => !a.slug.startsWith('temp-'));
         archiveArticles.forEach(article => {
           const card = document.createElement('div');
           card.className = 'archive-card';
@@ -3118,9 +3118,9 @@ const categories = [
           new Date(b.date.replace(/\./g, '-')) - new Date(a.date.replace(/\./g, '-'))
         ).slice(0, 5);
 
-        // おすすめ5件（AI Journeyカテゴリを優先）
+        // おすすめ5件（AI体験談カテゴリを優先）
         const recommendArticles = [...articlesData]
-          .filter(a => a.cat === 'ai-journey')
+          .filter(a => a.cat === 'ai-experience')
           .slice(0, 3)
           .concat(
             [...articlesData]
