@@ -1,0 +1,319 @@
+---
+import MonoJournalLayout from '../../layouts/MonoJournalLayout.astro';
+
+const title = "Notionを卒業、自作コックピットへ";
+const description = "Notionは素晴らしい。でも、自分だけのダッシュボードが欲しくなった。AIと一緒に自作コックピットを作った記録。";
+---
+
+<MonoJournalLayout title={title} description={description}>
+  <!-- Hub Link -->
+  <a href="/tech/ai-journey" class="hub-link" id="hubLink">
+    ← Hub に戻る
+  </a>
+
+  <!-- Progress Indicator -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Chapter Indicator -->
+  <nav class="chapter-indicator">
+    <div class="chapter-dot active" data-section="0" data-label="はじめに"></div>
+    <div class="chapter-dot" data-section="1" data-label="理由"></div>
+    <div class="chapter-dot" data-section="2" data-label="設計"></div>
+    <div class="chapter-dot" data-section="3" data-label="構築"></div>
+    <div class="chapter-dot" data-section="4" data-label="機能"></div>
+    <div class="chapter-dot" data-section="5" data-label="Tips"></div>
+    <div class="chapter-dot" data-section="6" data-label="おわりに"></div>
+  </nav>
+
+  <!-- Share Float -->
+  <div class="share-float">
+    <button class="share-float-btn" onclick="shareTwitter()">𝕏</button>
+    <button class="share-float-btn" onclick="shareFacebook()">f</button>
+    <button class="share-float-btn" onclick="copyLink()">🔗</button>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero in-view" data-section="0">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1920" alt="Dashboard">
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-category">Technology</div>
+      <h1 class="hero-title serif">Notionを卒業、<br>自作コックピットへ</h1>
+      <div class="hero-meta">
+        <span>道ゐ / Dowie</span>
+        <span>2026年1月</span>
+        <span>12 min read</span>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Intro Section -->
+  <section class="intro-section article-container" data-section="1">
+    <div class="intro-text reveal-left">
+      <p class="intro-lead serif">
+        Notionは素晴らしいツールだ。3年以上使ってきた。でも、ある時から物足りなさを感じるようになった。
+      </p>
+      <p class="intro-body">
+        タスク管理、プロジェクト管理、ナレッジベース。全部Notionに入れていた。でも、開くたびに情報の洪水に溺れる感覚。本当に必要な情報だけを見せてくれる、自分だけのダッシュボードが欲しくなった。
+      </p>
+    </div>
+    <div class="intro-image reveal-right">
+      <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200" alt="Custom Dashboard">
+      <div class="image-caption">自分だけのコックピットを作った。</div>
+    </div>
+  </section>
+
+  <!-- Full Width Image -->
+  <div class="full-image reveal">
+    <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=1920" alt="Control Panel">
+    <div class="full-image-overlay">
+      <div class="full-image-text">
+        <h2 class="serif">情報のコントロールを取り戻す</h2>
+        <p>見たいものだけを、見たい形で。情報に振り回されない環境を作る。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Split Section 1 -->
+  <section class="split-section" data-section="2">
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=1200" alt="Planning">
+    </div>
+    <div class="split-content">
+      <div class="split-number serif reveal">01</div>
+      <h2 class="split-title serif reveal">なぜNotionから離れたか</h2>
+      <p class="split-text reveal">
+        Notionは機能が豊富すぎた。できることが多すぎて、何をすべきか迷う。ページが増えすぎて、どこに何があるかわからなくなる。シンプルに「今日やること」「今週の目標」「重要な数字」だけを一目で見たい。そのために自作を決意した。
+      </p>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="split-content">
+      <div class="split-number serif reveal">02</div>
+      <h2 class="split-title serif reveal">要件の整理</h2>
+      <p class="split-text reveal">
+        AIと対話しながら、本当に必要な機能を整理した。「毎朝見たい情報は？」「週に一度確認すべきことは？」「緊急で知りたいことは？」。質問に答えていくうちに、自分が本当に必要としている機能が明確になっていった。
+      </p>
+    </div>
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=1200" alt="Requirements">
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200" alt="Coding">
+    </div>
+    <div class="split-content">
+      <div class="split-number serif reveal">03</div>
+      <h2 class="split-title serif reveal">AIと一緒に構築</h2>
+      <p class="split-text reveal">
+        技術選定もAIに相談。Next.js + Tailwind CSSで構築することに。デザインの参考画像を見せながら「こんな感じで」と伝える。コードはAIが書いてくれる。自分はレビューして調整するだけ。2週間で基本形が完成した。
+      </p>
+    </div>
+  </section>
+
+  <!-- Quote Section -->
+  <section class="quote-section" data-section="3">
+    <div class="quote-bg-text">Cockpit</div>
+    <div class="quote-inner reveal">
+      <div class="quote-mark serif">"</div>
+      <p class="quote-text serif">
+        朝起きて、コーヒーを淹れながらコックピットを開く。今日やることが一目でわかる。気分が上がる。自分だけのダッシュボードがある生活は、思った以上に快適だった。
+      </p>
+      <div class="quote-author">— 使い始めて1ヶ月後</div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="14">0</div>
+        <div class="stat-label">開発日数</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="5">0</div>
+        <div class="stat-label">主要機能数</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="0">0</div>
+        <div class="stat-label">月額コスト</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="100">0</div>
+        <div class="stat-label">カスタマイズ自由度（%）</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline Section -->
+  <section class="timeline-section" data-section="4">
+    <div class="timeline-header reveal">
+      <h2 class="serif">実装した機能</h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Feature 1</div>
+        <div class="timeline-content">
+          <h4 class="serif">デイリーダッシュボード</h4>
+          <p>今日のタスク、今日の予定、今日の目標。朝一番に見る画面。シンプルに「今日やること」だけが表示される。情報過多を防ぐ。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Feature 2</div>
+        <div class="timeline-content">
+          <h4 class="serif">週間レビュー</h4>
+          <p>今週の進捗、達成したこと、来週に持ち越すこと。週に一度の振り返りをサポート。グラフで可視化されるのでモチベーションが上がる。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Feature 3</div>
+        <div class="timeline-content">
+          <h4 class="serif">KPIトラッカー</h4>
+          <p>ブログのPV、SNSのフォロワー数、収益。追跡したい数字をリアルタイムで表示。API連携で自動更新。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Feature 4</div>
+        <div class="timeline-content">
+          <h4 class="serif">クイックメモ</h4>
+          <p>思いついたことをサッと記録。後で整理する前提のラフなメモ帳。Notionに送る連携も実装。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Horizontal Section -->
+  <section class="horizontal-section" data-section="5">
+    <div class="horizontal-header reveal">
+      <h2 class="serif">自作ダッシュボードのコツ</h2>
+      <p style="color: var(--gray-500); font-size: 0.95rem;">作る前に考えるべきこと</p>
+    </div>
+    <div class="horizontal-track" id="horizontalTrack">
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800" alt="Simple">
+        </div>
+        <h4 class="horizontal-item-title serif">機能を絞る</h4>
+        <p class="horizontal-item-desc">あれもこれもと詰め込まない。本当に必要な機能だけに絞る。シンプルさが使いやすさに直結する。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=800" alt="Design">
+        </div>
+        <h4 class="horizontal-item-title serif">デザインにこだわる</h4>
+        <p class="horizontal-item-desc">毎日見るものだから、見た目も大切。自分が気持ちよく使えるデザインに。AIに参考画像を見せて再現してもらう。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800" alt="Iterate">
+        </div>
+        <h4 class="horizontal-item-title serif">使いながら改善</h4>
+        <p class="horizontal-item-desc">最初から完璧を目指さない。使いながら「ここが不便」を見つけて改善。AIがいればすぐに修正できる。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800" alt="Automate">
+        </div>
+        <h4 class="horizontal-item-title serif">自動化を意識</h4>
+        <p class="horizontal-item-desc">手動入力を減らす。API連携やスクレイピングで自動的にデータが更新される仕組みを作る。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conclusion Section -->
+  <section class="conclusion-section" data-section="6">
+    <div class="conclusion-inner">
+      <h2 class="serif reveal">自分だけの操縦席</h2>
+      <p class="conclusion-text reveal">
+        Notionは今も使っている。ナレッジベースや長期プロジェクトの管理には最適。でも、日々の作業の司令塔は自作のコックピットになった。開くたびに、自分の現在地がわかる。
+      </p>
+      <p class="conclusion-text reveal">
+        自分だけのダッシュボードを作るなんて、以前は考えられなかった。でも、AIがあれば技術的なハードルは越えられる。「こうしたい」と伝えれば、コードが返ってくる。レビューして承認するだけ。
+      </p>
+
+      <div class="tips-box reveal">
+        <h3 class="serif">使用技術</h3>
+        <ul class="tips-list">
+          <li>
+            <span class="tips-number">01</span>
+            <span>Next.js - Reactベースのフレームワーク。SSRでパフォーマンスも良い。</span>
+          </li>
+          <li>
+            <span class="tips-number">02</span>
+            <span>Tailwind CSS - ユーティリティファーストのCSS。デザイン調整が楽。</span>
+          </li>
+          <li>
+            <span class="tips-number">03</span>
+            <span>Vercel - デプロイ先。GitHubと連携して自動デプロイ。</span>
+          </li>
+          <li>
+            <span class="tips-number">04</span>
+            <span>Claude Code - 開発パートナー。コードのほとんどはAIが書いた。</span>
+          </li>
+        </ul>
+      </div>
+
+      <p class="conclusion-text reveal">
+        既存のツールに満足できなくなったら、自分で作ってしまう選択肢がある。AIがあれば、それは決して夢物語じゃない。
+      </p>
+    </div>
+  </section>
+
+  <!-- Author Section -->
+  <section class="author-section">
+    <div class="author-inner reveal">
+      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300" alt="Author" class="author-avatar">
+      <div class="author-info">
+        <h4 class="serif">道ゐ / Dowie</h4>
+        <div class="author-role">Music Producer</div>
+        <p class="author-bio">
+          音楽スタジオ運営 / A-Sketch新人発掘担当。AIツールを活用した効率的なコンテンツ制作を日々研究しています。技術的なバックグラウンドはゼロからスタート。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Articles -->
+  <section class="related-section">
+    <div class="related-header reveal">
+      <h3 class="serif">Next Read</h3>
+    </div>
+    <div class="related-grid">
+      <a href="/tech/ai-journey-06-genspark" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600" alt="Genspark">
+        </div>
+        <div class="related-item-category">Technology</div>
+        <h4 class="related-item-title serif">Gensparkで複数AIを使い分ける</h4>
+      </a>
+      <a href="/tech/ai-journey-08-design" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600" alt="Design">
+        </div>
+        <div class="related-item-category">Technology</div>
+        <h4 class="related-item-title serif">AIでデザインを学ぶ</h4>
+      </a>
+      <a href="/tech/ai-journey" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600" alt="AI Hub">
+        </div>
+        <div class="related-item-category">Overview</div>
+        <h4 class="related-item-title serif">AIで一人でここまでやれた｜完全ガイド</h4>
+      </a>
+    </div>
+  </section>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+</MonoJournalLayout>

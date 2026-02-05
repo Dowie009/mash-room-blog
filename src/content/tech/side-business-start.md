@@ -1,7 +1,7 @@
 ---
 title: 副業の始め方｜会社員でも月5万円稼ぐ現実的な方法
 date: 2026-01-20
-category: lifestyle
+category: blog-writing
 thumbnail: /images/tech/thumbnails/side-business.svg
 description: 会社員が副業で月5万円を稼ぐための現実的な方法を解説。スキルや時間に応じた副業の選び方から、始める際の注意点まで紹介します。
 tags: ['副業', '収入', '会社員', 'スキル']

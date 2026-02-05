@@ -1,7 +1,7 @@
 ---
 title: サーバーって結局、課金？無料枠でここまでできる！
 date: 2026-01-28
-category: ai-tips
+category: blog-writing
 thumbnail: /images/Blog_00.png
 description: 初心者が気になる「結局お金かかるの？」に答える。無料でWebサイトを公開する方法を具体的に解説。
 tags: ['Vercel', 'GitHub', '無料ホスティング', '初心者向け']
@@ -11,6 +11,7 @@ learnings:
   - 無料で使えるサービスの全体像
   - Vercel + GitHubの具体的な使い方
   - 無料枠の限界と課金タイミング
+heroImage: https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920
 ---
 
 <h2 id="learning-1">無料で使えるサービスの全体像</h2>

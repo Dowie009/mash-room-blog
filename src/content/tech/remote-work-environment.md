@@ -1,7 +1,7 @@
 ---
 title: リモートワーク環境構築ガイド｜在宅でも集中できる空間づくり
 date: 2026-01-22
-category: lifestyle
+category: useful-tools
 thumbnail: /images/tech/thumbnails/remote-work.svg
 description: 在宅勤務で集中力を維持するための環境構築術を解説。デスク周り、照明、ツールなど、生産性を上げる具体的な方法を紹介します。
 tags: ['リモートワーク', '在宅勤務', '環境構築', '生産性']
@@ -11,6 +11,7 @@ learnings:
   - デスク環境の整え方
   - 集中力を維持する工夫
   - オンライン会議のコツ
+heroImage: https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=1920
 ---
 
 リモートワークが当たり前になった今、**自宅の作業環境**が仕事の質を大きく左右します。

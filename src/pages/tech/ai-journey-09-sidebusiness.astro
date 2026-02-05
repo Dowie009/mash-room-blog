@@ -1,0 +1,312 @@
+---
+import MonoJournalLayout from '../../layouts/MonoJournalLayout.astro';
+
+const title = "AIで副業、実際どこまで稼げる？";
+const description = "AIを使えば副業で稼げる。そんな話をよく聞くようになった。実際にやってみた3ヶ月の記録。";
+---
+
+<MonoJournalLayout title={title} description={description}>
+  <!-- Hub Link -->
+  <a href="/tech/ai-journey" class="hub-link" id="hubLink">
+    ← Hub に戻る
+  </a>
+
+  <!-- Progress Indicator -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Chapter Indicator -->
+  <nav class="chapter-indicator">
+    <div class="chapter-dot active" data-section="0" data-label="はじめに"></div>
+    <div class="chapter-dot" data-section="1" data-label="きっかけ"></div>
+    <div class="chapter-dot" data-section="2" data-label="やったこと"></div>
+    <div class="chapter-dot" data-section="3" data-label="結果"></div>
+    <div class="chapter-dot" data-section="4" data-label="振り返り"></div>
+    <div class="chapter-dot" data-section="5" data-label="Tips"></div>
+    <div class="chapter-dot" data-section="6" data-label="おわりに"></div>
+  </nav>
+
+  <!-- Share Float -->
+  <div class="share-float">
+    <button class="share-float-btn" onclick="shareTwitter()">𝕏</button>
+    <button class="share-float-btn" onclick="shareFacebook()">f</button>
+    <button class="share-float-btn" onclick="copyLink()">🔗</button>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero in-view" data-section="0">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=1920" alt="Money">
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-category">Technology</div>
+      <h1 class="hero-title serif">AIで副業、<br>実際どこまで稼げる？</h1>
+      <div class="hero-meta">
+        <span>道ゐ / Dowie</span>
+        <span>2026年1月</span>
+        <span>15 min read</span>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Intro Section -->
+  <section class="intro-section article-container" data-section="1">
+    <div class="intro-text reveal-left">
+      <p class="intro-lead serif">
+        「AIを使えば副業で月10万円稼げる」。そんな話をSNSでよく見かけるようになった。本当なのか？
+      </p>
+      <p class="intro-body">
+        半信半疑だったけど、試してみることにした。本業の傍ら、AIを活用した副業に3ヶ月間取り組んだ。その結果と、そこから見えてきた現実を正直に記録しておく。
+      </p>
+    </div>
+    <div class="intro-image reveal-right">
+      <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=1200" alt="Earnings">
+      <div class="image-caption">期待と現実のギャップ。それでも収穫はあった。</div>
+    </div>
+  </section>
+
+  <!-- Full Width Image -->
+  <div class="full-image reveal">
+    <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1920" alt="Work">
+    <div class="full-image-overlay">
+      <div class="full-image-text">
+        <h2 class="serif">稼ぐためにやったこと</h2>
+        <p>AIを使ったライティング、デザイン、開発。3つの領域でチャレンジした。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Split Section 1 -->
+  <section class="split-section" data-section="2">
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1200" alt="Writing">
+    </div>
+    <div class="split-content">
+      <div class="split-number serif reveal">01</div>
+      <h2 class="split-title serif reveal">ライティング案件</h2>
+      <p class="split-text reveal">
+        クラウドソーシングでライティング案件を受注。AIで下書きを作り、自分で編集して納品。効率は確かに上がった。でも、単価は低い。月に5万円分の案件をこなすのに、結構な時間がかかった。AIがあっても、品質管理と修正には人間の目が必要。
+      </p>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="split-content">
+      <div class="split-number serif reveal">02</div>
+      <h2 class="split-title serif reveal">デザイン制作</h2>
+      <p class="split-text reveal">
+        バナー制作やSNS投稿用画像の案件。AIでアイデア出しをして、Canvaで仕上げる。これも効率化はできた。でも、クライアントの「なんか違う」への対応は人間がやるしかない。修正の往復で時間が溶けることも多かった。
+      </p>
+    </div>
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1200" alt="Design">
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=1200" alt="Development">
+    </div>
+    <div class="split-content">
+      <div class="split-number serif reveal">03</div>
+      <h2 class="split-title serif reveal">Web制作・開発</h2>
+      <p class="split-text reveal">
+        LP制作やWordPressのカスタマイズ案件。これが一番単価が高かった。AIがコードを書いてくれるので、技術的なハードルは低い。でも、クライアントとのコミュニケーションや要件定義は人間の仕事。総合力が問われる領域だった。
+      </p>
+    </div>
+  </section>
+
+  <!-- Quote Section -->
+  <section class="quote-section" data-section="3">
+    <div class="quote-bg-text">Reality</div>
+    <div class="quote-inner reveal">
+      <div class="quote-mark serif">"</div>
+      <p class="quote-text serif">
+        AIがあっても、楽して稼げるわけじゃなかった。効率化はできる。でも、クライアントワークの本質は変わらない。信頼を積み重ね、期待に応える。その部分は人間にしかできない。
+      </p>
+      <div class="quote-author">— 3ヶ月間の実感</div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="3">0</div>
+        <div class="stat-label">活動期間（ヶ月）</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="12">0</div>
+        <div class="stat-label">受注した案件数</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="18">0</div>
+        <div class="stat-label">月平均収益（万円）</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="40">0</div>
+        <div class="stat-label">効率化率（%）</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline Section -->
+  <section class="timeline-section" data-section="4">
+    <div class="timeline-header reveal">
+      <h2 class="serif">3ヶ月の記録</h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Month 1</div>
+        <div class="timeline-content">
+          <h4 class="serif">手探りの開始</h4>
+          <p>クラウドソーシングに登録。低単価の案件から始める。AIの使い方を模索しながら、徐々にワークフローを確立。月の収益は5万円程度。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Month 2</div>
+        <div class="timeline-content">
+          <h4 class="serif">効率化と単価アップ</h4>
+          <p>AIとの協働に慣れてきた。作業スピードが上がり、より高単価の案件に挑戦。Web制作案件を受注。月の収益は15万円に。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Month 3</div>
+        <div class="timeline-content">
+          <h4 class="serif">継続依頼の獲得</h4>
+          <p>リピートクライアントが増えた。信頼関係ができると、案件獲得が楽になる。でも、時間的な限界も見えてきた。月の収益は20万円超え。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Horizontal Section -->
+  <section class="horizontal-section" data-section="5">
+    <div class="horizontal-header reveal">
+      <h2 class="serif">AI副業で学んだこと</h2>
+      <p style="color: var(--gray-500); font-size: 0.95rem;">期待と現実のギャップから見えたもの</p>
+    </div>
+    <div class="horizontal-track" id="horizontalTrack">
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800" alt="Efficiency">
+        </div>
+        <h4 class="horizontal-item-title serif">効率化はできる</h4>
+        <p class="horizontal-item-desc">AIを使えば、確かに作業効率は上がる。同じ時間でより多くの案件をこなせる。でも、それだけでは大きく稼げない。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=800" alt="Human">
+        </div>
+        <h4 class="horizontal-item-title serif">人間力が問われる</h4>
+        <p class="horizontal-item-desc">クライアントワークの本質は信頼構築。AIがどれだけ優秀でも、コミュニケーションは人間の仕事。ここがボトルネックになる。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800" alt="Competition">
+        </div>
+        <h4 class="horizontal-item-title serif">競争は激しい</h4>
+        <p class="horizontal-item-desc">AIを使っているのは自分だけじゃない。皆がAIで効率化する中、差別化が難しくなる。価格競争に巻き込まれるリスク。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=800" alt="Skill">
+        </div>
+        <h4 class="horizontal-item-title serif">スキルは身につく</h4>
+        <p class="horizontal-item-desc">副業を通じて、確実にスキルは上がった。ライティング、デザイン、開発。AIと協働することで、効率的に学べた。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conclusion Section -->
+  <section class="conclusion-section" data-section="6">
+    <div class="conclusion-inner">
+      <h2 class="serif reveal">現実的な結論</h2>
+      <p class="conclusion-text reveal">
+        3ヶ月で平均月18万円。副業としては悪くない結果かもしれない。でも、「AIがあれば楽に稼げる」というのは幻想だった。効率化できるのは作業の部分だけ。クライアントとの信頼構築、要件の把握、品質管理。ここは変わらず人間の仕事。
+      </p>
+      <p class="conclusion-text reveal">
+        それでも、AIがなかったらここまで稼げなかったと思う。技術的なハードルを下げてくれたからこそ、Web制作のような高単価案件に挑戦できた。スキルの習得も加速した。AIは「楽に稼ぐツール」じゃなく、「可能性を広げるツール」だった。
+      </p>
+
+      <div class="tips-box reveal">
+        <h3 class="serif">収益の内訳</h3>
+        <ul class="tips-list">
+          <li>
+            <span class="tips-number">01</span>
+            <span>ライティング案件 - 月平均5万円。数をこなす必要あり。</span>
+          </li>
+          <li>
+            <span class="tips-number">02</span>
+            <span>デザイン案件 - 月平均3万円。修正対応が大変。</span>
+          </li>
+          <li>
+            <span class="tips-number">03</span>
+            <span>Web制作案件 - 月平均10万円。単価高いが時間もかかる。</span>
+          </li>
+          <li>
+            <span class="tips-number">04</span>
+            <span>その他 - SNS運用代行など小規模案件。</span>
+          </li>
+        </ul>
+      </div>
+
+      <p class="conclusion-text reveal">
+        副業で月10万円以上稼ぐことは可能。でも、それには地道な努力と時間が必要。AIはあくまで効率化ツール。魔法の杖じゃない。でも、使いこなせば確実に武器になる。
+      </p>
+    </div>
+  </section>
+
+  <!-- Author Section -->
+  <section class="author-section">
+    <div class="author-inner reveal">
+      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300" alt="Author" class="author-avatar">
+      <div class="author-info">
+        <h4 class="serif">道ゐ / Dowie</h4>
+        <div class="author-role">Music Producer</div>
+        <p class="author-bio">
+          音楽スタジオ運営 / A-Sketch新人発掘担当。AIツールを活用した効率的なコンテンツ制作を日々研究しています。技術的なバックグラウンドはゼロからスタート。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Articles -->
+  <section class="related-section">
+    <div class="related-header reveal">
+      <h3 class="serif">Next Read</h3>
+    </div>
+    <div class="related-grid">
+      <a href="/tech/ai-journey-08-design" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600" alt="Design">
+        </div>
+        <div class="related-item-category">Technology</div>
+        <h4 class="related-item-title serif">AIでデザインを学ぶ</h4>
+      </a>
+      <a href="/tech/ai-journey-01-wordpress" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=600" alt="WordPress">
+        </div>
+        <div class="related-item-category">Technology</div>
+        <h4 class="related-item-title serif">WordPressブログ、AIと一緒に1週間で立ち上げた話</h4>
+      </a>
+      <a href="/tech/ai-journey" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600" alt="AI Hub">
+        </div>
+        <div class="related-item-category">Overview</div>
+        <h4 class="related-item-title serif">AIで一人でここまでやれた｜完全ガイド</h4>
+      </a>
+    </div>
+  </section>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+</MonoJournalLayout>

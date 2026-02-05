@@ -1,7 +1,7 @@
 ---
 title: Webデザイントレンド2026｜今年注目の5つのスタイル
 date: 2026-01-25
-category: design
+category: blog-writing
 thumbnail: /images/tech/thumbnails/web-design-trends.svg
 description: 2026年に注目されるWebデザインのトレンドを5つ厳選して紹介。最新のデザイン傾向を押さえて、時代に合ったサイト作りを目指しましょう。
 tags: ['Webデザイン', 'トレンド', 'UI/UX', 'デザイン']

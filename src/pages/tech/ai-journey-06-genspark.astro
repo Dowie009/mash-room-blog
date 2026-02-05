@@ -1,0 +1,319 @@
+---
+import MonoJournalLayout from '../../layouts/MonoJournalLayout.astro';
+
+const title = "Gensparkで複数AIを使い分ける";
+const description = "一つのAIに依存するリスク。Gensparkで複数のAIを横断的に使い分ける方法を見つけた。";
+---
+
+<MonoJournalLayout title={title} description={description}>
+  <!-- Hub Link -->
+  <a href="/tech/ai-journey" class="hub-link" id="hubLink">
+    ← Hub に戻る
+  </a>
+
+  <!-- Progress Indicator -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Chapter Indicator -->
+  <nav class="chapter-indicator">
+    <div class="chapter-dot active" data-section="0" data-label="はじめに"></div>
+    <div class="chapter-dot" data-section="1" data-label="課題"></div>
+    <div class="chapter-dot" data-section="2" data-label="Genspark"></div>
+    <div class="chapter-dot" data-section="3" data-label="使い分け"></div>
+    <div class="chapter-dot" data-section="4" data-label="効果"></div>
+    <div class="chapter-dot" data-section="5" data-label="Tips"></div>
+    <div class="chapter-dot" data-section="6" data-label="おわりに"></div>
+  </nav>
+
+  <!-- Share Float -->
+  <div class="share-float">
+    <button class="share-float-btn" onclick="shareTwitter()">𝕏</button>
+    <button class="share-float-btn" onclick="shareFacebook()">f</button>
+    <button class="share-float-btn" onclick="copyLink()">🔗</button>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero in-view" data-section="0">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1920" alt="Multiple Screens">
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-category">Technology</div>
+      <h1 class="hero-title serif">Gensparkで<br>複数AIを使い分ける</h1>
+      <div class="hero-meta">
+        <span>道ゐ / Dowie</span>
+        <span>2026年1月</span>
+        <span>10 min read</span>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Intro Section -->
+  <section class="intro-section article-container" data-section="1">
+    <div class="intro-text reveal-left">
+      <p class="intro-lead serif">
+        ChatGPTだけ、Claudeだけ。一つのAIに依存していた。でも、それぞれのAIには得意不得意がある。
+      </p>
+      <p class="intro-body">
+        ある日、Gensparkというサービスを見つけた。複数のAIモデルを横断的に使えるプラットフォーム。これを使い始めてから、AI活用の幅が一気に広がった。どのAIを、どの場面で使うか。その使い分けを整理しておく。
+      </p>
+    </div>
+    <div class="intro-image reveal-right">
+      <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200" alt="Multiple AI">
+      <div class="image-caption">複数のAIを使い分けることで見えてきたこと。</div>
+    </div>
+  </section>
+
+  <!-- Full Width Image -->
+  <div class="full-image reveal">
+    <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1920" alt="AI Network">
+    <div class="full-image-overlay">
+      <div class="full-image-text">
+        <h2 class="serif">AIも適材適所</h2>
+        <p>それぞれのAIに得意分野がある。使い分けることで、より良い結果が得られる。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Split Section 1 -->
+  <section class="split-section" data-section="2">
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=1200" alt="Analysis">
+    </div>
+    <div class="split-content">
+      <div class="split-number serif reveal">01</div>
+      <h2 class="split-title serif reveal">Gensparkとは</h2>
+      <p class="split-text reveal">
+        Gensparkは複数のAIモデルにアクセスできるプラットフォーム。GPT-4、Claude、Gemini、Llama...様々なモデルを一つのインターフェースで使える。モデルを切り替えながら、同じ質問を投げることも可能。AIの回答を比較検討できる。
+      </p>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="split-content">
+      <div class="split-number serif reveal">02</div>
+      <h2 class="split-title serif reveal">なぜ使い分けるのか</h2>
+      <p class="split-text reveal">
+        AIにはそれぞれ個性がある。Claudeは長文の分析と生成が得意。GPT-4は創造的なタスクに強い。Geminiはリサーチと要約が速い。一つのAIだけでは見えなかった視点が、複数のAIを使うことで見えてくる。セカンドオピニオンとしても有効。
+      </p>
+    </div>
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200" alt="Comparison">
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200" alt="Dashboard">
+    </div>
+    <div class="split-content">
+      <div class="split-number serif reveal">03</div>
+      <h2 class="split-title serif reveal">コスト最適化</h2>
+      <p class="split-text reveal">
+        各AIサービスに個別に課金すると、月額料金がかさむ。Gensparkなら一つのサブスクリプションで複数のAIにアクセス可能。用途に応じて最適なモデルを選べるので、コスパも良い。単純なタスクには軽量モデル、複雑なタスクには高性能モデル。
+      </p>
+    </div>
+  </section>
+
+  <!-- Quote Section -->
+  <section class="quote-section" data-section="3">
+    <div class="quote-bg-text">Multi AI</div>
+    <div class="quote-inner reveal">
+      <div class="quote-mark serif">"</div>
+      <p class="quote-text serif">
+        同じ質問を複数のAIに投げると、それぞれ違う答えが返ってくる。どれが正しいかじゃない。複数の視点を得られることが価値。そこから自分の答えを導き出す。
+      </p>
+      <div class="quote-author">— 使い始めて気づいたこと</div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="5">0</div>
+        <div class="stat-label">使用AIモデル数</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="50">0</div>
+        <div class="stat-label">コスト削減率（%）</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="30">0</div>
+        <div class="stat-label">精度向上率（%）</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="1">0</div>
+        <div class="stat-label">プラットフォーム数</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline Section -->
+  <section class="timeline-section" data-section="4">
+    <div class="timeline-header reveal">
+      <h2 class="serif">AIの使い分け方</h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Claude</div>
+        <div class="timeline-content">
+          <h4 class="serif">長文の分析・生成</h4>
+          <p>ドキュメントの要約、長文の記事作成、複雑なコードレビュー。コンテキストを長く保持できるので、大きなプロジェクトに向いている。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">GPT-4</div>
+        <div class="timeline-content">
+          <h4 class="serif">創造的なタスク</h4>
+          <p>アイデア出し、ブレインストーミング、クリエイティブライティング。発想の幅が広く、意外な提案が出てくることが多い。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Gemini</div>
+        <div class="timeline-content">
+          <h4 class="serif">リサーチと要約</h4>
+          <p>最新情報の検索、複数ソースの要約、ファクトチェック。Googleとの連携で、リアルタイムの情報にアクセスできる。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Llama</div>
+        <div class="timeline-content">
+          <h4 class="serif">シンプルなタスク</h4>
+          <p>単純な質問、定型的な作業。軽量で高速なので、簡単なタスクにはこれで十分。コストも低い。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Horizontal Section -->
+  <section class="horizontal-section" data-section="5">
+    <div class="horizontal-header reveal">
+      <h2 class="serif">複数AI活用のコツ</h2>
+      <p style="color: var(--gray-500); font-size: 0.95rem;">効果的に使い分けるために</p>
+    </div>
+    <div class="horizontal-track" id="horizontalTrack">
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800" alt="Compare">
+        </div>
+        <h4 class="horizontal-item-title serif">比較してみる</h4>
+        <p class="horizontal-item-desc">重要な質問は複数のAIに投げる。回答を比較して、最も納得できるものを採用。異なる視点を得られる。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800" alt="Specialize">
+        </div>
+        <h4 class="horizontal-item-title serif">得意分野を把握する</h4>
+        <p class="horizontal-item-desc">各AIの得意分野を覚えておく。タスクに応じて最適なAIを選ぶ。使い込むほど使い分けが上手くなる。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=800" alt="Verify">
+        </div>
+        <h4 class="horizontal-item-title serif">クロスチェックする</h4>
+        <p class="horizontal-item-desc">一つのAIの回答を、別のAIで検証。特にファクトチェックは複数のソースで確認。精度が上がる。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=800" alt="Optimize">
+        </div>
+        <h4 class="horizontal-item-title serif">コストを意識する</h4>
+        <p class="horizontal-item-desc">単純なタスクには軽量モデル。複雑なタスクには高性能モデル。メリハリをつけてコスト最適化。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conclusion Section -->
+  <section class="conclusion-section" data-section="6">
+    <div class="conclusion-inner">
+      <h2 class="serif reveal">一つに依存しない</h2>
+      <p class="conclusion-text reveal">
+        一つのAIだけに頼っていた時期がある。でも、それはリスクでもあった。サービスがダウンしたら？ポリシーが変わったら？価格が上がったら？複数のAIを使えるようになって、その依存リスクから解放された。
+      </p>
+      <p class="conclusion-text reveal">
+        Gensparkのようなプラットフォームを使えば、複数のAIにシームレスにアクセスできる。それぞれのAIの強みを活かし、弱みを補い合う。これが今の自分のAI活用スタイルになっている。
+      </p>
+
+      <div class="tips-box reveal">
+        <h3 class="serif">使い分けの例</h3>
+        <ul class="tips-list">
+          <li>
+            <span class="tips-number">01</span>
+            <span>記事の構成案はClaude、アイデア出しはGPT-4、情報収集はGemini。</span>
+          </li>
+          <li>
+            <span class="tips-number">02</span>
+            <span>コードレビューはClaude、バグ修正のアイデアはGPT-4。</span>
+          </li>
+          <li>
+            <span class="tips-number">03</span>
+            <span>簡単な質問はLlama、複雑な分析はClaude。</span>
+          </li>
+          <li>
+            <span class="tips-number">04</span>
+            <span>重要な判断は複数AIでクロスチェック。</span>
+          </li>
+        </ul>
+      </div>
+
+      <p class="conclusion-text reveal">
+        AIは一つじゃない。選択肢があることを知ると、活用の幅が広がる。適材適所で使い分けることで、より良い結果が得られる。
+      </p>
+    </div>
+  </section>
+
+  <!-- Author Section -->
+  <section class="author-section">
+    <div class="author-inner reveal">
+      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300" alt="Author" class="author-avatar">
+      <div class="author-info">
+        <h4 class="serif">道ゐ / Dowie</h4>
+        <div class="author-role">Music Producer</div>
+        <p class="author-bio">
+          音楽スタジオ運営 / A-Sketch新人発掘担当。AIツールを活用した効率的なコンテンツ制作を日々研究しています。技術的なバックグラウンドはゼロからスタート。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Articles -->
+  <section class="related-section">
+    <div class="related-header reveal">
+      <h3 class="serif">Next Read</h3>
+    </div>
+    <div class="related-grid">
+      <a href="/tech/ai-journey-05-writing" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600" alt="Writing">
+        </div>
+        <div class="related-item-category">Technology</div>
+        <h4 class="related-item-title serif">AIを活用した効率的なライティング術</h4>
+      </a>
+      <a href="/tech/ai-journey-07-cockpit" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600" alt="Cockpit">
+        </div>
+        <div class="related-item-category">Technology</div>
+        <h4 class="related-item-title serif">Notionを卒業、自作コックピットへ</h4>
+      </a>
+      <a href="/tech/ai-journey" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600" alt="AI Hub">
+        </div>
+        <div class="related-item-category">Overview</div>
+        <h4 class="related-item-title serif">AIで一人でここまでやれた｜完全ガイド</h4>
+      </a>
+    </div>
+  </section>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+</MonoJournalLayout>

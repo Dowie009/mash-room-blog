@@ -1,7 +1,7 @@
 ---
 title: Notion活用術｜仕事効率が3倍になる設定と使い方
 date: 2026-01-27
-category: tools
+category: useful-tools
 thumbnail: /images/tech/thumbnails/notion-setup.svg
 description: Notionを使いこなして仕事効率を劇的に上げる方法を解説。データベース機能やテンプレートの活用法など、具体的な設定手順を紹介します。
 tags: ['Notion', '効率化', 'タスク管理', 'ツール']
@@ -11,6 +11,7 @@ learnings:
   - Notionの基本設定とワークスペース構築
   - データベース機能の活用法
   - チームでの効果的な使い方
+heroImage: https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=1920
 ---
 
 Notionを使い始めたけど、「機能が多すぎてどう使えばいいかわからない」という声をよく聞きます。

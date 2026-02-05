@@ -1,0 +1,940 @@
+---
+/**
+ * PostLayoutMonoJournal.astro - Mono Journal形式の記事レイアウト
+ *
+ * エレガントなスクロール体験、写真重視のデザイン
+ * Shippori Mincho + Inter フォント使用
+ */
+import Layout from './Layout.astro';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  frontmatter: {
+    title: string;
+    date: Date;
+    category: string;
+    description?: string;
+    tags?: string[];
+    thumbnail?: string;
+    heroImage?: string;
+    readTime?: string;
+  };
+  collection?: 'tech' | 'gear' | 'story' | 'ai';
+}
+
+const { frontmatter, collection = 'tech' } = Astro.props;
+
+// 日付フォーマット
+const formatDate = (date: Date) => {
+  return date.toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+};
+
+// カテゴリ表示名
+const categoryConfig: Record<string, { label: string }> = {
+  'ai-journey': { label: 'AI JOURNEY' },
+  'ai-tips': { label: 'AI TIPS' },
+};
+
+// コレクションごとの設定
+const collectionConfig: Record<string, { href: string; label: string }> = {
+  tech: { href: '/tech', label: 'TECH LAB' },
+  gear: { href: '/gear', label: 'GEAR LAB' },
+  story: { href: '/story', label: 'STORY LAB' },
+};
+
+const config = collectionConfig[collection] || collectionConfig.tech;
+const catConfig = categoryConfig[frontmatter.category] || { label: frontmatter.category?.toUpperCase() || 'ARTICLE' };
+
+// 読了時間
+const readTime = frontmatter.readTime || '5 min read';
+
+// ヒーロー画像
+const heroImage = frontmatter.heroImage || frontmatter.thumbnail || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1920';
+
+// 関連記事（同じカテゴリ優先 + シャッフル）
+let relatedPosts: Array<{ slug: string; title: string; date: Date; thumbnail?: string; category: string }> = [];
+
+if (collection === 'tech') {
+  const allPosts = await getCollection('tech', ({ data }) => !data.draft);
+  const currentSlug = Astro.url.pathname.split('/').pop();
+  const currentCategory = frontmatter.category;
+
+  // 現在の記事を除外
+  const otherPosts = allPosts.filter(post => post.slug !== currentSlug);
+
+  // 同じカテゴリの記事を優先
+  const sameCategoryPosts = otherPosts.filter(post => post.data.category === currentCategory);
+  const differentCategoryPosts = otherPosts.filter(post => post.data.category !== currentCategory);
+
+  // シャッフル関数
+  const shuffle = <T>(array: T[]): T[] => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+
+  // 同じカテゴリからシャッフルして取得、足りなければ別カテゴリから補充
+  const shuffledSame = shuffle(sameCategoryPosts);
+  const shuffledDifferent = shuffle(differentCategoryPosts);
+  const combined = [...shuffledSame, ...shuffledDifferent].slice(0, 3);
+
+  relatedPosts = combined.map(post => ({
+    slug: post.slug,
+    title: post.data.title,
+    date: post.data.date,
+    thumbnail: post.data.thumbnail,
+    category: post.data.category
+  }));
+}
+---
+
+<Layout title={`${frontmatter.title} | ${config.label}`}>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <div class="mono-journal">
+    <!-- Progress Indicator -->
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Chapter Indicator -->
+    <nav class="chapter-indicator" id="chapterIndicator">
+      <!-- JSで動的生成 -->
+    </nav>
+
+    <!-- Back to Lab -->
+    <a href={config.href} class="back-to-lab" id="backToLab">
+      <span class="back-arrow">←</span>
+      <span class="back-text">{config.label}</span>
+    </a>
+
+    <!-- Hero Section -->
+    <section class="hero" data-section="0">
+      <div class="hero-bg">
+        <img src={heroImage} alt={frontmatter.title} />
+      </div>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-category">{catConfig.label}</div>
+        <h1 class="hero-title serif">{frontmatter.title}</h1>
+        <div class="hero-meta">
+          <span>道ゐ / Dowie</span>
+          <span>{formatDate(frontmatter.date)}</span>
+          <span>{readTime}</span>
+        </div>
+      </div>
+      <div class="hero-scroll">
+        <span>Scroll</span>
+        <div class="scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- Article Content -->
+    <article class="article-container" data-section="1">
+      <div class="article-inner">
+        <slot />
+      </div>
+    </article>
+
+    <!-- Author Box -->
+    <section class="author-section">
+      <div class="author-inner">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200" alt="Author" class="author-avatar" />
+        <div class="author-info">
+          <h4 class="serif">道ゐ / Dowie</h4>
+          <div class="author-role">Music Producer</div>
+          <p class="author-bio">
+            音楽スタジオ運営 / A-Sketch新人発掘担当。AIツールを活用した効率的なコンテンツ制作を日々研究しています。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Share Float -->
+    <div class="share-float">
+      <button class="share-float-btn" id="shareTwitter">𝕏</button>
+      <button class="share-float-btn" id="shareFacebook">f</button>
+      <button class="share-float-btn" id="copyLink">🔗</button>
+    </div>
+
+    <!-- Related Articles -->
+    {relatedPosts.length > 0 && (
+      <section class="related-section">
+        <div class="related-header">
+          <h3 class="serif">Related Articles</h3>
+        </div>
+        <div class="related-grid">
+          {relatedPosts.map(post => (
+            <a href={`/tech/${post.slug}`} class="related-item">
+              <div class="related-item-image">
+                <img src={post.thumbnail || 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600'} alt={post.title} />
+              </div>
+              <div class="related-item-category">{categoryConfig[post.category]?.label || post.category}</div>
+              <h4 class="related-item-title serif">{post.title}</h4>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-inner">
+        <div>
+          <div class="footer-brand serif">MASHROOM STUDIO</div>
+          <p class="footer-desc">音楽とテクノロジーの交差点で、新しい表現を探求しています。</p>
+        </div>
+        <div>
+          <div class="footer-title">Navigate</div>
+          <ul class="footer-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/tech">Tech Lab</a></li>
+            <li><a href="/dtm">DTM Lab</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-title">Connect</div>
+          <ul class="footer-links">
+            <li><a href="#">Twitter</a></li>
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">YouTube</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 道ゐ / Dowie. All rights reserved.</span>
+      </div>
+    </footer>
+
+    <!-- Back to Top -->
+    <button class="back-to-top" id="backToTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+  </div>
+
+  <style is:global>
+    /* === CSS Variables === */
+    :root {
+      --black: #0d0d0d;
+      --white: #ffffff;
+      --cream: #f8f6f3;
+      --gray-100: #e8e6e3;
+      --gray-200: #d0cdc8;
+      --gray-500: #4a4845;
+      --gray-700: #2a2826;
+      --accent: #4a7c6f;
+      --accent-dark: #3a6358;
+    }
+
+    /* === Base Styles === */
+    .mono-journal {
+      font-family: 'Inter', 'Shippori Mincho', serif;
+      background: var(--cream);
+      color: var(--gray-700);
+      line-height: 1.9;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .mono-journal * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .mono-journal ::selection {
+      background: var(--accent);
+      color: var(--white);
+    }
+
+    .serif {
+      font-family: 'Shippori Mincho', serif;
+    }
+
+    /* === Progress Bar === */
+    .progress-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: transparent;
+      z-index: 9999;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* === Chapter Indicator === */
+    .chapter-indicator {
+      position: fixed;
+      left: 3rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .chapter-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--gray-200);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .chapter-dot::before {
+      content: attr(data-label);
+      position: absolute;
+      left: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .chapter-dot:hover::before {
+      opacity: 1;
+    }
+
+    .chapter-dot.active {
+      background: var(--accent);
+      transform: scale(1.3);
+    }
+
+    /* === Back to Lab === */
+    .back-to-lab {
+      position: fixed;
+      top: 2rem;
+      left: 2rem;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--white);
+      text-decoration: none;
+      padding: 0.6rem 1rem;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+    .back-to-lab:hover {
+      background: rgba(0,0,0,0.5);
+    }
+
+    .back-to-lab.scrolled {
+      color: var(--gray-700);
+      background: var(--white);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    /* === Hero Section === */
+    .hero {
+      height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .hero-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.1);
+      animation: heroZoom 8s ease-out forwards;
+    }
+
+    @keyframes heroZoom {
+      to { transform: scale(1); }
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.3) 100%);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 6rem;
+      max-width: 900px;
+      color: var(--white);
+    }
+
+    .hero-category {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1s 0.3s forwards;
+    }
+
+    .hero-title {
+      font-size: clamp(2.2rem, 5vw, 3.5rem);
+      font-weight: 500;
+      line-height: 1.3;
+      margin-bottom: 2rem;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp 1s 0.5s forwards;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 2rem;
+      font-size: 0.8rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1s 0.7s forwards;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      color: var(--white);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      opacity: 0;
+      animation: fadeUp 1s 1s forwards;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(to bottom, var(--white), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { transform: scaleY(0.5); opacity: 0.5; }
+      50% { transform: scaleY(1); opacity: 1; }
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* === Article Content === */
+    .article-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 6rem 2rem;
+    }
+
+    .article-inner {
+      font-size: 1.05rem;
+      line-height: 2.2;
+      color: var(--gray-700);
+    }
+
+    .article-inner h2 {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.8rem;
+      font-weight: 500;
+      margin: 4rem 0 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .article-inner h3 {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.4rem;
+      font-weight: 500;
+      margin: 3rem 0 1.5rem;
+      color: var(--accent-dark);
+    }
+
+    .article-inner p {
+      margin-bottom: 1.8rem;
+    }
+
+    .article-inner p:first-of-type::first-letter {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 3.5rem;
+      float: left;
+      line-height: 1;
+      margin-right: 0.8rem;
+      margin-top: 0.3rem;
+      color: var(--accent);
+    }
+
+    .article-inner img {
+      width: 100%;
+      height: auto;
+      margin: 2rem 0;
+      border-radius: 4px;
+    }
+
+    .article-inner blockquote {
+      margin: 3rem 0;
+      padding: 2rem 2.5rem;
+      background: var(--white);
+      border-left: 4px solid var(--accent);
+      font-style: italic;
+      color: var(--gray-500);
+    }
+
+    .article-inner ul, .article-inner ol {
+      margin: 1.5rem 0;
+      padding-left: 1.5rem;
+    }
+
+    .article-inner li {
+      margin-bottom: 0.8rem;
+    }
+
+    .article-inner code {
+      background: var(--white);
+      padding: 0.2rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.9em;
+      color: var(--accent-dark);
+    }
+
+    .article-inner pre {
+      background: var(--black);
+      color: var(--white);
+      padding: 1.5rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 2rem 0;
+    }
+
+    .article-inner pre code {
+      background: none;
+      padding: 0;
+      color: inherit;
+    }
+
+    /* === Author Section === */
+    .author-section {
+      padding: 4rem 0;
+      border-top: 1px solid var(--gray-200);
+      border-bottom: 1px solid var(--gray-200);
+      background: var(--white);
+    }
+
+    .author-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .author-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .author-info h4 {
+      font-size: 1.2rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .author-role {
+      font-size: 0.75rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .author-bio {
+      font-size: 0.9rem;
+      color: var(--gray-500);
+      line-height: 1.8;
+    }
+
+    /* === Share Float === */
+    .share-float {
+      position: fixed;
+      right: 3rem;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      z-index: 100;
+    }
+
+    .share-float-btn {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--gray-200);
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      color: var(--gray-500);
+    }
+
+    .share-float-btn:hover {
+      background: var(--black);
+      border-color: var(--black);
+      color: var(--white);
+    }
+
+    /* === Related Articles === */
+    .related-section {
+      padding: 6rem 0;
+      background: var(--cream);
+    }
+
+    .related-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .related-header h3 {
+      font-size: 1.8rem;
+      font-weight: 500;
+    }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .related-item {
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .related-item-image {
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      margin-bottom: 1.2rem;
+    }
+
+    .related-item-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .related-item:hover .related-item-image img {
+      transform: scale(1.05);
+    }
+
+    .related-item-category {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .related-item-title {
+      font-size: 1.1rem;
+      line-height: 1.5;
+      transition: color 0.3s ease;
+    }
+
+    .related-item:hover .related-item-title {
+      color: var(--accent);
+    }
+
+    /* === Footer === */
+    footer {
+      background: var(--black);
+      color: var(--white);
+      padding: 5rem 2rem 2rem;
+    }
+
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+
+    .footer-brand {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .footer-desc {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.8;
+    }
+
+    .footer-title {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 1rem;
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.6rem;
+    }
+
+    .footer-links a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--white);
+    }
+
+    .footer-bottom {
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* === Back to Top === */
+    .back-to-top {
+      position: fixed;
+      bottom: 3rem;
+      right: 3rem;
+      width: 50px;
+      height: 50px;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 99;
+      font-size: 1.2rem;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .back-to-top:hover {
+      background: var(--black);
+      border-color: var(--black);
+      color: var(--white);
+    }
+
+    /* === Scroll Reveal === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* === Responsive === */
+    @media (max-width: 1024px) {
+      .chapter-indicator,
+      .share-float {
+        display: none;
+      }
+
+      .related-grid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+
+      .footer-inner {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .author-inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .author-avatar {
+        margin: 0 auto;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-content {
+        padding: 3rem 2rem;
+      }
+
+      .hero-title {
+        font-size: 1.8rem;
+      }
+
+      .hero-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .back-to-lab {
+        top: 1rem;
+        left: 1rem;
+        font-size: 0.75rem;
+        padding: 0.5rem 0.8rem;
+      }
+
+      .article-container {
+        padding: 4rem 1.5rem;
+      }
+
+      .back-to-top {
+        bottom: 1.5rem;
+        right: 1.5rem;
+        width: 44px;
+        height: 44px;
+      }
+    }
+  </style>
+
+  <script is:inline>
+    // Progress Bar
+    window.addEventListener('scroll', () => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('progressBar').style.width = scrolled + '%';
+
+      // Back to Top visibility
+      const backToTop = document.getElementById('backToTop');
+      if (backToTop) {
+        backToTop.classList.toggle('visible', winScroll > 500);
+      }
+
+      // Back to Lab color change
+      const backToLab = document.getElementById('backToLab');
+      if (backToLab) {
+        backToLab.classList.toggle('scrolled', winScroll > window.innerHeight * 0.8);
+      }
+    });
+
+    // Chapter Navigation
+    const sections = document.querySelectorAll('[data-section]');
+    const chapterIndicator = document.getElementById('chapterIndicator');
+
+    if (chapterIndicator && sections.length > 0) {
+      // Create dots
+      const labels = ['Top', 'Article'];
+      sections.forEach((section, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'chapter-dot' + (index === 0 ? ' active' : '');
+        dot.dataset.section = index;
+        dot.dataset.label = labels[index] || '';
+        dot.addEventListener('click', () => {
+          section.scrollIntoView({ behavior: 'smooth' });
+        });
+        chapterIndicator.appendChild(dot);
+      });
+
+      // Update active dot on scroll
+      window.addEventListener('scroll', () => {
+        let current = 0;
+        sections.forEach((section, index) => {
+          const sectionTop = section.offsetTop;
+          if (window.scrollY >= sectionTop - 300) {
+            current = index;
+          }
+        });
+
+        document.querySelectorAll('.chapter-dot').forEach((dot, index) => {
+          dot.classList.toggle('active', index === current);
+        });
+      });
+    }
+
+    // Scroll Reveal
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // Share Functions
+    document.getElementById('shareTwitter')?.addEventListener('click', () => {
+      window.open('https://twitter.com/intent/tweet?url=' + encodeURIComponent(location.href) + '&text=' + encodeURIComponent(document.title), '_blank');
+    });
+
+    document.getElementById('shareFacebook')?.addEventListener('click', () => {
+      window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(location.href), '_blank');
+    });
+
+    document.getElementById('copyLink')?.addEventListener('click', () => {
+      navigator.clipboard.writeText(location.href);
+      alert('リンクをコピーしました');
+    });
+  </script>
+</Layout>

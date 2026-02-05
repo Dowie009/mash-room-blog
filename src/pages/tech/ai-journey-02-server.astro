@@ -1,0 +1,312 @@
+---
+import MonoJournalLayout from '../../layouts/MonoJournalLayout.astro';
+
+const title = "サーバー構築をAIに聞きながらやってみた";
+const description = "VPSって何？SSH接続？ファイアウォール？技術用語の嵐に立ち向かいながら、AIと一緒にサーバーを構築した記録。";
+---
+
+<MonoJournalLayout title={title} description={description}>
+  <!-- Hub Link -->
+  <a href="/tech/ai-journey" class="hub-link" id="hubLink">
+    ← Hub に戻る
+  </a>
+
+  <!-- Progress Indicator -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Chapter Indicator -->
+  <nav class="chapter-indicator">
+    <div class="chapter-dot active" data-section="0" data-label="はじめに"></div>
+    <div class="chapter-dot" data-section="1" data-label="きっかけ"></div>
+    <div class="chapter-dot" data-section="2" data-label="VPSとは"></div>
+    <div class="chapter-dot" data-section="3" data-label="構築手順"></div>
+    <div class="chapter-dot" data-section="4" data-label="タイムライン"></div>
+    <div class="chapter-dot" data-section="5" data-label="Tips"></div>
+    <div class="chapter-dot" data-section="6" data-label="おわりに"></div>
+  </nav>
+
+  <!-- Share Float -->
+  <div class="share-float">
+    <button class="share-float-btn" onclick="shareTwitter()">𝕏</button>
+    <button class="share-float-btn" onclick="shareFacebook()">f</button>
+    <button class="share-float-btn" onclick="copyLink()">🔗</button>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero in-view" data-section="0">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1920" alt="Server Room">
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-category">Technology</div>
+      <h1 class="hero-title serif">サーバー構築を<br>AIに聞きながらやってみた</h1>
+      <div class="hero-meta">
+        <span>道ゐ / Dowie</span>
+        <span>2026年1月</span>
+        <span>12 min read</span>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Intro Section -->
+  <section class="intro-section article-container" data-section="1">
+    <div class="intro-text reveal-left">
+      <p class="intro-lead serif">
+        自分専用のサーバーが欲しくなった。クラウドストレージに頼らず、自分のデータは自分で管理したい。
+      </p>
+      <p class="intro-body">
+        でも、サーバー構築なんてやったことがない。VPSって何？SSH接続？ファイアウォール？技術用語の嵐に完全に迷子だった。そんな状態から、AIと対話しながら自分専用サーバーを立ち上げた。その全工程を記録しておく。
+      </p>
+    </div>
+    <div class="intro-image reveal-right">
+      <img src="https://images.unsplash.com/photo-1597852074816-d933c7d2b988?w=1200" alt="Server Hardware">
+      <div class="image-caption">物理サーバーは使わず、VPSを選択した。</div>
+    </div>
+  </section>
+
+  <!-- Full Width Image -->
+  <div class="full-image reveal">
+    <img src="https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=1920" alt="Network">
+    <div class="full-image-overlay">
+      <div class="full-image-text">
+        <h2 class="serif">見えないインフラを理解する</h2>
+        <p>サーバーの向こう側で何が起きているのか。AIが一つずつ解説してくれた。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Split Section 1 -->
+  <section class="split-section" data-section="2">
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1484557052118-f32bd25b45b5?w=1200" alt="Cloud Computing">
+    </div>
+    <div class="split-content">
+      <div class="split-number serif reveal">01</div>
+      <h2 class="split-title serif reveal">VPSの選定</h2>
+      <p class="split-text reveal">
+        まずはVPS（仮想専用サーバー）の選び方から。「初心者向けのVPSを教えて」とAIに聞いた。ConoHa VPS、さくらのVPS、Vultr、DigitalOcean...各社の特徴と料金を整理してもらい、月額1,000円以下で始められるConoHa VPSを選んだ。契約からサーバー起動まで30分もかからなかった。
+      </p>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="split-content">
+      <div class="split-number serif reveal">02</div>
+      <h2 class="split-title serif reveal">SSH接続の設定</h2>
+      <p class="split-text reveal">
+        サーバーに接続するにはSSHという方法を使う。「SSHって何？」から始まり、公開鍵と秘密鍵の生成、authorized_keysへの登録...全部AIに教わった。ターミナルに打ち込むコマンドも一つずつ確認しながら。エラーが出たら即座にAIに貼り付けて解決策を聞く。この繰り返しで少しずつ進んでいった。
+      </p>
+    </div>
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1629654297299-c8506221ca97?w=1200" alt="Terminal">
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1200" alt="Security">
+    </div>
+    <div class="split-content">
+      <div class="split-number serif reveal">03</div>
+      <h2 class="split-title serif reveal">セキュリティ設定</h2>
+      <p class="split-text reveal">
+        rootログインの禁止、ファイアウォール（ufw）の設定、fail2banの導入。サーバーを守るための設定は山ほどあった。「最低限やるべきセキュリティ設定を教えて」と聞いたら、優先度順にリストアップしてくれた。一つずつ確認しながら設定を完了。自分のサーバーが外部の攻撃から守られている実感が湧いた。
+      </p>
+    </div>
+  </section>
+
+  <!-- Quote Section -->
+  <section class="quote-section" data-section="3">
+    <div class="quote-bg-text">Server</div>
+    <div class="quote-inner reveal">
+      <div class="quote-mark serif">"</div>
+      <p class="quote-text serif">
+        コマンドを打つたびにドキドキした。何か壊したらどうしよう。でも、AIがいつでも横にいてくれる安心感が大きかった。「このコマンドは何をする？」と聞けば、丁寧に説明してくれる。
+      </p>
+      <div class="quote-author">— 構築中のメモより</div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="3">0</div>
+        <div class="stat-label">構築日数</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="200">0</div>
+        <div class="stat-label">入力したコマンド数</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="980">0</div>
+        <div class="stat-label">月額コスト（円）</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="100">0</div>
+        <div class="stat-label">稼働率（%）</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline Section -->
+  <section class="timeline-section" data-section="4">
+    <div class="timeline-header reveal">
+      <h2 class="serif">構築の流れ</h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Day 1</div>
+        <div class="timeline-content">
+          <h4 class="serif">VPS契約とOS選択</h4>
+          <p>ConoHa VPSで契約。OSはUbuntu 22.04 LTSを選択。「なぜUbuntuがおすすめ？」とAIに聞いたら、情報が多く初心者向けとのこと。サーバーが起動した瞬間は感動した。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Day 2</div>
+        <div class="timeline-content">
+          <h4 class="serif">SSH設定とセキュリティ強化</h4>
+          <p>SSH鍵の生成から接続まで。パスワード認証を無効化してセキュリティを強化。ufwでポート22, 80, 443のみ開放。fail2banで不正アクセスを自動ブロック。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Day 3</div>
+        <div class="timeline-content">
+          <h4 class="serif">Nginxとドメイン設定</h4>
+          <p>WebサーバーとしてNginxをインストール。独自ドメインを紐付けて、Let's EncryptでSSL証明書を取得。https://でアクセスできるようになった時は達成感があった。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Horizontal Section -->
+  <section class="horizontal-section" data-section="5">
+    <div class="horizontal-header reveal">
+      <h2 class="serif">サーバー構築のコツ</h2>
+      <p style="color: var(--gray-500); font-size: 0.95rem;">初心者が躓きやすいポイントを回避するために</p>
+    </div>
+    <div class="horizontal-track" id="horizontalTrack">
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800" alt="Backup">
+        </div>
+        <h4 class="horizontal-item-title serif">スナップショットを取る</h4>
+        <p class="horizontal-item-desc">大きな変更の前にはサーバーのスナップショットを取っておく。失敗しても即座に戻せる安心感。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800" alt="Command">
+        </div>
+        <h4 class="horizontal-item-title serif">コマンドの意味を理解する</h4>
+        <p class="horizontal-item-desc">コピペする前に「これは何をするコマンド？」とAIに確認。理解してから実行すると、トラブル時の対応が変わる。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?w=800" alt="Log">
+        </div>
+        <h4 class="horizontal-item-title serif">ログを読む習慣</h4>
+        <p class="horizontal-item-desc">エラーが起きたらまずログを確認。/var/log/ 配下のログファイルをAIに読み解いてもらう。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800" alt="Documentation">
+        </div>
+        <h4 class="horizontal-item-title serif">やったことを記録する</h4>
+        <p class="horizontal-item-desc">どのコマンドを打ったか、何を変更したか。メモしておくと後から見返せる。同じサーバーを立てるときにも役立つ。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conclusion Section -->
+  <section class="conclusion-section" data-section="6">
+    <div class="conclusion-inner">
+      <h2 class="serif reveal">自分のサーバーを持つということ</h2>
+      <p class="conclusion-text reveal">
+        3日間でVPSを立ち上げ、Webサーバーとして稼働させることができた。自分専用のサーバーがインターネット上に存在している。その事実だけでテンションが上がる。
+      </p>
+      <p class="conclusion-text reveal">
+        サーバー構築は、以前なら専門知識がないと手が出せない領域だった。でも今はAIがある。「これは何？」「なぜこうする？」と聞き続ければ、理解しながら進められる。
+      </p>
+
+      <div class="tips-box reveal">
+        <h3 class="serif">インストールしたもの</h3>
+        <ul class="tips-list">
+          <li>
+            <span class="tips-number">01</span>
+            <span>Nginx - 軽量で高速なWebサーバー。リバースプロキシとしても活用。</span>
+          </li>
+          <li>
+            <span class="tips-number">02</span>
+            <span>ufw - シンプルなファイアウォール。ポート管理が直感的。</span>
+          </li>
+          <li>
+            <span class="tips-number">03</span>
+            <span>fail2ban - 不正アクセスを自動でブロック。セキュリティの要。</span>
+          </li>
+          <li>
+            <span class="tips-number">04</span>
+            <span>Certbot - Let's Encryptの証明書を自動更新。無料でHTTPS化。</span>
+          </li>
+        </ul>
+      </div>
+
+      <p class="conclusion-text reveal">
+        次はこのサーバーにアプリケーションをデプロイしたい。自分だけのサービスを世界に公開する日も近い。AIがあれば、技術的なハードルは越えられる。
+      </p>
+    </div>
+  </section>
+
+  <!-- Author Section -->
+  <section class="author-section">
+    <div class="author-inner reveal">
+      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300" alt="Author" class="author-avatar">
+      <div class="author-info">
+        <h4 class="serif">道ゐ / Dowie</h4>
+        <div class="author-role">Music Producer</div>
+        <p class="author-bio">
+          音楽スタジオ運営 / A-Sketch新人発掘担当。AIツールを活用した効率的なコンテンツ制作を日々研究しています。技術的なバックグラウンドはゼロからスタート。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Articles -->
+  <section class="related-section">
+    <div class="related-header reveal">
+      <h3 class="serif">Next Read</h3>
+    </div>
+    <div class="related-grid">
+      <a href="/tech/ai-journey-01-wordpress" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=600" alt="WordPress">
+        </div>
+        <div class="related-item-category">Technology</div>
+        <h4 class="related-item-title serif">WordPressブログ、AIと一緒に1週間で立ち上げた話</h4>
+      </a>
+      <a href="/tech/ai-journey-03-claude-code" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600" alt="Claude Code">
+        </div>
+        <div class="related-item-category">Technology</div>
+        <h4 class="related-item-title serif">Claude Codeを1週間使ってわかったこと</h4>
+      </a>
+      <a href="/tech/ai-journey" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600" alt="AI Hub">
+        </div>
+        <div class="related-item-category">Overview</div>
+        <h4 class="related-item-title serif">AIで一人でここまでやれた｜完全ガイド</h4>
+      </a>
+    </div>
+  </section>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+</MonoJournalLayout>

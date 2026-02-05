@@ -18,19 +18,25 @@ const formatDate = (date: Date) => {
   }).replace(/\//g, '.');
 };
 
-// カテゴリラベル（2つだけ）
+// カテゴリラベル（5カテゴリー）
 const categoryLabels: Record<string, string> = {
-  'ai-journey': 'AI JOURNEY',
+  'ai-experience': 'AI体験談',
   'ai-tips': 'AI TIPS',
+  'dev-tools': '開発ツール',
+  'useful-tools': '便利ツール',
+  'blog-writing': 'ブログ運営',
 };
 
 // カテゴリカラー
 const categoryColors: Record<string, string> = {
-  'ai-journey': '#00ffff',
+  'ai-experience': '#00d4ff',
   'ai-tips': '#ffaa00',
+  'dev-tools': '#a855f7',
+  'useful-tools': '#22c55e',
+  'blog-writing': '#f97316',
 };
 
-// 記事データをJavaScript形式に変換
+// 記事データをJavaScript形式に変換（heroImageを優先、なければthumbnail）
 const articlesData = sortedPosts.map((post, index) => ({
   id: index,
   slug: post.slug,
@@ -38,7 +44,7 @@ const articlesData = sortedPosts.map((post, index) => ({
   cat: post.data.category,
   catColor: categoryColors[post.data.category] || '#00ffff',
   date: formatDate(post.data.date),
-  img: post.data.thumbnail || `https://images.unsplash.com/photo-${1500000000000 + index * 10}?q=80&w=600&auto=format&fit=crop`,
+  img: (post.data as any).heroImage || post.data.thumbnail || '/images/og-default.png',
   description: post.data.description || '',
   tags: post.data.tags || [],
 }));
@@ -519,18 +525,21 @@ const categories = [
       margin-top: auto;
     }
 
-    /* --- LATEST ARTICLES WIDGET (シンプルデザイン) --- */
+    /* --- LATEST ARTICLES WIDGET (タブ切り替え版・差別化デザイン) --- */
     #latest-widget {
       position: fixed;
       bottom: 2rem;
       right: 2rem;
       z-index: 150;
-      width: 300px;
-      background: rgba(20, 20, 25, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      width: 320px;
+      background: linear-gradient(135deg, rgba(30, 35, 45, 0.98) 0%, rgba(20, 25, 35, 0.98) 100%);
+      backdrop-filter: blur(20px);
+      border-radius: 16px;
+      border: 1px solid rgba(100, 200, 255, 0.15);
+      box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(100, 200, 255, 0.05) inset,
+        0 1px 0 rgba(255, 255, 255, 0.05) inset;
       overflow: hidden;
       transition: transform 0.3s ease, opacity 0.3s ease;
     }
@@ -541,16 +550,49 @@ const categories = [
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1rem 1.2rem;
-      background: rgba(255, 255, 255, 0.05);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.8rem 1rem;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
-    .widget-title {
+    /* タブUI */
+    .widget-tabs {
+      display: flex;
+      gap: 0.3rem;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 3px;
+      border-radius: 8px;
+    }
+    .widget-tab {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.4rem 0.8rem;
+      background: transparent;
+      border: none;
+      border-radius: 6px;
       font-family: 'Noto Sans JP', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: rgba(255, 255, 255, 0.9);
-      letter-spacing: 0.05em;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.5);
+      cursor: pointer !important;
+      transition: all 0.2s ease;
+      position: relative;
+      z-index: 200;
+    }
+    .widget-tab:hover {
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .widget-tab.active {
+      background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+      color: white;
+      box-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
+    }
+    .widget-tab i {
+      width: 12px;
+      height: 12px;
+    }
+    .widget-content.hidden {
+      display: none;
     }
     .widget-close {
       background: none;
@@ -658,7 +700,262 @@ const categories = [
       color: white;
     }
 
+    /* === CATEGORY SIDEBAR (回遊ナビ・見やすいデザイン) === */
+    #category-sidebar {
+      position: fixed;
+      left: 1.5rem;
+      top: 45%;
+      transform: translateY(-55%);
+      z-index: 150;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      pointer-events: auto;
+      background: linear-gradient(160deg, rgba(15, 20, 30, 0.95) 0%, rgba(10, 15, 25, 0.98) 100%);
+      padding: 0.9rem;
+      border-radius: 16px;
+      border: 1px solid rgba(100, 150, 255, 0.2);
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(100, 150, 255, 0.1) inset;
+      backdrop-filter: blur(20px);
+      min-width: 150px;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    /* 回遊リンクセクション */
+    .sidebar-nav-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.7rem;
+      border-radius: 8px;
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.85);
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      cursor: pointer !important;
+    }
+
+    .sidebar-nav-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      transform: translateX(3px);
+    }
+
+    .sidebar-nav-link i {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* チャプターセクション */
+    .sidebar-chapters {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-chapter-link {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.6rem 0.7rem;
+      border-radius: 8px;
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.7);
+      transition: all 0.2s ease;
+      cursor: pointer !important;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .sidebar-chapter-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .sidebar-chapter-link.active {
+      background: linear-gradient(135deg, rgba(0, 212, 255, 0.15) 0%, rgba(0, 150, 200, 0.08) 100%);
+      color: #00d4ff;
+      border-left: 3px solid #00d4ff;
+    }
+
+    .chapter-num {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.35);
+      min-width: 1.5rem;
+    }
+
+    .sidebar-chapter-link.active .chapter-num {
+      color: #00d4ff;
+    }
+
+    .chapter-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+      flex: 1;
+    }
+
+    .chapter-name {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .chapter-desc {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.6rem;
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    .sidebar-chapter-link.active .chapter-desc {
+      color: rgba(0, 212, 255, 0.6);
+    }
+
+    .chapter-action {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.6rem;
+      color: rgba(255, 255, 255, 0.4);
+      white-space: nowrap;
+    }
+
+    .chapter-action.current {
+      color: #00d4ff;
+      font-weight: 500;
+    }
+
+    .sidebar-chapter-link:hover .chapter-action {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* カテゴリフィルターセクション */
+    .sidebar-filter-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .sidebar-filter-title {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.65rem;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 0.3rem;
+    }
+
+    .sidebar-filter-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.7rem;
+      border-radius: 8px;
+      cursor: pointer !important;
+      transition: all 0.2s ease;
+      color: rgba(255, 255, 255, 0.8);
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .sidebar-filter-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: white;
+    }
+
+    .sidebar-filter-item.active {
+      background: rgba(0, 212, 255, 0.15);
+      color: #00d4ff;
+    }
+
+    .sidebar-filter-item[data-cat="ai-experience"].active {
+      background: rgba(0, 212, 255, 0.15);
+      color: #00d4ff;
+    }
+
+    .sidebar-filter-item[data-cat="ai-tips"].active {
+      background: rgba(255, 170, 0, 0.15);
+      color: #ffaa00;
+    }
+
+    .sidebar-filter-item[data-cat="dev-tools"].active {
+      background: rgba(168, 85, 247, 0.15);
+      color: #a855f7;
+    }
+
+    .sidebar-filter-item[data-cat="useful-tools"].active {
+      background: rgba(34, 197, 94, 0.15);
+      color: #22c55e;
+    }
+
+    .sidebar-filter-item[data-cat="blog-writing"].active {
+      background: rgba(249, 115, 22, 0.15);
+      color: #f97316;
+    }
+
+    .filter-icon {
+      font-size: 0.9rem;
+    }
+
+    .sidebar-count {
+      margin-left: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.65rem;
+      color: rgba(255, 255, 255, 0.4);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    /* AI Journey Hubリンク */
+    .sidebar-hub-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 0.8rem;
+      margin-top: 0.4rem;
+      border-radius: 10px;
+      text-decoration: none;
+      background: linear-gradient(135deg, rgba(138, 100, 255, 0.2) 0%, rgba(100, 70, 200, 0.15) 100%);
+      border: 1px solid rgba(138, 100, 255, 0.3);
+      color: #a78bfa;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      cursor: pointer !important;
+    }
+
+    .sidebar-hub-link:hover {
+      background: linear-gradient(135deg, rgba(138, 100, 255, 0.3) 0%, rgba(100, 70, 200, 0.25) 100%);
+      border-color: rgba(138, 100, 255, 0.5);
+      transform: translateX(3px);
+    }
+
+    .sidebar-hub-link i:last-child {
+      margin-left: auto;
+    }
+
     /* レスポンシブ対応 */
+    @media (max-width: 1200px) {
+      #category-sidebar {
+        display: none;
+      }
+    }
+
     @media (max-width: 768px) {
       #latest-widget {
         display: none;
@@ -1180,7 +1477,92 @@ const categories = [
         <span class="hud-btn-label">AI TIPS</span>
       </button>
     </div>
-    
+
+    <!-- Category Sidebar (Left) - 回遊ナビゲーション -->
+    <nav id="category-sidebar">
+      <!-- 回遊リンク -->
+      <div class="sidebar-nav-section">
+        <a href="/" class="sidebar-nav-link">
+          <i data-lucide="home" class="w-4 h-4"></i>
+          <span>ホームページへ</span>
+        </a>
+        <a href="/about" class="sidebar-nav-link">
+          <i data-lucide="user" class="w-4 h-4"></i>
+          <span>プロフィール</span>
+        </a>
+      </div>
+
+      <!-- チャプター切り替え -->
+      <div class="sidebar-chapters">
+        <a href="/story" class="sidebar-chapter-link">
+          <span class="chapter-num">01</span>
+          <div class="chapter-info">
+            <span class="chapter-name">Story Blog</span>
+            <span class="chapter-desc">小説のような自伝</span>
+          </div>
+          <span class="chapter-action">→読む</span>
+        </a>
+        <a href="/dtm" class="sidebar-chapter-link">
+          <span class="chapter-num">02</span>
+          <div class="chapter-info">
+            <span class="chapter-name">DTM Blog</span>
+            <span class="chapter-desc">音楽系Tips</span>
+          </div>
+          <span class="chapter-action">→読む</span>
+        </a>
+        <div class="sidebar-chapter-link active">
+          <span class="chapter-num">03</span>
+          <div class="chapter-info">
+            <span class="chapter-name">Tech Blog</span>
+            <span class="chapter-desc">AI系の情報</span>
+          </div>
+          <span class="chapter-action current">現在地</span>
+        </div>
+      </div>
+
+      <!-- カテゴリフィルター -->
+      <div class="sidebar-filter-section">
+        <div class="sidebar-filter-title">カテゴリで絞る</div>
+        <div class="sidebar-filter-item active" data-cat="ALL">
+          <span class="filter-icon">◉</span>
+          <span>すべて</span>
+          <span class="sidebar-count" id="count-all">0</span>
+        </div>
+        <div class="sidebar-filter-item" data-cat="ai-experience">
+          <span class="filter-icon" style="color: #00d4ff;">💬</span>
+          <span>AI体験談</span>
+          <span class="sidebar-count" id="count-ai-experience">0</span>
+        </div>
+        <div class="sidebar-filter-item" data-cat="ai-tips">
+          <span class="filter-icon" style="color: #ffaa00;">💡</span>
+          <span>AI活用術</span>
+          <span class="sidebar-count" id="count-ai-tips">0</span>
+        </div>
+        <div class="sidebar-filter-item" data-cat="dev-tools">
+          <span class="filter-icon" style="color: #a855f7;">🛠️</span>
+          <span>開発ツール</span>
+          <span class="sidebar-count" id="count-dev-tools">0</span>
+        </div>
+        <div class="sidebar-filter-item" data-cat="useful-tools">
+          <span class="filter-icon" style="color: #22c55e;">📱</span>
+          <span>便利ツール</span>
+          <span class="sidebar-count" id="count-useful-tools">0</span>
+        </div>
+        <div class="sidebar-filter-item" data-cat="blog-writing">
+          <span class="filter-icon" style="color: #f97316;">📝</span>
+          <span>ブログ運営</span>
+          <span class="sidebar-count" id="count-blog-writing">0</span>
+        </div>
+      </div>
+
+      <!-- AI Journey Hubリンク -->
+      <a href="/tech/ai-journey" class="sidebar-hub-link">
+        <i data-lucide="compass" class="w-4 h-4"></i>
+        <span>AI体験談まとめ</span>
+        <i data-lucide="arrow-right" class="w-3 h-3"></i>
+      </a>
+    </nav>
+
     <div class="scroll-hint">
       <p>SCROLL TO WARP</p>
     </div>
@@ -1284,15 +1666,27 @@ const categories = [
     </main>
   </div>
 
-  <!-- LATEST ARTICLES WIDGET -->
+  <!-- LATEST ARTICLES WIDGET (タブ切り替え版) -->
   <div id="latest-widget">
     <div class="widget-header">
-      <span class="widget-title">LATEST ARTICLES</span>
+      <div class="widget-tabs">
+        <button class="widget-tab active" data-tab="latest">
+          <i data-lucide="clock" class="w-3 h-3"></i>
+          <span>新着</span>
+        </button>
+        <button class="widget-tab" data-tab="recommend">
+          <i data-lucide="star" class="w-3 h-3"></i>
+          <span>おすすめ</span>
+        </button>
+      </div>
       <button class="widget-close" id="widget-close-btn" title="閉じる">
         <i data-lucide="x" class="w-4 h-4"></i>
       </button>
     </div>
-    <div class="widget-content" id="widget-articles">
+    <div class="widget-content" id="widget-articles-latest">
+      <!-- JavaScript で動的に生成 -->
+    </div>
+    <div class="widget-content hidden" id="widget-articles-recommend">
       <!-- JavaScript で動的に生成 -->
     </div>
   </div>
@@ -1367,8 +1761,35 @@ const categories = [
       const articlesData = data.articlesData || [];
       const categoryLabels = data.categoryLabels || {};
       const categoryColors = data.categoryColors || {};
-      
+
       console.log('[TECH DEBUG] Articles count:', articlesData.length);
+
+      // --- Category Sidebarのカウント数を更新 ---
+      const updateSidebarCounts = () => {
+        const totalCount = articlesData.length;
+        const aiExperienceCount = articlesData.filter(a => a.cat === 'ai-experience').length;
+        const aiTipsCount = articlesData.filter(a => a.cat === 'ai-tips').length;
+        const devToolsCount = articlesData.filter(a => a.cat === 'dev-tools').length;
+        const usefulToolsCount = articlesData.filter(a => a.cat === 'useful-tools').length;
+        const blogWritingCount = articlesData.filter(a => a.cat === 'blog-writing').length;
+
+        const countAll = document.getElementById('count-all');
+        const countAiExperience = document.getElementById('count-ai-experience');
+        const countTips = document.getElementById('count-ai-tips');
+        const countDevTools = document.getElementById('count-dev-tools');
+        const countUsefulTools = document.getElementById('count-useful-tools');
+        const countBlogWriting = document.getElementById('count-blog-writing');
+
+        if (countAll) countAll.textContent = totalCount;
+        if (countAiExperience) countAiExperience.textContent = aiExperienceCount;
+        if (countTips) countTips.textContent = aiTipsCount;
+        if (countDevTools) countDevTools.textContent = devToolsCount;
+        if (countUsefulTools) countUsefulTools.textContent = usefulToolsCount;
+        if (countBlogWriting) countBlogWriting.textContent = blogWritingCount;
+
+        console.log('[SIDEBAR] Category counts updated:', { totalCount, aiExperienceCount, aiTipsCount, devToolsCount, usefulToolsCount, blogWritingCount });
+      };
+      updateSidebarCounts();
 
       // --- ローディングアニメーション v2.2 ---
       const videoBg = document.getElementById('video-bg');
@@ -1380,6 +1801,51 @@ const categories = [
       // 初期状態：動画のみ表示（フィルターなし）、その他は非表示
       if (videoBg) {
         gsap.set(videoBg, { opacity: 1 });
+
+        // Chrome省電力対策：Web Audio APIで音声コンテキストを作成
+        let audioContext = null;
+        const createAudioContext = () => {
+          if (!audioContext) {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const source = audioContext.createMediaElementSource(videoBg);
+            source.connect(audioContext.destination);
+          }
+          if (audioContext.state === 'suspended') {
+            audioContext.resume();
+          }
+        };
+
+        // 動画再生を確実にする関数
+        const ensureVideoPlays = () => {
+          if (videoBg.paused) {
+            videoBg.play().then(() => {
+              console.log('[VIDEO] Playing successfully');
+            }).catch(e => {
+              console.log('[VIDEO] Play attempt failed:', e.message);
+            });
+          }
+        };
+
+        // ユーザーインタラクション時にAudioContextを作成して再生
+        const playOnInteraction = () => {
+          createAudioContext();
+          ensureVideoPlays();
+        };
+
+        // 各種インタラクションイベントで再生を試みる
+        ['click', 'scroll', 'keydown', 'mousemove', 'touchstart'].forEach(event => {
+          document.addEventListener(event, playOnInteraction, { once: true });
+        });
+
+        // 初回再生を試みる（AudioContextなしで）
+        ensureVideoPlays();
+
+        // ページ表示時にも再生を試みる
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') {
+            ensureVideoPlays();
+          }
+        });
       }
       if (deepSpaceOverlay) {
         gsap.set(deepSpaceOverlay, { opacity: 0 });
@@ -1874,12 +2340,47 @@ const categories = [
         'devtips': '#10b981',
       };
       
+      // --- Category Sidebar連動 ---
+      const sidebarItems = document.querySelectorAll('.sidebar-filter-item[data-cat]');
+
+      // サイドバーとHUDの両方を同期させる関数
+      const syncCategoryUI = (cat) => {
+        // HUDボタンの状態を更新
+        hudBtns.forEach(b => {
+          b.classList.toggle('active', b.dataset.cat === cat);
+        });
+        // サイドバーの状態を更新
+        sidebarItems.forEach(item => {
+          item.classList.toggle('active', item.dataset.cat === cat);
+        });
+      };
+
+      // サイドバーアイテムのクリックイベント
+      sidebarItems.forEach(item => {
+        item.addEventListener('click', () => {
+          if(isListMode || isArchiveMode) return;
+          const cat = item.dataset.cat;
+          // 対応するHUDボタンをトリガー（既存のロジックを再利用）
+          const targetHudBtn = document.querySelector(`.hud-btn[data-cat="${cat}"]`);
+          if (targetHudBtn) {
+            targetHudBtn.click();
+          }
+          // サイドバーのアクティブ状態を更新
+          sidebarItems.forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+        });
+      });
+
       hudBtns.forEach(btn => {
         btn.addEventListener('click', () => {
           if(isListMode || isArchiveMode) return;
           const cat = btn.dataset.cat;
           hudBtns.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
+          // サイドバーも同期
+          sidebarItems.forEach(item => {
+            item.classList.toggle('active', item.dataset.cat === cat);
+          });
           
           if (cat === 'ALL') {
             isFiltered = false;
@@ -2580,17 +3081,17 @@ const categories = [
       // Start
       updateTunnel();
 
-      // --- LATEST ARTICLES WIDGET 初期化 ---
-      const widgetContainer = document.getElementById('widget-articles');
+      // --- LATEST ARTICLES WIDGET 初期化 (タブ切り替え対応) ---
+      const widgetLatestContainer = document.getElementById('widget-articles-latest');
+      const widgetRecommendContainer = document.getElementById('widget-articles-recommend');
       const latestWidget = document.getElementById('latest-widget');
       const widgetCloseBtn = document.getElementById('widget-close-btn');
       const widgetToggle = document.getElementById('widget-toggle');
+      const widgetTabs = document.querySelectorAll('.widget-tab');
 
-      if (widgetContainer && articlesData.length > 0) {
-        // 最新5件を表示
-        const latestArticles = articlesData.slice(0, 5);
-
-        widgetContainer.innerHTML = latestArticles.map(article => `
+      // 記事カードを生成する関数
+      const renderArticleCards = (articles) => {
+        return articles.map(article => `
           <a href="/tech/${article.slug}" class="widget-article">
             <img
               src="${article.img}"
@@ -2609,10 +3110,50 @@ const categories = [
             </div>
           </a>
         `).join('');
+      };
+
+      if (widgetLatestContainer && widgetRecommendContainer && articlesData.length > 0) {
+        // 新着5件（日付順）
+        const latestArticles = [...articlesData].sort((a, b) =>
+          new Date(b.date.replace(/\./g, '-')) - new Date(a.date.replace(/\./g, '-'))
+        ).slice(0, 5);
+
+        // おすすめ5件（AI Journeyカテゴリを優先）
+        const recommendArticles = [...articlesData]
+          .filter(a => a.cat === 'ai-journey')
+          .slice(0, 3)
+          .concat(
+            [...articlesData]
+              .filter(a => a.cat === 'ai-tips')
+              .slice(0, 2)
+          );
+
+        widgetLatestContainer.innerHTML = renderArticleCards(latestArticles);
+        widgetRecommendContainer.innerHTML = renderArticleCards(recommendArticles);
 
         // Lucideアイコンを再生成
         lucide.createIcons();
       }
+
+      // タブ切り替え
+      widgetTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          const tabName = tab.dataset.tab;
+
+          // タブのアクティブ状態を更新
+          widgetTabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+
+          // コンテンツの表示切り替え
+          if (tabName === 'latest') {
+            widgetLatestContainer.classList.remove('hidden');
+            widgetRecommendContainer.classList.add('hidden');
+          } else {
+            widgetLatestContainer.classList.add('hidden');
+            widgetRecommendContainer.classList.remove('hidden');
+          }
+        });
+      });
 
       // ウィジェットの開閉
       if (widgetCloseBtn && latestWidget && widgetToggle) {

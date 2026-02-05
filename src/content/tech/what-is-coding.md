@@ -1,7 +1,7 @@
 ---
 title: そもそも「コードを書く」ってなに？40代が語るブログの進化
 date: 2026-01-28
-category: ai-tips
+category: blog-writing
 thumbnail: /images/Blog_00.png
 description: WordPressを使わずに自分でブログシステムを作った理由。魔法のiらんどからの進化と、コードを書くことの本当の意味。
 tags: ['コーディング', '初心者向け', 'WordPress', 'ブログ']
@@ -11,6 +11,7 @@ learnings:
   - 「コードを書く」とは何か
   - なぜWordPressではなく自作を選んだのか
   - AIと一緒にブログシステムを作った話
+heroImage: https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=800
 ---
 
 <h2 id="learning-1">「コードを書く」とは何か</h2>

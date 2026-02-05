@@ -1,7 +1,7 @@
 ---
 title: Markdown入門｜5分で覚える基本記法と便利な書き方
 date: 2026-01-21
-category: programming
+category: useful-tools
 thumbnail: /images/tech/thumbnails/markdown-guide.svg
 description: Markdownの基本記法を5分で習得。見出し、リスト、リンク、コードブロックなど、日常的に使う書き方をまとめました。
 tags: ['Markdown', 'ドキュメント', '初心者向け', 'ツール']
@@ -11,6 +11,7 @@ learnings:
   - 基本的な文字装飾と見出し
   - リスト・テーブル・コードブロック
   - 実践的なMarkdown活用法
+heroImage: https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=1920
 ---
 
 Markdownは、**シンプルな記号で文書を装飾できる**軽量マークアップ言語です。

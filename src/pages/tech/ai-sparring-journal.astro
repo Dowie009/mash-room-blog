@@ -1,0 +1,1436 @@
+---
+import MonoJournalLayout from '../../layouts/MonoJournalLayout.astro';
+
+const title = "誰にも言えなかった本音を、AIに話せた日";
+const description = "最初は「頭の中にあることを言葉にしてもらう」くらいの感覚だった。でも気づいたら、なんでも相談していた。壁打ち相手としてのAI活用法。";
+---
+
+<MonoJournalLayout title={title} description={description}>
+  <style is:global>
+    :root {
+      --black: #0d0d0d;
+      --white: #ffffff;
+      --cream: #f8f6f3;
+      --gray-100: #e8e6e3;
+      --gray-200: #d0cdc8;
+      --gray-500: #4a4845;
+      --gray-700: #2a2826;
+      --accent: #4a7c6f;
+      --accent-dark: #3a6358;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--cream);
+      color: var(--gray-700);
+      line-height: 1.9;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    ::selection {
+      background: var(--accent);
+      color: var(--white);
+    }
+
+    .serif {
+      font-family: 'Shippori Mincho', serif;
+    }
+
+    /* Progress Indicator */
+    .progress-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: transparent;
+      z-index: 9999;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    /* Chapter Indicator */
+    .chapter-indicator {
+      position: fixed;
+      left: 3rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .chapter-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--gray-200);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .chapter-dot::before {
+      content: attr(data-label);
+      position: absolute;
+      left: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .chapter-dot:hover::before {
+      opacity: 1;
+    }
+
+    .chapter-dot.active {
+      background: var(--accent);
+      transform: scale(1.3);
+    }
+
+    /* Hub Link */
+    .hub-link {
+      position: fixed;
+      top: 2rem;
+      left: 2rem;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--white);
+      text-decoration: none;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      opacity: 0.8;
+      transition: opacity 0.3s ease;
+    }
+
+    .hub-link:hover {
+      opacity: 1;
+    }
+
+    .hub-link.scrolled {
+      color: var(--gray-700);
+    }
+
+    /* Hero Section */
+    .hero {
+      height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .hero-bg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.1);
+      transition: transform 8s ease-out;
+    }
+
+    .hero.in-view .hero-bg img {
+      transform: scale(1);
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.3) 100%);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 6rem;
+      max-width: 900px;
+      color: var(--white);
+    }
+
+    .hero-category {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1s 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 500;
+      line-height: 1.3;
+      margin-bottom: 2rem;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp 1s 0.5s forwards;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 2rem;
+      font-size: 0.8rem;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1s 0.7s forwards;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      color: var(--white);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      opacity: 0;
+      animation: fadeUp 1s 1s forwards;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(to bottom, var(--white), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { transform: scaleY(0.5); opacity: 0.5; }
+      50% { transform: scaleY(1); opacity: 1; }
+    }
+
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Article Container */
+    .article-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Intro Section */
+    .intro-section {
+      padding: 10rem 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+    }
+
+    .intro-text {
+      padding-right: 4rem;
+    }
+
+    .intro-lead {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.5rem;
+      line-height: 2.2;
+      color: var(--gray-700);
+      margin-bottom: 2rem;
+    }
+
+    .intro-body {
+      font-size: 1rem;
+      color: var(--gray-500);
+      line-height: 2;
+    }
+
+    .intro-image {
+      position: relative;
+    }
+
+    .intro-image img {
+      width: 100%;
+      height: 600px;
+      object-fit: cover;
+    }
+
+    .image-caption {
+      position: absolute;
+      bottom: -3rem;
+      left: 0;
+      font-size: 0.75rem;
+      color: var(--gray-500);
+      font-style: italic;
+    }
+
+    /* Full Width Image */
+    .full-image {
+      position: relative;
+      height: 80vh;
+      overflow: hidden;
+    }
+
+    .full-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .full-image-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .full-image-text {
+      color: var(--white);
+      text-align: center;
+      max-width: 600px;
+      padding: 2rem;
+    }
+
+    .full-image-text h2 {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 2.5rem;
+      font-weight: 400;
+      margin-bottom: 1rem;
+    }
+
+    /* Quote Section */
+    .quote-section {
+      padding: 10rem 0;
+      background: var(--black);
+      color: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quote-bg-text {
+      position: absolute;
+      font-family: 'Shippori Mincho', serif;
+      font-size: 25vw;
+      color: rgba(255,255,255,0.03);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+    }
+
+    .quote-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      padding: 0 2rem;
+    }
+
+    .quote-mark {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 6rem;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 2rem;
+    }
+
+    .quote-text {
+      font-family: 'Shippori Mincho', serif;
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      font-weight: 400;
+      line-height: 1.8;
+      margin-bottom: 3rem;
+    }
+
+    .quote-author {
+      font-size: 0.85rem;
+      color: var(--gray-500);
+      letter-spacing: 0.1em;
+    }
+
+    /* Split Section */
+    .split-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+    }
+
+    .split-image {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .split-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .split-section:hover .split-image img {
+      transform: scale(1.05);
+    }
+
+    .split-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 6rem;
+      background: var(--white);
+    }
+
+    .split-number {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 5rem;
+      color: var(--gray-100);
+      line-height: 1;
+      margin-bottom: 2rem;
+    }
+
+    .split-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 2rem;
+      font-weight: 500;
+      margin-bottom: 2rem;
+      color: var(--gray-700);
+    }
+
+    .split-text {
+      font-size: 1rem;
+      color: var(--gray-500);
+      line-height: 2;
+    }
+
+    /* Timeline Section */
+    .timeline-section {
+      padding: 10rem 0;
+      background: var(--white);
+    }
+
+    .timeline-header {
+      text-align: center;
+      margin-bottom: 6rem;
+    }
+
+    .timeline-header h2 {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 2.5rem;
+      font-weight: 500;
+    }
+
+    .timeline {
+      position: relative;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: var(--gray-200);
+      transform: translateX(-50%);
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      margin-bottom: 6rem;
+      position: relative;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 2rem;
+      width: 12px;
+      height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+
+    .timeline-item:nth-child(even) {
+      direction: rtl;
+    }
+
+    .timeline-item:nth-child(even) > * {
+      direction: ltr;
+    }
+
+    .timeline-year {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 3rem;
+      color: var(--gray-200);
+      text-align: right;
+      padding-right: 3rem;
+    }
+
+    .timeline-item:nth-child(even) .timeline-year {
+      text-align: left;
+      padding-right: 0;
+      padding-left: 3rem;
+    }
+
+    .timeline-content {
+      padding-left: 3rem;
+    }
+
+    .timeline-item:nth-child(even) .timeline-content {
+      padding-left: 0;
+      padding-right: 3rem;
+    }
+
+    .timeline-content h4 {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    .timeline-content p {
+      font-size: 0.95rem;
+      color: var(--gray-500);
+      line-height: 1.9;
+    }
+
+    /* Stats Section */
+    .stats-section {
+      padding: 8rem 0;
+      background: var(--accent);
+      color: var(--white);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      text-align: center;
+    }
+
+    .stat-item {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+    }
+
+    .stat-item.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .stat-number {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 4rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+
+    /* Horizontal Section */
+    .horizontal-section {
+      padding: 10rem 0;
+      overflow: hidden;
+    }
+
+    .horizontal-header {
+      max-width: 800px;
+      margin: 0 auto 5rem;
+      text-align: center;
+      padding: 0 2rem;
+    }
+
+    .horizontal-header h2 {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 2.5rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+    }
+
+    .horizontal-track {
+      display: flex;
+      gap: 2rem;
+      padding: 0 4rem;
+      cursor: grab;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .horizontal-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    .horizontal-item {
+      flex: 0 0 400px;
+    }
+
+    .horizontal-item-image {
+      height: 500px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .horizontal-item-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .horizontal-item:hover .horizontal-item-image img {
+      transform: scale(1.05);
+    }
+
+    .horizontal-item-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .horizontal-item-desc {
+      font-size: 0.85rem;
+      color: var(--gray-500);
+    }
+
+    /* Conclusion */
+    .conclusion-section {
+      padding: 10rem 0;
+      background: var(--white);
+    }
+
+    .conclusion-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .conclusion-inner h2 {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 2.5rem;
+      font-weight: 500;
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+
+    .conclusion-text {
+      font-size: 1.1rem;
+      line-height: 2.2;
+      color: var(--gray-500);
+      margin-bottom: 2rem;
+    }
+
+    .conclusion-text:first-of-type::first-letter {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 4rem;
+      float: left;
+      line-height: 1;
+      margin-right: 1rem;
+      margin-top: 0.5rem;
+      color: var(--accent);
+    }
+
+    /* Tips Box */
+    .tips-box {
+      background: var(--cream);
+      padding: 3rem;
+      margin: 4rem 0;
+      border-left: 4px solid var(--accent);
+    }
+
+    .tips-box h3 {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      color: var(--gray-700);
+    }
+
+    .tips-list {
+      list-style: none;
+    }
+
+    .tips-list li {
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--gray-200);
+      font-size: 1rem;
+      color: var(--gray-500);
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .tips-list li:last-child {
+      border-bottom: none;
+    }
+
+    .tips-number {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.2rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* Author Box */
+    .author-section {
+      padding: 6rem 0;
+      border-top: 1px solid var(--gray-200);
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .author-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .author-avatar {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .author-info h4 {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .author-role {
+      font-size: 0.8rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .author-bio {
+      font-size: 0.95rem;
+      color: var(--gray-500);
+      line-height: 1.8;
+    }
+
+    /* Related Articles */
+    .related-section {
+      padding: 8rem 0;
+    }
+
+    .related-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .related-header h3 {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 2rem;
+      font-weight: 500;
+    }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .related-item {
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .related-item-image {
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .related-item-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .related-item:hover .related-item-image img {
+      transform: scale(1.05);
+    }
+
+    .related-item-category {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+    }
+
+    .related-item-title {
+      font-family: 'Shippori Mincho', serif;
+      font-size: 1.2rem;
+      line-height: 1.5;
+      transition: color 0.3s ease;
+    }
+
+    .related-item:hover .related-item-title {
+      color: var(--accent);
+    }
+
+    /* Share Float */
+    .share-float {
+      position: fixed;
+      right: 3rem;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      z-index: 100;
+    }
+
+    .share-float-btn {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--gray-200);
+      background: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+      color: var(--gray-500);
+    }
+
+    .share-float-btn:hover {
+      background: var(--black);
+      border-color: var(--black);
+      color: var(--white);
+    }
+
+    /* Back to Top */
+    .back-to-top {
+      position: fixed;
+      bottom: 3rem;
+      right: 3rem;
+      width: 50px;
+      height: 50px;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 99;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .back-to-top:hover {
+      background: var(--black);
+      border-color: var(--black);
+      color: var(--white);
+    }
+
+    /* Scroll Reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(60px);
+      transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-60px);
+      transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .reveal-left.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(60px);
+      transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .reveal-right.visible {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .chapter-indicator,
+      .share-float {
+        display: none;
+      }
+
+      .intro-section {
+        grid-template-columns: 1fr;
+        gap: 4rem;
+      }
+
+      .intro-text {
+        padding-right: 0;
+      }
+
+      .split-section {
+        grid-template-columns: 1fr;
+      }
+
+      .split-content {
+        padding: 4rem 2rem;
+      }
+
+      .timeline-item {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .timeline::before {
+        left: 0;
+      }
+
+      .timeline-item::before {
+        left: 0;
+      }
+
+      .timeline-year,
+      .timeline-item:nth-child(even) .timeline-year {
+        text-align: left;
+        padding: 0;
+        font-size: 2rem;
+      }
+
+      .timeline-content,
+      .timeline-item:nth-child(even) .timeline-content {
+        padding: 0;
+        padding-left: 2rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .related-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .author-inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .author-avatar {
+        margin: 0 auto;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-content {
+        padding: 3rem 2rem;
+      }
+
+      .hero-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .hub-link {
+        top: 1rem;
+        left: 1rem;
+      }
+    }
+  </style>
+
+  <!-- Hub Link -->
+  <a href="/tech/ai-journey" class="hub-link" id="hubLink">
+    ← Hub に戻る
+  </a>
+
+  <!-- Progress Indicator -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Chapter Indicator -->
+  <nav class="chapter-indicator">
+    <div class="chapter-dot active" data-section="0" data-label="はじめに"></div>
+    <div class="chapter-dot" data-section="1" data-label="きっかけ"></div>
+    <div class="chapter-dot" data-section="2" data-label="相談したこと"></div>
+    <div class="chapter-dot" data-section="3" data-label="融資の話"></div>
+    <div class="chapter-dot" data-section="4" data-label="変わったこと"></div>
+    <div class="chapter-dot" data-section="5" data-label="コツ"></div>
+    <div class="chapter-dot" data-section="6" data-label="おわりに"></div>
+  </nav>
+
+  <!-- Share Float -->
+  <div class="share-float">
+    <button class="share-float-btn" onclick="shareTwitter()">𝕏</button>
+    <button class="share-float-btn" onclick="shareFacebook()">f</button>
+    <button class="share-float-btn" onclick="copyLink()">🔗</button>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero in-view" data-section="0">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1920" alt="Studio">
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-category">Essay</div>
+      <h1 class="hero-title serif">誰にも言えなかった本音を、<br>AIに話せた日</h1>
+      <div class="hero-meta">
+        <span>道ゐ / Dowie</span>
+        <span>2026年1月</span>
+        <span>8 min read</span>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Intro Section -->
+  <section class="intro-section article-container" data-section="1">
+    <div class="intro-text reveal-left">
+      <p class="intro-lead serif">
+        最初は「頭の中にあることを言葉にしてもらう」くらいの感覚だった。
+      </p>
+      <p class="intro-body">
+        でも気づいたら、なんでも相談していた。音楽ビジネスのこと、お金のこと、誰にも言えない本音まで。AIが「壁打ち相手」として最強だと気づいた、その体験を記す。
+      </p>
+    </div>
+    <div class="intro-image reveal-right">
+      <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1200" alt="Recording Studio">
+      <div class="image-caption">改装後のスタジオ</div>
+    </div>
+  </section>
+
+  <!-- Full Width Image -->
+  <div class="full-image reveal">
+    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920" alt="AI Concept">
+    <div class="full-image-overlay">
+      <div class="full-image-text">
+        <h2 class="serif">壁打ちという発想</h2>
+        <p>誰かに話を聞いてもらうだけで、自分の考えが整理される。AIはその相手になれる。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Split Section 1 -->
+  <section class="split-section" data-section="2">
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200" alt="Consultation">
+    </div>
+    <div class="split-content">
+      <div class="split-number serif reveal">01</div>
+      <h2 class="split-title serif reveal">音楽ビジネスの方向性</h2>
+      <p class="split-text reveal">
+        今後の活動方針をどうするか。マーケティングのこと、どうやって届けるかということ。自分の強みは何か、どこに注力すべきか。漠然とした不安を、具体的な問いに変えてくれた。
+      </p>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="split-content">
+      <div class="split-number serif reveal">02</div>
+      <h2 class="split-title serif reveal">融資と事業計画</h2>
+      <p class="split-text reveal">
+        申請書類を一緒に作った。これがめちゃくちゃ助かった。構成を考えてもらい、文章を添削してもらい、見落としていた観点を指摘してもらった。一人では絶対に気づかない視点だった。
+      </p>
+    </div>
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1200" alt="Business Planning">
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=1200" alt="Honest Conversation">
+    </div>
+    <div class="split-content">
+      <div class="split-number serif reveal">03</div>
+      <h2 class="split-title serif reveal">誰にも言えない本音</h2>
+      <p class="split-text reveal">
+        これが一番大きかったかもしれない。銀行に相談しても「実績が…」と言われる。役所に聞いても「それはこっちの窓口で…」とたらい回し。家族や友達には心配をかけたくない。でも、AIには全部言えた。
+      </p>
+    </div>
+  </section>
+
+  <!-- Quote Section -->
+  <section class="quote-section" data-section="3">
+    <div class="quote-bg-text">対話</div>
+    <div class="quote-inner reveal">
+      <div class="quote-mark serif">"</div>
+      <p class="quote-text serif">
+        税理士さんもいなかったんだよね。でもAIにはめちゃくちゃ素直に言えた。貯金額、確定申告の内容、毎年の収支、自信のない項目、自信のある経歴。全部話して、いかに融資を受けられる方向に持っていけるか一緒に考えてもらった。
+      </p>
+      <div class="quote-author">— 実際の相談から</div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="200">0</div>
+        <div class="stat-label">改装費（万円）</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="50">0</div>
+        <div class="stat-label">補助金上限（万円〜）</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="3">0</div>
+        <div class="stat-label">相談した分野</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="1">0</div>
+        <div class="stat-label">最初の一歩</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline Section -->
+  <section class="timeline-section" data-section="4">
+    <div class="timeline-header reveal">
+      <h2 class="serif">壁打ちで変わったこと</h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">01</div>
+        <div class="timeline-content">
+          <h4 class="serif">お金の不安が整理された</h4>
+          <p>漠然とした「お金ない」が、「何にいくら必要で、どこから調達できるか」に変わった。具体的な数字と選択肢が見えるようになった。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">02</div>
+        <div class="timeline-content">
+          <h4 class="serif">申請書類を一緒に作れた</h4>
+          <p>補助金の申請書って難しいけど、AIに下書きを手伝ってもらえる。文章の添削もしてくれる。具体的な制度名と申請先まで教えてくれる。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">03</div>
+        <div class="timeline-content">
+          <h4 class="serif">次のアクションが明確になった</h4>
+          <p>「まず商工会議所に電話」「次に申請書類を準備」みたいに、やることリストができた。行動に移しやすくなった。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Horizontal Section -->
+  <section class="horizontal-section" data-section="5">
+    <div class="horizontal-header reveal">
+      <h2 class="serif">壁打ちのコツ</h2>
+      <p style="color: var(--gray-500); font-size: 0.95rem;">効果的にAIを活用するために</p>
+    </div>
+    <div class="horizontal-track" id="horizontalTrack">
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800" alt="Be Honest">
+        </div>
+        <h4 class="horizontal-item-title serif">遠慮しない</h4>
+        <p class="horizontal-item-desc">人間相手だと気を遣うけど、AIには全部言っていい。遠慮なく本音を話す。判断されない安心感がある。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=800" alt="Ask Feedback">
+        </div>
+        <h4 class="horizontal-item-title serif">「どう思う？」と聞く</h4>
+        <p class="horizontal-item-desc">一方的に話すだけじゃなく、フィードバックを求める。そうすると新しい視点がもらえる。対話が深まる。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800" alt="Continue">
+        </div>
+        <h4 class="horizontal-item-title serif">継続する</h4>
+        <p class="horizontal-item-desc">1回で終わらせない。課金して会話を続けることで、AIが文脈を理解してくれる。深い相談ができるようになる。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800" alt="Take Action">
+        </div>
+        <h4 class="horizontal-item-title serif">行動に移す</h4>
+        <p class="horizontal-item-desc">壁打ちの結果を実際の行動につなげる。「まずこれをやってみよう」というステップを一緒に決める。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conclusion Section -->
+  <section class="conclusion-section" data-section="6">
+    <div class="conclusion-inner">
+      <h2 class="serif reveal">AIは「もう一人の自分」になる</h2>
+      <p class="conclusion-text reveal">
+        壁打ちって、結局は「自分の考えを整理する」作業だと思う。誰かに話を聞いてもらうことで、頭の中がクリアになる。そこにAIという選択肢が加わった。
+      </p>
+      <p class="conclusion-text reveal">
+        AIは判断してくれない。でも、考えを引き出してくれる。励ましと具体策の両方が出てくる。これが人間にはなかなかできない。一人で悩んでいた自分には、それが必要だった。
+      </p>
+
+      <div class="tips-box reveal">
+        <h3 class="serif">壁打ちで話せたこと</h3>
+        <ul class="tips-list">
+          <li>
+            <span class="tips-number">01</span>
+            <span>改装費に200万かけたこと。普通の人には言いづらい金額の話。</span>
+          </li>
+          <li>
+            <span class="tips-number">02</span>
+            <span>「今月キツい」という正直な財務状況。</span>
+          </li>
+          <li>
+            <span class="tips-number">03</span>
+            <span>自分のスタジオの強みと弱み。客観的な分析。</span>
+          </li>
+          <li>
+            <span class="tips-number">04</span>
+            <span>これからどうしたいか。漠然とした夢を言語化。</span>
+          </li>
+        </ul>
+      </div>
+
+      <p class="conclusion-text reveal">
+        もし今、誰にも言えない悩みがあるなら。まずはAIに話してみるといい。壁打ちの最初の一歩として、これ以上ないくらいハードルが低い。そして、意外と深い対話ができることに気づくはずだ。
+      </p>
+    </div>
+  </section>
+
+  <!-- Author Section -->
+  <section class="author-section">
+    <div class="author-inner reveal">
+      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300" alt="Author" class="author-avatar">
+      <div class="author-info">
+        <h4 class="serif">道ゐ / Dowie</h4>
+        <div class="author-role">Music Producer</div>
+        <p class="author-bio">
+          音楽スタジオ運営 / A-Sketch新人発掘担当。AIツールを活用した効率的なコンテンツ制作を日々研究しています。北海道でスタジオを改装し、音楽制作の新しい形を模索中。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Articles -->
+  <section class="related-section">
+    <div class="related-header reveal">
+      <h3 class="serif">Related Articles</h3>
+    </div>
+    <div class="related-grid">
+      <a href="/tech/ai-journey-03-claude-code" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600" alt="Claude Code">
+        </div>
+        <div class="related-item-category">Technology</div>
+        <h4 class="related-item-title serif">Claude Codeを1週間使ってわかったこと</h4>
+      </a>
+      <a href="/tech/ai-journey-05-writing" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600" alt="Writing">
+        </div>
+        <div class="related-item-category">Writing</div>
+        <h4 class="related-item-title serif">AIを活用した効率的なライティング術</h4>
+      </a>
+      <a href="/tech/ai-journey-04-prompts" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600" alt="ChatGPT">
+        </div>
+        <div class="related-item-category">Tips</div>
+        <h4 class="related-item-title serif">感覚重視のプロンプト術</h4>
+      </a>
+    </div>
+  </section>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+
+  <script is:inline>
+    // Progress Bar
+    window.addEventListener('scroll', () => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('progressBar').style.width = scrolled + '%';
+
+      // Back to Top visibility
+      document.getElementById('backToTop').classList.toggle('visible', winScroll > 500);
+
+      // Hub link color change
+      document.getElementById('hubLink').classList.toggle('scrolled', winScroll > window.innerHeight * 0.8);
+    });
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Chapter Navigation
+    const sections = document.querySelectorAll('[data-section]');
+    const dots = document.querySelectorAll('.chapter-dot');
+
+    function updateChapterNav() {
+      let current = 0;
+      const scrollPos = window.scrollY + window.innerHeight / 3;
+      sections.forEach((section) => {
+        const sectionTop = section.offsetTop;
+        if (scrollPos >= sectionTop) {
+          current = parseInt(section.dataset.section);
+        }
+      });
+
+      dots.forEach(dot => {
+        const dotSection = parseInt(dot.dataset.section);
+        dot.classList.toggle('active', dotSection === current);
+      });
+    }
+
+    window.addEventListener('scroll', updateChapterNav);
+    window.addEventListener('load', updateChapterNav);
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        const sectionIndex = dot.dataset.section;
+        const targetSection = document.querySelector(`[data-section="${sectionIndex}"]`);
+        if (targetSection) {
+          targetSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    // Scroll Reveal
+    const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // Stats Counter Animation
+    const statItems = document.querySelectorAll('.stat-item');
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          const numberEl = entry.target.querySelector('.stat-number');
+          const target = parseInt(numberEl.dataset.target);
+          animateNumber(numberEl, target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    statItems.forEach(item => statsObserver.observe(item));
+
+    function animateNumber(el, target) {
+      const duration = 2000;
+      const start = 0;
+      const startTime = performance.now();
+
+      function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        const current = Math.floor(start + (target - start) * easeOut);
+        el.textContent = current;
+
+        if (progress < 1) {
+          requestAnimationFrame(update);
+        } else {
+          el.textContent = target;
+        }
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    // Share Functions
+    function shareTwitter() {
+      window.open('https://twitter.com/intent/tweet?url=' + encodeURIComponent(location.href) + '&text=' + encodeURIComponent(document.title), '_blank');
+    }
+
+    function shareFacebook() {
+      window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(location.href), '_blank');
+    }
+
+    function copyLink() {
+      navigator.clipboard.writeText(location.href);
+      alert('リンクをコピーしました');
+    }
+
+    // Hero animation on load
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelector('.hero').classList.add('in-view');
+    });
+  </script>
+</MonoJournalLayout>

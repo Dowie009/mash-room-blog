@@ -11,6 +11,7 @@ learnings:
   - ビジネスメールのプロンプト
   - 企画・提案書のプロンプト
   - 文章校正・要約のプロンプト
+heroImage: https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1920
 ---
 
 ChatGPTを使いこなしたいけど、どんなプロンプトを書けばいいかわからない。

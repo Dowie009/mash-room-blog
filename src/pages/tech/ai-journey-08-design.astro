@@ -1,0 +1,312 @@
+---
+import MonoJournalLayout from '../../layouts/MonoJournalLayout.astro';
+
+const title = "AIでデザインを学ぶ";
+const description = "デザインセンスがないと思っていた。でも、AIとの対話で「なぜこれが良いのか」を理解できるようになった。";
+---
+
+<MonoJournalLayout title={title} description={description}>
+  <!-- Hub Link -->
+  <a href="/tech/ai-journey" class="hub-link" id="hubLink">
+    ← Hub に戻る
+  </a>
+
+  <!-- Progress Indicator -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Chapter Indicator -->
+  <nav class="chapter-indicator">
+    <div class="chapter-dot active" data-section="0" data-label="はじめに"></div>
+    <div class="chapter-dot" data-section="1" data-label="苦手意識"></div>
+    <div class="chapter-dot" data-section="2" data-label="学び方"></div>
+    <div class="chapter-dot" data-section="3" data-label="実践"></div>
+    <div class="chapter-dot" data-section="4" data-label="成長"></div>
+    <div class="chapter-dot" data-section="5" data-label="Tips"></div>
+    <div class="chapter-dot" data-section="6" data-label="おわりに"></div>
+  </nav>
+
+  <!-- Share Float -->
+  <div class="share-float">
+    <button class="share-float-btn" onclick="shareTwitter()">𝕏</button>
+    <button class="share-float-btn" onclick="shareFacebook()">f</button>
+    <button class="share-float-btn" onclick="copyLink()">🔗</button>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero in-view" data-section="0">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1920" alt="Design">
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-category">Technology</div>
+      <h1 class="hero-title serif">AIでデザインを学ぶ</h1>
+      <div class="hero-meta">
+        <span>道ゐ / Dowie</span>
+        <span>2026年1月</span>
+        <span>10 min read</span>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Intro Section -->
+  <section class="intro-section article-container" data-section="1">
+    <div class="intro-text reveal-left">
+      <p class="intro-lead serif">
+        デザインセンスがない。ずっとそう思っていた。「自分にはセンスがないから」と、デザインを避けてきた。
+      </p>
+      <p class="intro-body">
+        でも、ブログを始めて、自分でデザインしなければならない場面が増えた。Canvaのテンプレートを使っても、なんかダサい。そんな時、AIにデザインの「なぜ」を教えてもらうことにした。
+      </p>
+    </div>
+    <div class="intro-image reveal-right">
+      <img src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=1200" alt="Design Work">
+      <div class="image-caption">デザインは才能じゃなく、理解だった。</div>
+    </div>
+  </section>
+
+  <!-- Full Width Image -->
+  <div class="full-image reveal">
+    <img src="https://images.unsplash.com/photo-1509343256512-d77a5cb3791b?w=1920" alt="Color Palette">
+    <div class="full-image-overlay">
+      <div class="full-image-text">
+        <h2 class="serif">理由がわかると、選べるようになる</h2>
+        <p>「なんとなくいい」から「これがいい理由」へ。AIが言語化を助けてくれた。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Split Section 1 -->
+  <section class="split-section" data-section="2">
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200" alt="Learning">
+    </div>
+    <div class="split-content">
+      <div class="split-number serif reveal">01</div>
+      <h2 class="split-title serif reveal">「なぜ」を聞く</h2>
+      <p class="split-text reveal">
+        参考にしたいデザインを見つけたら、AIに「なぜこれがいいと感じるのか」を聞く。余白の取り方、色の組み合わせ、フォントの選び方。感覚的に「いい」と思っていたものに、理由があることがわかった。理由がわかると、再現できるようになる。
+      </p>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="split-content">
+      <div class="split-number serif reveal">02</div>
+      <h2 class="split-title serif reveal">原則を学ぶ</h2>
+      <p class="split-text reveal">
+        デザインには原則がある。コントラスト、反復、整列、近接。これらを知らずにデザインしていた。AIに「デザインの基本原則を教えて」と聞いたら、わかりやすく解説してくれた。原則を意識するだけで、デザインの質が変わった。
+      </p>
+    </div>
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1541462608143-67571c6738dd?w=1200" alt="Principles">
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1523726491678-bf852e717f6a?w=1200" alt="Practice">
+    </div>
+    <div class="split-content">
+      <div class="split-number serif reveal">03</div>
+      <h2 class="split-title serif reveal">フィードバックをもらう</h2>
+      <p class="split-text reveal">
+        自分で作ったデザインをAIに見せて、フィードバックをもらう。「ここが改善点」「ここはいい」と具体的に教えてくれる。独学だと何が良くて何が悪いかわからない。AIがあれば、即座にフィードバックが返ってくる。
+      </p>
+    </div>
+  </section>
+
+  <!-- Quote Section -->
+  <section class="quote-section" data-section="3">
+    <div class="quote-bg-text">Design</div>
+    <div class="quote-inner reveal">
+      <div class="quote-mark serif">"</div>
+      <p class="quote-text serif">
+        デザインセンスは才能じゃなかった。知識と経験の積み重ね。「なぜこれがいいのか」を理解すれば、誰でもデザインできるようになる。AIは最高の先生だった。
+      </p>
+      <div class="quote-author">— 学び始めて3ヶ月後</div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="3">0</div>
+        <div class="stat-label">学習期間（ヶ月）</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="50">0</div>
+        <div class="stat-label">分析したデザイン数</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="20">0</div>
+        <div class="stat-label">作成したデザイン数</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="80">0</div>
+        <div class="stat-label">自己満足度（%）</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline Section -->
+  <section class="timeline-section" data-section="4">
+    <div class="timeline-header reveal">
+      <h2 class="serif">デザイン学習の流れ</h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Month 1</div>
+        <div class="timeline-content">
+          <h4 class="serif">基本原則の理解</h4>
+          <p>デザインの4原則（コントラスト、反復、整列、近接）を学ぶ。好きなデザインをAIに分析してもらい、なぜ良いのかを理解する。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Month 2</div>
+        <div class="timeline-content">
+          <h4 class="serif">色とタイポグラフィ</h4>
+          <p>カラーパレットの作り方、フォントの組み合わせ方。感覚的に選んでいたものに、理論的な裏付けがあることを知る。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Month 3</div>
+        <div class="timeline-content">
+          <h4 class="serif">実践とフィードバック</h4>
+          <p>実際にデザインを作り、AIにフィードバックをもらう。修正と改善を繰り返す。少しずつ「見る目」が養われてきた。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Horizontal Section -->
+  <section class="horizontal-section" data-section="5">
+    <div class="horizontal-header reveal">
+      <h2 class="serif">AIでデザインを学ぶコツ</h2>
+      <p style="color: var(--gray-500); font-size: 0.95rem;">効果的な学習方法</p>
+    </div>
+    <div class="horizontal-track" id="horizontalTrack">
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?w=800" alt="Analyze">
+        </div>
+        <h4 class="horizontal-item-title serif">良いデザインを分析する</h4>
+        <p class="horizontal-item-desc">「いいな」と思ったデザインをスクショして、AIに「なぜこれがいいと感じるのか」を聞く。言語化してもらうことで理解が深まる。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1541462608143-67571c6738dd?w=800" alt="Principles">
+        </div>
+        <h4 class="horizontal-item-title serif">原則を意識する</h4>
+        <p class="horizontal-item-desc">デザインの基本原則を頭に入れておく。困ったときは「この原則に沿っているか？」とチェック。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=800" alt="Practice">
+        </div>
+        <h4 class="horizontal-item-title serif">作って見せる</h4>
+        <p class="horizontal-item-desc">インプットだけでなくアウトプット。実際に作ってAIに見せる。具体的なフィードバックが成長を加速させる。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800" alt="Iterate">
+        </div>
+        <h4 class="horizontal-item-title serif">改善を恐れない</h4>
+        <p class="horizontal-item-desc">最初から完璧を目指さない。フィードバックを受けて改善する。そのプロセスが学びになる。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conclusion Section -->
+  <section class="conclusion-section" data-section="6">
+    <div class="conclusion-inner">
+      <h2 class="serif reveal">センスは育てられる</h2>
+      <p class="conclusion-text reveal">
+        「デザインセンスがない」と思っていた自分が、今では自分でデザインを作れるようになった。完璧じゃない。でも、少なくとも「なぜこれがいいのか」を理解した上で選択できるようになった。
+      </p>
+      <p class="conclusion-text reveal">
+        デザインは才能じゃない。知識と経験の積み重ね。AIがあれば、その積み重ねを加速できる。「なぜ？」を聞き、フィードバックをもらい、改善する。このサイクルを回すことで、確実に成長できる。
+      </p>
+
+      <div class="tips-box reveal">
+        <h3 class="serif">学んだこと</h3>
+        <ul class="tips-list">
+          <li>
+            <span class="tips-number">01</span>
+            <span>余白は情報を整理する。詰め込みすぎないことが大切。</span>
+          </li>
+          <li>
+            <span class="tips-number">02</span>
+            <span>色は3色まで。それ以上は散漫になる。</span>
+          </li>
+          <li>
+            <span class="tips-number">03</span>
+            <span>フォントは2種類まで。見出しと本文で使い分ける。</span>
+          </li>
+          <li>
+            <span class="tips-number">04</span>
+            <span>整列を意識する。揃えるだけで見た目が整う。</span>
+          </li>
+        </ul>
+      </div>
+
+      <p class="conclusion-text reveal">
+        デザインに苦手意識がある人にこそ、AIを使った学習をおすすめしたい。「なぜ」がわかれば、デザインは怖くなくなる。
+      </p>
+    </div>
+  </section>
+
+  <!-- Author Section -->
+  <section class="author-section">
+    <div class="author-inner reveal">
+      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300" alt="Author" class="author-avatar">
+      <div class="author-info">
+        <h4 class="serif">道ゐ / Dowie</h4>
+        <div class="author-role">Music Producer</div>
+        <p class="author-bio">
+          音楽スタジオ運営 / A-Sketch新人発掘担当。AIツールを活用した効率的なコンテンツ制作を日々研究しています。技術的なバックグラウンドはゼロからスタート。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Articles -->
+  <section class="related-section">
+    <div class="related-header reveal">
+      <h3 class="serif">Next Read</h3>
+    </div>
+    <div class="related-grid">
+      <a href="/tech/ai-journey-07-cockpit" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600" alt="Cockpit">
+        </div>
+        <div class="related-item-category">Technology</div>
+        <h4 class="related-item-title serif">Notionを卒業、自作コックピットへ</h4>
+      </a>
+      <a href="/tech/ai-journey-09-sidebusiness" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=600" alt="Side Business">
+        </div>
+        <div class="related-item-category">Technology</div>
+        <h4 class="related-item-title serif">AIで副業、実際どこまで稼げる？</h4>
+      </a>
+      <a href="/tech/ai-journey" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600" alt="AI Hub">
+        </div>
+        <div class="related-item-category">Overview</div>
+        <h4 class="related-item-title serif">AIで一人でここまでやれた｜完全ガイド</h4>
+      </a>
+    </div>
+  </section>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+</MonoJournalLayout>

@@ -1,7 +1,7 @@
 ---
 title: AIは壁打ち相手として最強だった
 date: 2026-01-14
-category: ai-journey
+category: ai-experience
 thumbnail: /images/tech/mashiba-profile.jpg
 description: 誰にも言えなかった本音をAIに話せた。音楽ビジネスの相談、融資の書類作成…壁打ち相手としてのAI活用法を語る。
 tags: ['ChatGPT', 'AI', '体験談', '壁打ち', 'AI活用入門']
@@ -9,6 +9,7 @@ draft: false
 defaultPreset: 5
 learningLevel: 1
 topic: ai-journey
+heroImage: https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1920
 ---
 
 <!-- 会話形式 Bパターン：関西弁AI君「あいぼー」との対話 -->

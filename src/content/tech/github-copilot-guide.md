@@ -1,7 +1,7 @@
 ---
 title: GitHub Copilot入門｜AIコーディングの始め方と活用術
 date: 2026-01-23
-category: programming
+category: dev-tools
 thumbnail: /images/tech/thumbnails/github-copilot.svg
 description: GitHub Copilotの始め方から実践的な活用術まで解説。AIペアプログラミングでコーディング効率を劇的に向上させる方法を紹介します。
 tags: ['GitHub Copilot', 'AI', 'プログラミング', '効率化']
@@ -11,6 +11,7 @@ learnings:
   - GitHub Copilotとは何か
   - 効果的な使い方とコツ
   - 注意点とベストプラクティス
+heroImage: https://images.unsplash.com/photo-1618401471353-b98afee0b2eb?w=1920
 ---
 
 プログラミングの効率を上げたい。でも「AIにコードを書かせるのは不安」という声も聞きます。

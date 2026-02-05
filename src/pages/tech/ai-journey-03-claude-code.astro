@@ -1,0 +1,319 @@
+---
+import MonoJournalLayout from '../../layouts/MonoJournalLayout.astro';
+
+const title = "Claude Codeを1週間使ってわかったこと";
+const description = "ターミナルで動くAIアシスタント。コードを書き、ファイルを編集し、コマンドを実行する。1週間使い込んで見えてきたこと。";
+---
+
+<MonoJournalLayout title={title} description={description}>
+  <!-- Hub Link -->
+  <a href="/tech/ai-journey" class="hub-link" id="hubLink">
+    ← Hub に戻る
+  </a>
+
+  <!-- Progress Indicator -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Chapter Indicator -->
+  <nav class="chapter-indicator">
+    <div class="chapter-dot active" data-section="0" data-label="はじめに"></div>
+    <div class="chapter-dot" data-section="1" data-label="出会い"></div>
+    <div class="chapter-dot" data-section="2" data-label="使い方"></div>
+    <div class="chapter-dot" data-section="3" data-label="実践例"></div>
+    <div class="chapter-dot" data-section="4" data-label="変化"></div>
+    <div class="chapter-dot" data-section="5" data-label="Tips"></div>
+    <div class="chapter-dot" data-section="6" data-label="おわりに"></div>
+  </nav>
+
+  <!-- Share Float -->
+  <div class="share-float">
+    <button class="share-float-btn" onclick="shareTwitter()">𝕏</button>
+    <button class="share-float-btn" onclick="shareFacebook()">f</button>
+    <button class="share-float-btn" onclick="copyLink()">🔗</button>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero in-view" data-section="0">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=1920" alt="Code">
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-category">Technology</div>
+      <h1 class="hero-title serif">Claude Codeを<br>1週間使ってわかったこと</h1>
+      <div class="hero-meta">
+        <span>道ゐ / Dowie</span>
+        <span>2026年1月</span>
+        <span>15 min read</span>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Intro Section -->
+  <section class="intro-section article-container" data-section="1">
+    <div class="intro-text reveal-left">
+      <p class="intro-lead serif">
+        ターミナルで動くAIアシスタント。それがClaude Codeだった。コードを書き、ファイルを編集し、コマンドを実行する。
+      </p>
+      <p class="intro-body">
+        最初は「ChatGPTとどう違うの？」と思っていた。でも、1週間使い込んで、その違いがはっきりわかった。これは単なるチャットツールじゃない。プロジェクト全体を理解し、実際にコードを書いてくれる開発パートナーだ。
+      </p>
+    </div>
+    <div class="intro-image reveal-right">
+      <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200" alt="Coding">
+      <div class="image-caption">ターミナルがメインの作業環境になった。</div>
+    </div>
+  </section>
+
+  <!-- Full Width Image -->
+  <div class="full-image reveal">
+    <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1920" alt="Workspace">
+    <div class="full-image-overlay">
+      <div class="full-image-text">
+        <h2 class="serif">対話で開発が進む</h2>
+        <p>「このファイルを修正して」と言えば、本当に修正してくれる。確認して承認するだけ。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Split Section 1 -->
+  <section class="split-section" data-section="2">
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1587620962725-abab7fe55159?w=1200" alt="Terminal">
+    </div>
+    <div class="split-content">
+      <div class="split-number serif reveal">01</div>
+      <h2 class="split-title serif reveal">プロジェクト全体を理解する</h2>
+      <p class="split-text reveal">
+        Claude Codeの最大の強みは、プロジェクト全体のコンテキストを理解すること。フォルダ構造を把握し、設定ファイルを読み、依存関係を理解する。だから「この機能を追加して」と言うだけで、適切なファイルに適切な修正を加えてくれる。
+      </p>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="split-content">
+      <div class="split-number serif reveal">02</div>
+      <h2 class="split-title serif reveal">実際にファイルを編集する</h2>
+      <p class="split-text reveal">
+        ChatGPTは「こうすればいいよ」とコードを提示するだけ。Claude Codeは違う。実際にファイルを開き、編集し、保存してくれる。差分を確認して承認するだけ。コピペ作業から解放される。これが圧倒的に効率的。
+      </p>
+    </div>
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=1200" alt="Code Editor">
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200" alt="Collaboration">
+    </div>
+    <div class="split-content">
+      <div class="split-number serif reveal">03</div>
+      <h2 class="split-title serif reveal">コマンドも実行できる</h2>
+      <p class="split-text reveal">
+        ビルド、テスト、デプロイ。必要なコマンドも実行してくれる。「テストを走らせて」と言えば、テストコマンドを実行してエラーがあれば報告してくれる。失敗したら原因を分析して修正案を提示。そしてまた実行。このループが自然に回る。
+      </p>
+    </div>
+  </section>
+
+  <!-- Quote Section -->
+  <section class="quote-section" data-section="3">
+    <div class="quote-bg-text">Code</div>
+    <div class="quote-inner reveal">
+      <div class="quote-mark serif">"</div>
+      <p class="quote-text serif">
+        朝起きて、「昨日の続きをお願い」と言うだけで開発が再開する。タスクリストも覚えているし、前回どこまでやったかも把握している。まるで本当の開発パートナーがいるみたいだ。
+      </p>
+      <div class="quote-author">— 1週間使った感想</div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="7">0</div>
+        <div class="stat-label">使用日数</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="50">0</div>
+        <div class="stat-label">編集されたファイル数</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="3">0</div>
+        <div class="stat-label">完成したプロジェクト</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="70">0</div>
+        <div class="stat-label">時間短縮率（%）</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline Section -->
+  <section class="timeline-section" data-section="4">
+    <div class="timeline-header reveal">
+      <h2 class="serif">1週間の変化</h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Day 1-2</div>
+        <div class="timeline-content">
+          <h4 class="serif">戸惑いと発見</h4>
+          <p>最初はどう指示すればいいかわからなかった。でも、自然言語で話しかければ理解してくれることがわかった。「このブログのデザインを変えたい」くらいのざっくりした指示でも動く。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Day 3-4</div>
+        <div class="timeline-content">
+          <h4 class="serif">信頼関係の構築</h4>
+          <p>提案されたコードをそのまま承認することが増えた。差分を確認すれば、何をしようとしているかがわかる。理解できない時は「なぜこう変更したの？」と聞けば説明してくれる。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Day 5-6</div>
+        <div class="timeline-content">
+          <h4 class="serif">効率の最大化</h4>
+          <p>自分がやることは「何を作りたいか」を伝えること。設計からコーディング、テストまでAIが担当。自分はレビューと承認に集中。生産性が劇的に上がった。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Day 7</div>
+        <div class="timeline-content">
+          <h4 class="serif">もう戻れない</h4>
+          <p>この開発スタイルに慣れたら、もう元には戻れない。一人で開発しているのに、チームで開発しているような安心感。技術的な壁を感じなくなった。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Horizontal Section -->
+  <section class="horizontal-section" data-section="5">
+    <div class="horizontal-header reveal">
+      <h2 class="serif">Claude Codeを使いこなすコツ</h2>
+      <p style="color: var(--gray-500); font-size: 0.95rem;">より効果的に活用するために</p>
+    </div>
+    <div class="horizontal-track" id="horizontalTrack">
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800" alt="Clear Instructions">
+        </div>
+        <h4 class="horizontal-item-title serif">ゴールを明確に伝える</h4>
+        <p class="horizontal-item-desc">「何を作りたいか」「なぜ作りたいか」を伝える。手段より目的を共有すると、より良い提案が返ってくる。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800" alt="Review">
+        </div>
+        <h4 class="horizontal-item-title serif">差分は必ず確認する</h4>
+        <p class="horizontal-item-desc">信頼しても確認は怠らない。どんなに優秀でも100%正しいとは限らない。差分を見て理解することで、自分の学びにもなる。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1531498860502-7c67cf02f657?w=800" alt="Conversation">
+        </div>
+        <h4 class="horizontal-item-title serif">対話を重ねる</h4>
+        <p class="horizontal-item-desc">一発で完璧を求めない。「ここをもう少しこうして」と対話を重ねることで、理想に近づいていく。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1553877522-43269d4ea984?w=800" alt="Learning">
+        </div>
+        <h4 class="horizontal-item-title serif">「なぜ？」を聞く</h4>
+        <p class="horizontal-item-desc">理解できないコードがあったら「なぜこう書いた？」と聞く。教えてもらうことで、自分のスキルも上がる。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conclusion Section -->
+  <section class="conclusion-section" data-section="6">
+    <div class="conclusion-inner">
+      <h2 class="serif reveal">開発の民主化</h2>
+      <p class="conclusion-text reveal">
+        Claude Codeを使い始めて、開発に対する考え方が変わった。以前は「技術がわからないからできない」と諦めていたことが、今は「やりたいことを伝えれば実現できる」に変わった。
+      </p>
+      <p class="conclusion-text reveal">
+        これは開発の民主化だと思う。プログラミングの専門知識がなくても、アイデアがあればプロダクトを作れる。AIがコードを書き、自分は方向性を決める。そんな新しい開発スタイルが始まっている。
+      </p>
+
+      <div class="tips-box reveal">
+        <h3 class="serif">Claude Codeでできたこと</h3>
+        <ul class="tips-list">
+          <li>
+            <span class="tips-number">01</span>
+            <span>このブログサイトのデザインリニューアル。Astroの知識ゼロから。</span>
+          </li>
+          <li>
+            <span class="tips-number">02</span>
+            <span>データ分析スクリプトの作成。Pythonを書いたことがなくても。</span>
+          </li>
+          <li>
+            <span class="tips-number">03</span>
+            <span>自動化ツールの開発。日常業務の効率化。</span>
+          </li>
+          <li>
+            <span class="tips-number">04</span>
+            <span>バグ修正とリファクタリング。既存コードの改善。</span>
+          </li>
+        </ul>
+      </div>
+
+      <p class="conclusion-text reveal">
+        1週間で見えてきたのは、AIとの協働という新しい働き方。これからも使い続けて、さらにスキルを磨いていきたい。
+      </p>
+    </div>
+  </section>
+
+  <!-- Author Section -->
+  <section class="author-section">
+    <div class="author-inner reveal">
+      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300" alt="Author" class="author-avatar">
+      <div class="author-info">
+        <h4 class="serif">道ゐ / Dowie</h4>
+        <div class="author-role">Music Producer</div>
+        <p class="author-bio">
+          音楽スタジオ運営 / A-Sketch新人発掘担当。AIツールを活用した効率的なコンテンツ制作を日々研究しています。技術的なバックグラウンドはゼロからスタート。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Articles -->
+  <section class="related-section">
+    <div class="related-header reveal">
+      <h3 class="serif">Next Read</h3>
+    </div>
+    <div class="related-grid">
+      <a href="/tech/ai-journey-02-server" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600" alt="Server">
+        </div>
+        <div class="related-item-category">Technology</div>
+        <h4 class="related-item-title serif">サーバー構築をAIに聞きながらやってみた</h4>
+      </a>
+      <a href="/tech/ai-journey-04-prompts" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=600" alt="Prompts">
+        </div>
+        <div class="related-item-category">Technology</div>
+        <h4 class="related-item-title serif">感覚重視のプロンプト術</h4>
+      </a>
+      <a href="/tech/ai-journey" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600" alt="AI Hub">
+        </div>
+        <div class="related-item-category">Overview</div>
+        <h4 class="related-item-title serif">AIで一人でここまでやれた｜完全ガイド</h4>
+      </a>
+    </div>
+  </section>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+</MonoJournalLayout>

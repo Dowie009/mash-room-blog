@@ -1,7 +1,7 @@
 ---
 title: ChatGPTに自分のことを調べさせたら感動した話
 date: 2026-01-14
-category: ai-journey
+category: ai-experience
 thumbnail: /images/tech/mashiba-profile.jpg
 description: 2023年8月、まだ誰も課金していなかった頃。ChatGPTに「真柴道ゐ」を調べてもらったら、人生が変わる予感がした。
 tags: ['ChatGPT', 'AI', '体験談', 'AI活用入門']
@@ -10,6 +10,7 @@ learningLevel: 1
 topic: ai-journey
 defaultPreset: 1
 defaultBgEffect: dots
+heroImage: https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800
 ---
 
 <!-- 会話形式 Bパターン：関西弁AI君「あいぼー」との対話 -->

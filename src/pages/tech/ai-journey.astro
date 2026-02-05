@@ -1,0 +1,875 @@
+---
+/**
+ * AI Journey Hub Page - Mono Journal形式のHub
+ *
+ * 10記事すべてをカード形式で一覧表示
+ * 元のHTMLデザインを完全再現
+ */
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="AIで一人でここまでやれた | TECH LAB">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <div class="mono-hub">
+    <!-- Progress -->
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Chapter Indicator -->
+    <nav class="chapter-indicator">
+      <div class="chapter-dot active" data-section="0" data-label="はじめに"></div>
+      <div class="chapter-dot" data-section="1" data-label="やれたこと"></div>
+      <div class="chapter-dot" data-section="2" data-label="詳しく見る"></div>
+      <div class="chapter-dot" data-section="3" data-label="ジャーニー"></div>
+      <div class="chapter-dot" data-section="4" data-label="おわりに"></div>
+    </nav>
+
+    <!-- Back to TECH LAB -->
+    <a href="/tech" class="back-to-lab" id="backToLab">
+      <span>← TECH LAB</span>
+    </a>
+
+    <!-- Share -->
+    <div class="share-float">
+      <button class="share-float-btn" id="shareTwitter">𝕏</button>
+      <button class="share-float-btn" id="shareFacebook">f</button>
+      <button class="share-float-btn" id="copyLink">🔗</button>
+    </div>
+
+    <!-- Journey Navigation Sidebar -->
+    <nav id="journey-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title">Journey Articles</div>
+        <a href="/tech/ai-sparring-journal" class="sidebar-article-link" data-num="00">
+          <span class="sidebar-num">00</span>
+          <span class="sidebar-label">AI壁打ち</span>
+        </a>
+        <a href="/tech/ai-journey-01-wordpress" class="sidebar-article-link" data-num="01">
+          <span class="sidebar-num">01</span>
+          <span class="sidebar-label">ブログ構築</span>
+        </a>
+        <a href="/tech/ai-journey-02-server" class="sidebar-article-link" data-num="02">
+          <span class="sidebar-num">02</span>
+          <span class="sidebar-label">サーバー</span>
+        </a>
+        <a href="/tech/ai-journey-03-claude-code" class="sidebar-article-link" data-num="03">
+          <span class="sidebar-num">03</span>
+          <span class="sidebar-label">Claude Code</span>
+        </a>
+        <a href="/tech/ai-journey-04-prompts" class="sidebar-article-link" data-num="04">
+          <span class="sidebar-num">04</span>
+          <span class="sidebar-label">プロンプト</span>
+        </a>
+        <a href="/tech/ai-journey-05-writing" class="sidebar-article-link" data-num="05">
+          <span class="sidebar-num">05</span>
+          <span class="sidebar-label">ライティング</span>
+        </a>
+        <a href="/tech/ai-journey-06-genspark" class="sidebar-article-link" data-num="06">
+          <span class="sidebar-num">06</span>
+          <span class="sidebar-label">Genspark</span>
+        </a>
+        <a href="/tech/ai-journey-07-cockpit" class="sidebar-article-link" data-num="07">
+          <span class="sidebar-num">07</span>
+          <span class="sidebar-label">コックピット</span>
+        </a>
+        <a href="/tech/ai-journey-08-design" class="sidebar-article-link" data-num="08">
+          <span class="sidebar-num">08</span>
+          <span class="sidebar-label">デザイン</span>
+        </a>
+        <a href="/tech/ai-journey-09-sidebusiness" class="sidebar-article-link" data-num="09">
+          <span class="sidebar-num">09</span>
+          <span class="sidebar-label">マネタイズ</span>
+        </a>
+        <div class="sidebar-divider"></div>
+        <a href="/tech" class="sidebar-back-link">
+          ← TECH LABへ戻る
+        </a>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero" data-section="0">
+      <div class="hero-bg">
+        <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=1920" alt="AI Development">
+      </div>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-category">AI Journey</div>
+        <h1 class="hero-title serif">AIで一人で<br>ここまでやれた</h1>
+        <div class="hero-meta">
+          <span>道ゐ / Dowie</span>
+          <span>2026年1月</span>
+          <span>15 min read</span>
+        </div>
+      </div>
+      <div class="hero-scroll">
+        <span>Scroll</span>
+        <div class="scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- Intro -->
+    <section class="intro-section article-container" data-section="1">
+      <div class="intro-text reveal-left">
+        <p class="intro-lead serif">
+          1年前の自分に言っても信じないと思う。ブログもWebアプリも、全部一人で作れるようになった。
+        </p>
+        <p class="intro-body">
+          プログラミングは独学で挫折した経験がある。でもAIが登場して、状況は完全に変わった。コードを書いてくれる、エラーを直してくれる、何をすべきか教えてくれる。この記事では、AIを使って実際に何ができたのか、その全体像を紹介する。
+        </p>
+      </div>
+      <div class="intro-image reveal-right">
+        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200" alt="Coding">
+        <div class="image-caption">MacBookとコーヒー、それだけで始められた</div>
+      </div>
+    </section>
+
+    <!-- Full Image -->
+    <div class="full-image reveal">
+      <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920" alt="Digital World">
+      <div class="full-image-overlay">
+        <div class="full-image-text">
+          <h2 class="serif">AIは相棒になった</h2>
+          <p>わからないことがあれば聞く。エラーが出れば貼り付ける。一人じゃないから、続けられた。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quote -->
+    <section class="quote-section">
+      <div class="quote-bg-text">創造</div>
+      <div class="quote-inner reveal">
+        <div class="quote-mark serif">"</div>
+        <p class="quote-text serif">
+          プログラマーじゃなくても、デザイナーじゃなくても、<br>アイデアさえあれば形にできる時代が来た
+        </p>
+      </div>
+    </section>
+
+    <!-- Branch Cards -->
+    <section class="branch-section" data-section="2">
+      <div class="branch-header reveal">
+        <h2 class="serif">やれたこと、全部見せます</h2>
+        <p>各項目をクリックすると、詳しい解説記事に飛べます</p>
+      </div>
+
+      <div class="branch-grid">
+        <!-- Featured Card - AI壁打ち -->
+        <a href="/tech/ai-sparring-journal" class="branch-card featured reveal">
+          <div class="branch-card-image">
+            <span class="branch-card-number">00</span>
+            <img src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=800" alt="AI Sparring">
+          </div>
+          <div class="branch-card-content">
+            <h3 class="branch-title serif">AIに本音を話した日</h3>
+            <p class="branch-desc">誰にも言えなかった悩みをAIに相談した。融資のこと、お金のこと、将来のこと。壁打ち相手としてのAI活用法。</p>
+            <span class="branch-link">Read more</span>
+          </div>
+        </a>
+
+        <!-- オリジナルブログ -->
+        <a href="/tech/ai-journey-01-wordpress" class="branch-card reveal">
+          <div class="branch-card-image">
+            <span class="branch-card-number">01</span>
+            <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800" alt="Blog Writing">
+          </div>
+          <div class="branch-card-content">
+            <h3 class="branch-title serif">WordPressをやめて、自分のブログを作った</h3>
+            <p class="branch-desc">WordPressで始めたけど限界を感じた。AIと一緒にゼロからオリジナルブログを構築した記録。</p>
+            <span class="branch-link">ブログ構築編を読む</span>
+          </div>
+        </a>
+
+        <!-- Server -->
+        <a href="/tech/ai-journey-02-server" class="branch-card reveal">
+          <div class="branch-card-image">
+            <span class="branch-card-number">02</span>
+            <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800" alt="Server Room">
+          </div>
+          <div class="branch-card-content">
+            <h3 class="branch-title serif">サーバーを理解した</h3>
+            <p class="branch-desc">ドメイン、DNS、SSL証明書。呪文みたいだった単語が、AIの説明で腑に落ちた。</p>
+            <span class="branch-link">サーバー編を読む</span>
+          </div>
+        </a>
+
+        <!-- Claude Code -->
+        <a href="/tech/ai-journey-03-claude-code" class="branch-card reveal">
+          <div class="branch-card-image">
+            <span class="branch-card-number">03</span>
+            <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800" alt="Code Terminal">
+          </div>
+          <div class="branch-card-content">
+            <h3 class="branch-title serif">コピペの限界、Claude Codeへ</h3>
+            <p class="branch-desc">Geminiでデザインしてコピペしていたけど限界が来た。Claude CodeとCursorで本格開発へ移行した話。</p>
+            <span class="branch-link">Claude Code編を読む</span>
+          </div>
+        </a>
+
+        <!-- プロンプト -->
+        <a href="/tech/ai-journey-04-prompts" class="branch-card reveal">
+          <div class="branch-card-image">
+            <span class="branch-card-number">04</span>
+            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800" alt="ChatGPT">
+          </div>
+          <div class="branch-card-content">
+            <h3 class="branch-title serif">感覚重視のプロンプト術</h3>
+            <p class="branch-desc">専門用語ゼロでもAIを使いこなす。バックアップの取り方、各AIの得意分野を知ってエラーを減らすコツ。</p>
+            <span class="branch-link">プロンプト編を読む</span>
+          </div>
+        </a>
+
+        <!-- ストーリーライティング -->
+        <a href="/tech/ai-journey-05-writing" class="branch-card reveal">
+          <div class="branch-card-image">
+            <span class="branch-card-number">05</span>
+            <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800" alt="Writing">
+          </div>
+          <div class="branch-card-content">
+            <h3 class="branch-title serif">物語をAIと書いた</h3>
+            <p class="branch-desc">ブログのストーリーページをAIと共同執筆。自分の言葉をプロンプトに、AIに磨いてもらう文章術。</p>
+            <span class="branch-link">ライティング編を読む</span>
+          </div>
+        </a>
+
+        <!-- Genspark -->
+        <a href="/tech/ai-journey-06-genspark" class="branch-card reveal">
+          <div class="branch-card-image">
+            <span class="branch-card-number">06</span>
+            <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800" alt="AI Tools">
+          </div>
+          <div class="branch-card-content">
+            <h3 class="branch-title serif">Gensparkで複数AIを使い分けた</h3>
+            <p class="branch-desc">Gemini、Claude、ChatGPT、イラスト生成が一箇所に。手軽に試して、本格的に専門AIへ移行する流れ。</p>
+            <span class="branch-link">Genspark編を読む</span>
+          </div>
+        </a>
+
+        <!-- コックピットアプリ -->
+        <a href="/tech/ai-journey-07-cockpit" class="branch-card reveal">
+          <div class="branch-card-image">
+            <span class="branch-card-number">07</span>
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800" alt="Dashboard">
+          </div>
+          <div class="branch-card-content">
+            <h3 class="branch-title serif">Notionを卒業、自作コックピットへ</h3>
+            <p class="branch-desc">Notionの課金機能を自分で作れないか？タスク・メモ・ブログ投稿を一元管理するアプリを開発中。</p>
+            <span class="branch-link">コックピット編を読む</span>
+          </div>
+        </a>
+
+        <!-- AIデザイン -->
+        <a href="/tech/ai-journey-08-design" class="branch-card reveal">
+          <div class="branch-card-image">
+            <span class="branch-card-number">08</span>
+            <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800" alt="AI Design">
+          </div>
+          <div class="branch-card-content">
+            <h3 class="branch-title serif">AIでデザインを生成する</h3>
+            <p class="branch-desc">GensparkのイラストジェネレーターとIdeogramが優秀。CSSも覚えながらAIとデザインを作る日々。</p>
+            <span class="branch-link">デザイン編を読む</span>
+          </div>
+        </a>
+
+        <!-- マネタイズ -->
+        <a href="/tech/ai-journey-09-sidebusiness" class="branch-card reveal">
+          <div class="branch-card-image">
+            <span class="branch-card-number">09</span>
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800" alt="Business Analytics">
+          </div>
+          <div class="branch-card-content">
+            <h3 class="branch-title serif">ブログとLP、SNSでマネタイズ</h3>
+            <p class="branch-desc">作ったブログやレッスンページへ集客。AIでSNS運用も効率化。これが結果的に副業になった。</p>
+            <span class="branch-link">マネタイズ編を読む</span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Journey Timeline -->
+    <section class="timeline-section" data-section="3">
+      <div class="timeline-header reveal">
+        <h2 class="serif">このジャーニーの流れ</h2>
+      </div>
+      <div class="journey-timeline">
+        <div class="journey-item reveal">
+          <div class="journey-icon">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="journey-content">
+            <h4 class="serif">まずAIに相談する</h4>
+            <p>「こういうことがしたい」とざっくり話す。AIが選択肢を出してくれる。</p>
+          </div>
+        </div>
+        <div class="journey-item reveal">
+          <div class="journey-icon">
+            <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+          <div class="journey-content">
+            <h4 class="serif">必要な知識を学ぶ</h4>
+            <p>わからない単語はその場で聞く。AIが初心者向けに説明してくれる。</p>
+          </div>
+        </div>
+        <div class="journey-item reveal">
+          <div class="journey-icon">
+            <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <div class="journey-content">
+            <h4 class="serif">一緒に手を動かす</h4>
+            <p>コードを書いてもらい、エラーを直してもらい、少しずつ形にしていく。</p>
+          </div>
+        </div>
+        <div class="journey-item reveal">
+          <div class="journey-icon">
+            <svg viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+          </div>
+          <div class="journey-content">
+            <h4 class="serif">公開・運用する</h4>
+            <p>デプロイ方法もAIに聞く。運用で困ったことも相談する。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Summary -->
+    <section class="summary-section">
+      <div class="summary-grid">
+        <div class="summary-item">
+          <div class="summary-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          </div>
+          <div class="summary-label">Webサイト</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-icon">
+            <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          </div>
+          <div class="summary-label">Webアプリ</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+          </div>
+          <div class="summary-label">記事100本+</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-icon">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="summary-label">副業収入</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          </div>
+          <div class="summary-label">新しいスキル</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Conclusion -->
+    <section class="conclusion-section" data-section="4">
+      <div class="conclusion-inner">
+        <h2 class="serif reveal">始めるのに遅すぎることはない</h2>
+        <p class="conclusion-text reveal">
+          正直、最初は半信半疑だった。「AIに聞けばなんとかなる」なんて、そんな甘い話があるわけない。でも実際に使い始めてみると、本当になんとかなった。もちろん、すべてがスムーズだったわけじゃない。
+        </p>
+        <p class="conclusion-text reveal">
+          でも、一人で抱え込まなくていい。わからないことはその場で聞ける。エラーが出ても、一緒に原因を探してくれる。この安心感が、続けるモチベーションになった。
+        </p>
+        <p class="conclusion-text reveal">
+          このページから、興味のある記事に飛んでみてほしい。どこから始めてもいい。大事なのは、最初の一歩を踏み出すこと。AIは、あなたの相棒になってくれる。
+        </p>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section reveal">
+      <div class="cta-inner">
+        <h3 class="serif">どこから始める？</h3>
+        <p>まずは気になる記事から読んでみてください</p>
+        <div class="cta-buttons">
+          <a href="/tech/ai-sparring-journal" class="cta-btn primary">AI壁打ちから始める</a>
+          <a href="/tech/ai-journey-01-wordpress" class="cta-btn secondary">ブログ構築から始める</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Author -->
+    <section class="author-section">
+      <div class="author-inner reveal">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300" alt="Author" class="author-avatar">
+        <div class="author-info">
+          <h4 class="serif">道ゐ / Dowie</h4>
+          <div class="author-role">Music Producer</div>
+          <p class="author-bio">
+            音楽スタジオ運営 / A-Sketch新人発掘担当。AIツールを活用した効率的なコンテンツ制作を日々研究しています。北海道でスタジオを改装し、音楽制作の新しい形を模索中。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-inner">
+        <div>
+          <div class="footer-brand serif">MASHROOM STUDIO</div>
+          <p class="footer-desc">AI時代のものづくりを探求する。<br>技術と感性の交差点から、新しい創造の形を発信します。</p>
+        </div>
+        <div>
+          <div class="footer-title">Categories</div>
+          <ul class="footer-links">
+            <li><a href="/tech">TECH LAB</a></li>
+            <li><a href="/dtm">DTM LAB</a></li>
+            <li><a href="/">HOME</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-title">AI Journey</div>
+          <ul class="footer-links">
+            <li><a href="/tech/ai-sparring-journal">AI壁打ち</a></li>
+            <li><a href="/tech/ai-journey-03-claude-code">Claude Code</a></li>
+            <li><a href="/tech/ai-journey-09-sidebusiness">マネタイズ</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-title">Social</div>
+          <ul class="footer-links">
+            <li><a href="#">Twitter</a></li>
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">YouTube</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 道ゐ / Dowie. All rights reserved.</span>
+        <span>Made with ♪ in Hokkaido</span>
+      </div>
+    </footer>
+
+    <!-- Back to Top -->
+    <button class="back-to-top" id="backToTop">↑</button>
+  </div>
+
+  <style is:global>
+    :root {
+      --black: #0d0d0d;
+      --white: #ffffff;
+      --cream: #f8f6f3;
+      --gray-100: #e8e6e3;
+      --gray-200: #d0cdc8;
+      --gray-500: #4a4845;
+      --gray-700: #2a2826;
+      --accent: #4a7c6f;
+      --accent-dark: #3a6358;
+    }
+
+    .mono-hub * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    .mono-hub {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 400;
+      background: var(--cream);
+      color: var(--gray-700);
+      line-height: 1.85;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .mono-hub ::selection { background: var(--accent); color: var(--white); }
+    .serif { font-family: 'Shippori Mincho', serif; }
+
+    /* Progress */
+    .progress-container { position: fixed; top: 0; left: 0; width: 100%; height: 3px; z-index: 9999; }
+    .progress-bar { height: 100%; background: var(--accent); width: 0%; transition: width 0.1s linear; }
+
+    /* Chapter Indicator */
+    .chapter-indicator {
+      position: fixed; left: 3rem; top: 50%; transform: translateY(-50%);
+      z-index: 100; display: flex; flex-direction: column; gap: 1.5rem;
+    }
+    .chapter-dot {
+      width: 12px; height: 12px; border-radius: 50%; background: var(--gray-200);
+      cursor: pointer; transition: all 0.3s ease; position: relative;
+    }
+    .chapter-dot::before {
+      content: attr(data-label); position: absolute; left: 24px; top: 50%;
+      transform: translateY(-50%); font-size: 0.65rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--gray-500); white-space: nowrap;
+      opacity: 0; transition: opacity 0.3s ease;
+    }
+    .chapter-dot:hover::before { opacity: 1; }
+    .chapter-dot.active { background: var(--accent); transform: scale(1.3); }
+
+    /* Back to Lab */
+    .back-to-lab {
+      position: fixed; top: 2rem; left: 2rem; z-index: 1000;
+      color: var(--white); text-decoration: none; font-size: 0.85rem;
+      padding: 0.6rem 1rem; background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px); border-radius: 4px; transition: all 0.3s ease;
+    }
+    .back-to-lab:hover { background: rgba(0,0,0,0.5); }
+    .back-to-lab.scrolled { color: var(--gray-700); background: var(--white); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+
+    /* Hero */
+    .hero {
+      height: 100vh; position: relative; display: flex;
+      align-items: flex-end; overflow: hidden;
+    }
+    .hero-bg { position: absolute; inset: 0; z-index: 0; }
+    .hero-bg img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.1); animation: heroZoom 8s ease-out forwards; }
+    @keyframes heroZoom { to { transform: scale(1); } }
+    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.3) 100%); z-index: 1; }
+    .hero-content { position: relative; z-index: 2; padding: 6rem; max-width: 900px; color: var(--white); }
+    .hero-category { font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); margin-bottom: 2rem; opacity: 0; transform: translateY(20px); animation: fadeUp 1s 0.3s forwards; }
+    .hero-title { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 500; line-height: 1.3; margin-bottom: 2rem; opacity: 0; transform: translateY(30px); animation: fadeUp 1s 0.5s forwards; }
+    .hero-meta { display: flex; gap: 2rem; font-size: 0.8rem; opacity: 0; transform: translateY(20px); animation: fadeUp 1s 0.7s forwards; }
+    .hero-scroll { position: absolute; bottom: 3rem; left: 50%; transform: translateX(-50%); z-index: 2; color: var(--white); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 1rem; opacity: 0; animation: fadeUp 1s 1s forwards; }
+    .scroll-line { width: 1px; height: 60px; background: linear-gradient(to bottom, var(--white), transparent); animation: scrollPulse 2s ease-in-out infinite; }
+    @keyframes scrollPulse { 0%, 100% { transform: scaleY(0.5); opacity: 0.5; } 50% { transform: scaleY(1); opacity: 1; } }
+    @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+    /* Container */
+    .article-container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
+
+    /* Intro */
+    .intro-section { padding: 10rem 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+    .intro-text { padding-right: 4rem; }
+    .intro-lead { font-size: 1.5rem; line-height: 2.2; color: var(--gray-700); margin-bottom: 2rem; }
+    .intro-body { font-size: 1rem; color: var(--gray-500); font-weight: 400; line-height: 2; }
+    .intro-image { position: relative; }
+    .intro-image img { width: 100%; height: 600px; object-fit: cover; }
+    .image-caption { position: absolute; bottom: -3rem; left: 0; font-size: 0.75rem; color: var(--gray-500); font-style: italic; }
+
+    /* Full Image */
+    .full-image { position: relative; height: 60vh; overflow: hidden; }
+    .full-image img { width: 100%; height: 100%; object-fit: cover; }
+    .full-image-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; }
+    .full-image-text { color: var(--white); text-align: center; max-width: 700px; padding: 2rem; }
+    .full-image-text h2 { font-size: 2.5rem; font-weight: 400; margin-bottom: 1rem; }
+
+    /* Quote */
+    .quote-section { padding: 8rem 0; background: var(--black); color: var(--white); position: relative; overflow: hidden; }
+    .quote-bg-text { position: absolute; font-size: 20vw; color: rgba(255,255,255,0.03); top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; }
+    .quote-inner { max-width: 900px; margin: 0 auto; text-align: center; position: relative; z-index: 1; padding: 0 2rem; }
+    .quote-mark { font-size: 5rem; color: var(--accent); line-height: 1; margin-bottom: 1.5rem; }
+    .quote-text { font-size: clamp(1.3rem, 2.5vw, 2rem); font-weight: 400; line-height: 1.8; margin-bottom: 2rem; }
+
+    /* Branch Cards */
+    .branch-section { padding: 10rem 0; }
+    .branch-header { text-align: center; margin-bottom: 5rem; }
+    .branch-header h2 { font-size: 2.5rem; font-weight: 500; margin-bottom: 1rem; }
+    .branch-header p { color: var(--gray-500); font-size: 0.95rem; }
+
+    .branch-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 2.5rem;
+      max-width: 1200px; margin: 0 auto; padding: 0 2rem;
+    }
+
+    .branch-card {
+      background: var(--white); position: relative;
+      overflow: hidden; cursor: pointer; text-decoration: none; color: inherit;
+      transition: all 0.4s ease;
+    }
+    .branch-card:hover { transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
+
+    .branch-card-image { aspect-ratio: 16/10; overflow: hidden; position: relative; }
+    .branch-card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+    .branch-card:hover .branch-card-image img { transform: scale(1.05); }
+    .branch-card-image::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.3) 0%, transparent 50%); }
+    .branch-card-number {
+      position: absolute; top: 1.5rem; left: 1.5rem;
+      font-size: 1rem; color: var(--white); background: var(--accent);
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; z-index: 2;
+    }
+
+    .branch-card-content { padding: 2rem; }
+    .branch-title { font-size: 1.3rem; margin-bottom: 0.8rem; color: var(--gray-700); line-height: 1.5; }
+    .branch-desc { font-size: 0.9rem; color: var(--gray-500); font-weight: 400; line-height: 1.8; margin-bottom: 1.2rem; }
+    .branch-link { font-size: 0.75rem; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; display: flex; align-items: center; gap: 0.5rem; }
+    .branch-link::after { content: '→'; transition: transform 0.3s ease; }
+    .branch-card:hover .branch-link::after { transform: translateX(5px); }
+
+    /* Featured Card */
+    .branch-card.featured { grid-column: span 2; display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+    .branch-card.featured .branch-card-image { aspect-ratio: auto; height: 100%; }
+    .branch-card.featured .branch-card-image img { height: 100%; }
+    .branch-card.featured .branch-card-content { padding: 3rem; display: flex; flex-direction: column; justify-content: center; }
+    .branch-card.featured .branch-title { font-size: 1.6rem; margin-bottom: 1rem; }
+    .branch-card.featured .branch-desc { font-size: 1rem; }
+
+    /* Timeline */
+    .timeline-section { padding: 10rem 0; background: var(--white); }
+    .timeline-header { text-align: center; margin-bottom: 5rem; }
+    .timeline-header h2 { font-size: 2.5rem; font-weight: 500; }
+
+    .journey-timeline { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+    .journey-item { display: flex; gap: 3rem; margin-bottom: 4rem; align-items: flex-start; }
+    .journey-icon { width: 60px; height: 60px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .journey-icon svg { width: 28px; height: 28px; stroke: var(--white); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .journey-content h4 { font-size: 1.3rem; margin-bottom: 0.8rem; }
+    .journey-content p { font-size: 0.95rem; color: var(--gray-500); font-weight: 400; line-height: 1.9; }
+
+    /* Summary */
+    .summary-section { padding: 8rem 0; background: var(--accent); color: var(--white); }
+    .summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2rem; max-width: 1200px; margin: 0 auto; padding: 0 2rem; text-align: center; }
+    .summary-item { opacity: 0; transform: translateY(30px); transition: all 0.6s ease; }
+    .summary-item.visible { opacity: 1; transform: translateY(0); }
+    .summary-icon { margin-bottom: 1rem; display: flex; justify-content: center; }
+    .summary-icon svg { width: 48px; height: 48px; stroke: var(--white); fill: none; stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
+    .summary-label { font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.8; }
+
+    /* Conclusion */
+    .conclusion-section { padding: 10rem 0; background: var(--white); }
+    .conclusion-inner { max-width: 800px; margin: 0 auto; padding: 0 2rem; }
+    .conclusion-inner h2 { font-size: 2.5rem; font-weight: 500; margin-bottom: 3rem; text-align: center; }
+    .conclusion-text { font-size: 1.1rem; line-height: 2.2; color: var(--gray-500); margin-bottom: 2rem; }
+    .conclusion-text:first-of-type::first-letter { font-size: 4rem; float: left; line-height: 1; margin-right: 1rem; margin-top: 0.5rem; color: var(--accent); }
+
+    /* CTA */
+    .cta-section { padding: 6rem 0; text-align: center; border-top: 1px solid var(--gray-200); }
+    .cta-inner { max-width: 600px; margin: 0 auto; padding: 0 2rem; }
+    .cta-inner h3 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+    .cta-inner p { color: var(--gray-500); font-size: 0.95rem; margin-bottom: 2rem; }
+    .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .cta-btn { padding: 1rem 2rem; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; transition: all 0.3s ease; }
+    .cta-btn.primary { background: var(--black); color: var(--white); }
+    .cta-btn.primary:hover { background: var(--accent); }
+    .cta-btn.secondary { border: 1px solid var(--gray-200); color: var(--gray-700); }
+    .cta-btn.secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Author */
+    .author-section { padding: 6rem 0; border-top: 1px solid var(--gray-200); border-bottom: 1px solid var(--gray-200); background: var(--cream); }
+    .author-inner { max-width: 800px; margin: 0 auto; padding: 0 2rem; display: grid; grid-template-columns: 150px 1fr; gap: 3rem; align-items: center; }
+    .author-avatar { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; }
+    .author-info h4 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+    .author-role { font-size: 0.8rem; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1rem; }
+    .author-bio { font-size: 0.95rem; color: var(--gray-500); font-weight: 400; line-height: 1.8; }
+
+    /* Share */
+    .share-float { position: fixed; right: 3rem; top: 30%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 1rem; z-index: 100; }
+    .share-float-btn { width: 44px; height: 44px; border: 1px solid var(--gray-200); background: var(--white); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem; color: var(--gray-500); font-weight: 400; }
+    .share-float-btn:hover { background: var(--black); border-color: var(--black); color: var(--white); }
+
+    /* Journey Navigation Sidebar */
+    #journey-sidebar {
+      position: fixed;
+      right: 2rem;
+      top: 50%;
+      transform: translateY(-40%);
+      z-index: 150;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.4s ease;
+    }
+    #journey-sidebar.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    .sidebar-section {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--gray-200);
+      padding: 1.2rem;
+      min-width: 160px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .sidebar-title {
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gray-500);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .sidebar-article-link {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.4rem 0.5rem;
+      margin: 0.2rem 0;
+      text-decoration: none;
+      color: var(--gray-500);
+      font-size: 0.75rem;
+      transition: all 0.2s ease;
+      border-radius: 4px;
+    }
+    .sidebar-article-link:hover {
+      background: var(--accent);
+      color: var(--white);
+    }
+    .sidebar-num {
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--accent);
+      min-width: 18px;
+    }
+    .sidebar-article-link:hover .sidebar-num {
+      color: var(--white);
+    }
+    .sidebar-label {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sidebar-divider {
+      height: 1px;
+      background: var(--gray-200);
+      margin: 0.8rem 0;
+    }
+    .sidebar-back-link {
+      display: block;
+      text-decoration: none;
+      color: var(--accent);
+      font-size: 0.7rem;
+      padding: 0.3rem 0.5rem;
+      transition: all 0.2s ease;
+    }
+    .sidebar-back-link:hover {
+      color: var(--accent-dark);
+    }
+
+    /* Footer */
+    footer { background: var(--black); color: var(--white); padding: 6rem 2rem 3rem; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr repeat(3, 1fr); gap: 4rem; margin-bottom: 4rem; }
+    .footer-brand { font-size: 1.8rem; margin-bottom: 1.5rem; }
+    .footer-desc { font-size: 0.85rem; color: rgba(255,255,255,0.5); line-height: 1.8; }
+    .footer-title { font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 1.5rem; }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 0.8rem; }
+    .footer-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.9rem; transition: color 0.3s ease; }
+    .footer-links a:hover { color: var(--white); }
+    .footer-bottom { padding-top: 3rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+
+    /* Reveal */
+    .reveal { opacity: 0; transform: translateY(60px); transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left { opacity: 0; transform: translateX(-60px); transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right { opacity: 0; transform: translateX(60px); transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+    /* Back to Top */
+    .back-to-top { position: fixed; bottom: 3rem; right: 3rem; width: 50px; height: 50px; background: var(--white); border: 1px solid var(--gray-200); display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; visibility: hidden; transition: all 0.3s ease; z-index: 99; font-size: 1.2rem; }
+    .back-to-top.visible { opacity: 1; visibility: visible; }
+    .back-to-top:hover { background: var(--black); border-color: var(--black); color: var(--white); }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      #journey-sidebar { display: none; }
+    }
+    @media (max-width: 1024px) {
+      .chapter-indicator, .share-float { display: none; }
+      .intro-section { grid-template-columns: 1fr; gap: 4rem; }
+      .intro-text { padding-right: 0; }
+      .branch-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .branch-card.featured { grid-column: span 1; grid-template-columns: 1fr; }
+      .branch-card.featured .branch-card-image { aspect-ratio: 16/10; }
+      .summary-grid { grid-template-columns: repeat(2, 1fr); }
+      .footer-inner { grid-template-columns: 1fr; }
+      .author-inner { grid-template-columns: 1fr; text-align: center; }
+      .author-avatar { margin: 0 auto; }
+    }
+
+    @media (max-width: 768px) {
+      .hero-content { padding: 3rem 2rem; }
+      .hero-meta { flex-direction: column; gap: 0.5rem; }
+      .summary-grid { grid-template-columns: 1fr; }
+      .back-to-lab { top: 1rem; left: 1rem; }
+    }
+  </style>
+
+  <script is:inline>
+    // Progress Bar
+    window.addEventListener('scroll', () => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      document.getElementById('progressBar').style.width = (winScroll / height * 100) + '%';
+      document.getElementById('backToTop').classList.toggle('visible', winScroll > 500);
+
+      // Back to Lab color change
+      const backToLab = document.getElementById('backToLab');
+      if (backToLab) {
+        backToLab.classList.toggle('scrolled', winScroll > window.innerHeight * 0.8);
+      }
+
+      // Journey Sidebar visibility（ヒーロー通過後に表示）
+      const journeySidebar = document.getElementById('journey-sidebar');
+      if (journeySidebar) {
+        journeySidebar.classList.toggle('visible', winScroll > window.innerHeight * 0.6);
+      }
+    });
+
+    document.getElementById('backToTop').addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Chapter Navigation
+    const sections = document.querySelectorAll('[data-section]');
+    const dots = document.querySelectorAll('.chapter-dot');
+
+    function updateChapterNav() {
+      let current = 0;
+      const scrollPos = window.scrollY + window.innerHeight / 3;
+
+      sections.forEach((section) => {
+        const sectionTop = section.offsetTop;
+        if (scrollPos >= sectionTop) {
+          current = parseInt(section.dataset.section);
+        }
+      });
+
+      dots.forEach(dot => {
+        const dotSection = parseInt(dot.dataset.section);
+        dot.classList.toggle('active', dotSection === current);
+      });
+    }
+
+    window.addEventListener('scroll', updateChapterNav);
+    window.addEventListener('load', updateChapterNav);
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        const sectionNum = dot.dataset.section;
+        const target = document.querySelector(`[data-section="${sectionNum}"]`);
+        if (target) target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Reveal
+    const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // Summary Animation
+    const summaryItems = document.querySelectorAll('.summary-item');
+    const summaryObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), index * 100);
+        }
+      });
+    }, { threshold: 0.5 });
+    summaryItems.forEach(item => summaryObserver.observe(item));
+
+    // Share
+    document.getElementById('shareTwitter').addEventListener('click', () => {
+      window.open('https://twitter.com/intent/tweet?url=' + encodeURIComponent(location.href) + '&text=' + encodeURIComponent(document.title), '_blank');
+    });
+    document.getElementById('shareFacebook').addEventListener('click', () => {
+      window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(location.href), '_blank');
+    });
+    document.getElementById('copyLink').addEventListener('click', () => {
+      navigator.clipboard.writeText(location.href);
+      alert('リンクをコピーしました');
+    });
+  </script>
+</Layout>

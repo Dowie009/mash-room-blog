@@ -1,7 +1,7 @@
 ---
 title: 【2026年版】無料で使える生産性アップアプリ10選
 date: 2026-01-24
-category: tools
+category: useful-tools
 thumbnail: /images/tech/thumbnails/productivity-apps.svg
 description: 仕事の生産性を上げる無料アプリを厳選して10個紹介。タスク管理、時間管理、集中力アップなど、目的別におすすめアプリをまとめました。
 tags: ['アプリ', '生産性', '無料', 'ツール']
@@ -11,6 +11,7 @@ learnings:
   - タスク管理・ToDoアプリ
   - 時間管理・集中力アップアプリ
   - コミュニケーション・コラボレーションアプリ
+heroImage: https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?w=1920
 ---
 
 「もっと効率よく仕事をしたい」

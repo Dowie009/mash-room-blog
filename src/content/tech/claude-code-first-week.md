@@ -1,7 +1,7 @@
 ---
 title: Claude Codeを1週間使ってわかったこと
 date: 2026-01-14
-category: ai-journey
+category: ai-experience
 thumbnail: /images/Blog_00.png
 description: AIペアプログラマーとしてのClaude Codeの実力を検証した記録
 tags: ['Claude Code', 'AI', 'ペアプログラミング', '開発効率化']
@@ -11,6 +11,7 @@ learnings:
   - Claude Codeの基本的な使い方
   - 効果的なプロンプトの書き方
   - AIとの協働における注意点
+heroImage: https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=1920
 ---
 
 ## はじめに

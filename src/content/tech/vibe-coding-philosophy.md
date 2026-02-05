@@ -11,6 +11,7 @@ learnings:
   - Vibe Codingの概念と背景
   - 従来の開発との違い
   - 実践するためのマインドセット
+heroImage: https://images.unsplash.com/photo-1550439062-609e1531270e?w=800
 ---
 
 <h2 id="learning-1">Vibe Codingとは</h2>

@@ -1,0 +1,319 @@
+---
+import MonoJournalLayout from '../../layouts/MonoJournalLayout.astro';
+
+const title = "AIを活用した効率的なライティング術";
+const description = "白紙から始めるのが苦手だった。AIとの協働で見つけた、自分らしい文章を書くためのワークフロー。";
+---
+
+<MonoJournalLayout title={title} description={description}>
+  <!-- Hub Link -->
+  <a href="/tech/ai-journey" class="hub-link" id="hubLink">
+    ← Hub に戻る
+  </a>
+
+  <!-- Progress Indicator -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Chapter Indicator -->
+  <nav class="chapter-indicator">
+    <div class="chapter-dot active" data-section="0" data-label="はじめに"></div>
+    <div class="chapter-dot" data-section="1" data-label="課題"></div>
+    <div class="chapter-dot" data-section="2" data-label="ワークフロー"></div>
+    <div class="chapter-dot" data-section="3" data-label="実践"></div>
+    <div class="chapter-dot" data-section="4" data-label="効果"></div>
+    <div class="chapter-dot" data-section="5" data-label="Tips"></div>
+    <div class="chapter-dot" data-section="6" data-label="おわりに"></div>
+  </nav>
+
+  <!-- Share Float -->
+  <div class="share-float">
+    <button class="share-float-btn" onclick="shareTwitter()">𝕏</button>
+    <button class="share-float-btn" onclick="shareFacebook()">f</button>
+    <button class="share-float-btn" onclick="copyLink()">🔗</button>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero in-view" data-section="0">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1920" alt="Writing">
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-category">Technology</div>
+      <h1 class="hero-title serif">AIを活用した<br>効率的なライティング術</h1>
+      <div class="hero-meta">
+        <span>道ゐ / Dowie</span>
+        <span>2026年1月</span>
+        <span>12 min read</span>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Intro Section -->
+  <section class="intro-section article-container" data-section="1">
+    <div class="intro-text reveal-left">
+      <p class="intro-lead serif">
+        白紙から始めるのが苦手だった。カーソルが点滅するだけの画面を前に、何時間も固まってしまうことがあった。
+      </p>
+      <p class="intro-body">
+        ブログを書きたい、SNSで発信したい。でも、書き始めるまでのハードルが高すぎて、いつも後回しにしてしまう。そんな自分がAIとの協働で見つけた、効率的なライティングワークフローについて書いておく。
+      </p>
+    </div>
+    <div class="intro-image reveal-right">
+      <img src="https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=1200" alt="Notebook">
+      <div class="image-caption">書くことへの抵抗感が消えた。</div>
+    </div>
+  </section>
+
+  <!-- Full Width Image -->
+  <div class="full-image reveal">
+    <img src="https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?w=1920" alt="Typewriter">
+    <div class="full-image-overlay">
+      <div class="full-image-text">
+        <h2 class="serif">書くことの再発見</h2>
+        <p>AIは代筆者ではない。自分の思考を整理し、言葉を引き出してくれるパートナー。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Split Section 1 -->
+  <section class="split-section" data-section="2">
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1512820790803-83ca734da794?w=1200" alt="Brainstorm">
+    </div>
+    <div class="split-content">
+      <div class="split-number serif reveal">01</div>
+      <h2 class="split-title serif reveal">ブレストから始める</h2>
+      <p class="split-text reveal">
+        まずはAIとブレインストーミング。「こういうテーマで書きたい」と伝えると、切り口や構成の提案が返ってくる。それを見ながら「これは違う」「これは面白い」と選別していく。白紙から考えるより、選ぶ方がずっと楽。
+      </p>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="split-content">
+      <div class="split-number serif reveal">02</div>
+      <h2 class="split-title serif reveal">アウトラインを作る</h2>
+      <p class="split-text reveal">
+        切り口が決まったら、アウトラインを作成。AIに「この流れで構成を組んで」と依頼する。見出しと簡単な内容が整理された骨格ができあがる。これを見ながら、「ここはもっと詳しく」「ここは省略」と調整。全体像が見えると、書く気力が湧いてくる。
+      </p>
+    </div>
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=1200" alt="Outline">
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1517842645767-c639042777db?w=1200" alt="Draft">
+    </div>
+    <div class="split-content">
+      <div class="split-number serif reveal">03</div>
+      <h2 class="split-title serif reveal">下書きを作ってもらう</h2>
+      <p class="split-text reveal">
+        アウトラインを基に、AIに下書きを作ってもらう。この段階では完璧を求めない。「とりあえず埋めて」くらいの気持ちで。出てきた文章を読みながら、自分の言葉で書き直していく。ゼロから書くより、編集する方が遥かに楽。
+      </p>
+    </div>
+  </section>
+
+  <!-- Quote Section -->
+  <section class="quote-section" data-section="3">
+    <div class="quote-bg-text">Writing</div>
+    <div class="quote-inner reveal">
+      <div class="quote-mark serif">"</div>
+      <p class="quote-text serif">
+        AIが書いた文章をそのまま使うわけじゃない。それを叩き台にして、自分の言葉で書き直す。そのプロセスで、自分の考えが明確になっていく。AIは鏡みたいなもの。
+      </p>
+      <div class="quote-author">— ライティングの実感</div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="3">0</div>
+        <div class="stat-label">執筆時間（時間→分の比率）</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="10">0</div>
+        <div class="stat-label">月間記事数</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="80">0</div>
+        <div class="stat-label">自分で書き直す割合（%）</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="0">0</div>
+        <div class="stat-label">書けなかった日</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline Section -->
+  <section class="timeline-section" data-section="4">
+    <div class="timeline-header reveal">
+      <h2 class="serif">ライティングワークフロー</h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Step 1</div>
+        <div class="timeline-content">
+          <h4 class="serif">テーマと切り口のブレスト</h4>
+          <p>「こういうことを書きたい」とAIに伝える。複数の切り口を提案してもらい、ピンとくるものを選ぶ。5分で方向性が決まる。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Step 2</div>
+        <div class="timeline-content">
+          <h4 class="serif">アウトラインの作成</h4>
+          <p>選んだ切り口でアウトラインを作成。見出しと簡単な内容を整理。全体の流れを確認して調整。10分。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Step 3</div>
+        <div class="timeline-content">
+          <h4 class="serif">下書きの生成と編集</h4>
+          <p>AIに下書きを作ってもらう。それを読みながら、自分の言葉で書き直す。これがメインの作業。30分〜1時間。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Step 4</div>
+        <div class="timeline-content">
+          <h4 class="serif">推敲と仕上げ</h4>
+          <p>完成した文章をAIに見てもらい、フィードバックを受ける。誤字脱字、論理の飛躍、読みにくい箇所をチェック。15分で完成。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Horizontal Section -->
+  <section class="horizontal-section" data-section="5">
+    <div class="horizontal-header reveal">
+      <h2 class="serif">効率的なライティングのコツ</h2>
+      <p style="color: var(--gray-500); font-size: 0.95rem;">AIとの協働を最大化するために</p>
+    </div>
+    <div class="horizontal-track" id="horizontalTrack">
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=800" alt="Voice">
+        </div>
+        <h4 class="horizontal-item-title serif">自分の声を残す</h4>
+        <p class="horizontal-item-desc">AIの文章をそのまま使わない。必ず自分の言葉で書き直す。そこに自分らしさが宿る。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800" alt="Reference">
+        </div>
+        <h4 class="horizontal-item-title serif">参考例を示す</h4>
+        <p class="horizontal-item-desc">「こんな感じのトーンで」と参考記事を見せる。AIはそれを学習して、似たスタイルで書いてくれる。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800" alt="Iterate">
+        </div>
+        <h4 class="horizontal-item-title serif">何度でも書き直す</h4>
+        <p class="horizontal-item-desc">しっくりこなければ、何度でも書き直しを依頼。「もっとカジュアルに」「もっと具体的に」と調整。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?w=800" alt="Feedback">
+        </div>
+        <h4 class="horizontal-item-title serif">フィードバックを活用</h4>
+        <p class="horizontal-item-desc">完成した文章をAIにレビューしてもらう。客観的な視点で改善点を見つける。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conclusion Section -->
+  <section class="conclusion-section" data-section="6">
+    <div class="conclusion-inner">
+      <h2 class="serif reveal">書くことが楽しくなった</h2>
+      <p class="conclusion-text reveal">
+        白紙恐怖症だった自分が、今では毎日のように文章を書いている。書き始めるハードルが劇的に下がった。ブレストもアウトラインも下書きも、AIがサポートしてくれる。自分がやることは、最終的な編集と自分の声を入れること。
+      </p>
+      <p class="conclusion-text reveal">
+        これはAIに書かせているわけじゃない。むしろ逆で、自分の思考を引き出してもらっている感覚。AIとの対話を通じて、自分が何を考えているかが明確になる。それを言葉にする。これが新しいライティングの形だと思う。
+      </p>
+
+      <div class="tips-box reveal">
+        <h3 class="serif">使っているツール</h3>
+        <ul class="tips-list">
+          <li>
+            <span class="tips-number">01</span>
+            <span>Claude - メインのライティングパートナー。長文の生成と編集に強い。</span>
+          </li>
+          <li>
+            <span class="tips-number">02</span>
+            <span>Notion AI - メモからの記事化に活用。アイデアの整理に便利。</span>
+          </li>
+          <li>
+            <span class="tips-number">03</span>
+            <span>Hemingway Editor - 読みやすさのチェック。冗長な文章を検出。</span>
+          </li>
+          <li>
+            <span class="tips-number">04</span>
+            <span>Grammarly - 英語記事の校正に使用。ネイティブチェック。</span>
+          </li>
+        </ul>
+      </div>
+
+      <p class="conclusion-text reveal">
+        書くことへの抵抗感がなくなった今、アウトプットの量が増えた。量が増えると、質も上がってくる。AIのおかげで、ライティングが苦行から楽しみに変わった。
+      </p>
+    </div>
+  </section>
+
+  <!-- Author Section -->
+  <section class="author-section">
+    <div class="author-inner reveal">
+      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300" alt="Author" class="author-avatar">
+      <div class="author-info">
+        <h4 class="serif">道ゐ / Dowie</h4>
+        <div class="author-role">Music Producer</div>
+        <p class="author-bio">
+          音楽スタジオ運営 / A-Sketch新人発掘担当。AIツールを活用した効率的なコンテンツ制作を日々研究しています。技術的なバックグラウンドはゼロからスタート。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Articles -->
+  <section class="related-section">
+    <div class="related-header reveal">
+      <h3 class="serif">Next Read</h3>
+    </div>
+    <div class="related-grid">
+      <a href="/tech/ai-journey-04-prompts" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=600" alt="Prompts">
+        </div>
+        <div class="related-item-category">Technology</div>
+        <h4 class="related-item-title serif">感覚重視のプロンプト術</h4>
+      </a>
+      <a href="/tech/ai-journey-06-genspark" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600" alt="Genspark">
+        </div>
+        <div class="related-item-category">Technology</div>
+        <h4 class="related-item-title serif">Gensparkで複数AIを使い分ける</h4>
+      </a>
+      <a href="/tech/ai-journey" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600" alt="AI Hub">
+        </div>
+        <div class="related-item-category">Overview</div>
+        <h4 class="related-item-title serif">AIで一人でここまでやれた｜完全ガイド</h4>
+      </a>
+    </div>
+  </section>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+</MonoJournalLayout>

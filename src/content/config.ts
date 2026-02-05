@@ -24,7 +24,7 @@ const techCollection = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.coerce.date(),
-    category: z.enum(['ai-journey', 'ai-tips']),
+    category: z.enum(['ai-experience', 'ai-tips', 'dev-tools', 'useful-tools', 'blog-writing']),
     thumbnail: z.string().optional(),
     description: z.string().optional(),
     tags: z.array(z.string()).default([]),
@@ -41,6 +41,8 @@ const techCollection = defineCollection({
     defaultPreset: z.number().min(1).max(5).optional(),
     // デフォルト背景エフェクト
     defaultBgEffect: z.enum(['none', 'grid', 'dots', 'mesh']).optional(),
+    // ヒーロー画像（Unsplash URLなど）
+    heroImage: z.string().optional(),
   }),
 });
 

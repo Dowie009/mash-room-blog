@@ -1,7 +1,7 @@
 ---
 title: SEO入門ガイド｜初心者が押さえるべき基本テクニック7選
 date: 2026-01-26
-category: web
+category: blog-writing
 thumbnail: /images/tech/thumbnails/seo-basics.svg
 description: SEOの基本を初心者向けにわかりやすく解説。検索上位を目指すために最低限押さえておくべきテクニックを7つに厳選して紹介します。
 tags: ['SEO', 'ブログ', 'Web制作', '初心者向け']

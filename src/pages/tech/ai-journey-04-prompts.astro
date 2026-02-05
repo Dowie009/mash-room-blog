@@ -1,0 +1,312 @@
+---
+import MonoJournalLayout from '../../layouts/MonoJournalLayout.astro';
+
+const title = "感覚重視のプロンプト術";
+const description = "テクニックより大切なのは、自分の感覚を言葉にすること。AIとの対話で見つけた、自分らしいプロンプトの書き方。";
+---
+
+<MonoJournalLayout title={title} description={description}>
+  <!-- Hub Link -->
+  <a href="/tech/ai-journey" class="hub-link" id="hubLink">
+    ← Hub に戻る
+  </a>
+
+  <!-- Progress Indicator -->
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Chapter Indicator -->
+  <nav class="chapter-indicator">
+    <div class="chapter-dot active" data-section="0" data-label="はじめに"></div>
+    <div class="chapter-dot" data-section="1" data-label="疑問"></div>
+    <div class="chapter-dot" data-section="2" data-label="気づき"></div>
+    <div class="chapter-dot" data-section="3" data-label="実践"></div>
+    <div class="chapter-dot" data-section="4" data-label="比較"></div>
+    <div class="chapter-dot" data-section="5" data-label="コツ"></div>
+    <div class="chapter-dot" data-section="6" data-label="おわりに"></div>
+  </nav>
+
+  <!-- Share Float -->
+  <div class="share-float">
+    <button class="share-float-btn" onclick="shareTwitter()">𝕏</button>
+    <button class="share-float-btn" onclick="shareFacebook()">f</button>
+    <button class="share-float-btn" onclick="copyLink()">🔗</button>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero in-view" data-section="0">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=1920" alt="Writing">
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-category">Technology</div>
+      <h1 class="hero-title serif">感覚重視の<br>プロンプト術</h1>
+      <div class="hero-meta">
+        <span>道ゐ / Dowie</span>
+        <span>2026年1月</span>
+        <span>10 min read</span>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Intro Section -->
+  <section class="intro-section article-container" data-section="1">
+    <div class="intro-text reveal-left">
+      <p class="intro-lead serif">
+        プロンプトエンジニアリング。この言葉を聞くと、なんだか難しそうに感じる。でも、本当に大切なのはもっとシンプルなことだった。
+      </p>
+      <p class="intro-body">
+        ネットで検索すると「効果的なプロンプトの書き方」みたいな記事がたくさん出てくる。テンプレート、フレームワーク、ベストプラクティス...。でも、それを真似しても、なんだかしっくりこない。自分なりのやり方を見つけるまでの記録を残しておく。
+      </p>
+    </div>
+    <div class="intro-image reveal-right">
+      <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1200" alt="Writing Notes">
+      <div class="image-caption">感覚を言葉にする。それがプロンプトの本質。</div>
+    </div>
+  </section>
+
+  <!-- Full Width Image -->
+  <div class="full-image reveal">
+    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1920" alt="Collaboration">
+    <div class="full-image-overlay">
+      <div class="full-image-text">
+        <h2 class="serif">対話の質が結果を決める</h2>
+        <p>テクニックより大切なのは、自分の感覚を正直に伝えること。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Split Section 1 -->
+  <section class="split-section" data-section="2">
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=1200" alt="Thinking">
+    </div>
+    <div class="split-content">
+      <div class="split-number serif reveal">01</div>
+      <h2 class="split-title serif reveal">テンプレートへの違和感</h2>
+      <p class="split-text reveal">
+        「役割を与える」「具体的な指示を書く」「制約条件を明示する」。プロンプトの定石と言われるものを試した。確かに結果は良くなる。でも、自分の言葉じゃない感じがして、なんだか気持ち悪い。借り物の言葉でAIと会話している感覚。
+      </p>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="split-content">
+      <div class="split-number serif reveal">02</div>
+      <h2 class="split-title serif reveal">感覚を言葉にする</h2>
+      <p class="split-text reveal">
+        ある時、思い切って自分の感覚をそのまま伝えてみた。「なんかこう、もっとふわっとした感じにしたい」「今のは硬すぎる気がする」「なんとなく違う」。曖昧な表現でも、AIは理解しようとしてくれた。そして、対話を重ねるうちに理想に近づいていく。
+      </p>
+    </div>
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200" alt="Conversation">
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="split-image">
+      <img src="https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?w=1200" alt="Feeling">
+    </div>
+    <div class="split-content">
+      <div class="split-number serif reveal">03</div>
+      <h2 class="split-title serif reveal">「いいね」と「違う」を伝える</h2>
+      <p class="split-text reveal">
+        完璧なプロンプトを一発で書く必要はない。むしろ、対話しながら調整していく方が自然。「この部分はすごくいい、でもここは違う」とフィードバックする。AIはそれを受けて修正してくれる。人間同士のコミュニケーションと同じ。
+      </p>
+    </div>
+  </section>
+
+  <!-- Quote Section -->
+  <section class="quote-section" data-section="3">
+    <div class="quote-bg-text">感覚</div>
+    <div class="quote-inner reveal">
+      <div class="quote-mark serif">"</div>
+      <p class="quote-text serif">
+        「うまく言えないけど、こんな感じ」でいい。AIは言葉の奥にある意図を汲み取ろうとしてくれる。完璧な言語化を目指すより、対話を重ねる方がずっと早く理想に辿り着ける。
+      </p>
+      <div class="quote-author">— 実践から得た気づき</div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="5">0</div>
+        <div class="stat-label">平均対話回数</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="90">0</div>
+        <div class="stat-label">満足度（%）</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="0">0</div>
+        <div class="stat-label">使用テンプレート数</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number serif" data-target="100">0</div>
+        <div class="stat-label">自分の言葉率（%）</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline Section -->
+  <section class="timeline-section" data-section="4">
+    <div class="timeline-header reveal">
+      <h2 class="serif">プロンプトの変遷</h2>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Before</div>
+        <div class="timeline-content">
+          <h4 class="serif">テンプレート依存期</h4>
+          <p>「あなたはプロのライターです。以下の条件に従って...」みたいな定型文を使っていた。結果は悪くない。でも、自分らしさがない。コピペ感が拭えない。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">Middle</div>
+        <div class="timeline-content">
+          <h4 class="serif">試行錯誤期</h4>
+          <p>テンプレートをやめて、自分の言葉で書き始めた。最初は結果が不安定。でも、対話を重ねることで調整できることに気づいた。</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal">
+        <div class="timeline-year serif">After</div>
+        <div class="timeline-content">
+          <h4 class="serif">感覚重視期</h4>
+          <p>「こんな雰囲気で」「もうちょっと柔らかく」。感覚的な表現を恐れなくなった。AIとの対話がスムーズになり、結果も良くなった。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Horizontal Section -->
+  <section class="horizontal-section" data-section="5">
+    <div class="horizontal-header reveal">
+      <h2 class="serif">感覚重視のプロンプト術</h2>
+      <p style="color: var(--gray-500); font-size: 0.95rem;">テクニックより大切なこと</p>
+    </div>
+    <div class="horizontal-track" id="horizontalTrack">
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1517842645767-c639042777db?w=800" alt="Honest">
+        </div>
+        <h4 class="horizontal-item-title serif">正直に伝える</h4>
+        <p class="horizontal-item-desc">「うまく言えないけど」と前置きしていい。曖昧さを恐れない。AIは文脈から意図を読み取ってくれる。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=800" alt="Iterate">
+        </div>
+        <h4 class="horizontal-item-title serif">一発で決めようとしない</h4>
+        <p class="horizontal-item-desc">対話を重ねる前提で始める。最初のプロンプトは叩き台。フィードバックして調整していく。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800" alt="Feedback">
+        </div>
+        <h4 class="horizontal-item-title serif">具体的なフィードバック</h4>
+        <p class="horizontal-item-desc">「ここがいい」「ここが違う」と具体的に伝える。良い部分を伸ばし、違う部分を修正してもらう。</p>
+      </div>
+      <div class="horizontal-item">
+        <div class="horizontal-item-image">
+          <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800" alt="Trust">
+        </div>
+        <h4 class="horizontal-item-title serif">自分の感覚を信じる</h4>
+        <p class="horizontal-item-desc">「なんか違う」と感じたら、それは正しい。自分の違和感を大切にする。言語化できなくても、感覚で伝える。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Conclusion Section -->
+  <section class="conclusion-section" data-section="6">
+    <div class="conclusion-inner">
+      <h2 class="serif reveal">自分の言葉で話しかける</h2>
+      <p class="conclusion-text reveal">
+        プロンプトエンジニアリングという言葉が一人歩きしている気がする。まるで特別なスキルが必要みたいに。でも、実際は違う。AIとの対話は、人間同士の対話と変わらない。
+      </p>
+      <p class="conclusion-text reveal">
+        自分の感覚を正直に伝える。相手の反応を見てフィードバックする。対話を重ねて理想に近づいていく。これが本質だと思う。テンプレートやテクニックは、その補助に過ぎない。
+      </p>
+
+      <div class="tips-box reveal">
+        <h3 class="serif">よく使うフレーズ</h3>
+        <ul class="tips-list">
+          <li>
+            <span class="tips-number">01</span>
+            <span>「もうちょっと柔らかい感じで」- トーンを調整したい時</span>
+          </li>
+          <li>
+            <span class="tips-number">02</span>
+            <span>「この部分はすごくいい、ここはもう少し...」- 部分的な修正</span>
+          </li>
+          <li>
+            <span class="tips-number">03</span>
+            <span>「なんか違う気がする、でもうまく言えない」- 違和感を伝える</span>
+          </li>
+          <li>
+            <span class="tips-number">04</span>
+            <span>「イメージに近いのはこれ」- 参考例を示す</span>
+          </li>
+        </ul>
+      </div>
+
+      <p class="conclusion-text reveal">
+        難しく考えなくていい。自分の言葉で話しかければいい。AIは理解しようとしてくれる。そして、対話を重ねるうちに、自分だけの「プロンプト術」が見つかるはずだ。
+      </p>
+    </div>
+  </section>
+
+  <!-- Author Section -->
+  <section class="author-section">
+    <div class="author-inner reveal">
+      <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300" alt="Author" class="author-avatar">
+      <div class="author-info">
+        <h4 class="serif">道ゐ / Dowie</h4>
+        <div class="author-role">Music Producer</div>
+        <p class="author-bio">
+          音楽スタジオ運営 / A-Sketch新人発掘担当。AIツールを活用した効率的なコンテンツ制作を日々研究しています。技術的なバックグラウンドはゼロからスタート。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Articles -->
+  <section class="related-section">
+    <div class="related-header reveal">
+      <h3 class="serif">Next Read</h3>
+    </div>
+    <div class="related-grid">
+      <a href="/tech/ai-journey-03-claude-code" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600" alt="Claude Code">
+        </div>
+        <div class="related-item-category">Technology</div>
+        <h4 class="related-item-title serif">Claude Codeを1週間使ってわかったこと</h4>
+      </a>
+      <a href="/tech/ai-journey-05-writing" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=600" alt="Writing">
+        </div>
+        <div class="related-item-category">Technology</div>
+        <h4 class="related-item-title serif">AIを活用した効率的なライティング術</h4>
+      </a>
+      <a href="/tech/ai-journey" class="related-item reveal">
+        <div class="related-item-image">
+          <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600" alt="AI Hub">
+        </div>
+        <div class="related-item-category">Overview</div>
+        <h4 class="related-item-title serif">AIで一人でここまでやれた｜完全ガイド</h4>
+      </a>
+    </div>
+  </section>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+</MonoJournalLayout>

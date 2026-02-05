@@ -3,10 +3,14 @@
  * /tech/[slug].astro - TECH記事ページ
  *
  * このファイルはデータを取得してPostLayoutに渡すだけ。
- * デザインを変えたい時は PostLayout.astro を編集してください。
+ * デザインを変えたい時は PostLayoutMonoJournal.astro を編集してください。
+ *
+ * レイアウト履歴:
+ * - PostLayout.astro: パターンA/B（archive/pattern-ab-backup-2026-02-01 ブランチに保存）
+ * - PostLayoutMonoJournal.astro: Mono Journal形式（現在使用中）
  */
 import { getCollection } from 'astro:content';
-import PostLayout from '../../layouts/PostLayout.astro';
+import PostLayout from '../../layouts/PostLayoutMonoJournal.astro';
 
 // 動的ルート生成
 export async function getStaticPaths() {
