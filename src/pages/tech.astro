@@ -2349,16 +2349,11 @@ const categories = [
             // すべてのカードをリセット
             cardElements.forEach(card => {
               card.classList.remove('formation-mode');
-              // 元の位置に戻す
-              const baseX = parseFloat(card.dataset.baseX);
-              const baseY = parseFloat(card.dataset.baseY);
-              const baseZ = parseFloat(card.dataset.baseZ);
-              const rotation = parseFloat(card.dataset.rotation || 0);
-              
-              gsap.to(card, {
-                x: 0, y: 0, z: baseZ, rotationX: 0, rotationY: 0, rotationZ: rotation,
-                opacity: 1, duration: 1, ease: "power3.out"
-              });
+              // GSAPトゥイーンをキルし、inline transformをクリア
+              gsap.killTweensOf(card);
+              gsap.set(card, { clearProps: 'transform,opacity' });
+              card.style.display = 'block';
+              card.style.pointerEvents = 'auto';
             });
             
             // アニメーションループを再開
@@ -2414,44 +2409,35 @@ const categories = [
             console.log('[CATEGORY DEBUG] Offsets:', { centerOffsetX, centerOffsetY });
             
             let idx = 0;
-            
+
             // すべてのカードを処理
             cardElements.forEach((card) => {
               card.classList.remove('active-zone');
+              gsap.killTweensOf(card);
               const cardCat = card.dataset.cat ? card.dataset.cat.toLowerCase() : '';
-              
+
               if (cardCat === catLower) {
                 // 選択されたカテゴリーのカードのみ表示
                 card.classList.add('formation-mode');
                 card.style.display = 'block';
                 card.style.pointerEvents = 'auto';
-                
+
                 const r = Math.floor(idx / cols);
                 const c = idx % cols;
                 const tx = c * spX - centerOffsetX;
                 const ty = r * spY - centerOffsetY;
-                
-                gsap.to(card, {
-                  x: tx, y: ty, z: -200, rotationX: 0, rotationY: 0, rotationZ: 0,
-                  opacity: 1, duration: 1, ease: "power3.out",
-                  onComplete: () => {
-                    if (idx === cardCount - 1) {
-                      console.log('[CATEGORY DEBUG] All cards positioned');
-                    }
-                  }
-                });
+
+                // トンネルループのcard.style.transformを上書きし、即座に配置
+                card.style.transform = `translate3d(${tx}px, ${ty}px, 1px)`;
+                card.style.opacity = '1';
                 idx++;
               } else {
                 // 選択されていないカテゴリーのカードは完全に非表示
                 card.classList.remove('formation-mode');
                 card.style.pointerEvents = 'none';
-                gsap.to(card, {
-                  x: 0, y: 0, z: -5000, rotationX: 0, rotationY: 0, rotationZ: 0,
-                  opacity: 0, duration: 0.5, ease: "power2.in",
-                  onComplete: () => {
-                    card.style.display = 'none';
-                  }
-                });
+                card.style.transform = 'translate3d(0px, 0px, -5000px)';
+                card.style.opacity = '0';
+                card.style.display = 'none';
               }
             });
             
