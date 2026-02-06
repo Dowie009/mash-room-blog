@@ -136,78 +136,270 @@ const categories = [
     .ai-logo {
       font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1.8rem;
       letter-spacing: 0.1em; color: white; 
-      text-shadow: 2px 2px 0px #000, 0 0 10px var(--accent-cyan);
+      text-shadow: 2px 2px 0px #000;
     }
     .ai-status {
       font-family: 'Fira Code', monospace; font-size: 0.7rem; color: rgba(255,255,255,0.6);
       text-align: right;
     }
 
+    /* --- SCROLL GUIDE --- */
+    #scroll-guide {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 120;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .scroll-guide-line {
+      width: 1px;
+      height: 50px;
+      background: linear-gradient(180deg, transparent, rgba(192, 192, 176, 0.5));
+    }
+    .scroll-guide-text {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      display: flex;
+      gap: 0;
+    }
+    .scroll-guide-text .sg-char {
+      display: inline-block;
+      text-shadow: none;
+    }
+    .scroll-guide-text .sg-space {
+      width: 0.5em;
+    }
+    .scroll-guide-chevrons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .scroll-chevron {
+      width: 40px;
+      height: 18px;
+      color: rgba(0, 212, 255, 0.5);
+      animation: chevron-pulse 1.8s ease-in-out infinite;
+    }
+    .scroll-chevron:nth-child(1) { animation-delay: 0s; }
+    .scroll-chevron:nth-child(2) { animation-delay: 0.2s; }
+    .scroll-chevron:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes chevron-pulse {
+      0%, 100% { opacity: 0.15; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(5px); }
+    }
+
     /* HUD Buttons */
     .hud-container {
-      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      position: absolute; bottom: 1.2rem; left: 50%; transform: translateX(-50%);
       z-index: 110; pointer-events: auto;
-      display: flex; gap: 8px; align-items: center;
-      background: rgba(10,10,20,0.75);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      padding: 6px 8px;
-      border-radius: 50px;
-      border: 1px solid rgba(255,255,255,0.08);
+      display: flex; gap: 12px; align-items: flex-end;
     }
 
-    /* === ピル型タブ === */
+    /* === サイバーアーケードボタン === */
     .hud-btn {
+      --btn-color: #0ff;
+      --btn-dark: #066;
       position: relative;
-      height: 44px;
-      border: none;
-      background: transparent;
-      color: rgba(255,255,255,0.55);
-      display: flex; flex-direction: row; align-items: center;
+      width: 110px; height: 110px;
+      border: 0.5px solid color-mix(in srgb, var(--btn-color) 50%, transparent);
+      border-radius: 50%;
+      color: #fff;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
       cursor: pointer;
-      transition: color 0.2s, background 0.2s;
-      padding: 0 18px;
-      gap: 8px;
-      border-radius: 50px;
-      white-space: nowrap;
+      padding: 0;
+      gap: 2px;
+      background: radial-gradient(circle at 40% 35%, rgba(255,255,255,0.08), transparent 60%),
+                  radial-gradient(circle at 50% 50%, var(--btn-dark), #0a0a1a 80%);
+      box-shadow:
+        0 6px 0 rgba(0,0,0,0.6),
+        0 0 4px color-mix(in srgb, var(--btn-color) 20%, transparent),
+        inset 0 0 6px color-mix(in srgb, var(--btn-color) 8%, transparent);
+      transition: transform 0.1s, box-shadow 0.15s, border-color 0.15s;
+      overflow: hidden;
     }
+    /* 光が左→右に走るスキャンライン */
+    .hud-btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%; width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--btn-color) 25%, transparent), transparent);
+      pointer-events: none;
+      z-index: 2;
+      animation: none;
+    }
+    /* 上面のハイライト */
+    .hud-btn::after {
+      content: '';
+      position: absolute;
+      top: 8px; left: 20%; right: 20%;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.2), transparent);
+      pointer-events: none;
+    }
+    /* 光走査アニメーション — 各ボタンを時間差で */
+    @keyframes btn-scan {
+      0%, 85% { left: -50%; opacity: 0; }
+      90% { opacity: 1; }
+      100% { left: 120%; opacity: 0; }
+    }
+    .hud-btn:nth-child(2)::before { animation: btn-scan 4.0s ease-in-out 0.0s infinite; }
+    .hud-btn:nth-child(3)::before { animation: btn-scan 4.5s ease-in-out 0.3s infinite; }
+    .hud-btn:nth-child(4)::before { animation: btn-scan 5.0s ease-in-out 0.6s infinite; }
+    .hud-btn:nth-child(5)::before { animation: btn-scan 4.2s ease-in-out 0.9s infinite; }
+    .hud-btn:nth-child(6)::before { animation: btn-scan 4.8s ease-in-out 1.2s infinite; }
+    .hud-btn:nth-child(7)::before { animation: btn-scan 4.3s ease-in-out 1.5s infinite; }
+
     .hud-btn-icon {
       flex-shrink: 0;
+      filter: none;
+      z-index: 1;
     }
     .hud-btn-label {
-      font-family: 'Fira Code', monospace;
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
+      font-family: 'Orbitron', 'Fira Code', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      z-index: 1;
+      text-shadow: none;
     }
     .hud-btn-count {
-      font-family: 'Fira Code', monospace;
+      font-family: 'Orbitron', monospace;
       font-size: 0.6rem;
-      opacity: 0.5;
-      margin-left: -2px;
+      font-weight: 400;
+      color: color-mix(in srgb, var(--btn-color) 80%, white);
+      z-index: 1;
+      text-shadow: none;
     }
+    /* ホバー：ネオン強化 */
     .hud-btn:hover {
-      color: #fff;
-      background: rgba(255,255,255,0.08);
+      transform: translateY(2px);
+      border-color: var(--btn-color);
+      box-shadow:
+        0 4px 0 rgba(0,0,0,0.5),
+        0 0 8px color-mix(in srgb, var(--btn-color) 35%, transparent),
+        inset 0 0 10px color-mix(in srgb, var(--btn-color) 12%, transparent);
+    }
+    .hud-btn:hover .hud-btn-icon {
+      filter: none;
     }
     .hud-btn:active {
+      transform: translateY(5px);
+      box-shadow:
+        0 1px 0 rgba(0,0,0,0.4),
+        0 0 8px color-mix(in srgb, var(--btn-color) 40%, transparent),
+        inset 0 0 10px color-mix(in srgb, var(--btn-color) 15%, transparent);
+    }
+    .hud-btn.active {
+      border-color: var(--btn-color);
+      box-shadow:
+        0 6px 0 rgba(0,0,0,0.6),
+        0 0 12px color-mix(in srgb, var(--btn-color) 50%, transparent),
+        inset 0 0 18px color-mix(in srgb, var(--btn-color) 20%, transparent);
+    }
+
+    /* --- DATABASE ボタン（左下独立配置） --- */
+    .db-btn {
+      position: absolute;
+      bottom: 1.5rem;
+      left: 1.5rem;
+      z-index: 110;
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 44px 18px 28px;
+      background: rgba(10, 10, 20, 0.85);
+      border: 0.5px solid rgba(34, 211, 238, 0.4);
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 4px rgba(34, 211, 238, 0.1), inset 0 0 4px rgba(34, 211, 238, 0.04);
+    }
+    .db-btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%; width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.2), transparent);
+      pointer-events: none;
+      animation: db-scan 5s ease-in-out 2s infinite;
+    }
+    @keyframes db-scan {
+      0%, 80% { left: -50%; opacity: 0; }
+      88% { opacity: 1; }
+      100% { left: 120%; opacity: 0; }
+    }
+    .db-btn:hover {
+      border-color: rgba(34, 211, 238, 0.8);
+      box-shadow: 0 0 6px rgba(34, 211, 238, 0.15), inset 0 0 6px rgba(34, 211, 238, 0.06);
+    }
+    .db-btn:active {
       transform: scale(0.97);
     }
-
-    /* --- LIST ボタン --- */
-    #btn-list {
-      padding: 0 12px;
-      color: rgba(255,255,255,0.4);
+    .db-btn-icon {
+      color: #22d3ee;
+      filter: none;
+      flex-shrink: 0;
     }
-    #btn-list:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .db-btn-label {
+      font-family: 'Orbitron', 'Fira Code', monospace;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: #22d3ee;
+    }
+    @media (max-width: 1200px) {
+      .db-btn { display: none; }
+    }
 
-    /* === Active 状態：カテゴリ色のソリッド背景 === */
-    .hud-btn[data-cat="ALL"].active           { background: #0891b2; color: #fff; }
-    .hud-btn[data-cat="ai-experience"].active  { background: #be185d; color: #fff; }
-    .hud-btn[data-cat="ai-tips"].active        { background: #b45309; color: #fff; }
-    .hud-btn[data-cat="dev-tools"].active      { background: #7c3aed; color: #fff; }
-    .hud-btn[data-cat="useful-tools"].active   { background: #059669; color: #fff; }
-    .hud-btn[data-cat="blog-writing"].active   { background: #c2410c; color: #fff; }
+    /* --- ALL --- シアン */
+    .hud-btn[data-cat="ALL"] {
+      --btn-color: #22d3ee;
+      --btn-dark: #0c4a54;
+    }
+
+    /* --- AI体験談 --- ピンク */
+    .hud-btn[data-cat="ai-experience"] {
+      --btn-color: #f472b6;
+      --btn-dark: #4a1038;
+    }
+
+    /* --- AI TIPS --- イエロー/アンバー */
+    .hud-btn[data-cat="ai-tips"] {
+      --btn-color: #fbbf24;
+      --btn-dark: #4a3008;
+    }
+
+    /* --- 開発ツール --- パープル */
+    .hud-btn[data-cat="dev-tools"] {
+      --btn-color: #a78bfa;
+      --btn-dark: #2e1065;
+    }
+
+    /* --- 便利ツール --- グリーン */
+    .hud-btn[data-cat="useful-tools"] {
+      --btn-color: #34d399;
+      --btn-dark: #064e3b;
+    }
+
+    /* --- ブログ運営 --- オレンジ */
+    .hud-btn[data-cat="blog-writing"] {
+      --btn-color: #fb923c;
+      --btn-dark: #4a1c06;
+    }
 
     /* --- 3. 3D & CARD STYLES --- */
     #tunnel-scene {
@@ -542,10 +734,10 @@ const categories = [
     /* --- LATEST ARTICLES WIDGET (タブ切り替え版・差別化デザイン) --- */
     #latest-widget {
       position: fixed;
-      bottom: 2rem;
+      top: 173px;
       right: 2rem;
       z-index: 150;
-      width: 320px;
+      width: 340px;
       background: linear-gradient(135deg, rgba(30, 35, 45, 0.98) 0%, rgba(20, 25, 35, 0.98) 100%);
       backdrop-filter: blur(20px);
       border-radius: 16px;
@@ -555,6 +747,8 @@ const categories = [
         0 0 0 1px rgba(100, 200, 255, 0.05) inset,
         0 1px 0 rgba(255, 255, 255, 0.05) inset;
       overflow: hidden;
+      opacity: 0;
+      pointer-events: auto;
       transition: transform 0.3s ease, opacity 0.3s ease;
     }
     #latest-widget.collapsed {
@@ -567,31 +761,35 @@ const categories = [
       padding: 0.8rem 1rem;
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      z-index: 210;
+      pointer-events: auto;
     }
     /* タブUI */
     .widget-tabs {
       display: flex;
       gap: 0.3rem;
       background: rgba(0, 0, 0, 0.3);
-      padding: 3px;
-      border-radius: 8px;
+      padding: 4px;
+      border-radius: 10px;
     }
     .widget-tab {
       display: flex;
       align-items: center;
-      gap: 0.3rem;
-      padding: 0.4rem 0.8rem;
+      gap: 0.4rem;
+      padding: 0.55rem 1.1rem;
       background: transparent;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       font-family: 'Noto Sans JP', sans-serif;
-      font-size: 0.7rem;
-      font-weight: 500;
+      font-size: 0.85rem;
+      font-weight: 600;
       color: rgba(255, 255, 255, 0.5);
       cursor: pointer !important;
       transition: all 0.2s ease;
       position: relative;
       z-index: 200;
+      pointer-events: auto;
     }
     .widget-tab:hover {
       color: rgba(255, 255, 255, 0.8);
@@ -602,8 +800,8 @@ const categories = [
       box-shadow: 0 2px 8px rgba(0, 212, 255, 0.3);
     }
     .widget-tab i {
-      width: 12px;
-      height: 12px;
+      width: 14px;
+      height: 14px;
     }
     .widget-content.hidden {
       display: none;
@@ -623,7 +821,7 @@ const categories = [
     }
     .widget-content {
       padding: 0.8rem;
-      max-height: 400px;
+      max-height: 580px;
       overflow-y: auto;
     }
     .widget-article {
@@ -683,6 +881,34 @@ const categories = [
       font-family: 'Fira Code', monospace;
     }
 
+    /* & more ボタン */
+    .widget-more {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.7rem 1rem;
+      background: linear-gradient(180deg, rgba(0, 212, 255, 0.05) 0%, rgba(0, 212, 255, 0.12) 100%);
+      border: none;
+      border-top: 1px solid rgba(0, 212, 255, 0.15);
+      color: rgba(0, 212, 255, 0.85);
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .widget-more:hover {
+      background: linear-gradient(180deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 212, 255, 0.2) 100%);
+      color: #00d4ff;
+    }
+    .widget-more i {
+      width: 14px;
+      height: 14px;
+    }
+
     /* Toggle button */
     #widget-toggle {
       position: fixed;
@@ -718,8 +944,7 @@ const categories = [
     #category-sidebar {
       position: fixed;
       left: 1.5rem;
-      top: 45%;
-      transform: translateY(-55%);
+      top: 173px;
       z-index: 150;
       display: flex;
       flex-direction: column;
@@ -861,27 +1086,27 @@ const categories = [
     .sidebar-filter-section {
       display: flex;
       flex-direction: column;
-      gap: 0.3rem;
+      gap: 0.4rem;
     }
 
     .sidebar-filter-title {
       font-family: 'Noto Sans JP', sans-serif;
-      font-size: 0.65rem;
+      font-size: 0.75rem;
       color: rgba(255, 255, 255, 0.5);
-      margin-bottom: 0.3rem;
+      margin-bottom: 0.4rem;
     }
 
     .sidebar-filter-item {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 0.7rem;
-      border-radius: 8px;
+      gap: 0.6rem;
+      padding: 0.7rem 1rem;
+      border-radius: 10px;
       cursor: pointer !important;
       transition: all 0.2s ease;
       color: rgba(255, 255, 255, 0.8);
       font-family: 'Noto Sans JP', sans-serif;
-      font-size: 0.8rem;
+      font-size: 1rem;
       font-weight: 500;
     }
 
@@ -921,17 +1146,17 @@ const categories = [
     }
 
     .filter-icon {
-      font-size: 0.9rem;
+      font-size: 1.2rem;
     }
 
     .sidebar-count {
       margin-left: auto;
       font-family: 'Fira Code', monospace;
-      font-size: 0.65rem;
+      font-size: 0.8rem;
       color: rgba(255, 255, 255, 0.4);
       background: rgba(0, 0, 0, 0.3);
-      padding: 2px 8px;
-      border-radius: 10px;
+      padding: 3px 10px;
+      border-radius: 12px;
     }
 
     /* AI Journey Hubリンク */
@@ -1141,11 +1366,11 @@ const categories = [
     
     /* Tooltip bubble - positioned near the dog in lower left */
     #coordinate-tooltip {
-      position: fixed; 
-      bottom: 15%; 
-      left: 5%; 
+      position: fixed;
+      bottom: calc(1.5rem + 75px);
+      left: 1.5rem;
       z-index: 102;
-      background: rgba(0, 0, 0, 0.9); 
+      background: rgba(0, 0, 0, 0.9);
       padding: 1rem 1.5rem; border-radius: 8px;
       font-family: 'Fira Code', monospace; font-size: 0.85rem;
       pointer-events: auto;
@@ -1153,7 +1378,6 @@ const categories = [
       max-width: 250px;
       opacity: 1;
       cursor: pointer;
-      transform: translateY(0);
       border: 2px solid transparent;
       background-clip: padding-box;
     }
@@ -1175,13 +1399,7 @@ const categories = [
       box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
     }
     #coordinate-tooltip::after {
-      content: '';
-      position: absolute; left: 2rem; bottom: -8px;
-      width: 0; height: 0;
-      border-left: 8px solid transparent;
-      border-right: 8px solid transparent;
-      border-top: 8px solid #ffff00;
-      filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.8));
+      display: none;
     }
     #coordinate-tooltip .tooltip-text {
       background: linear-gradient(135deg, #ffffff, #ffff00);
@@ -1546,39 +1764,41 @@ const categories = [
     </header>
 
     <!-- HUD -->
-    <div class="hud-container">
-      <button class="hud-btn" id="btn-list" title="DATABASE">
-        <i data-lucide="layout-list" class="w-5 h-5"></i>
-      </button>
+    <!-- DATABASE ボタン（左下に独立配置） -->
+    <button class="db-btn" id="btn-list" title="記事一覧をリスト表示">
+      <i data-lucide="database" class="w-8 h-8 db-btn-icon"></i>
+      <span class="db-btn-label">DATABASE</span>
+    </button>
 
+    <div class="hud-container">
       <!-- Category Buttons (全5カテゴリ) -->
       <button class="hud-btn active" data-cat="ALL" title="ALL">
-        <i data-lucide="layers" class="w-4 h-4 hud-btn-icon"></i>
+        <i data-lucide="layers" class="w-7 h-7 hud-btn-icon"></i>
         <span class="hud-btn-label">ALL</span>
         <span class="hud-btn-count">20</span>
       </button>
       <button class="hud-btn" data-cat="ai-experience" title="AI体験談">
-        <i data-lucide="sparkles" class="w-4 h-4 hud-btn-icon"></i>
+        <i data-lucide="sparkles" class="w-7 h-7 hud-btn-icon"></i>
         <span class="hud-btn-label">AI体験談</span>
         <span class="hud-btn-count">6</span>
       </button>
       <button class="hud-btn" data-cat="ai-tips" title="AI TIPS">
-        <i data-lucide="lightbulb" class="w-4 h-4 hud-btn-icon"></i>
+        <i data-lucide="lightbulb" class="w-7 h-7 hud-btn-icon"></i>
         <span class="hud-btn-label">AI TIPS</span>
         <span class="hud-btn-count">3</span>
       </button>
       <button class="hud-btn" data-cat="dev-tools" title="開発ツール">
-        <i data-lucide="terminal" class="w-4 h-4 hud-btn-icon"></i>
+        <i data-lucide="terminal" class="w-7 h-7 hud-btn-icon"></i>
         <span class="hud-btn-label">開発ツール</span>
         <span class="hud-btn-count">3</span>
       </button>
       <button class="hud-btn" data-cat="useful-tools" title="便利ツール">
-        <i data-lucide="zap" class="w-4 h-4 hud-btn-icon"></i>
+        <i data-lucide="zap" class="w-7 h-7 hud-btn-icon"></i>
         <span class="hud-btn-label">便利ツール</span>
         <span class="hud-btn-count">4</span>
       </button>
       <button class="hud-btn" data-cat="blog-writing" title="ブログ運営">
-        <i data-lucide="feather" class="w-4 h-4 hud-btn-icon"></i>
+        <i data-lucide="feather" class="w-7 h-7 hud-btn-icon"></i>
         <span class="hud-btn-label">ブログ運営</span>
         <span class="hud-btn-count">6</span>
       </button>
@@ -1785,6 +2005,23 @@ const categories = [
     </main>
   </div>
 
+  <!-- SCROLL GUIDE -->
+  <div id="scroll-guide">
+    <div class="scroll-guide-line"></div>
+    <div class="scroll-guide-text" id="scroll-guide-text"></div>
+    <div class="scroll-guide-chevrons">
+      <svg class="scroll-chevron" style="color: #c0c0c0;" viewBox="0 0 24 12" fill="none">
+        <path d="M2 2L12 10L22 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <svg class="scroll-chevron" style="color: #d4a76a;" viewBox="0 0 24 12" fill="none">
+        <path d="M2 2L12 10L22 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <svg class="scroll-chevron" style="color: #b8860b;" viewBox="0 0 24 12" fill="none">
+        <path d="M2 2L12 10L22 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
   <!-- LATEST ARTICLES WIDGET (タブ切り替え版) -->
   <div id="latest-widget">
     <div class="widget-header">
@@ -1808,6 +2045,10 @@ const categories = [
     <div class="widget-content hidden" id="widget-articles-recommend">
       <!-- JavaScript で動的に生成 -->
     </div>
+    <button class="widget-more" id="widget-more-btn">
+      <span>& more</span>
+      <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+    </button>
   </div>
 
   <!-- Widget Toggle Button (ウィジェットを閉じた時に表示) -->
@@ -1978,6 +2219,11 @@ const categories = [
       if (uiLayer) {
         gsap.set(uiLayer, { opacity: 0 });
       }
+      // 各UI要素の初期状態（個別トランジション用）
+      gsap.set('#category-sidebar', { x: -80, opacity: 0 });
+      gsap.set('.hud-btn', { opacity: 0, scale: 0.3 });
+      gsap.set('.db-btn', { opacity: 0 });
+      gsap.set('.db-btn-label', { opacity: 0 });
 
       // ===== INTRO TITLE ANIMATION =====
       const introTitleContainer = document.getElementById('intro-title-container');
@@ -2106,7 +2352,88 @@ const categories = [
           opacity: 1,
           duration: 0.5,
           ease: "power2.out"
-        }, 1.5);
+        }, 1.5)
+
+        // --- サイドバー：左からスライドイン ---
+        .to('#category-sidebar', {
+          x: 0,
+          opacity: 1,
+          duration: 0.7,
+          ease: "power3.out"
+        }, 1.8)
+
+        // --- ウィジェット：グリッチ風に出現 ---
+        .to('#latest-widget', {
+          opacity: 1,
+          duration: 0.05,
+        }, 1.9)
+        .to('#latest-widget', {
+          opacity: 0,
+          duration: 0.05,
+        }, 1.95)
+        .to('#latest-widget', {
+          opacity: 1,
+          duration: 0.05,
+        }, 2.0)
+        .to('#latest-widget', {
+          opacity: 0,
+          duration: 0.04,
+        }, 2.05)
+        .to('#latest-widget', {
+          opacity: 0.6,
+          duration: 0.03,
+        }, 2.09)
+        .to('#latest-widget', {
+          opacity: 0,
+          duration: 0.03,
+        }, 2.12)
+        .to('#latest-widget', {
+          opacity: 1,
+          duration: 0.15,
+          ease: "power2.out"
+        }, 2.15)
+
+        // --- アーケードボタン：電源ON風に順番点灯 ---
+        .to('.hud-btn', {
+          opacity: 1,
+          scale: 1,
+          duration: 0.15,
+          stagger: 0.1,
+          ease: "back.out(2)",
+          onStart: function() {
+            // 白フラッシュエフェクト
+            document.querySelectorAll('.hud-btn').forEach((btn, i) => {
+              setTimeout(() => {
+                btn.style.filter = 'brightness(3)';
+                setTimeout(() => { btn.style.filter = ''; }, 100);
+              }, i * 100);
+            });
+          }
+        }, 2.1)
+
+        // --- DATABASEボタン：フェードイン後タイプライター ---
+        .to('.db-btn', {
+          opacity: 1,
+          duration: 0.3,
+          ease: "power2.out",
+          onComplete: function() {
+            // タイプライター演出
+            const label = document.querySelector('.db-btn-label');
+            if (!label) return;
+            const text = label.textContent;
+            label.textContent = '';
+            label.style.opacity = '1';
+            let idx = 0;
+            const typeInterval = setInterval(() => {
+              idx++;
+              label.textContent = text.slice(0, idx);
+              if (idx >= text.length) clearInterval(typeInterval);
+            }, 60);
+          }
+        }, 2.3)
+
+        // --- スクロールガイド：タイプライターで登場 ---
+        .call(() => { sgInitialShow(); }, null, 2.8);
 
       // --- イントロスキップ：クリックでアニメーションを即完了 ---
       let introSkipped = false;
@@ -2139,7 +2466,7 @@ const categories = [
       }
       let scrollZ = 0;
       let targetScrollZ = 0;
-      const cardInterval = 400; // カード間隔を400pxに調整（密度をさらに上げる）
+      const cardInterval = 250; // カード間隔を250pxに（トンネル密度アップ）
       
       // マウス位置の初期化（updateTunnelより前に定義）
       let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
@@ -2267,8 +2594,8 @@ const categories = [
           const baseZ = parseFloat(card.dataset.baseZ);
           const rotation = parseFloat(card.dataset.rotation || 0);
 
-          // シームレスな無限ループ（モジュロ演算）
-          let z = (baseZ + scrollZ) % totalDepth;
+          // シームレスな無限ループ（双方向モジュロ）
+          let z = ((baseZ + scrollZ) % totalDepth + totalDepth) % totalDepth;
           // カメラの後ろに行ったら、一番奥へ再配置（ループ）
           if (z > 500) z -= totalDepth;
 
@@ -2330,12 +2657,86 @@ const categories = [
       // 通常時のフォールバック（2.5秒後）
       setTimeout(startTunnelOnce, 2500);
 
-      // Scroll Input
+      // Scroll Input & Scroll Guide
+      const scrollGuide = document.getElementById('scroll-guide');
+      const scrollGuideText = document.getElementById('scroll-guide-text');
+      const sgFullText = 'SCROLL TO EXPLORE';
+      // メタリックグラデーション: シルバー → ゴールド
+      const sgColors = [
+        '#a8a8b0', '#b0b0b8', '#b8b0a8', '#c0b098', '#c8b088',
+        '#d0a878', '#d4a06a', '#d89c5c', '#dc9850', '#d89448',
+        '#d49040', '#d08c3c', '#cc8838', '#c88434', '#c48030',
+        '#c07c2c', '#bc7828', '#b87424'
+      ];
+      let sgVisible = false;
+      let sgTyping = false;
+      let sgScrollTimer = null;
+
+      // タイプライター表示
+      const sgTypeIn = () => {
+        if (sgTyping || sgVisible) return;
+        sgTyping = true;
+        scrollGuideText.innerHTML = '';
+        scrollGuide.style.display = '';
+        gsap.set(scrollGuide, { opacity: 1 });
+        let i = 0;
+        const typeStep = () => {
+          if (i >= sgFullText.length) {
+            sgTyping = false;
+            sgVisible = true;
+            return;
+          }
+          const ch = sgFullText[i];
+          if (ch === ' ') {
+            const sp = document.createElement('span');
+            sp.className = 'sg-space';
+            scrollGuideText.appendChild(sp);
+          } else {
+            const span = document.createElement('span');
+            span.className = 'sg-char';
+            span.textContent = ch;
+            span.style.color = sgColors[i % sgColors.length];
+            scrollGuideText.appendChild(span);
+          }
+          i++;
+          setTimeout(typeStep, 50);
+        };
+        typeStep();
+      };
+
+      // フェードアウト
+      const sgFadeOut = () => {
+        sgVisible = false;
+        sgTyping = false;
+        gsap.to(scrollGuide, {
+          opacity: 0,
+          duration: 0.4,
+          ease: "power2.out"
+        });
+      };
+
+      // 初回表示もタイプライターで（イントロ完了後に呼ばれる）
+      const sgInitialShow = () => {
+        scrollGuide.style.display = '';
+        gsap.set(scrollGuide, { opacity: 1 });
+        sgTypeIn();
+      };
+
       window.addEventListener('wheel', (e) => {
         if (!isFiltered && !isListMode && !isArchiveMode) {
           targetScrollZ += e.deltaY * 3;
-          if(targetScrollZ < 0) targetScrollZ = 0;
         }
+        // スクロール中はフェードアウト
+        if (sgVisible || sgTyping) {
+          sgFadeOut();
+        }
+        // スクロール停止を検知 → 2秒後にタイプライター再表示
+        clearTimeout(sgScrollTimer);
+        sgScrollTimer = setTimeout(() => {
+          if (!isListMode && !isArchiveMode && !isFiltered) {
+            sgTypeIn();
+          }
+        }, 2000);
       });
 
       // --- List Mode Toggle ---
@@ -3051,57 +3452,9 @@ const categories = [
       
       // 背景動画の位置に合わせてツールチップを配置
       const videoBgForTooltip = videoBg || document.getElementById('video-bg');
-      updateTooltipPosition = function() {
-          if (videoBgForTooltip && tooltip) {
-            // 動画のメタデータが読み込まれているか確認
-            if (videoBgForTooltip.videoWidth > 0 && videoBgForTooltip.videoHeight > 0) {
-              const videoAspectRatio = videoBgForTooltip.videoWidth / videoBgForTooltip.videoHeight;
-              const containerAspectRatio = window.innerWidth / window.innerHeight;
-              
-              // object-fit: cover の場合、動画がクロップされる可能性がある
-              let videoDisplayWidth, videoDisplayHeight, videoOffsetX, videoOffsetY;
-              
-              if (videoAspectRatio > containerAspectRatio) {
-                // 動画が横長の場合、高さに合わせてクロップ
-                videoDisplayHeight = window.innerHeight;
-                videoDisplayWidth = videoDisplayHeight * videoAspectRatio;
-                videoOffsetX = (window.innerWidth - videoDisplayWidth) / 2;
-                videoOffsetY = 0;
-              } else {
-                // 動画が縦長の場合、幅に合わせてクロップ
-                videoDisplayWidth = window.innerWidth;
-                videoDisplayHeight = videoDisplayWidth / videoAspectRatio;
-                videoOffsetX = 0;
-                videoOffsetY = (window.innerHeight - videoDisplayHeight) / 2;
-              }
-              
-              // ワンちゃんの位置を動画内の相対位置で指定（調整可能）
-              const dogXPercent = 0.10; // 動画の左から10%
-              const dogYPercent = 0.80; // 動画の上から80%（下から20%）
-              
-              // ツールチップの位置を計算（ワンちゃんの上に配置）
-              const tooltipX = videoOffsetX + (videoDisplayWidth * dogXPercent);
-              const tooltipY = videoOffsetY + (videoDisplayHeight * dogYPercent) - 120; // ワンちゃんの上120px
-              
-              tooltip.style.left = `${tooltipX}px`;
-              tooltip.style.top = `${tooltipY}px`;
-              tooltip.style.bottom = 'auto';
-              tooltip.style.transform = 'translateY(0)';
-            } else {
-              // メタデータがまだ読み込まれていない場合、再試行
-              setTimeout(updateTooltipPosition, 100);
-            }
-          }
-        };
-        
-      // 初期配置とリサイズ時の更新
-      if (videoBgForTooltip) {
-        videoBgForTooltip.addEventListener('loadedmetadata', updateTooltipPosition);
-        videoBgForTooltip.addEventListener('loadeddata', updateTooltipPosition);
-      }
-      window.addEventListener('resize', updateTooltipPosition);
-      // 少し遅延させて実行（動画のメタデータが読み込まれるまで待つ）
-      setTimeout(updateTooltipPosition, 500);
+      // ツールチップはCSS固定位置（DATABASEボタンの上）に配置
+      // 動画ベースの位置計算は不要
+      updateTooltipPosition = function() {};
 
       // --- Floating Objects (Temporarily disabled to avoid 404 errors) ---
       // TODO: Add floating images later when assets are ready
@@ -3169,19 +3522,19 @@ const categories = [
       };
 
       if (widgetLatestContainer && widgetRecommendContainer && articlesData.length > 0) {
-        // 新着5件（日付順）
+        // 新着7件（日付順）
         const latestArticles = [...articlesData].sort((a, b) =>
           new Date(b.date.replace(/\./g, '-')) - new Date(a.date.replace(/\./g, '-'))
-        ).slice(0, 5);
+        ).slice(0, 7);
 
-        // おすすめ5件（AI体験談カテゴリを優先）
+        // おすすめ7件（AI体験談カテゴリを優先）
         const recommendArticles = [...articlesData]
           .filter(a => a.cat === 'ai-experience')
-          .slice(0, 3)
+          .slice(0, 4)
           .concat(
             [...articlesData]
               .filter(a => a.cat === 'ai-tips')
-              .slice(0, 2)
+              .slice(0, 3)
           );
 
         widgetLatestContainer.innerHTML = renderArticleCards(latestArticles);
@@ -3210,6 +3563,15 @@ const categories = [
           }
         });
       });
+
+      // & more ボタン → DATABASEモード（リスト表示）を発動
+      const widgetMoreBtn = document.getElementById('widget-more-btn');
+      if (widgetMoreBtn) {
+        widgetMoreBtn.addEventListener('click', () => {
+          const listBtn = document.getElementById('btn-list');
+          if (listBtn) listBtn.click();
+        });
+      }
 
       // ウィジェットの開閉
       if (widgetCloseBtn && latestWidget && widgetToggle) {
