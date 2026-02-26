@@ -5,7 +5,9 @@ category: gear
 thumbnail: "/images/dtm/stream-deck-setup/photo-1.jpg"
 description: "「便利そう」で終わらせない、実践的なStream DeckのDAW設定を全公開"
 tags: ['Stream Deck', 'Studio One', 'DTM効率化', 'ワークフロー']
-draft: false
+gridSize:
+  colSpan: 12
+  rowSpan: 1
 ---
 
 Stream Deck、持ってるか？
