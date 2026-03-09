@@ -7,8 +7,34 @@
 import Layout from '../../layouts/Layout.astro';
 import { POSTS } from '../../data/noke-posts.js';
 
-// slug生成ヘルパー
-function toSlug(post) {
+export function getStaticPaths() {
+  // slug生成ヘルパー（getStaticPaths内に定義しないとAstroコンパイラのスコープ分割で参照できない）
+  const slugMap: Record<number, string> = {
+    31: 'prologue',
+    36: 'chapter-01',
+    39: 'chapter-02',
+    42: 'chapter-03',
+    44: 'chapter-04',
+    48: 'chapter-05',
+    58: 'chapter-06',
+    62: 'chapter-07',
+    73: 'chapter-08',
+    75: 'chapter-09',
+    81: 'chapter-10',
+    84: 'chapter-11',
+  };
+  function toSlug(post: { id: number; chapter: number }) {
+    return slugMap[post.id] || `chapter-${String(post.chapter).padStart(2, '0')}`;
+  }
+
+  return POSTS.map(post => ({
+    params: { slug: toSlug(post) },
+    props: { post },
+  }));
+}
+
+// ページ内でも使うslugヘルパー
+function toSlug(post: { id: number; chapter: number }) {
   const slugMap: Record<number, string> = {
     31: 'prologue',
     36: 'chapter-01',
@@ -24,13 +50,6 @@ function toSlug(post) {
     84: 'chapter-11',
   };
   return slugMap[post.id] || `chapter-${String(post.chapter).padStart(2, '0')}`;
-}
-
-export function getStaticPaths() {
-  return POSTS.map(post => ({
-    params: { slug: toSlug(post) },
-    props: { post },
-  }));
 }
 
 const { post } = Astro.props;
