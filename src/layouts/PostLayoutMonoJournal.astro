@@ -7,6 +7,7 @@
  */
 import Layout from './Layout.astro';
 import { getCollection } from 'astro:content';
+import ScoutCTA from '../components/ScoutCTA.astro';
 
 interface Props {
   frontmatter: {
@@ -159,6 +160,8 @@ if (collection === 'tech') {
         </div>
       </div>
     </section>
+
+    <ScoutCTA />
 
     <!-- Share Float -->
     <div class="share-float">

@@ -1,0 +1,76 @@
+---
+const contactUrl = 'https://xn--3-sj5c.jp/#contact';
+---
+
+<section id="scout-cta" class="scout-cta" aria-label="デモ・音源募集">
+  <p class="scout-cta__label">SCOUT WINDOW</p>
+  <h2 class="scout-cta__title">音楽をやっているあなたへ。</h2>
+  <p class="scout-cta__body">
+    Mash Room Studioは札幌から新しい才能を探しています。デモ・音源、聴かせてください。
+  </p>
+  <a class="scout-cta__link" href={contactUrl} target="_blank" rel="noopener noreferrer">
+    デモ・音源を送る
+  </a>
+</section>
+
+<style>
+  .scout-cta {
+    margin: 4rem auto;
+    padding: 2rem;
+    max-width: 760px;
+    border: 1px solid rgba(74, 72, 69, 0.22);
+    border-left: 6px solid #4a7c6f;
+    background: rgba(255, 255, 255, 0.72);
+    color: #2a2826;
+    box-shadow: 0 18px 50px rgba(42, 40, 38, 0.08);
+  }
+
+  .scout-cta__label {
+    margin: 0 0 0.75rem;
+    font-family: 'Inter', 'Noto Sans JP', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    color: #4a7c6f;
+  }
+
+  .scout-cta__title {
+    margin: 0 0 0.8rem;
+    font-family: 'Shippori Mincho', 'Noto Serif JP', serif;
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    line-height: 1.35;
+  }
+
+  .scout-cta__body {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.9;
+  }
+
+  .scout-cta__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5rem;
+    padding: 0.85rem 1.35rem;
+    border: 1px solid #2a2826;
+    background: #2a2826;
+    color: #fff;
+    font-size: 0.92rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+
+  .scout-cta__link:hover {
+    background: #4a7c6f;
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 640px) {
+    .scout-cta {
+      margin: 3rem 1rem;
+      padding: 1.5rem;
+    }
+  }
+</style>

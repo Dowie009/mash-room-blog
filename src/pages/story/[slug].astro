@@ -6,6 +6,7 @@
  */
 import Layout from '../../layouts/Layout.astro';
 import { POSTS } from '../../data/noke-posts.js';
+import ScoutCTA from '../../components/ScoutCTA.astro';
 
 export function getStaticPaths() {
   // slug生成ヘルパー（getStaticPaths内に定義しないとAstroコンパイラのスコープ分割で参照できない）
@@ -122,6 +123,8 @@ const chapterLabel = post.chapter === 0 ? 'プロローグ' : `第${post.chapter
 
         <!-- 本文 -->
         <div class="article-content" set:html={post.content} />
+
+        <ScoutCTA />
 
         <!-- リーダーへのリンク -->
         <div class="reader-link-wrapper">

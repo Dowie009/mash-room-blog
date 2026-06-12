@@ -5,6 +5,7 @@
  */
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import ScoutCTA from '../../components/ScoutCTA.astro';
 
 // 動的ルート生成
 export async function getStaticPaths() {
@@ -113,6 +114,8 @@ const readTime = Math.max(1, Math.ceil(wordCount / 500));
         <div class="article-content">
           <Content />
         </div>
+
+        <ScoutCTA />
 
         <!-- フッター -->
         <footer class="article-footer">
