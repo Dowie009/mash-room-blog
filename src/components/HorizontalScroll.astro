@@ -1181,6 +1181,152 @@ const latestArticles = [
         transform: translateY(0);
         animation: none;
     }
+
+    /* ============================================
+       iPhone 最適化 (≤767px)
+       横スクロールの「フロア」を縦積みカードに再構成
+       ============================================ */
+    @media (max-width: 767px) {
+        .horizontal-wrapper {
+            overflow: visible;
+            height: auto;
+        }
+        .horizontal-container {
+            flex-direction: column;
+            flex-wrap: nowrap;
+            height: auto;
+            width: 100%;
+            margin: 0;
+            transform: none !important;
+            gap: 0;
+        }
+        /* 各フロアパネルを全幅・縦積みカードに */
+        .h-panel {
+            width: 100% !important;
+            height: auto !important;
+            min-height: auto !important;
+            margin: 0 !important;
+            padding: 3rem 1.25rem !important;
+            flex-direction: column;
+            opacity: 1 !important;
+            perspective: none;
+            background: #050505 !important;
+        }
+        .h-panel#panel-story,
+        .h-panel#panel-gear,
+        .h-panel#panel-tech {
+            background: #070707 !important;
+            border-top: 1px solid rgba(255,255,255,0.06) !important;
+        }
+        #spacer-panel {
+            min-height: 78svh;
+            padding-top: 4rem !important;
+        }
+
+        /* 次回予告カード: 過大なパディングを縮小 */
+        .skeleton-text-box {
+            padding: 2rem 1.25rem !important;
+            max-width: 100% !important;
+            width: 100% !important;
+        }
+        #yokoku-content h3 { font-size: 3.25rem !important; }
+        #yokoku-content p { font-size: 1rem !important; line-height: 1.8 !important; }
+
+        /* 3カラム→縦1カラム */
+        .panel-layout-container {
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: auto;
+            padding: 0;
+            gap: 1.5rem;
+        }
+        .thumbnail-left { margin: 0 !important; align-self: center; }
+        .text-area-right { margin: 0 !important; align-self: center; }
+
+        /* サムネイル: GSAP初期状態(半透明/ずれ)をリセットして表示 */
+        .merge-img-wrapper {
+            transform: none !important;
+            opacity: 1 !important;
+            height: auto !important;
+            width: 100% !important;
+            max-width: 300px;
+            aspect-ratio: 3 / 4 !important;
+            margin: 0 auto;
+        }
+        .merge-img-wrapper img { filter: none !important; }
+
+        /* テキスト: GSAP初期(非表示)をリセット + 縦書き→横書き */
+        .merge-text-wrapper {
+            transform: none !important;
+            opacity: 1 !important;
+            height: auto !important;
+            width: 100%;
+            justify-content: center !important;
+            align-items: center !important;
+            text-align: center;
+        }
+        .chapter1-text-group {
+            transform: none !important;
+            align-items: center;
+            text-align: center;
+        }
+        .tategaki-box {
+            writing-mode: horizontal-tb !important;
+            height: auto !important;
+            letter-spacing: 0.04em !important;
+            line-height: 1.7 !important;
+            text-align: center;
+            align-items: center;
+        }
+        .tategaki-box h3 { line-height: 1.5 !important; margin-bottom: 1rem !important; }
+        .tategaki-box p.text-gray-400 {
+            font-size: 0.9rem !important;
+            letter-spacing: 0.02em !important;
+            line-height: 1.9 !important;
+        }
+        /* 文字はPC用GSAP演出で opacity:0 のまま → モバイルでは即表示 */
+        .tategaki-char {
+            display: inline !important;
+            opacity: 1 !important;
+            transform: none !important;
+        }
+
+        /* 縦積み順を 画像 → テキスト → ボタン に整える */
+        .thumbnail-left { order: 0; }
+        .text-area-right { order: 1; }
+        .giant-vertical-button { order: 2; }
+
+        /* 巨大縦長ボタン → 通常の横ボタン（GSAP初期非表示をリセット） */
+        .giant-vertical-button {
+            opacity: 1 !important;
+            transform: none !important;
+            height: auto !important;
+            width: auto !important;
+            min-width: 200px;
+            margin: 0.5rem auto 0 !important;
+            padding: 0.9rem 2rem !important;
+            flex-direction: row;
+            align-self: center !important;
+            border-radius: 999px !important;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.35) !important;
+            animation: none !important;
+        }
+        .story-btn-vertical {
+            padding: 0.9rem 2rem !important;
+            padding-bottom: 0.9rem !important;
+        }
+        .btn-vertical-text {
+            writing-mode: horizontal-tb !important;
+            font-size: 1.05rem !important;
+            letter-spacing: 0.12em !important;
+        }
+        .btn-vertical-arrow {
+            display: inline-block;
+            margin-left: 0.5rem;
+            transform: rotate(-90deg);
+        }
+    }
 </style>
 
 <script>
@@ -1220,6 +1366,11 @@ const latestArticles = [
            ------------------------------------------------ */
         // スクロールに滑らかに追従（1.0秒の遅延）
         const scrubValue = 1.0;
+
+        // モバイル(<768px)では横スクロールのピン留めを行わず、
+        // パネルをCSSで縦積みにする（PCレイアウトの押し込み防止）
+        const isDesktopHome = window.matchMedia('(min-width: 768px)').matches;
+        if (isDesktopHome) {
 
         const tl = gsap.timeline({
             scrollTrigger: {
@@ -1394,5 +1545,6 @@ const latestArticles = [
                 }
             }
         });
+        } // end isDesktopHome (横スクロール演出はPCのみ)
     }
 </script>

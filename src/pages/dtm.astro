@@ -566,7 +566,9 @@ console.log('[DTM.ASTRO DEBUG] ==========================================');
         });
     };
     
-    if (navTrigger && nav) {
+    // モバイル(<768px)ではナビをサイドバーにドックさせない（PCレイアウトの押し込み防止）
+    const isDesktop = window.matchMedia('(min-width: 768px)').matches;
+    if (navTrigger && nav && isDesktop) {
       console.log('[DEBUG] navTrigger and nav found, setting up ScrollTrigger');
       
       // CSS transitionを一時的に無効化する関数
@@ -2464,5 +2466,107 @@ console.log('[DTM.ASTRO DEBUG] ==========================================');
     .dive-title {
       font-size: 1.5rem;
     }
+  }
+
+  /* ============================================
+     iPhone 最適化 (≤767px)
+     PCのサイドバー/横長レイアウトを縦1カラムに再構成
+     ============================================ */
+  @media (max-width: 767px) {
+    /* --- イントロローダー: MASH.ROOM を画面内に収める --- */
+    .loader-text-container {
+      font-size: 1.9rem !important;
+      gap: 0.1rem !important;
+      padding: 0 1rem;
+    }
+
+    /* --- ヒーロー: メタ情報の窮屈さを緩和 --- */
+    #hero-section { padding-top: 7rem; }
+    #hero-section .text-right {
+      text-align: left;
+      margin-top: 1.25rem;
+      font-size: 0.72rem;
+      line-height: 1.6;
+    }
+
+    /* --- フィルターナビ: サイドバー化を完全に無効化し横並びチップに --- */
+    .nav-placeholder {
+      min-height: 0 !important;
+      margin-bottom: 1.75rem !important;
+    }
+    .filter-nav.pos-top,
+    .filter-nav.pos-side {
+      position: static !important;
+      width: 100% !important;
+      height: auto !important;
+      padding: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      border-right: none !important;
+      transform: none !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+    }
+    .nav-grid-layout,
+    .filter-nav.pos-side .nav-grid-layout {
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: wrap !important;
+      gap: 0.5rem !important;
+      padding: 0 !important;
+      width: 100% !important;
+      max-width: none !important;
+      margin: 0 !important;
+    }
+    .nav-category-item,
+    .filter-nav.pos-side .nav-category-item {
+      border: none !important;
+      padding: 0 !important;
+      width: auto !important;
+      flex-direction: row !important;
+      gap: 0 !important;
+    }
+    .nav-desc { display: none !important; }
+    .sort-guide-area,
+    .side-view-toggle,
+    .filter-nav.pos-side .side-view-toggle { display: none !important; }
+
+    .tech-btn,
+    .tech-btn.tech-btn-lg,
+    .filter-nav.pos-side .tech-btn {
+      border: 1px solid var(--line-color) !important;
+      border-radius: 999px !important;
+      padding: 0.5rem 1.1rem !important;
+      font-size: 0.95rem !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.04em !important;
+      background: #ffffff !important;
+      color: var(--text-main) !important;
+      width: auto !important;
+      height: auto !important;
+      justify-content: center !important;
+    }
+    .tech-btn.active,
+    .filter-nav.pos-side .tech-btn.active {
+      background: var(--accent-color) !important;
+      color: #ffffff !important;
+      border-color: var(--accent-color) !important;
+    }
+    .filter-nav.pos-side .tech-btn.active::before { display: none !important; }
+    .btn-icon,
+    .filter-nav.pos-side .btn-icon { display: none !important; }
+    .btn-text,
+    .filter-nav.pos-side .btn-text { font-size: 0.95rem !important; }
+
+    /* --- メインコンテンツ: PCサイドバー用の左パディングを除去 --- */
+    #main-content-area {
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+    }
+
+    /* --- ARCHIVE: 長いタイトルでの横はみ出し防止（grid/flex min-width） --- */
+    .archive-column { min-width: 0; overflow: hidden; }
+    .archive-list li a { min-width: 0; }
+    .popular-title { min-width: 0; }
   }
 </style>

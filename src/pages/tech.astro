@@ -1739,6 +1739,54 @@ const categories = [
         gap: 0.5rem;
       }
     }
+
+    /* ============================================
+       iPhone 最適化 (≤767px)
+       没入型3Dをやめ、SIMPLE MODE（クリーン一覧）を主役に
+       ============================================ */
+    @media (max-width: 767px) {
+      /* SIMPLE MODE をイントロ/HUDより前面に出す */
+      #simple-mode-container {
+        z-index: 100002 !important;
+      }
+      /* 3D・HUD・装飾レイヤーをモバイルでは非表示（省電力 & はみ出し防止） */
+      #tunnel-scene,
+      #ui-layer,
+      .hud-container,
+      .ai-status,
+      #coordinate-display,
+      #debug-info,
+      #coordinate-tooltip,
+      #scroll-guide,
+      .scroll-hint,
+      #sidebar-preview,
+      #category-sidebar,
+      #latest-widget,
+      #fighter-cursor,
+      #archive-cursor,
+      .floater,
+      .intro-particle {
+        display: none !important;
+      }
+      /* SIMPLE MODE 内のレイアウト微調整 */
+      .simple-header {
+        padding: 2rem 1.25rem 1.25rem;
+      }
+      .simple-content {
+        padding: 1.25rem;
+      }
+      .simple-logo { font-size: 1.05rem; }
+      .simple-filter { gap: 0.5rem; margin-bottom: 1.25rem; }
+      .simple-sort { margin-bottom: 1.5rem; }
+      .simple-article-title {
+        font-size: 1.05rem;
+        line-height: 1.5;
+      }
+      .simple-article-desc {
+        font-size: 0.85rem;
+        line-height: 1.7;
+      }
+    }
   </style>
 
   <!-- INTRO TITLE ANIMATION -->
@@ -3372,6 +3420,13 @@ const categories = [
       const randomArrangeCards = () => {
         openSimpleMode();
       };
+
+      // モバイル(<=767px)では没入型3D体験をスキップし、
+      // クリーンなブログ一覧（SIMPLE MODE）を既定表示にする
+      if (window.matchMedia('(max-width: 767px)').matches) {
+        // イントロ演出を軽く見せてから一覧へ
+        setTimeout(() => { openSimpleMode(); }, 1400);
+      }
       
       // ツールチップとワンちゃんゾーンのクリックイベント（ランダム整列）
       if (tooltip) {

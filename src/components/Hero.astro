@@ -246,6 +246,45 @@
         visibility: hidden !important;
         transform: translateX(20px);
     }
+
+    /* ============================================
+       iPhone 最適化 (≤767px)
+       ヒーローを散らかさず、中央タイトルをすっきり見せる
+       ============================================ */
+    @media (max-width: 767px) {
+        /* PC用のフロアガイド/デバッグ表示はモバイルでは隠す
+           （ナビは下のフロアカード & 次回予告カードで提供） */
+        #floor-guide-vertical,
+        #floor-guide-horizontal-1f,
+        #floor-guide-horizontal-2f,
+        #scroll-meter {
+            display: none !important;
+        }
+        /* ヒーローの高さはiOSのURLバーを考慮（svh） */
+        .hero-gate-container {
+            height: 100svh;
+        }
+        /* SAPPORO… の字間が広すぎてはみ出すのを抑制 */
+        .gate-content > p {
+            letter-spacing: 0.35em !important;
+            font-size: 0.7rem !important;
+            padding: 0 1rem;
+            word-break: keep-all;
+        }
+        .gate-content h2 {
+            font-size: 4rem !important;
+            line-height: 0.95 !important;
+        }
+        /* 固定ヘッダーのロゴが全セクションに透けるのを防ぐ：
+           絶対配置にしてヒーローと一緒にスクロールアウトさせる */
+        #main-header {
+            position: absolute !important;
+            padding: 1.25rem !important;
+        }
+        #main-header .header-logo img {
+            transform: scale(1.4) !important;
+        }
+    }
 </style>
 
 <script>
