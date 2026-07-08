@@ -5,7 +5,7 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://mashroom-studio.com',
+  site: 'https://blog.xn--3-sj5c.jp',
   integrations: [
     react(),
     tailwind({

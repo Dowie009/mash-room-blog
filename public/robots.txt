@@ -1,11 +1,11 @@
-# robots.txt for mashroom-studio.com
+# robots.txt for blog.xn--3-sj5c.jp
 # Allow all search engines to crawl the site
 
 User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://mashroom-studio.com/sitemap-index.xml
+Sitemap: https://blog.xn--3-sj5c.jp/sitemap-index.xml
 
 # Disallow admin/private paths (if any)
 Disallow: /api/

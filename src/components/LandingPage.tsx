@@ -699,7 +699,7 @@ export const LandingPage = ({ onEnter, lastReadPost }: LandingPageProps) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto mb-8">
                   {/* ホームページ */}
                   <a
-                    href="https://mashroom-studio.com"
+                    href="https://xn--3-sj5c.jp"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group relative flex items-center justify-between p-6 bg-gradient-to-br from-cyan-950/80 to-blue-950/85 border-2 border-cyan-500/40 hover:border-cyan-400/70 rounded-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-900/40 backdrop-blur-sm"
