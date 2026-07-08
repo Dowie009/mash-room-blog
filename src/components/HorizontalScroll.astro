@@ -29,178 +29,215 @@ const latestArticles = [
 
 <!-- 3. HORIZONTAL READING -->
 <section class="horizontal-wrapper" id="horizontal-wrapper">
-    <div class="horizontal-container">
 
-        <!-- Spacer Panel: 中央カード（次回予告 ↔ 新着記事 クロスフェード） -->
-        <div class="h-panel bg-transparent pointer-events-none" id="spacer-panel">
-            <!-- 1つのカード枠：中のコンテンツだけがクロスフェード -->
-            <div class="skeleton-text-box p-16 max-w-2xl text-center pointer-events-auto" id="unified-card">
+    <!-- C: 最終パネルの後、画面の縁を光が一周してセクションを締める -->
+    <svg id="horizontal-sweep" class="horizontal-sweep" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <rect id="horizontal-sweep-path" x="0.6" y="0.6" width="98.8" height="98.8" rx="0.5" pathLength="100" />
+    </svg>
 
-                <!-- ===== 次回予告コンテンツ ===== -->
-                <div class="card-content" id="yokoku-content">
-                    <span class="text-[var(--accent-color)] font-mono text-lg mb-6 block">FLOOR 1</span>
-                    <h3 class="font-mincho text-7xl md:text-8xl mb-8 leading-none">次回<br>予告</h3>
-                    <p class="text-xl text-gray-400 leading-loose mb-8 font-bold">
-                        3種類のカテゴリから<br>
-                        行き先を選んでください
-                    </p>
+    <div class="section-badge"><b>C</b>ルーム選択</div>
 
-                    <!-- 平行四辺形ボタン -->
-                    <div class="flex justify-center gap-3 mb-8 relative" style="z-index: 2; pointer-events: auto;">
-                        <a href="/story" class="skew-button"><span class="skew-text">STORY</span></a>
-                        <a href="/dtm" class="skew-button"><span class="skew-text">DTM</span></a>
-                        <a href="/tech" class="skew-button"><span class="skew-text">TECH</span></a>
-                    </div>
+    <!-- B+C 統合: 3つの部屋を一度に見せる選択メニュー
+         初見の人に「STORY / DTM / TECH の3チャンネルがある」を3秒で伝える。
+         スクロールで3枚の扉がドンと立ち上がり、ホバーした部屋が広がる。
+         クリックで各LABへ。既存パネルのサムネイルとコピーを転用。 -->
+    <div class="room-menu" id="room-menu">
 
-                    <div class="font-mono text-sm text-gray-500 animate-pulse">
-                        SCROLL DOWN TO DIVE &rarr;
-                    </div>
+        <header class="room-menu-head">
+            <span class="room-menu-eyebrow">FLOOR 1 — CHOOSE YOUR ROOM</span>
+            <h2 class="room-menu-title">3つの部屋が、あります</h2>
+        </header>
+
+        <div class="room-list">
+
+            <!-- STORY -->
+            <a href="/story" class="room" data-cat="story">
+                <div class="room-bg"><img src="/images/Blog_00.png" alt="STORY LAB" /></div>
+                <div class="room-scrim"></div>
+                <div class="room-content">
+                    <span class="room-chapter">CHAPTER 01 — STORY LAB</span>
+                    <h3 class="room-title font-mincho">物語はいつも夕暮れ</h3>
+                    <p class="room-copy">ゆうき少年の勇気。夢と希望に満ち溢れてた高校生活。待ち受けていたのは神様の意地悪だった。</p>
+                    <span class="room-cta">読んでみる &rarr;</span>
                 </div>
+            </a>
 
-                <!-- ===== 新着記事コンテンツ（一時非表示） ===== -->
-                <!--
-                <div class="card-content" id="articles-content">
-                    <span class="text-[var(--accent-color)] font-mono text-lg mb-6 block">NEW ARTICLES</span>
-                    <h3 class="font-mincho text-7xl md:text-8xl mb-8 leading-none">新着<br>記事</h3>
-                    <p class="text-xl text-gray-400 leading-loose mb-8 font-bold">
-                        最新の投稿を<br>
-                        チェックしてください
-                    </p>
-
-                    <div class="flex flex-col gap-3 mb-8">
-                        {latestArticles.map((article) => (
-                            <a href={article.href} class="article-skew-card">
-                                <span class={`article-category-badge ${article.category.toLowerCase()}`}>
-                                    {article.category}
-                                </span>
-                                <span class="article-card-title">{article.data.title}</span>
-                            </a>
-                        ))}
-                    </div>
-
-                    <div class="font-mono text-sm text-gray-500 animate-pulse">
-                        CLICK TO READ &rarr;
-                    </div>
+            <!-- DTM -->
+            <a href="/dtm" class="room" data-cat="dtm">
+                <div class="room-bg"><img src="/images/chapter02-dtm.png" alt="DTM LAB" /></div>
+                <div class="room-scrim"></div>
+                <div class="room-content">
+                    <span class="room-chapter">CHAPTER 02 — DTM LAB</span>
+                    <h3 class="room-title font-mincho">特別だぜ？伝授したる</h3>
+                    <p class="room-copy">古い情報は不要。今っぽいDTMのノウハウを伝授するぜ。本当はお金とりたいくらい…笑</p>
+                    <span class="room-cta">Let's go! &rarr;</span>
                 </div>
-                -->
+            </a>
 
-            </div>
+            <!-- TECH -->
+            <a href="/tech" class="room" data-cat="tech">
+                <div class="room-bg"><img src="/images/chapter03-tech.png" alt="TECH LAB" /></div>
+                <div class="room-scrim"></div>
+                <div class="room-content">
+                    <span class="room-chapter">CHAPTER 03 — TECH LAB</span>
+                    <h3 class="room-title font-mincho">AI戦国時代</h3>
+                    <p class="room-copy">アプリ・ホームページ、ブログ開設まで、超実践的なAI活用術！</p>
+                    <span class="room-cta">突入する &rarr;</span>
+                </div>
+            </a>
+
         </div>
-
-        <!-- Story Panel (Optimized Layout) - Chapter 01 -->
-        <div class="h-panel" id="panel-story">
-            <!-- 3カラムレイアウト: サムネイル(左端) | ボタン(下から突出) | 縦書き文字(右側) -->
-            <div class="panel-layout-container">
-                <!-- 左: サムネイル画像（4cm左にずらす） -->
-                <a href="/story" class="chapter-panel-wrapper thumbnail-left relative" style="--img-height: 60vh;">
-                    <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl">
-                        <img src="/images/Blog_00.png"
-                            class="w-full h-full object-cover grayscale group-hover:grayscale-0 rounded-sm transition-all duration-700" alt="Story">
-                    </div>
-                </a>
-                <!-- 中央: 巨大縦長ボタン（下から突き出る、縦書きスタイル） -->
-                <a href="/story" class="giant-vertical-button glitch-button bottom-popup-btn story-btn-vertical">
-                    <span class="btn-vertical-text">読んでみる</span>
-                    <span class="btn-vertical-arrow">↓</span>
-                </a>
-                <!-- 右: 縦書き文字（右側に配置、隙間を作る） -->
-                <div class="merge-text-wrapper text-area-right h-[60vh] md:h-[70vh] flex items-start justify-start">
-                    <div class="tategaki-box flex flex-col justify-start chapter1-text-group" style="--text-scale: 1.8; --text-offset-x: 0px; --text-offset-y: 30px;">
-                        <span class="text-[var(--accent-color)] font-mono text-xs font-bold tracking-widest mb-8 block tategaki-char" style="writing-mode: horizontal-tb;">CHAPTER 01</span>
-                        <h3 class="font-mincho text-3xl md:text-4xl font-black mb-12 leading-relaxed">
-                            <span class="tategaki-char">物</span><span class="tategaki-char">語</span><span class="tategaki-char">は</span><span class="tategaki-char">い</span><span class="tategaki-char">つ</span><span class="tategaki-char">も</span><br>
-                            <span class="tategaki-char">夕</span><span class="tategaki-char">暮</span><span class="tategaki-char">れ</span>
-                        </h3>
-                        <p class="text-gray-400 font-medium text-sm md:text-base leading-loose">
-                            <span class="tategaki-char">ゆ</span><span class="tategaki-char">う</span><span class="tategaki-char">き</span><span class="tategaki-char">少</span><span class="tategaki-char">年</span><span class="tategaki-char">の</span><span class="tategaki-char">勇</span><span class="tategaki-char">気</span><span class="tategaki-char">。</span><br>
-                            <span class="tategaki-char">夢</span><span class="tategaki-char">と</span><span class="tategaki-char">希</span><span class="tategaki-char">望</span><span class="tategaki-char">に</span><span class="tategaki-char">満</span><span class="tategaki-char">ち</span><span class="tategaki-char">溢</span><span class="tategaki-char">れ</span><span class="tategaki-char">て</span><span class="tategaki-char">た</span><span class="tategaki-char">高</span><span class="tategaki-char">校</span><span class="tategaki-char">生</span><span class="tategaki-char">活</span><br>
-                            <span class="tategaki-char">待</span><span class="tategaki-char">ち</span><span class="tategaki-char">受</span><span class="tategaki-char">け</span><span class="tategaki-char">て</span><span class="tategaki-char">い</span><span class="tategaki-char">た</span><span class="tategaki-char">の</span><span class="tategaki-char">は</span><span class="tategaki-char">神</span><span class="tategaki-char">様</span><span class="tategaki-char">の</span><span class="tategaki-char">意</span><span class="tategaki-char">地</span><span class="tategaki-char">悪</span><span class="tategaki-char">だ</span><span class="tategaki-char">っ</span><span class="tategaki-char">た</span><span class="tategaki-char">。</span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Gear Panel (Optimized Layout) - Chapter 02: 3カラムレイアウト -->
-        <div class="h-panel" id="panel-gear">
-            <!-- 3カラムレイアウト: サムネイル(左端) | ボタン(下から突出) | 縦書き文字(右側) -->
-            <div class="panel-layout-container">
-                <!-- 左: サムネイル画像（4cm左にずらす） -->
-                <a href="/dtm" class="gear-panel-wrapper thumbnail-left relative" style="--img-height: 60vh;">
-                    <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl gear-image-wrapper">
-                        <img src="/images/chapter02-dtm.png" id="gear-panel-image"
-                            class="w-full h-full object-cover rounded-sm transition-all duration-700 gear-colorize-img" alt="Gear">
-                    </div>
-                </a>
-                <!-- 中央: 巨大縦長ボタン（下から突き出る、縦書きスタイル） -->
-                <a href="/dtm" class="giant-vertical-button glitch-button bottom-popup-btn story-btn-vertical">
-                    <span class="btn-vertical-text">Let's go!</span>
-                    <span class="btn-vertical-arrow">↓</span>
-                </a>
-                <!-- 右: 縦書き文字（右側に配置、隙間を作る） -->
-                <div class="merge-text-wrapper text-area-right h-[60vh] md:h-[70vh] flex items-start justify-start">
-                    <div class="tategaki-box flex flex-col justify-start chapter1-text-group" style="--text-scale: 1.8; --text-offset-x: 0px; --text-offset-y: 30px;">
-                        <span class="text-[var(--accent-color)] font-mono text-xs font-bold tracking-widest mb-8 block tategaki-char" style="writing-mode: horizontal-tb;">CHAPTER 02</span>
-                        <h3 class="font-mincho text-3xl md:text-4xl font-black mb-12 leading-relaxed">
-                            <span class="tategaki-char">特</span><span class="tategaki-char">別</span><span class="tategaki-char">だ</span><span class="tategaki-char">ぜ</span><span class="tategaki-char">？</span><br>
-                            <span class="tategaki-char">伝</span><span class="tategaki-char">授</span><span class="tategaki-char">し</span><span class="tategaki-char">た</span><span class="tategaki-char">る</span>
-                        </h3>
-                        <p class="text-gray-400 font-medium text-sm md:text-base leading-loose">
-                            <span class="tategaki-char">古</span><span class="tategaki-char">い</span><span class="tategaki-char">情</span><span class="tategaki-char">報</span><span class="tategaki-char">は</span><span class="tategaki-char">不</span><span class="tategaki-char">要</span><span class="tategaki-char">。</span><br>
-                            <span class="tategaki-char">今</span><span class="tategaki-char">っ</span><span class="tategaki-char">ぽ</span><span class="tategaki-char">い</span><span class="tategaki-char">D</span><span class="tategaki-char">T</span><span class="tategaki-char">M</span><span class="tategaki-char">の</span><span class="tategaki-char">ノ</span><span class="tategaki-char">ウ</span><span class="tategaki-char">ハ</span><span class="tategaki-char">ウ</span><span class="tategaki-char">を</span><span class="tategaki-char">伝</span><span class="tategaki-char">授</span><span class="tategaki-char">す</span><span class="tategaki-char">る</span><span class="tategaki-char">ぜ</span><br>
-                            <span class="tategaki-char">本</span><span class="tategaki-char">当</span><span class="tategaki-char">は</span><span class="tategaki-char">お</span><span class="tategaki-char">金</span><span class="tategaki-char">と</span><span class="tategaki-char">り</span><span class="tategaki-char">た</span><span class="tategaki-char">い</span><span class="tategaki-char">く</span><span class="tategaki-char">ら</span><span class="tategaki-char">い</span><span class="tategaki-char">…</span><span class="tategaki-char">笑</span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tech Panel (Optimized Layout) - Chapter 03: 3カラムレイアウト -->
-        <div class="h-panel" id="panel-tech">
-            <!-- 3カラムレイアウト: サムネイル(左端) | ボタン(下から突出) | 縦書き文字(右側) -->
-            <div class="panel-layout-container">
-                <!-- 左: サムネイル画像（4cm左にずらす） -->
-                <a href="/tech" class="chapter-panel-wrapper thumbnail-left relative" style="--img-height: 60vh;">
-                    <div class="merge-img-wrapper relative group cursor-pointer w-auto mx-auto holo-content shadow-2xl">
-                        <img src="/images/chapter03-tech.png"
-                            class="w-full h-full object-cover grayscale group-hover:grayscale-0 rounded-sm transition-all duration-700" alt="Tech">
-                    </div>
-                </a>
-                <!-- 中央: 巨大縦長ボタン（下から突き出る、縦書きスタイル） -->
-                <a href="/tech" class="giant-vertical-button glitch-button bottom-popup-btn story-btn-vertical">
-                    <span class="btn-vertical-text">突入する</span>
-                    <span class="btn-vertical-arrow">↓</span>
-                </a>
-                <!-- 右: 縦書き文字（右側に配置、隙間を作る） -->
-                <div class="merge-text-wrapper text-area-right h-[60vh] md:h-[70vh] flex items-start justify-start">
-                    <div class="tategaki-box flex flex-col justify-start chapter1-text-group" style="--text-scale: 1.8; --text-offset-x: 0px; --text-offset-y: 30px;">
-                        <span class="text-[var(--accent-color)] font-mono text-xs font-bold tracking-widest mb-8 block tategaki-char" style="writing-mode: horizontal-tb;">CHAPTER 03</span>
-                        <h3 class="font-mincho text-3xl md:text-4xl font-black mb-12 leading-relaxed">
-                            <span class="tategaki-char">A</span><span class="tategaki-char">I</span><br>
-                            <span class="tategaki-char">戦</span><span class="tategaki-char">国</span><span class="tategaki-char">時</span><span class="tategaki-char">代</span>
-                        </h3>
-                        <p class="text-gray-400 font-medium text-sm md:text-base leading-loose">
-                            <span class="tategaki-char">ア</span><span class="tategaki-char">プ</span><span class="tategaki-char">リ</span><span class="tategaki-char">・</span><span class="tategaki-char">ホ</span><span class="tategaki-char">ー</span><span class="tategaki-char">ム</span><span class="tategaki-char">ペ</span><span class="tategaki-char">ー</span><span class="tategaki-char">ジ</span><span class="tategaki-char">、</span><br>
-                            <span class="tategaki-char">ブ</span><span class="tategaki-char">ロ</span><span class="tategaki-char">グ</span><span class="tategaki-char">開</span><span class="tategaki-char">設</span><span class="tategaki-char">ま</span><span class="tategaki-char">で</span><br>
-                            <span class="tategaki-char">超</span><span class="tategaki-char">実</span><span class="tategaki-char">践</span><span class="tategaki-char">的</span><span class="tategaki-char">な</span><span class="tategaki-char">A</span><span class="tategaki-char">I</span><span class="tategaki-char">活</span><span class="tategaki-char">用</span><span class="tategaki-char">術</span><span class="tategaki-char">！</span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 </section>
 
 <style>
-    /* === 統一カード（クロスフェード用） === */
-    #unified-card {
-        position: relative;
+    /* === B: 言葉のコラージュ・メニュー === */
+    .word-menu {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
     }
 
-    /* カード内コンテンツ：同じ位置に重ねる */
-    .card-content {
-        /* 次回予告と新着記事を同じ位置に重ねる */
+    /* 言葉の背後に暗幕を敷く（物理ブロックや背景は雰囲気として薄く残す） */
+    .word-menu::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: radial-gradient(
+            ellipse at center,
+            rgba(5, 5, 5, 0.85) 0%,
+            rgba(5, 5, 5, 0.6) 55%,
+            rgba(5, 5, 5, 0.3) 100%
+        );
+        pointer-events: none;
+    }
+
+    .menu-eyebrow {
+        position: absolute;
+        top: 5%;
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0;
+        font-family: 'Space Grotesk', monospace;
+        font-size: 0.8rem;
+        letter-spacing: 0.2em;
+        color: var(--accent-color, #ff4d00);
+        white-space: nowrap;
+    }
+
+    .menu-hint {
+        position: absolute;
+        bottom: 4%;
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0;
+        font-size: 0.8rem;
+        letter-spacing: 0.15em;
+        color: rgba(160, 158, 152, 0.85);
+        white-space: nowrap;
+    }
+
+    .menu-word {
+        position: absolute;
+        left: var(--x);
+        top: var(--y);
+        font-size: clamp(15px, var(--s), 320px);
+        line-height: 1.1;
+        color: rgba(228, 226, 222, 0.92);
+        text-decoration: none;
+        white-space: nowrap;
+        text-shadow: 0 2px 18px rgba(0, 0, 0, 0.85);
+        transition: color 0.25s ease, filter 0.25s ease, letter-spacing 0.3s ease;
+        will-change: transform, opacity;
+        z-index: 2;
+    }
+    .menu-word.vertical {
+        writing-mode: vertical-rl;
+        text-orientation: upright;
+    }
+
+    /* 背景ゴースト層：薄く透ける巨大文字。手前の言葉と重なってカオスを作る */
+    .w-ghost {
+        color: rgba(228, 226, 222, 0.13);
+        z-index: 1;
+        text-shadow: none;
+    }
+
+    /* カテゴリごとの書体 = 各LABの世界観の予告 */
+    .w-story {
+        font-family: 'Zen Old Mincho', serif;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+    }
+    .w-dtm {
+        font-family: 'Noto Sans JP', sans-serif;
+        font-weight: 900;
+        letter-spacing: 0.04em;
+    }
+    .w-tech {
+        font-family: 'Space Grotesk', 'Noto Sans JP', sans-serif;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+    }
+    .w-tag {
+        font-family: 'Space Grotesk', monospace;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        padding: 9px 16px;
+        color: rgba(228, 226, 222, 0.92);
+        background: rgba(5, 5, 5, 0.6);
+        z-index: 4;
+    }
+
+    .menu-word:hover {
+        color: var(--accent-color, #ff4d00);
+        letter-spacing: 0.14em;
+    }
+    .w-tag:hover {
+        border-color: var(--accent-color, #ff4d00);
+    }
+
+    /* ホバー中: 同カテゴリの言葉だけ点灯、他は沈む
+       （GSAPがopacityを管理するため、減光はfilterで行う） */
+    .word-menu[data-active-cat="story"] .menu-word[data-cat]:not([data-cat="story"]),
+    .word-menu[data-active-cat="dtm"] .menu-word[data-cat]:not([data-cat="dtm"]),
+    .word-menu[data-active-cat="tech"] .menu-word[data-cat]:not([data-cat="tech"]) {
+        filter: brightness(0.28);
+    }
+    .word-menu[data-active-cat="story"] .menu-word[data-cat="story"],
+    .word-menu[data-active-cat="dtm"] .menu-word[data-cat="dtm"],
+    .word-menu[data-active-cat="tech"] .menu-word[data-cat="tech"] {
+        color: var(--accent-color, #ff4d00);
+    }
+    .word-menu[data-active-cat="story"] .w-tag[data-cat="story"],
+    .word-menu[data-active-cat="dtm"] .w-tag[data-cat="dtm"],
+    .word-menu[data-active-cat="tech"] .w-tag[data-cat="tech"] {
+        border-color: var(--accent-color, #ff4d00);
+        box-shadow: 0 0 18px rgba(255, 77, 0, 0.35);
+    }
+
+    /* --- C: 最終パネル後に画面の縁を一周する光（締めの演出、GSAPで制御） --- */
+    .horizontal-sweep {
+        position: absolute;
+        inset: 12px;
+        width: calc(100% - 24px);
+        height: calc(100% - 24px);
+        pointer-events: none;
+        z-index: 80;
+        opacity: 0;
+        will-change: opacity;
+    }
+    .horizontal-sweep rect {
+        fill: none;
+        stroke: var(--accent-color, #ff4d00);
+        stroke-width: 2.5;
+        vector-effect: non-scaling-stroke;
+        stroke-linecap: round;
+        stroke-dasharray: 12 88;
+        filter: drop-shadow(0 0 6px rgba(255, 77, 0, 0.9)) drop-shadow(0 0 18px rgba(255, 77, 0, 0.5));
     }
 
     /* 次回予告コンテンツ */
@@ -361,15 +398,23 @@ const latestArticles = [
         z-index: 2;
     }
 
+    /* ホバー: 背景・枠色の変化＋内側テキストの拡大。
+       ※ transformはGSAP(浮上アニメ)がインラインで管理するため、
+          ボタン自体のtransformをhoverで変えると効かない/ガタつく。
+          拡大は内側の .skew-text 側で行う。 */
     .skew-button:hover {
         background: var(--accent-color, #ff4d00);
         border-color: var(--accent-color, #ff4d00);
-        transform: skewX(-12deg) scale(1.05);
     }
 
     .skew-text {
         display: inline-block;
         transform: skewX(12deg); /* 文字は正立に戻す */
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .skew-button:hover .skew-text {
+        transform: skewX(12deg) scale(1.08);
     }
 
     /* --- 光沢アニメーション（左から右へ） --- */
@@ -416,15 +461,23 @@ const latestArticles = [
 
     @keyframes borderPulse {
         0%, 100% { opacity: 0; }
-        50% { opacity: 0.7; }
+        50% { opacity: 0.4; } /* 常時点滅は控えめに（うるさく感じさせない） */
     }
 
-    .skew-button:hover::before,
+    /* ホバー時: シマーはカットせずふわっと消し、点線枠は滑らかに実線化 */
+    .skew-button::before {
+        transition: opacity 0.3s ease;
+    }
+    .skew-button::after {
+        transition: opacity 0.25s ease, border-color 0.25s ease;
+    }
+
+    .skew-button:hover::before {
+        opacity: 0;
+    }
+
     .skew-button:hover::after {
         animation: none;
-    }
-
-    .skew-button:hover::after {
         opacity: 1;
         border-style: solid;
     }
@@ -493,6 +546,20 @@ const latestArticles = [
         transition: transform 0.1s, opacity 0.1s;
         height: var(--img-height, 60vh) !important;
         aspect-ratio: 3/4 !important;
+        position: relative;
+    }
+
+    /* スクロール連動グロー：スクロール中はサムネイルの縁がライトアップ */
+    .merge-img-wrapper::after {
+        content: "";
+        position: absolute;
+        inset: -3px;
+        pointer-events: none;
+        border: 1px solid rgba(255, 77, 0, 0.7);
+        box-shadow: 0 0 28px rgba(255, 77, 0, 0.45), 0 0 80px rgba(255, 77, 0, 0.2);
+        opacity: var(--scroll-glow, 0);
+        will-change: opacity;
+        z-index: 5;
     }
     .merge-img-wrapper img {
         height: 100% !important;
@@ -981,6 +1048,10 @@ const latestArticles = [
     .giant-vertical-button.glitch-done {
         opacity: 1 !important;
         transform: translateY(0) !important;
+        /* スクロール連動グロー：スクロールの勢いに応じて発光が強まる */
+        box-shadow:
+            0 -4px 30px rgba(255, 77, 0, 0.5),
+            0 0 calc(var(--scroll-glow, 0) * 70px) calc(var(--scroll-glow, 0) * 6px) rgba(255, 90, 20, 0.55);
     }
 
     /* 下から突き出るボタン専用スタイル - 削除（上で統合） */
@@ -1223,14 +1294,33 @@ const latestArticles = [
             padding-top: 4rem !important;
         }
 
-        /* 次回予告カード: 過大なパディングを縮小 */
-        .skeleton-text-box {
-            padding: 2rem 1.25rem !important;
-            max-width: 100% !important;
-            width: 100% !important;
+        /* B: 言葉メニューはモバイルでは中央寄せのタグクラウドに */
+        .word-menu {
+            position: relative;
+            inset: auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px 22px;
+            justify-content: center;
+            align-items: center;
+            padding: 3.5rem 1.25rem;
         }
-        #yokoku-content h3 { font-size: 3.25rem !important; }
-        #yokoku-content p { font-size: 1rem !important; line-height: 1.8 !important; }
+        .menu-word,
+        .menu-word.vertical {
+            position: static;
+            writing-mode: horizontal-tb;
+            text-orientation: mixed;
+            font-size: clamp(18px, 7vw, 34px);
+        }
+        .w-tag { font-size: 0.85rem; }
+        .w-ghost { display: none; } /* 背景ゴースト層はモバイルでは省く */
+        .menu-eyebrow,
+        .menu-hint {
+            position: static;
+            transform: none;
+            width: 100%;
+            text-align: center;
+        }
 
         /* 3カラム→縦1カラム */
         .panel-layout-container {
@@ -1327,224 +1417,268 @@ const latestArticles = [
             transform: rotate(-90deg);
         }
     }
+
+    /* ============================================================
+       C: ルーム選択メニュー（B+C統合版）
+       3つの部屋を一度に見せる。ホバーで広がるアコーディオン。
+       ============================================================ */
+    .horizontal-wrapper {
+        height: 100vh; /* 旧 .horizontal-container 削除後もセクションの高さを保証 */
+    }
+
+    .room-menu {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        display: flex;
+        flex-direction: column;
+        gap: 2vh;
+        padding: clamp(16px, 4vh, 40px) clamp(16px, 3vw, 48px);
+    }
+
+    .room-menu-head {
+        flex: none;
+        display: flex;
+        align-items: baseline;
+        gap: 1.4rem;
+        flex-wrap: wrap;
+    }
+    .room-menu-eyebrow {
+        font-family: 'Space Grotesk', monospace;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.22em;
+        color: var(--accent-color, #ff4d00);
+        white-space: nowrap;
+    }
+    .room-menu-title {
+        margin: 0;
+        font-family: 'Zen Old Mincho', serif;
+        font-size: clamp(1.2rem, 2vw, 1.7rem);
+        font-weight: 700;
+        color: rgba(232, 230, 226, 0.95);
+        letter-spacing: 0.06em;
+    }
+
+    .room-list {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        gap: clamp(10px, 1.2vw, 20px);
+    }
+
+    .room {
+        position: relative;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        display: flex;
+        align-items: flex-end;
+        text-decoration: none;
+        /* ホバーで「ぬるっ」と広がるアコーディオン */
+        transition: flex 0.65s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.4s ease;
+        will-change: flex;
+    }
+    .room:hover {
+        flex: 1.75;
+        border-color: var(--accent-color, #ff4d00);
+    }
+
+    .room-bg {
+        position: absolute;
+        inset: 0;
+        filter: grayscale(100%); /* スクロールでGSAPがカラー化する */
+        will-change: filter;
+    }
+    .room-bg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        will-change: transform;
+        transition: filter 0.5s ease;
+    }
+    /* どれかをホバー中、他の部屋は沈む（GSAPは.room-bg側を触るので衝突しない） */
+    .room-list:hover .room:not(:hover) .room-bg img {
+        filter: brightness(0.45);
+    }
+
+    .room-scrim {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            to top,
+            rgba(5, 5, 5, 0.92) 0%,
+            rgba(5, 5, 5, 0.55) 34%,
+            rgba(5, 5, 5, 0.08) 62%,
+            rgba(5, 5, 5, 0.18) 100%
+        );
+        pointer-events: none;
+    }
+
+    .room-content {
+        position: relative;
+        z-index: 2;
+        padding: clamp(16px, 2.4vw, 34px);
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+        width: 100%;
+    }
+    .room-chapter {
+        font-family: 'Space Grotesk', monospace;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        color: var(--accent-color, #ff4d00);
+        white-space: nowrap;
+    }
+    .room-title {
+        margin: 0;
+        font-size: clamp(1.5rem, 2.4vw, 2.5rem);
+        font-weight: 900;
+        line-height: 1.3;
+        color: #fff;
+        text-wrap: balance;
+    }
+    .room-copy {
+        margin: 0;
+        font-size: 0.9rem;
+        line-height: 1.9;
+        color: rgba(200, 198, 192, 0.95);
+        max-width: 36ch;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .room-cta {
+        align-self: flex-start;
+        margin-top: 0.3rem;
+        padding: 10px 18px;
+        font-family: 'Space Grotesk', monospace;
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        color: #fff;
+        border: 1px solid var(--accent-color, #ff4d00);
+        background: rgba(255, 77, 0, 0.16);
+        transition: background 0.3s ease, transform 0.3s ease;
+    }
+    .room:hover .room-cta {
+        background: var(--accent-color, #ff4d00);
+        transform: translateY(-2px);
+    }
+
+    /* モバイル: ピン留めなしの縦積みカード */
+    @media (max-width: 767px) {
+        .horizontal-wrapper { height: auto; }
+        .horizontal-sweep { display: none; }
+        .room-menu {
+            position: relative;
+            inset: auto;
+            padding: 3rem 1rem;
+        }
+        .room-list {
+            flex-direction: column;
+            gap: 12px;
+        }
+        .room {
+            flex: none;
+            min-height: 34vh;
+        }
+        .room:hover { flex: none; }
+        .room-bg { filter: none; } /* モバイルはGSAPが動かないため最初からカラー */
+    }
 </style>
 
 <script>
     if (typeof window !== 'undefined' && typeof gsap !== 'undefined') {
         /* ------------------------------------------------
-           ページロード時・戻ってきた時にボタン状態をリセット
-           ------------------------------------------------ */
-        document.querySelectorAll('.glitch-button').forEach(btn => {
-            btn.classList.remove('glitch-active', 'glitch-done');
-        });
-
-        /* ------------------------------------------------
-           4. HORIZONTAL SCROLL - 3カラムレイアウト対応
-           セクション間で異なるスクロール硬さを適用
+           C: ルーム選択メニュー
+           - 3つの部屋(STORY/DTM/TECH)がスクロールでドンと立ち上がる
+           - 画像はピン区間全体で微ズームし続ける（常時スクロール連動）
+           - menu-ready で吸着 → 締めは画面の縁を光が一周 → send-off
+           - 逆スクロールは全て逆再生（再訪時は自動リセット）
            ------------------------------------------------ */
         const wrapper = document.querySelector('.horizontal-wrapper');
-        const container = document.querySelector('.horizontal-container');
-        const panels = gsap.utils.toArray('.h-panel');
-        const spacerPanel = panels[0]; // 「次回予告」パネル
-        const skeletonBox = spacerPanel.querySelector('.skeleton-text-box');
+        const rooms = gsap.utils.toArray('.room');
+        const roomBgs = gsap.utils.toArray('.room-bg');
+        const roomImgs = gsap.utils.toArray('.room-bg img');
+        const roomContents = gsap.utils.toArray('.room-content');
+        const menuHead = document.querySelector('.room-menu-head');
 
-        /* ------------------------------------------------
-           クロスフェード用要素の参照（カード内コンテンツ）
-           ------------------------------------------------ */
-        const yokokuContent = document.getElementById('yokoku-content');
-        const articlesContent = document.getElementById('articles-content');
-
-        /* ------------------------------------------------
-           GEAR Panel スクロール連動カラー化
-           ------------------------------------------------ */
-        const gearImage = document.getElementById('gear-panel-image');
-
-        /* ------------------------------------------------
-           スクロール追従の設定
-           scrub値が大きいほどスクロールに即座に追従
-           scrub: true は完全に追従、数値は遅延秒数
-           ------------------------------------------------ */
-        // スクロールに滑らかに追従（1.0秒の遅延）
-        const scrubValue = 1.0;
-
-        // モバイル(<768px)では横スクロールのピン留めを行わず、
-        // パネルをCSSで縦積みにする（PCレイアウトの押し込み防止）
+        // モバイル(<768px)はピン留めせず、CSSで縦積みカード表示
         const isDesktopHome = window.matchMedia('(min-width: 768px)').matches;
-        if (isDesktopHome) {
 
-        const tl = gsap.timeline({
-            scrollTrigger: {
-                trigger: wrapper,
-                pin: true,
-                scrub: scrubValue, // スクロールに滑らかに追従
-                invalidateOnRefresh: true,
-                // スクロール距離2.5（ゆっくり）
-                end: () => "+=" + (panels.length * window.innerWidth * 2.5),
-                // スクロール進行状況を監視してボタン状態をリセット
-                onUpdate: (self) => {
-                    // 進行率が5%以下になったらボタンをリセット
-                    if (self.progress < 0.05) {
-                        document.querySelectorAll('.glitch-button').forEach(btn => {
-                            btn.classList.remove('glitch-active', 'glitch-done');
-                        });
-                    }
+        if (wrapper && rooms.length && isDesktopHome) {
+
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: wrapper,
+                    pin: true,
+                    anticipatePin: 1,
+                    scrub: 0.8,
+                    invalidateOnRefresh: true,
+                    end: "+=280%",
+                    // マグネットスナップ：メニュー完成(menu-ready)と締め(send-off)に吸着
+                    snap: {
+                        snapTo: "labelsDirectional",
+                        duration: { min: 0.25, max: 0.8 },
+                        ease: "power2.inOut",
+                        delay: 0.05,
+                    },
                 }
-            }
-        });
+            });
 
-        /* ------------------------------------------------
-           次回予告 → 新着記事 コンテンツクロスフェード
-           ※ 新着記事セクションを一時非表示のためコメントアウト
-           ------------------------------------------------ */
-        // 次回予告を表示したまま維持
-        gsap.set(yokokuContent, { opacity: 1 });
+            tl.addLabel("menu-in", 0);
 
-        // 次回予告をしばらく表示してから横スクロールへ（余裕を持たせる）
-        tl.to(yokokuContent, {
-            opacity: 1,
-            duration: 8,
-            ease: "none"
-        });
+            // 3枚の扉がドンと立ち上がる（ほぼ同時、わずかな時間差で追いかける）
+            tl.fromTo(rooms,
+                { yPercent: 108 },
+                { yPercent: 0, duration: 2.2, stagger: 0.18, ease: "power3.out" },
+                0
+            );
 
-        // 次回予告をフェードアウト（横スクロールへ移行）
-        tl.to(yokokuContent, {
-            opacity: 0,
-            pointerEvents: 'none',
-            duration: 5,
-            ease: "power1.inOut"
-        });
-
-        /* 新着記事クロスフェード（一時非表示）
-        gsap.set(articlesContent, { opacity: 0, pointerEvents: 'none' });
-        tl.to(yokokuContent, {
-            opacity: 0,
-            pointerEvents: 'none',
-            duration: 5,
-            ease: "power1.inOut"
-        });
-        tl.to(articlesContent, {
-            opacity: 1,
-            pointerEvents: 'auto',
-            duration: 5,
-            ease: "power1.inOut"
-        }, "<");
-        tl.to(articlesContent, {
-            opacity: 1,
-            duration: 0.6,
-            ease: "none"
-        });
-        tl.to(articlesContent, {
-            opacity: 0,
-            pointerEvents: 'none',
-            duration: 5,
-            ease: "power1.inOut"
-        });
-        */
-
-        panels.forEach((panel, i) => {
-            if (i === 0) return;
-
-            // コンテンツ要素を取得（3カラムレイアウト対応）
-            const img = panel.querySelector('.merge-img-wrapper');
-            const panelImage = panel.querySelector('.merge-img-wrapper img');
-            const txt = panel.querySelector('.merge-text-wrapper');
-            const chars = panel.querySelectorAll('.tategaki-char');
-
-            // 新しい巨大縦長ボタン（3カラム用）
-            const verticalButton = panel.querySelector('.giant-vertical-button');
-
-            // ボタンを初期非表示に（CSSで !important 指定済み、GSAPは後でクラス追加時に制御）
-
-            // Chapter 01（i === 1）の場合、フェードオーバーラップ効果
-            if (i === 1) {
-                // パネル自体を初期状態で少し透明に
-                gsap.set(panel, { opacity: 0.7 });
-
-                // 1. パネル移動 + フェードイン
-                tl.to(container, {
-                    x: - (i * 100) + "vw",
-                    ease: "none",
-                    duration: 5
-                });
-
-                // パネル自体をフェードイン
-                tl.to(panel, {
-                    opacity: 1,
-                    duration: 5,
-                    ease: "power2.out"
-                }, "<+=0.1");
-
-                // Spacer Panelを完全に消す
-                tl.to(spacerPanel, {
-                    opacity: 0,
-                    duration: 5
-                }, "<");
-            } else {
-                // 通常のパネル移動
-                tl.to(container, {
-                    x: - (i * 100) + "vw",
-                    ease: "none",
-                    duration: 5
-                });
+            // 見出しがふわっと降りてくる
+            if (menuHead) {
+                tl.fromTo(menuHead,
+                    { opacity: 0, y: -16 },
+                    { opacity: 1, y: 0, duration: 1, ease: "power1.out" },
+                    0.5
+                );
             }
 
-            if(img && txt) {
-                // ★ 新しいアニメーション順序（3カラムレイアウト） ★
+            // 各部屋のテキストが順に浮上
+            tl.fromTo(roomContents,
+                { opacity: 0, y: 26 },
+                { opacity: 1, y: 0, duration: 1.2, stagger: 0.15, ease: "power1.out" },
+                1.5
+            );
 
-                // 1. サムネイルが左にガチャッとはまる
-                tl.fromTo(img,
-                    { x: -80, opacity: 0 },
-                    { x: 0, opacity: 1, duration: 5, ease: "power2.out" },
-                    "<+=0.1"
-                );
+            // モノクロ→カラー（立ち上がりの後半で色づく）
+            // ※ ホバー減光はimg側のCSSで行うため、GSAPは.room-bg側を操作して衝突を避ける
+            tl.to(roomBgs, { filter: "grayscale(0%)", duration: 1.4, ease: "none", stagger: 0.15 }, 1.8);
 
-                // 2. サムネイルがはまったら → 文字が出現開始
-                tl.fromTo(txt,
-                    { x: 50, opacity: 0 },
-                    { x: 0, opacity: 1, duration: 5, ease: "power1.out" },
-                    ">" // 画像の後
-                );
+            // 画像はピン区間全体で微ズームし続ける（スクロールすれば必ず何かが動く）
+            tl.fromTo(roomImgs, { scale: 1.18 }, { scale: 1.0, duration: 8.4, ease: "none" }, 0);
 
-                // 3. 文字が一文字ずつ出現（シネマライク）
-                tl.fromTo(chars,
-                    { y: 30, opacity: 0 },
-                    { y: 0, opacity: 1, stagger: 0.02, duration: 5, ease: "power1.out" },
-                    "<+=0.1"
-                );
+            // メニュー完成点（吸着点）
+            tl.addLabel("menu-ready", 3.4);
 
-                // 4. 文字出現中にサムネイルをカラー化
-                if (panelImage) {
-                    tl.to(panelImage, {
-                        filter: 'grayscale(0%)',
-                        duration: 5,
-                        ease: "power1.out"
-                    }, "<+=0.2");
-                }
-
-                // 5. 文字が完全に終わった後、ボタンをグリッチアニメーションで下から出現
-                if (verticalButton) {
-                    // 文字完了後に間を置く
-                    tl.to({}, { duration: 5 }, ">");
-
-                    // グリッチアニメーションでボタンが下から出現（クラス追加のみ）
-                    tl.add(() => {
-                        verticalButton.classList.add('glitch-active');
-                    });
-
-                    // アニメーション時間分待つ
-                    tl.to({}, { duration: 5 });
-
-                    // グリッチアニメーション終了後、通常状態に（点滅継続）
-                    tl.add(() => {
-                        verticalButton.classList.remove('glitch-active');
-                        verticalButton.classList.add('glitch-done');
-                    });
-
-                    // 余韻
-                    tl.to({}, { duration: 5 });
-                }
+            // 締め：画面の縁をオレンジの光が一周してから次のセクションへ
+            const hSweep = document.getElementById('horizontal-sweep');
+            const hSweepPath = document.getElementById('horizontal-sweep-path');
+            if (hSweep && hSweepPath) {
+                gsap.set(hSweepPath, { strokeDashoffset: 0 });
+                tl.to(hSweep, { opacity: 1, duration: 0.4, ease: "none" }, 4.8);
+                tl.to(hSweepPath, { strokeDashoffset: -100, duration: 3, ease: "none" }, 4.8);
+                tl.to(hSweep, { opacity: 0, duration: 0.5, ease: "none" }, 7.8);
             }
-        });
-        } // end isDesktopHome (横スクロール演出はPCのみ)
+
+            // 一周し切った点が最後の吸着点。ここから先でDセクションへ抜ける
+            tl.addLabel("send-off", 8.3);
+        }
     }
 </script>

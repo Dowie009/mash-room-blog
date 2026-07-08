@@ -91,6 +91,7 @@
 
 <!-- 2. HERO GATE -->
 <section class="hero-gate-container" id="hero-section">
+    <div class="section-badge"><b>A</b>GATE</div>
     <div class="gate-panel gate-left">
         <div class="absolute inset-0 w-[200vw] h-full bg-black">
             <video autoplay loop muted playsinline class="w-full h-full object-cover opacity-40">
@@ -315,7 +316,7 @@
                         lerp: 0.1, // 自然な追従感（0.08-0.12がApple風）
                         smoothTouch: true,
                         touchMultiplier: 1.8, // タッチ感度
-                        wheelMultiplier: 1.0, // ホイール感度（標準）
+                        wheelMultiplier: 1.2, // ホイール感度（やや高め＝少ない操作で進む）
                         infinite: false,
                     });
 
@@ -391,6 +392,23 @@
                         lastScrollY = currentScrollY;
                     };
                     
+                    /* ------------------------------------------------
+                       スクロール速度 → 光エネルギー変換（--scroll-glow）
+                       スクロール中は必ずどこかが光る仕組みの心臓部。
+                       スナップの自動送り中もscrollYが動くので光り続ける。
+                       ------------------------------------------------ */
+                    let glowLastY = window.scrollY || 0;
+                    let glowEnergy = 0;
+                    const updateScrollGlow = () => {
+                        const y = window.scrollY || window.pageYOffset || 0;
+                        const delta = Math.abs(y - glowLastY);
+                        glowLastY = y;
+                        // スクロール量でチャージ、止まると滑らかに減衰
+                        glowEnergy = Math.min(1, glowEnergy * 0.90 + delta * 0.012);
+                        if (glowEnergy < 0.005) glowEnergy = 0;
+                        document.documentElement.style.setProperty('--scroll-glow', glowEnergy.toFixed(3));
+                    };
+
                     // LenisとScrollTriggerを連携させる（チカつき防止）
                     lenis.on('scroll', ScrollTrigger.update);
 
@@ -406,6 +424,7 @@
                         updateScrollMeter();
                         updateGroundPosition(); // スクロール位置に応じて地面の位置を更新
                         applyScrollShake(); // スクロール時のブロック揺れ
+                        updateScrollGlow(); // スクロール速度を光エネルギーに変換
                         requestAnimationFrame(raf);
                     }
                     requestAnimationFrame(raf);
@@ -562,28 +581,20 @@
                         }
                     });
                     
-                    // Click scroll (Chapterリンク - ScrollTriggerから動的計算)
+                    // Click scroll (Chapterリンク - ルーム選択メニューへ)
+                    // 旧横スクロールパネルは廃止。3部屋が出揃った位置(menu-ready)へ飛ばす
                     chapterLinks.forEach(link => {
                         const panelIndex = link.getAttribute('data-panel');
                         if(panelIndex) {
                             link.addEventListener('click', (e) => {
                                 if (!lenis) return;
-                                // ScrollTriggerのtimelineからパネル移動位置を取得
                                 const st = ScrollTrigger.getAll().find(t => t.trigger && t.trigger.id === 'horizontal-wrapper');
                                 if (!st || !st.animation) return;
                                 const tl = st.animation;
-                                const totalDuration = tl.duration();
-                                const totalRange = st.end - st.start;
-                                // パネル移動tween（x: -100vw, -200vw, -300vw）を探す
-                                const targetX = '-' + (parseInt(panelIndex) * 100) + 'vw';
-                                const children = tl.getChildren(false, true, true);
-                                const moveTween = children.find(c => c.vars && c.vars.x === targetX);
-                                if (moveTween) {
-                                    // tweenのend位置をスクロール位置に変換
-                                    const tweenEnd = moveTween.startTime() + moveTween.duration();
-                                    const targetScroll = st.start + (tweenEnd / totalDuration) * totalRange;
-                                    lenis.scrollTo(targetScroll, { duration: 3 });
-                                }
+                                const labels = tl.labels || {};
+                                const t = labels['menu-ready'] !== undefined ? labels['menu-ready'] : 0;
+                                const targetScroll = st.start + (t / tl.duration()) * (st.end - st.start);
+                                lenis.scrollTo(targetScroll, { duration: 2 });
                             });
                         }
                     });
@@ -660,8 +671,17 @@
                         trigger: ".hero-gate-container",
                         start: "top top",
                         end: "+=100%",
-                        scrub: 1.0, // Apple風：滑らかな追従
+                        scrub: 0.8, // Apple風：滑らかな追従
                         pin: true,
+                        anticipatePin: 1,
+                        // マグネットスナップ：少し押せばゲートが最後まで開き切る
+                        snap: {
+                            snapTo: [0, 1],
+                            duration: { min: 0.3, max: 0.8 },
+                            ease: "power2.inOut",
+                            delay: 0.1,
+                            directional: true,
+                        },
                         invalidateOnRefresh: true,
                         onStart: () => {
                             // ゲートが開き始めたときに物理演算を開始

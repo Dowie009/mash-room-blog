@@ -126,6 +126,51 @@ const ogImageUrl = ogImage.startsWith('http') ? ogImage : `${SITE_URL}${ogImage}
     color: var(--text-color);
   }
 
+  /* --- セクション識別バッジ ---
+     修正指示・フィードバック用の目印。各セクションの左下に表示。
+     「Bの次回予告を〜」「C2のDTMパネルを〜」のように指せる。 */
+  .section-badge {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    z-index: 900;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Space Grotesk', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.85);
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 77, 0, 0.55);
+    border-radius: 3px;
+    padding: 3px 9px;
+    pointer-events: none;
+    backdrop-filter: blur(4px);
+  }
+  .section-badge b {
+    color: var(--accent-color, #ff4d00);
+    font-weight: 700;
+  }
+
+  /* --- スクロール連動エッジライト ---
+     スクロールの勢い（--scroll-glow、トップページのrafループが毎フレーム更新）に
+     反応して画面の上下端がほのかに光る。どのセクションにいても
+     「スクロール入力が効いている」ことが視覚的に伝わる保険レイヤー。
+     変数が更新されないページ（記事ページ等）では常に透明のまま。 */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9990;
+    background:
+      radial-gradient(120% 45% at 50% -12%, rgba(255, 77, 0, 0.22), transparent 62%),
+      radial-gradient(120% 45% at 50% 112%, rgba(255, 77, 0, 0.22), transparent 62%);
+    opacity: var(--scroll-glow, 0);
+    will-change: opacity;
+  }
+
   .font-mincho { 
     font-family: 'Zen Old Mincho', serif; 
   }
